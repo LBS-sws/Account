@@ -1,0 +1,402 @@
+<?php
+
+class PayReqForm extends CFormModel
+{
+	public $id;
+	public $req_dt;
+	public $req_user;
+	public $trans_type_code;
+	public $payee_type = 'C';
+	public $payee_id;
+	public $payee_name;
+	public $item_desc;
+	public $amount;
+	public $status;
+	public $status_desc;
+	public $wfstatus;
+	public $wfstatusdesc;
+	
+	public $acct_id;
+	public $ref_no;
+	public $acct_code;
+	public $reason;
+	public $paid_item;
+	
+	
+	private $dyn_fields = array(
+							'acct_id',
+							'ref_no',
+							'acct_code',
+							'reason',
+							'paid_item',
+						);
+	
+	public $files;
+
+	public $docMasterId = array(
+							'payreq'=>0,
+							'tax'=>0
+						);
+	public $removeFileId = array(
+							'payreq'=>0,
+							'tax'=>0
+						);
+	public $no_of_attm = array(
+							'payreq'=>0,
+							'tax'=>0
+						);
+	
+	public $wfCode = 'PAYMENT';
+	public $wfIdField = 'id';
+	public $wfDateField = 'req_dt';
+	
+	public function init() {
+		$this->req_dt = date('Y/m/d');
+		$this->trans_type_code = '';
+		$this->acct_id = 0;
+		$this->req_user = Yii::app()->user->id;
+		
+		parent::init();
+	}
+	
+	public function attributeLabels()
+	{
+		return array(
+			'req_dt'=>Yii::t('trans','Req. Date'),
+			'trans_type_code'=>Yii::t('trans','Trans. Type'),
+			'payee_name'=>Yii::t('trans','Payee'),
+			'item_desc'=>Yii::t('trans','Details'),
+			'amount'=>Yii::t('trans','Amount'),
+			'city_name'=>Yii::t('misc','City'),
+			'status_desc'=>Yii::t('trans','Status'),
+			'wfstatusdesc'=>Yii::t('trans','Flow Status'),
+			'ref_no'=>Yii::t('trans','Ref. No.'),
+			'paid_item'=>Yii::t('trans','Paid Item'),
+			'acct_code'=>Yii::t('trans','Account Code'),
+			'acct_id'=>Yii::t('trans','Paid Account'),
+			'reason'=>Yii::t('trans','Reason'),
+		);
+	}
+
+	public function rules()
+	{
+		return array(
+			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount, paid_item, acct_code','required'),
+			array('id, item_desc, payee_id, status, status_desc','safe'), 
+			array('files, removeFileId, docMasterId, no_of_attm','safe'), 
+				
+		);
+	}
+
+	public function retrieveData($index)
+	{
+		$suffix = Yii::app()->params['envSuffix'];
+		$user = Yii::app()->user->id;
+		$city = Yii::app()->user->city_allow();
+		$sql = "select *,  
+				workflow$suffix.RequestStatus('PAYMENT',id,req_dt) as wfstatus,
+				workflow$suffix.RequestStatusDesc('PAYMENT',id,req_dt) as wfstatusdesc
+				from acc_request where id=$index 
+				and (city in ($city) and req_user<>'$user') or req_user='$user' 
+			";
+		$rows = Yii::app()->db->createCommand($sql)->queryAll();
+		if (count($rows) > 0) {
+			foreach ($rows as $row) {
+				$this->id = $row['id'];
+				$this->req_dt = General::toDate($row['req_dt']);
+				$this->req_user = $row['req_user'];
+				$this->trans_type_code = $row['trans_type_code'];
+				$this->payee_type = $row['payee_type'];
+				$this->payee_id = $row['payee_id'];
+				$this->payee_name= $row['payee_name'];
+				$this->item_desc = $row['item_desc'];
+				$this->amount = $row['amount'];
+				$this->status = $row['status'];
+				$this->status_desc = General::getTransStatusDesc($row['status']);
+				$this->wfstatus = $row['wfstatus'];
+				$this->wfstatusdesc = $row['wfstatusdesc'];
+				break;
+			}
+		
+			$sql = "select * from acc_request_info where req_id=$index";
+			$rows = Yii::app()->db->createCommand($sql)->queryAll();
+			if (count($rows) > 0) {
+				foreach ($rows as $row) {
+					$dynfldid = $row['field_id'];
+					if (in_array($dynfldid,$this->dyn_fields)) {
+						$this->$dynfldid = $row['field_value'];
+					}
+				}
+			}
+		}
+		return (count($rows) > 0);
+	}
+	
+	public function cancel() {
+		$wf = new WorkflowPayment;
+		$connection = $wf->openConnection();
+		try {
+			$reqId = $this->id;
+			$sql = "update acc_request set status='V'
+					where id = $reqId
+				";
+			$connection->createCommand($sql)->execute();
+			if ($wf->startProcess('PAYMENT',$this->id,$this->req_dt)) {
+				$wf->takeAction('CANCEL');
+			}
+			$wf->transaction->commit();
+		}
+		catch(Exception $e) {
+			$wf->transaction->rollback();
+			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
+		}
+	}
+
+	public function submit()
+	{
+		$wf = new WorkflowPayment;
+		$connection = $wf->openConnection();
+		try {
+			$this->saveReq($connection);
+			$this->ref_no = $this->genRequestRefNo();
+			$this->saveInfo($connection);
+			$this->updateDocman($connection,'PAYREQ');
+			$this->updateDocman($connection,'TAX');
+			if ($wf->startProcess('PAYMENT',$this->id,$this->req_dt)) {
+				$wf->saveRequestData('CITY',Yii::app()->user->city());
+				$wf->saveRequestData('REQ_USER',Yii::app()->user->id);
+				$wf->saveRequestData('REF_NO',$this->ref_no);
+				$wf->saveRequestData('AMOUNT',$this->amount);
+				$wf->takeAction('SUBMIT');
+			}
+			$wf->transaction->commit();
+		}
+		catch(Exception $e) {
+			$wf->transaction->rollback();
+			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
+		}
+	}
+
+	public function request()
+	{
+		$wf = new WorkflowPayment;
+		$connection = $wf->openConnection();
+		try {
+			$this->saveReq($connection);
+			$this->ref_no = $this->genRequestRefNo();
+			$this->saveInfo($connection);
+			$this->updateDocman($connection,'PAYREQ');
+			$this->updateDocman($connection,'TAX');
+			if ($wf->startProcess('PAYMENT',$this->id,$this->req_dt)) {
+				$wf->saveRequestData('CITY',Yii::app()->user->city());
+				$wf->saveRequestData('REQ_USER',Yii::app()->user->id);
+				$wf->saveRequestData('REF_NO',$this->ref_no);
+				$wf->saveRequestData('AMOUNT',$this->amount);
+				$wf->takeAction('REQUEST');
+			}
+			$wf->transaction->commit();
+		}
+		catch(Exception $e) {
+			$wf->transaction->rollback();
+			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
+		}
+	}
+
+	protected function check()
+	{
+		$wf = new WorkflowPayment;
+		$connection = $wf->openConnection();
+		try {
+			$this->saveReq($connection);
+			$this->saveInfo($connection);
+			$this->updateDocman($connection,'PAYREQ');
+			$this->updateDocman($connection,'TAX');
+			if ($wf->startProcess('PAYMENT',$this->id,$this->req_dt)) {
+				$wf->saveRequestData('AMOUNT',$this->amount);
+				$wf->takeAction('CHECK');
+			}
+			$wf->transaction->commit();
+		}
+		catch(Exception $e) {
+			$wf->transaction->rollback();
+			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
+		}
+	}
+
+	public function saveData()
+	{
+		$connection = Yii::app()->db;
+		$transaction=$connection->beginTransaction();
+		try {
+			$this->saveReq($connection);
+			$this->saveInfo($connection);
+			$this->updateDocman($connection,'PAYREQ');
+			$this->updateDocman($connection,'TAX');
+			$transaction->commit();
+		}
+		catch(Exception $e) {
+			$transaction->rollback();
+			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
+		}
+	}
+
+	protected function updateDocman(&$connection, $doctype) {
+		if ($this->scenario=='new') {
+			$docidx = strtolower($doctype);
+			if ($this->docMasterId[$docidx] > 0) {
+				$docman = new DocMan($doctype,$this->id,get_class($this));
+				$docman->masterId = $this->docMasterId[$docidx];
+				$docman->updateDocId($connection, $this->docMasterId[$docidx]);
+			}
+		}
+	}
+
+	protected function saveReq(&$connection)
+	{
+		$sql = '';
+		switch ($this->scenario) {
+			case 'delete':
+				$sql = "delete from acc_request where id = :id and req_user = :req_user and status <> 'S'";
+				break;
+			case 'new':
+				$sql = "insert into acc_request(
+							req_dt, req_user, payee_type, payee_id, payee_name, trans_type_code,
+							item_desc, amount, status, city, lcu, luu
+						) values (
+							:req_dt, :req_user, :payee_type, :payee_id, :payee_name, :trans_type_code,
+							:item_desc, :amount, 'Y', :city, :lcu, :luu
+						)";
+				break;
+			case 'edit':
+				$sql = "update acc_request set 
+							req_dt = :req_dt, 
+							payee_type = :payee_type, 
+							payee_id = :payee_id, 
+							payee_name = :payee_name, 
+							trans_type_code = :trans_type_code,
+							item_desc = :item_desc, 
+							amount = :amount, 
+							luu = :luu
+						where id = :id and city=:city and req_user=:req_user";
+				break;
+		}
+
+		$city = Yii::app()->user->city();
+		$uid = Yii::app()->user->id;
+
+		$command=$connection->createCommand($sql);
+		if (strpos($sql,':id')!==false)
+			$command->bindParam(':id',$this->id,PDO::PARAM_INT);
+		if (strpos($sql,':trans_type_code')!==false)
+			$command->bindParam(':trans_type_code',$this->trans_type_code,PDO::PARAM_STR);
+		if (strpos($sql,':payee_id')!==false)
+			$command->bindParam(':payee_id',$this->payee_id,PDO::PARAM_INT);
+		if (strpos($sql,':payee_type')!==false)
+			$command->bindParam(':payee_type',$this->payee_type,PDO::PARAM_STR);
+		if (strpos($sql,':payee_name')!==false)
+			$command->bindParam(':payee_name',$this->payee_name,PDO::PARAM_STR);
+		if (strpos($sql,':req_dt')!==false)
+			$command->bindParam(':req_dt',$this->req_dt,PDO::PARAM_STR);
+		if (strpos($sql,':req_user')!==false)
+			$command->bindParam(':req_user',$uid,PDO::PARAM_STR);
+		if (strpos($sql,':amount')!==false) {
+			$amt = General::toMyNumber($this->amount);
+			$command->bindParam(':amount',$amt,PDO::PARAM_STR);
+		}
+		if (strpos($sql,':item_desc')!==false)
+			$command->bindParam(':item_desc',$this->item_desc,PDO::PARAM_STR);
+		if (strpos($sql,':city')!==false)
+			$command->bindParam(':city',$city,PDO::PARAM_STR);
+		if (strpos($sql,':luu')!==false)
+			$command->bindParam(':luu',$uid,PDO::PARAM_STR);
+		if (strpos($sql,':lcu')!==false)
+			$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
+		$command->execute();
+
+		if ($this->scenario=='new')
+			$this->id = Yii::app()->db->getLastInsertID();
+		return true;
+	}
+
+	protected function saveInfo(&$connection) {
+		$sql = '';
+		switch ($this->scenario) {
+			case 'delete':
+				$sql = "delete from acc_request_info
+						where req_id = :id and field_id = :field_id
+					";
+				break;
+			case 'new':
+				$sql = "insert into acc_request_info(
+						req_id, field_id, field_value, luu, lcu) values (
+						:id, :field_id, :field_value, :luu, :lcu)";
+				break;
+			case 'edit':
+				$sql = "insert into acc_request_info(
+						req_id, field_id, field_value, luu, lcu) values (
+						:id, :field_id, :field_value, :luu, :lcu)
+						on duplicate key update
+						field_value = :field_value, luu = :luu
+					";
+				break;
+		}
+
+		$city = Yii::app()->user->city();
+		$uid = Yii::app()->user->id;
+
+		foreach ($this->dyn_fields as $dynfldid) {
+		
+			if (isset($this->$dynfldid)) {
+				$command=$connection->createCommand($sql);
+				if (strpos($sql,':id')!==false)
+					$command->bindParam(':id',$this->id,PDO::PARAM_INT);
+				if (strpos($sql,':field_id')!==false)
+					$command->bindParam(':field_id',$dynfldid,PDO::PARAM_STR);
+				if (strpos($sql,':field_value')!==false) {
+					$value = $this->$dynfldid;
+					$command->bindParam(':field_value',$value,PDO::PARAM_STR);
+				}
+				if (strpos($sql,':lcu')!==false)
+					$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
+				if (strpos($sql,':luu')!==false)
+					$command->bindParam(':luu',$uid,PDO::PARAM_STR);
+				$command->execute();
+			}
+		}
+		return true;
+	}
+	
+	protected function getDefaultAccountValue($type) {
+		$rtn = '';
+		$sql = "select a.id from acc_account a, acc_account_type b 
+				where a.acct_type_id=b.id and b.rpt_cat='$type'
+			";
+		$row = Yii::app()->db->createCommand($sql)->queryRow();
+		if ($row !== false) {
+			$rtn = $row['id'];
+		}
+		return $rtn;
+	}
+	
+	protected function genRequestRefNo() {
+		$city = Yii::app()->user->city();
+		$date = date('YmdHis');
+		return $city.$date;
+	}
+	
+	public function isReadOnly() {
+		return ($this->scenario=='view'||$this->status=='V'|| !empty($this->wfstatus));
+	}
+	
+	public function isTaxSlipReadOnly() {
+		return ($this->scenario=='view'||(!empty($this->wfstatus) && strpos('~ED~PS~SI~RC~C~D~','~'.$this->wfstatus.'~')!==false));
+	}
+	
+	public function allowRequestCheck() {
+		return Yii::app()->user->validFunction('CN03');
+	}
+
+	public function allowSubmit() {
+		return Yii::app()->user->validFunction('CN04');
+	}
+}

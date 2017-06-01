@@ -1,0 +1,5 @@
+#!/usr/bin/php
+<?php
+
+echo 'Welcome';
+require_once(dirname(__FILE__).'/yiic.php');
