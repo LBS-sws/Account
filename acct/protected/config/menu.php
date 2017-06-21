@@ -50,6 +50,10 @@ return array(
 				'access'=>'XB02',
 				'url'=>'/report/reimburse',
 			),
+			'Transaction List'=>array(
+				'access'=>'XB03',
+				'url'=>'/report/translist',
+			),
 			'Report Manager'=>array(
 				'access'=>'XB01',
 				'url'=>'/queue/index',
@@ -69,7 +73,7 @@ return array(
 				'url'=>'/transtype/index',
 				'tag'=>'@',
 			),
-			'Account Item'=>array(
+			'Accounting Item'=>array(
 				'access'=>'XC06',
 				'url'=>'/acctitem/index',
 				'tag'=>'@',

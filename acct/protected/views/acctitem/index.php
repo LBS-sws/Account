@@ -11,7 +11,7 @@ $this->pageTitle=Yii::app()->name . ' - Account Item';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('code','Account Item'); ?></strong>
+		<strong><?php echo Yii::t('code','Accounting Item'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
@@ -41,7 +41,7 @@ $this->pageTitle=Yii::app()->name . ' - Account Item';
 						'acct_code',
 					);
 		$this->widget('ext.layout.ListPageWidget', array(
-			'title'=>Yii::t('code','Account Item List'),
+			'title'=>Yii::t('code','Accounting Item List'),
 			'model'=>$model,
 				'viewhdr'=>'//acctitem/_listhdr',
 				'viewdtl'=>'//acctitem/_listdtl',

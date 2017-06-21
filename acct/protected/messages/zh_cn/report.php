@@ -26,6 +26,10 @@ return array(
 	'Last Balance'=>'上日金额',
 	'Curr. Paid'=>'今日付款',
 	'Curr. Received'=>'今日收款',
+	'WTD Paid'=>'本周付款',
+	'WTD Received'=>'本周收款',
+	'MTD Paid'=>'本月付款',
+	'MTD Received'=>'本月收款',
 	'Curr. Balance'=>'今日金额',
 	'Customer Name'=>'客户名称',
 	'Charge Item'=>'收款项目',
@@ -36,5 +40,7 @@ return array(
 	'Grand Total'=>'总计',
 	'Customer Cash In Daily Report'=>'客户收款日报表',
 	'No Record'=>'没有相关记录',
+	
+	'Transaction List'=>'交易记录',
 );
 ?>

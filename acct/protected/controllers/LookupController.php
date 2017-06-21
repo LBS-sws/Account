@@ -25,7 +25,7 @@ class LookupController extends Controller
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
 				'actions'=>array('company','supplier','staff','product','companyex','supplierex','staffex','productex','template',
-						'account','accountex'
+						'account','accountex','accountitemin','accountiteminex','accountitemout','accountitemoutex'
 					),
 				'users'=>array('@'),
 			),
@@ -40,8 +40,8 @@ class LookupController extends Controller
 	 */
 	public function actionCompany($search)
 	{
-//		$suffix = Yii::app()->params['envSuffix'];
-		$suffix = '_w';
+		$suffix = Yii::app()->params['envSuffix'];
+		$suffix = $suffix=='dev' ? '_w' : $suffix;
 		$city = Yii::app()->user->city();
 		$searchx = str_replace("'","\'",$search);
 		$sql = "select id, concat(left(concat(code,space(8)),8),name) as value from swoper$suffix.swo_company
@@ -52,8 +52,8 @@ class LookupController extends Controller
 	}
 
 	public function actionCompanyEx($search) {
-//		$suffix = Yii::app()->params['envSuffix'];
-		$suffix = '_w';
+		$suffix = Yii::app()->params['envSuffix'];
+		$suffix = $suffix=='dev' ? '_w' : $suffix;
 		$city = Yii::app()->user->city();
 		$result = array();
 		$searchx = str_replace("'","\'",$search);
@@ -75,8 +75,8 @@ class LookupController extends Controller
 	
 	public function actionSupplier($search)
 	{
-//		$suffix = Yii::app()->params['envSuffix'];
-		$suffix = '_w';
+		$suffix = Yii::app()->params['envSuffix'];
+		$suffix = $suffix=='dev' ? '_w' : $suffix;
 		$city = Yii::app()->user->city();
 		$searchx = str_replace("'","\'",$search);
 		$sql = "select id, concat(left(concat(code,space(8)),8),name) as value from swoper$suffix.swo_supplier
@@ -87,8 +87,8 @@ class LookupController extends Controller
 	}
 
 	public function actionSupplierEx($search) {
-//		$suffix = Yii::app()->params['envSuffix'];
-		$suffix = '_w';
+		$suffix = Yii::app()->params['envSuffix'];
+		$suffix = $suffix=='dev' ? '_w' : $suffix;
 		$city = Yii::app()->user->city();
 		$result = array();
 		$searchx = str_replace("'","\'",$search);
@@ -110,8 +110,8 @@ class LookupController extends Controller
 	
 	public function actionStaff($search)
 	{
-//		$suffix = Yii::app()->params['envSuffix'];
-		$suffix = '_w';
+		$suffix = Yii::app()->params['envSuffix'];
+		$suffix = $suffix=='dev' ? '_w' : $suffix;
 		$city = Yii::app()->user->city();
 		$searchx = str_replace("'","\'",$search);
 
@@ -132,8 +132,8 @@ class LookupController extends Controller
 
 	public function actionStaffEx($search)
 	{
-//		$suffix = Yii::app()->params['envSuffix'];
-		$suffix = '_w';
+		$suffix = Yii::app()->params['envSuffix'];
+		$suffix = $suffix=='dev' ? '_w' : $suffix;
 		$city = Yii::app()->user->city();
 		$result = array();
 		$searchx = str_replace("'","\'",$search);
@@ -160,42 +160,11 @@ class LookupController extends Controller
 		print json_encode($result);
 	}
 
-	public function actionProduct($search)
-	{
-		$city = '99999';	//Yii::app()->user->city();
-		$searchx = str_replace("'","\'",$search);
-		$sql = "select id, concat(left(concat(code,space(8)),8),description) as value from swo_product
-				where (code like '%".$searchx."%' or description like '%".$searchx."%') and city='".$city."'";
-		$result = Yii::app()->db->createCommand($sql)->queryAll();
-		$data = TbHtml::listData($result, 'id', 'value');
-		echo TbHtml::listBox('lstlookup', '', $data, array('size'=>'15',));
-	}
-
-	public function actionProductEx($search)
-	{
-		$suffix = Yii::app()->params['envSuffix'];
-		$city = '99999';	//Yii::app()->user->city();
-		$result = array();
-		$searchx = str_replace("'","\'",$search);
-		$sql = "select id, concat(left(concat(code,space(8)),8),description) as value from swoper_w.swo_product
-				where (code like '%".$searchx."%' or description like '%".$searchx."%') and city='".$city."'";
-		$records = Yii::app()->db->createCommand($sql)->queryAll();
-		if (count($records) > 0) {
-			foreach ($records as $k=>$record) {
-				$result[] = array(
-						'id'=>$record['id'],
-						'value'=>$record['value'],
-					);
-			}
-		}
-		print json_encode($result);
-	}
-
 	public function actionAccount($search)
 	{
 		$city = Yii::app()->user->city();
 		$searchx = str_replace("'","\'",$search);
-		$sql = "select id, concat(acct_name,'(',acct_no,')') as value from swo_product
+		$sql = "select id, concat(acct_name,'(',acct_no,')') as value from acc_account
 				where (acct_no like '%".$searchx."%' or acct_name like '%".$searchx."%') and city='".$city."'";
 		$result = Yii::app()->db->createCommand($sql)->queryAll();
 		$data = TbHtml::listData($result, 'id', 'value');
@@ -217,6 +186,56 @@ class LookupController extends Controller
 				$result[] = array(
 						'id'=>$record['id'],
 						'value'=>$record['value'],
+					);
+			}
+		}
+		print json_encode($result);
+	}
+
+	public function actionAccountItemIn($search) {
+		echo $this->searchAccountItem($search, 'I');
+	}
+
+	public function actionAccountItemOut($search) {
+		echo $this->searchAccountItem($search, 'O');
+	}
+
+	protected function searchAccountItem($search, $type) {
+		$city = Yii::app()->user->city();
+		$searchx = str_replace("'","\'",$search);
+		$sql = "select code, concat(name,' (',code,')') as value from acc_account_item
+				where (code like '%".$searchx."%' or name like '%".$searchx."%') and type in ('$type', 'B')";
+		$result = Yii::app()->db->createCommand($sql)->queryAll();
+		$data = TbHtml::listData($result, 'code', 'value');
+		return TbHtml::listBox('lstlookup', '', $data, array('size'=>'15',));
+	}
+	
+	public function actionAccountItemInEx($search) {
+		echo $this->searchAccountItemEx($search, 'I');
+	}
+
+	public function actionAccountItemOutEx($search) {
+		echo $this->searchAccountItemEx($search, 'O');
+	}
+
+	protected function searchAccountItemEx($search, $type)
+	{
+		$suffix = Yii::app()->params['envSuffix'];
+		$city = Yii::app()->user->city();
+		$result = array();
+		$itemtype = $type=='I' ? "'BI','CI'" : "'BO','CO'";
+		$searchx = str_replace("'","\'",$search);
+		$sql = "select a.code, concat(a.name,' (',a.code,')') as value, a.acct_code, b.name as acct_code_desc 
+				from acc_account_item a left outer join acc_account_code b on a.acct_code=b.code 
+				where (a.code like '%".$searchx."%' or a.name like '%".$searchx."%') and a.item_type in ($itemtype)";
+		$records = Yii::app()->db->createCommand($sql)->queryAll();
+		if (count($records) > 0) {
+			foreach ($records as $k=>$record) {
+				$result[] = array(
+						'id'=>$record['code'],
+						'value'=>$record['value'],
+						'acctcode'=>$record['acct_code'],
+						'acctcodedesc'=>$record['acct_code'].' '.$record['acct_code_desc'],
 					);
 			}
 		}

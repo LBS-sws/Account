@@ -5,6 +5,7 @@ return array(
 	'Bank'=>'银行名称',
 	'Account Type'=>'账户类别',
 	'Current Balance'=>'现时余額',
+	'Curr. Balance'=>'当时余額',
 
 	'Account'=>'账户',
 	'Transaction Enquiry'=>'账户查询',
@@ -64,6 +65,11 @@ return array(
 	'In'=>'收款',
 	'Out'=>'付款',
 	
+	'Bank In'=>'银行收款',
+	'Bank Out'=>'银行付款',
+	'Cash In'=>'现金收款',
+	'Cash Out'=>'现金付款',
+
 	'Ref. No.'=>'参考编号',
 	'Req. Date'=>'申请日期',
 	'Details'=>'明细',
@@ -102,5 +108,7 @@ return array(
 	'Transaction Creation Done'=>'过账完成',
 	'Request Check'=>'要求覆核',
 	'Check and Submit'=>'覆核并提交',
+	'Both'=>'二者',
+	'Please check cash receive record before proceed.'=>'请确认已核对「技术员收款记录」',
 );
 ?>

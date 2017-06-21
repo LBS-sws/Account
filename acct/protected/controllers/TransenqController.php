@@ -83,7 +83,24 @@ class TransenqController extends Controller
 		$d = new DocMan('TRANS',$docId,'TransEnq2List');
 		echo $d->genFileListView();
 	}
-	
+
+	public function actionFileDownload($mastId, $docId, $fileId, $doctype) {
+		$sql = "select city from acc_trans where id = $docId";
+		$row = Yii::app()->db->createCommand($sql)->queryRow();
+		if ($row!==false) {
+			$citylist = Yii::app()->user->city_allow();
+			if (strpos($citylist, $row['city']) !== false) {
+				$docman = new DocMan($doctype,$docId,'TransEnq2List');
+				$docman->masterId = $mastId;
+				$docman->fileDownload($fileId);
+			} else {
+				throw new CHttpException(404,'Access right not match.');
+			}
+		} else {
+				throw new CHttpException(404,'Record not found.');
+		}
+	}
+/*	
 	public function actionFileDownload($docId, $fileId) {
 		$sql = "select city from acc_trans where id = $docId";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
@@ -99,6 +116,7 @@ class TransenqController extends Controller
 			throw new CHttpException(404,'Record not found.');
 		}
 	}
+*/
 
 	/**
 	 * Performs the AJAX validation.

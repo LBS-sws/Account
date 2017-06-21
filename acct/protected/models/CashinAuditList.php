@@ -7,7 +7,7 @@ class CashinAuditList extends CListPageModel
 		return array(	
 			'audit_dt'=>Yii::t('trans','Check Date'),
 			'acct_id'=>Yii::t('trans','Account'),
-			'balance'=>Yii::t('trans','Amount'),
+			'balance'=>Yii::t('trans','Curr. Balance'),
 			'req_user_name'=>Yii::t('trans','Cashier'),
 			'audit_user_name'=>Yii::t('trans','A/C Staff'),
 			'city_name'=>Yii::t('misc','City'),

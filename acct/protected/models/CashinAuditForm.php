@@ -41,7 +41,7 @@ class CashinAuditForm extends CListPageModel
 			'req_user_name'=>Yii::t('trans','Cashier'),
 			'audit_user_name'=>Yii::t('trans','A/C Staff'),
 			'acct_no'=>Yii::t('trans','Account No.'),
-			'balance'=>Yii::t('trans','Current Balance'),
+			'balance'=>Yii::t('trans','Curr. Balance'),
 			'trans_dt'=>Yii::t('trans','Trans. Date'),
 			'trans_type_desc'=>Yii::t('trans','Trans. Type'),
 			'amount_in'=>Yii::t('trans','Amount(In)'),
@@ -57,9 +57,13 @@ class CashinAuditForm extends CListPageModel
 	
 	public function validateAuditRight($attribute, $params) {
 		$user=User::model()->find('LOWER(username)=?',array($this->audit_user));
-		$access = $user->accessRights();
-		$sid = Yii::app()->user->system();
-		if (strpos($access['control'][$sid],'CN01')===false) {
+		$flag = empty($user) ;
+		if (!$flag) {
+			$access = $user->accessRights();
+			$sid = Yii::app()->user->system();
+			$flag = (strpos($access['control'][$sid],'CN01')===false);
+		}
+		if ($flag) {
 			$this->addError($attribute, Yii::t('trans','Access denied'));
 		}
 	}

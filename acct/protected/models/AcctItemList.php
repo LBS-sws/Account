@@ -13,7 +13,7 @@ class AcctItemList extends CListPageModel
 			'code'=>Yii::t('code','Code'),
 			'name'=>Yii::t('code','Description'),
 			'item_type'=>Yii::t('code','Type'),
-			'acct_code'=>Yii::t('code','Account Code'),
+			'acct_code'=>Yii::t('code','T3 Code'),
 		);
 	}
 	
@@ -39,9 +39,11 @@ class AcctItemList extends CListPageModel
 					$clause .= General::getSqlConditionClause('a.name',$svalue);
 					break;
 				case 'item_type':
-					$field = "(select case a.item_type when 'I' then '".Yii::t('trans','In')."' 
-							when 'O' then '".Yii::t('trans','Out')."' 
-							when 'B' then '".Yii::t('trans','Both')."' 
+					$field = "(select case a.item_type 
+							when 'BI' then '".Yii::t('trans','Bank In')."' 
+							when 'BO' then '".Yii::t('trans','Bank Out')."' 
+							when 'CI' then '".Yii::t('trans','Cash In')."' 
+							when 'CO' then '".Yii::t('trans','Cash Out')."' 
 						end) ";
 					$clause .= General::getSqlConditionClause($field,$svalue);
 					break;
@@ -67,7 +69,13 @@ class AcctItemList extends CListPageModel
 		$sql = $sql1.$clause.$order;
 		$sql = $this->sqlWithPageCriteria($sql, $this->pageNum);
 		$records = Yii::app()->db->createCommand($sql)->queryAll();
+		$codelist = General::getAcctCodeList();
 		
+		$typelist = array('BI'=>Yii::t('trans','Bank In'),
+						'BO'=>Yii::t('trans','Bank Out'),
+						'CI'=>Yii::t('trans','Cash In'),
+						'CO'=>Yii::t('trans','Cash Out'),
+					);
 		$list = array();
 		$this->attr = array();
 		if (count($records) > 0) {
@@ -75,8 +83,8 @@ class AcctItemList extends CListPageModel
 				$this->attr[] = array(
 					'code'=>$record['code'],
 					'name'=>$record['name'],
-					'item_type'=>($record['item_type']=='I' ? Yii::t('trans','In') :($record['item_type']=='O' ? Yii::t('trans','Out') :Yii::t('trans','Both'))),
-					'acct_code'=>$record['acct_code'],
+					'item_type'=>$typelist[$record['item_type']],
+					'acct_code'=>$codelist[$record['acct_code']],
 				);
 			}
 		}

@@ -24,6 +24,7 @@ class RptReimbursement extends CReport {
 		if (empty($ref_no)) {
 			$sql = "select a.*, 
 						workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'SI') as sts_dt,
+						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PC') as acctstaff,
 						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PS') as approver
 					from acc_request a
 					where a.city='$city' and a.status<>'V'
@@ -32,6 +33,7 @@ class RptReimbursement extends CReport {
 				";
 		} else {
 			$sql = "select a.*, workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'SI') as sts_dt,
+						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PC') as acctstaff,
 						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PS') as approver
 					from acc_request a, acc_request_info b
 					where a.city='$city' and a.id=b.req_id and b.field_id='REF_NO' and a.status<>'V' 
@@ -83,6 +85,16 @@ class RptReimbursement extends CReport {
 				$type = $cuser->getUserInfo('signature_file_type');
 				$temp['cashier_img_type'] = $this->getImageType($type);
 				
+				if (!empty($row['acctstaff'])) {
+					$auser = User::model()->find('LOWER(username)=?',array($row['acctstaff']));
+					$temp['account_img'] = $auser->getUserInfoImage('signature');
+					$type = $auser->getUserInfo('signature_file_type');
+					$temp['account_img_type'] = $this->getImageType($type);
+				} else {
+					$temp['account_img'] = '';
+					$temp['account_img_type'] = '';
+				}
+
 				$muser = User::model()->find('LOWER(username)=?',array($row['approver']));
 				$temp['manager_img'] = $muser->getUserInfoImage('signature');
 				$type = $muser->getUserInfoImage('signature_file_type');
@@ -190,6 +202,8 @@ class RptReimbursement extends CReport {
 
 			if (!empty($record['manager_img']))
 				$pdf->Image('@'.$record['manager_img'], 35, $y+3, 28, 15, $record['manager_img_type'], '', '', false, 150, '', false, false, 0, false, false, false, false);
+			if (!empty($record['account_img']))
+				$pdf->Image('@'.$record['account_img'], 75, $y+3, 28, 15, $record['account_img_type'], '', '', false, 150, '', false, false, 0, false, false, false, false);
 			if (!empty($record['cashier_img']))
 				$pdf->Image('@'.$record['cashier_img'], 120, $y+3, 28, 15, $record['cashier_img_type'], '', '', false, 150, '', false, false, 0, false, false, false, false);
 

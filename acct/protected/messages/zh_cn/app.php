@@ -1,14 +1,15 @@
 <?php
 return array(
 	'Daily Report System'=>'日报表系统',
-	'Daily Report System - UAT'=>'日报表系统 - 测试版',
+	'Daily Report System - UAT'=>'日报表系统 - 测试版(云端)',
 	'LBS Daily Management'=>'LBS 日常管理',
-	'LBS Daily Management - UAT'=>'LBS 日常管理 - 测试版',
+	'LBS Daily Management - UAT'=>'LBS 日常管理 - 测试版(云端)',
 
 	'System Change'=>'系统切换',
 	'Daily Report'=>'日报表系统',
 	'Accounting'=>'会计系统',
 	'Operation'=>'营运系统',
+	'Personnel'=>'人事系统',
 
 	'Data Entry'=>'数据输入',
 	'Misc'=>'其他',
@@ -26,9 +27,11 @@ return array(
 	'Approver'=>'审核人员',
 	'Cash In Check'=>'客户现金对账',
 	'Default Account'=>'默认账户',
+	'Accounting Item'=>'会计项目',
 	
 	'Report'=>'报表',
 	'Reimbursement Form'=>'费用报销单',
+	'Transaction List'=>'交易记录',
 	'Report Manager'=>'报表管理员',
 
 	'System Setting'=>'系统设置',

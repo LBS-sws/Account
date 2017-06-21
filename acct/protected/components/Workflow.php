@@ -51,7 +51,7 @@ class Workflow {
 		$sql = "select a.id, a.lcd, b.name, c.username as targetuser, d.id as resp_id, d.username as actionuser
 				from workflow$suffix.wf_request_transit_log a
 				inner join workflow$suffix.wf_state b on a.new_state=b.id
-				left outer join workflow$suffix.wf_request_resp_user c on a.id=c.log_id
+				left outer join workflow$suffix.wf_request_resp_user c on a.id=c.log_id 
 				left outer join workflow$suffix.wf_request_resp_user d on a.request_id=d.request_id 
 					and a.old_state=d.current_state and d.status='C'
 					and a.id > d.log_id
@@ -77,6 +77,7 @@ class Workflow {
 				}
 				if ($lid!=$row['id']) {
 					$rtn .= "<tr><td>$date</td><td>$state</td><td>$user</td></tr>";
+					$lid = $row['id'];
 					$user = "";
 				}
 				$date = $row['lcd'];
@@ -192,7 +193,8 @@ class Workflow {
 			$func = array($this, $name);
 			$params = call_user_func_array($func, array());
 			
-			$sql = "insert into swoper_w.swo_email_queue
+			$suffix = $suffix=='dev' ? '_w' : $suffix;
+			$sql = "insert into swoper$suffix.swo_email_queue
 						(from_addr, to_addr, cc_addr, subject, description, message, status, lcu)
 					values
 						(:from_addr, :to_addr, :cc_addr, :subject, :description, :message, 'P', 'admin')

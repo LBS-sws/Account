@@ -3,6 +3,7 @@ class ReportController extends Controller
 {
 	protected static $actions = array(
 						'reimburse'=>'XB02',
+						'translist'=>'XB03',
 					);
 	
 	public function filters()
@@ -42,6 +43,21 @@ class ReportController extends Controller
 			}
 		}
 		$this->render('form_reimb',array('model'=>$model));
+	}
+
+	public function actionTranslist() {
+		$model = new Report02Form;
+		if (isset($_POST['Report02Form'])) {
+			$model->attributes = $_POST['Report02Form'];
+			if ($model->validate()) {
+				$model->addQueueItem();
+				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Report submitted. Please go to Report Manager to retrieve the output.'));
+			} else {
+				$message = CHtml::errorSummary($model);
+				Dialog::message(Yii::t('dialog','Validation Message'), $message);
+			}
+		}
+		$this->render('form_trans',array('model'=>$model));
 	}
 
 	public static function allowExecute() {

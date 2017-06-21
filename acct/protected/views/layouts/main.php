@@ -105,7 +105,7 @@ var checkLogin = function() {
 			}
 		},
 		error: function(xhr, status, error) {
-			alert(xhr.responseText);
+			skip = 1;
 		}
 	});
 };

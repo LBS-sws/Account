@@ -22,7 +22,7 @@ class PayreqController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','submit','cancel','fileupload','fileremove','filedownload'),
+				'actions'=>array('new','edit','delete','save','submit','request','check','cancel','fileupload','fileremove','filedownload'),
 				'expression'=>array('PayreqController','allowReadWrite'),
 			),
 			array('allow', 

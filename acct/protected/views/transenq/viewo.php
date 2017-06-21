@@ -13,7 +13,7 @@
 	<td><?php echo TbHtml::label($labels['acct_id'],false); ?></td>
 	<td>
 		<?php 
-			$list = General::getAccountList();
+			$list = General::getAccountList($model->city);
 //			echo TbHtml::textField('acct_id', $list[$model->acct_id], array('readonly'=>true));
 			echo $list[$model->acct_id];
 		?>

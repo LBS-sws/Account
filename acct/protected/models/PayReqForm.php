@@ -19,16 +19,17 @@ class PayReqForm extends CFormModel
 	public $acct_id;
 	public $ref_no;
 	public $acct_code;
+	public $acct_code_desc;
 	public $reason;
-	public $paid_item;
-	
+	public $item_code;
+	public $pitem_desc;
 	
 	private $dyn_fields = array(
 							'acct_id',
 							'ref_no',
 							'acct_code',
 							'reason',
-							'paid_item',
+							'item_code',
 						);
 	
 	public $files;
@@ -71,7 +72,8 @@ class PayReqForm extends CFormModel
 			'status_desc'=>Yii::t('trans','Status'),
 			'wfstatusdesc'=>Yii::t('trans','Flow Status'),
 			'ref_no'=>Yii::t('trans','Ref. No.'),
-			'paid_item'=>Yii::t('trans','Paid Item'),
+			'item_code'=>Yii::t('trans','Paid Item'),
+			'pitem_desc'=>Yii::t('trans','Paid Item'),
 			'acct_code'=>Yii::t('trans','Account Code'),
 			'acct_id'=>Yii::t('trans','Paid Account'),
 			'reason'=>Yii::t('trans','Reason'),
@@ -81,8 +83,8 @@ class PayReqForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount, paid_item, acct_code','required'),
-			array('id, item_desc, payee_id, status, status_desc','safe'), 
+			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount, item_code, pitem_desc, acct_code','required'),
+			array('id, item_desc, payee_id, status, status_desc, acct_code_desc','safe'), 
 			array('files, removeFileId, docMasterId, no_of_attm','safe'), 
 				
 		);
@@ -97,7 +99,7 @@ class PayReqForm extends CFormModel
 				workflow$suffix.RequestStatus('PAYMENT',id,req_dt) as wfstatus,
 				workflow$suffix.RequestStatusDesc('PAYMENT',id,req_dt) as wfstatusdesc
 				from acc_request where id=$index 
-				and (city in ($city) and req_user<>'$user') or req_user='$user' 
+				and ((city in ($city) and req_user<>'$user') or req_user='$user') 
 			";
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
 		if (count($rows) > 0) {
@@ -128,6 +130,11 @@ class PayReqForm extends CFormModel
 					}
 				}
 			}
+			
+			$acctcodelist = General::getAcctCodeList();
+			$acctitemlist = General::getAcctItemList();
+			if (isset($acctcodelist[$this->acct_code])) $this->acct_code_desc = $acctcodelist[$this->acct_code];
+			if (isset($acctitemlist[$this->item_code])) $this->pitem_desc = $acctitemlist[$this->item_code];
 		}
 		return (count($rows) > 0);
 	}
@@ -202,7 +209,7 @@ class PayReqForm extends CFormModel
 		}
 	}
 
-	protected function check()
+	public function check()
 	{
 		$wf = new WorkflowPayment;
 		$connection = $wf->openConnection();
@@ -385,7 +392,7 @@ class PayReqForm extends CFormModel
 	}
 	
 	public function isReadOnly() {
-		return ($this->scenario=='view'||$this->status=='V'|| !empty($this->wfstatus));
+		return ($this->scenario=='view'||$this->status=='V'|| strpos('~~PC~','~'.$this->wfstatus.'~')===false);
 	}
 	
 	public function isTaxSlipReadOnly() {

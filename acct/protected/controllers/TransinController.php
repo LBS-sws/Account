@@ -88,7 +88,6 @@ class TransinController extends Controller
 			$model->trans_dt = date('Y/m/d');
 			$model->posted = false;
 			$model->status = 'A';
-			$model->cheque_no = '';
 		}
 		$this->render('form',array('model'=>$model,));
 	}

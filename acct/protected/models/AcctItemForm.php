@@ -19,7 +19,7 @@ class AcctItemForm extends CFormModel
 			'code'=>Yii::t('code','Code'),
 			'name'=>Yii::t('code','Description'),
 			'item_type'=>Yii::t('code','Type'),
-			'acct_code'=>Yii::t('code','Account Code'),
+			'acct_code'=>Yii::t('code','T3 Code'),
 		);
 	}
 
@@ -33,7 +33,7 @@ class AcctItemForm extends CFormModel
 			array('code','unique','allowEmpty'=>false,
 					'attributeName'=>'code',
 					'caseSensitive'=>false,
-					'className'=>'Acctitem',
+					'className'=>'AcctItem',
 					'on'=>'new'
 				),
 

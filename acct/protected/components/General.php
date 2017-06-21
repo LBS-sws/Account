@@ -93,7 +93,20 @@ class General {
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
 		if (count($rows) > 0) {
 			foreach ($rows as $row) {
-				$list[$row['code']] = $row['name'];
+				$list[$row['code']] = $row['code'].' '.$row['name'];
+			}
+		}
+		return $list;
+	}
+
+	public static function getAcctItemList()
+	{
+		$list = array();
+		$sql = "select code, name from acc_account_item order by code";
+		$rows = Yii::app()->db->createCommand($sql)->queryAll();
+		if (count($rows) > 0) {
+			foreach ($rows as $row) {
+				$list[$row['code']] = $row['name'].' ('.$row['code'].')';
 			}
 		}
 		return $list;
@@ -137,6 +150,16 @@ class General {
 			}
 		}
 		return $list;
+	}
+	
+	public static function getPayerTypeList() {
+		return array(
+				'C'=>Yii::t('trans','Client'),
+				'S'=>Yii::t('trans','Supplier'),
+				'F'=>Yii::t('trans','Staff'),
+				'A'=>Yii::t('trans','Company A/C'),
+				'O'=>Yii::t('trans','Others')
+			);
 	}
 	
 	public static function getJsDefaultAccountList()
@@ -210,40 +233,6 @@ class General {
 		return $list;
 	}
 	
-	public static function getMgrFeedbackList()
-	{
-		$list = array();
-		$suffix = Yii::app()->params['envSuffix'];
-		$sysid = Yii::app()->user->system();
-		$sql = "select a.username, a.disp_name, a.email 
-				from security$suffix.sec_user a, security$suffix.sec_user_access b
-				where a.username = b.username
-				and b.system_id = '$sysid' 
-				and	a.city='".Yii::app()->user->city()."' 
-				and b.a_read_write like '%A08%' 
-				and a.email is not null and a.email<>''
-				and a.status='A' 
-				order by a.disp_name
-		";
-		$rows = Yii::app()->db->createCommand($sql)->queryAll();
-		if (count($rows) > 0) {
-			foreach ($rows as $row) {
-				$list[$row['username']] = $row['disp_name'].' ('.$row['email'].')';
-			}
-		}
-		return $list;
-	}
-
-	public static function getFeedbackCatList() {
-		$list = array();
-		$model = new FeedbackForm;
-		$rows = $model->cats;
-		foreach ($rows as $key=>$value) {
-			$list[$key] = Yii::t('app',$value);
-		}
-		return $list;
-	}
-	
 	public static function getEmailListboxData()
 	{
 		$list = array();
@@ -267,47 +256,6 @@ class General {
 		return $list;
 	}
 
-	public static function getServiceTypeList($descOnly=false)
-	{
-		$list = array();
-		$sql = "select id, description from swo_service_type order by description";
-		$rows = Yii::app()->db->createCommand($sql)->queryAll();
-		if (count($rows) > 0) {
-			foreach ($rows as $row) {
-				if ($descOnly)
-					$list[$row['description']] = $row['description'];
-				else
-					$list[$row['id']] = $row['description'];
-			}
-		}
-		return $list;
-	}
-
-	public static function getStatusDesc($invalue) {
-		switch ($invalue) {
-			case 'N':
-				return Yii::t('app','New');
-				break;
-			case 'A':
-				return Yii::t('app','Amend');
-				break;
-			case 'R':
-				return Yii::t('app','Resume');
-				break;
-			case 'S':
-				return Yii::t('app','Suspend');
-				break;
-			case 'T':
-				return Yii::t('app','Terminate');
-				break;
-			case 'C':
-				return Yii::t('app','Renew');
-				break;
-			default:
-				return '';
-		}
-	}
-	
 	public static function getTransStatusDesc($invalue) {
 		switch ($invalue) {
 			case 'V':
@@ -356,25 +304,6 @@ class General {
 		}
 	}
 	
-	public static function getStaffTypeDesc($invalue) {
-		switch ($invalue) {
-			case 'OFFICE':
-				return Yii::t('staff','Office');
-				break;
-			case 'SALES':
-				return Yii::t('staff','Sales');
-				break;
-			case 'TECHNICIAN':
-				return Yii::t('staff','Technician');
-				break;
-			case 'OTHER':
-				return Yii::t('staff','Others');
-				break;
-			default:
-				return '';
-		}
-	}
-
 	public static function getLeaderDesc($invalue) {
 		switch ($invalue) {
 			case 'NIL':

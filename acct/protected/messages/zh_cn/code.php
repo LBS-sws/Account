@@ -15,6 +15,11 @@ return array(
 	'Open Balance'=>'初始金额',
 	'Balance Date'=>'初始日期',
 	
+	'Accounting Item'=>'会计项目',
+	'T3 Code'=>'T3科目',
+	'Accounting Item List'=>'会计项目列表',
+	'Accounting Item Form'=>'会计项目表单',
+	
 	'Transaction Type'=>'交易类别',
 	'Transaction Type List'=>'交易类别列表',
 	'Transaction Type Form'=>'交易类别表单',

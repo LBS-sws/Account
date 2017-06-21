@@ -53,7 +53,7 @@ return array(
 	'No File Record'=>'没有文件记录',
 	'Transaction Detail'=>'交易内容',
 	'Confirmation Done'=>'确认完成',
-	'Checking Request Done'=>'要求覆核完成',
+	'Request Checking Done'=>'要求覆核完成',
 	'Checking and Submission Done'=>'覆核并提交完成',
 );
 ?>

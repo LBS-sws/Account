@@ -10,7 +10,7 @@ $this->pageTitle=Yii::app()->name . ' - Account Item Form';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('code','Account Item Form'); ?></strong>
+		<strong><?php echo Yii::t('code','Accounting Item Form'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
@@ -55,7 +55,7 @@ $this->pageTitle=Yii::app()->name . ' - Account Item Form';
 				<?php echo $form->labelEx($model,'code',array('class'=>"col-sm-2 control-label")); ?>
 				<div class="col-sm-4">
 					<?php echo $form->textField($model, 'code', 
-						array('maxlength'=>30,'readonly'=>($model->scenario=='view'))
+						array('maxlength'=>30,'readonly'=>($model->scenario!='new'))
 					); ?>
 				</div>
 			</div>
@@ -73,7 +73,11 @@ $this->pageTitle=Yii::app()->name . ' - Account Item Form';
 				<?php echo $form->labelEx($model,'item_type',array('class'=>"col-sm-2 control-label")); ?>
 				<div class="col-sm-4">
 					<?php
-						$typelist = array('I'=>Yii::t('trans','In'),'O'=>Yii::t('trans','Out'),'B'=>Yii::t('trans','Both'));
+						$typelist = array('BI'=>Yii::t('trans','Bank In'),
+									'BO'=>Yii::t('trans','Bank Out'),
+									'CI'=>Yii::t('trans','Cash In'),
+									'CO'=>Yii::t('trans','Cash Out'),
+								);
 						if ($model->isReadOnly()) {
 							echo $form->hiddenField($model, 'item_type');
 							echo TbHtml::textField('type_desc', $typelist[$model->item_type], array('readonly'=>true));

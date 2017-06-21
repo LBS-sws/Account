@@ -158,8 +158,10 @@ function showdtl(docid,type) {
 EOF;
 	Yii::app()->clientScript->registerScript('dtlview',$js,CClientScript::POS_HEAD);
 
+	$mesg = Yii::t('trans','Please check cash receive record before proceed.');
 	$js = <<<EOF
 $('#btnConfirm').on('click',function(){
+	alert('$mesg');
 	$('#authdialog').modal('show');
 });
 EOF;

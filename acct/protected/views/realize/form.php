@@ -44,13 +44,13 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Form';
 	<div class="btn-group pull-right" role="group">
 	<?php 
 		$counter = ($model->no_of_attm['payreal'] > 0) ? ' '.TbHtml::badge($model->no_of_attm['payreal'], array('class' => 'bg-blue')) : '';
-		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('misc','Attachment').$counter, array(
+		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('misc','Attachment'), array(
 			'name'=>'btnFile','id'=>'btnFile','data-toggle'=>'modal','data-target'=>'#fileuploadpayreal',)
 		);
 	?>
 	<?php 
 		$counter = ($model->no_of_attm['tax'] > 0) ? ' '.TbHtml::badge($model->no_of_attm['tax'], array('class' => 'bg-blue')) : '';
-		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','Tax Slip').$counter, array(
+		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','Tax Slip'), array(
 			'name'=>'btnFileTS','id'=>'btnFileTS','data-toggle'=>'modal','data-target'=>'#fileuploadtax',)
 		);
 	?>

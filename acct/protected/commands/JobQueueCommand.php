@@ -1,4 +1,4 @@
- <?php
+<?php
 class JobQueueCommand extends CConsoleCommand {
 	protected $webroot;
 	
@@ -26,15 +26,16 @@ class JobQueueCommand extends CConsoleCommand {
 				
 			$rpt_desc = $param['RPT_DESC'];
 			$mesg = "ID:$id NAME:$rpt_desc FORMAT:$format USER:$uid\n";
-			echo $mesg;
 				
 			$out = $this->genReport($param['RPT_ID'], $param, $format);
 			
 			if (!empty($out)) {
 				$this->saveOutput($id, $ts, $out, 'C');
+				echo $mesg;
 				echo "\t-Done (default)\n";
 			} else {
 					$this->markStatus($id, $ts, 'F');
+					echo $mesg;
 					echo "\t-FAIL\n";
 			}
 		}
@@ -121,7 +122,6 @@ class JobQueueCommand extends CConsoleCommand {
 	}
 
 	protected function genReport($rptid, $param, $format) {
-		var_dump($rptid);
 		$report = new $rptid();
 		$report->criteria = $param;
 		$output = $report->genReport();

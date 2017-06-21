@@ -39,12 +39,12 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 			); 
 		?>
 <?php endif ?>
-<?php if (!$model->isReadOnly()): ?>
+<?php if (!$model->isReadOnly() && $model->wfstatus!='PC'): ?>
 			<?php echo TbHtml::button('<span class="fa fa-save"></span> '.Yii::t('misc','Save Draft'), array(
 				'submit'=>Yii::app()->createUrl('payreq/save'),)); 
 			?>
 <?php endif ?>
-<?php if (!$model->isReadOnly() && $model->allowRequestCheck() && !$model->allowSubmit()): ?>
+<?php if (!$model->isReadOnly() && $model->wfstatus!='PC' && $model->allowRequestCheck() && !$model->allowSubmit()): ?>
 			<?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('trans','Request Check'), array(
 				'submit'=>Yii::app()->createUrl('payreq/request'),)); 
 			?>
@@ -66,7 +66,7 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 	?>
 <?php endif ?>
 
-<?php if ($model->scenario=='edit' && $model->wfstatus=='PA'): ?>
+<?php if ($model->scenario=='edit' && strpos('~PA~PC~','~'.$model->wfstatus.'~')!==false): ?>
 	<?php echo TbHtml::button('<span class="fa fa-remove"></span> '.Yii::t('misc','Cancel'), array(
 			'name'=>'btnCancel','id'=>'btnCancel','data-toggle'=>'modal','data-target'=>'#canceldialog',)
 		);
@@ -77,13 +77,13 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 	<div class="btn-group pull-right" role="group">
 	<?php 
 		$counter = ($model->no_of_attm['payreq'] > 0) ? ' '.TbHtml::badge($model->no_of_attm['payreq'], array('class' => 'bg-blue')) : '';
-		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('misc','Attachment').$counter, array(
+		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('misc','Attachment'), array(
 			'name'=>'btnFile','id'=>'btnFile','data-toggle'=>'modal','data-target'=>'#fileuploadpayreq',)
 		);
 	?>
 	<?php 
 		$counter = ($model->no_of_attm['tax'] > 0) ? ' '.TbHtml::badge($model->no_of_attm['tax'], array('class' => 'bg-blue')) : '';
-		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','Tax Slip').$counter, array(
+		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','Tax Slip'), array(
 			'name'=>'btnFileTS','id'=>'btnFileTS','data-toggle'=>'modal','data-target'=>'#fileuploadtax',)
 		);
 	?>
@@ -180,16 +180,32 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 			</div>
 
 			<div class="form-group">
-				<?php echo $form->labelEx($model,'paid_item',array('class'=>"col-sm-2 control-label")); ?>
-				<div class="col-sm-4">
-					<?php echo $form->dropDownList($model, 'paid_item', General::getAcctCodeList(),array('disabled'=>($model->isReadOnly()))); ?>
+				<?php echo $form->labelEx($model,'pitem_desc',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-7">
+					<?php 
+						echo $form->hiddenField($model, 'item_code');
+						echo $form->textField($model, 'pitem_desc', 
+							array('maxlength'=>500,'readonly'=>true,
+							'append'=>TbHtml::button('<span class="fa fa-search"></span> '.Yii::t('trans','Paid Item'),
+										array('name'=>'btnPaidItem','id'=>'btnPaidItem',
+											'disabled'=>($model->isReadOnly())
+										)
+								)
+							)
+						); 
+					?>
 				</div>
 			</div>
 
 			<div class="form-group">
 				<?php echo $form->labelEx($model,'acct_code',array('class'=>"col-sm-2 control-label")); ?>
 				<div class="col-sm-4">
-					<?php echo $form->dropDownList($model, 'acct_code', General::getAcctCodeList(),array('disabled'=>($model->isReadOnly()))); ?>
+					<?php 
+						echo $form->hiddenField($model, 'acct_code');
+						echo $form->textField($model, 'acct_code_desc', 
+							array('maxlength'=>500,'readonly'=>true,)
+						); 
+					?>
 				</div>
 			</div>
 
@@ -326,6 +342,11 @@ $('#PayReqForm_payee_type').on('change', function() {
 	";
 $js .= Script::genLookupButtonEx('btnPayee', '*', 'payee_id', 'payee_name');
 Yii::app()->clientScript->registerScript('lookupPayee',$js,CClientScript::POS_READY);
+
+$js = Script::genLookupButtonEx('btnPaidItem', 'accountitemout', 'item_code', 'pitem_desc', 
+		array('acctcode'=>'PayReqForm_acct_code','acctcodedesc'=>'PayReqForm_acct_code_desc',)
+	);
+Yii::app()->clientScript->registerScript('lookupPaidItem',$js,CClientScript::POS_READY);
 
 $js = Script::genLookupSelect();
 Yii::app()->clientScript->registerScript('lookupSelect',$js,CClientScript::POS_READY);

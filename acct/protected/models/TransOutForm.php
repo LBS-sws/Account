@@ -10,6 +10,7 @@ class TransOutForm extends CFormModel
 	public $amount;
 	public $status;
 	public $status_desc;
+	public $city;
 	
 	public $payer_type = 'O';
 	public $payer_id;
@@ -59,7 +60,7 @@ class TransOutForm extends CFormModel
 			array('trans_type_code, trans_dt, acct_id, payer_name, payer_type, amount','required'),
 			array('trans_dt','validateTransDate'),
 			array('id, trans_desc, payer_id, cheque_no, invoice_no, status,
-					no_of_attm, docType, files, removeFileId, status_desc
+					no_of_attm, docType, files, removeFileId, status_desc, city
 				','safe'), 
 		);
 	}
@@ -91,6 +92,7 @@ class TransOutForm extends CFormModel
 				$this->amount = $row['amount'];
 				$this->status = $row['status'];
 				$this->status_desc = General::getTransStatusDesc($row['status']);
+				$this->city = $row['city'];
 				break;
 			}
 		}

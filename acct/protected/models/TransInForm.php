@@ -11,6 +11,7 @@ class TransInForm extends CFormModel
 	public $status;
 	public $status_desc;
 	public $posted;
+	public $city;
 	
 	public $payer_type = 'C';
 	public $payer_id;
@@ -20,10 +21,12 @@ class TransInForm extends CFormModel
 	public $handle_staff;
 	public $handle_staff_name;
 	public $acct_code;
-	public $charge_item;
+	public $acct_code_desc;
 	public $year_no;
 	public $month_no;
 	public $united_inv_no;
+	public $item_code;
+	public $citem_desc;
 	
 	private $dyn_fields = array(
 							'payer_type',
@@ -34,10 +37,10 @@ class TransInForm extends CFormModel
 							'handle_staff',
 							'handle_staff_name',
 							'acct_code',
+							'item_code',
 							'year_no',
 							'month_no',
 							'united_inv_no',
-							'charge_item',
 						);
 	
 	public $no_of_attm = 0;
@@ -68,7 +71,8 @@ class TransInForm extends CFormModel
 			'invoice_no'=>Yii::t('trans','China Invoice No.'),
 			'handle_staff_name'=>Yii::t('trans','Handling Staff'),
 			'acct_code'=>Yii::t('trans','Account Code'),
-			'charge_item'=>Yii::t('trans','Charge Item'),
+			'item_code'=>Yii::t('trans','Charge Item'),
+			'citem_desc'=>Yii::t('trans','Charge Item'),
 			'year_no'=>Yii::t('trans','Service Fee Date'),
 			'month_no'=>Yii::t('trans','Service Fee Date'),
 			'status_desc'=>Yii::t('trans','Status'),
@@ -79,15 +83,15 @@ class TransInForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('trans_type_code, trans_dt, acct_id, payer_name, payer_type, amount, acct_code, year_no, month_no, charge_item','required'),
+			array('trans_type_code, trans_dt, acct_id, payer_name, payer_type, amount, acct_code, year_no, month_no, item_code, citem_desc','required'),
 			array('trans_dt','validateTransDate'),
 			array('acct_id','compare','compareValue'=>0,'operator'=>'>','message'=>Yii::t('trans','Account cannot be empty')),
 			array('year_no, month_no','numerical','allowEmpty'=>false,'integerOnly'=>true),
 			array('year_no','in','range'=>range(2017,2099)),
 			array('month_no','in','range'=>range(1,12)),
 			array('id, trans_desc, payer_id, cheque_no, invoice_no, handle_staff, handle_staff_name, status,
-					no_of_attm, docType, files, removeFileId, docMasterId, 
-					status_desc, united_inv_no 
+					no_of_attm, docType, files, removeFileId, docMasterId, acct_code_desc, 
+					status_desc, united_inv_no,city 
 				','safe'), 
 		);
 	}
@@ -123,6 +127,7 @@ class TransInForm extends CFormModel
 				$this->status = $row['status'];
 				$this->status_desc = General::getTransStatusDesc($row['status']);
 				$this->posted = (!empty($row['trans_id']));
+				$this->city = $row['city'];
 				break;
 			}
 		}
@@ -137,6 +142,12 @@ class TransInForm extends CFormModel
 				}
 			}
 		}
+
+		$acctcodelist = General::getAcctCodeList();
+		$acctitemlist = General::getAcctItemList();
+		if (isset($acctcodelist[$this->acct_code])) $this->acct_code_desc = $acctcodelist[$this->acct_code];
+		if (isset($acctitemlist[$this->item_code])) $this->citem_desc = $acctitemlist[$this->item_code];
+
 		return true;
 	}
 	

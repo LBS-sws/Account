@@ -106,7 +106,7 @@ class PayReqList extends CListPageModel
 						'trans_type_desc'=>$record['trans_type_desc'],
 						'payee_name'=>$record['payee_name'],
 						'amount'=>$record['amount'],
-						'item_desc'=>$record['item_desc'],
+						'item_desc'=>str_replace("\n","<br>",$record['item_desc']),
 						'city_name'=>$record['city_name'],
 						'status'=>($record['status']=='A'?'':General::getTransStatusDesc($record['status'])),
 						'wfstatusdesc'=>(empty($record['wfstatusdesc'])?Yii::t('misc','Draft'):$record['wfstatusdesc']) ,
