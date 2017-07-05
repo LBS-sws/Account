@@ -53,8 +53,8 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In Form';
 	</div>
 	<div class="btn-group pull-right" role="group">
 	<?php 
-		$counter = ($model->no_of_attm['trans'] > 0) ? ' '.TbHtml::badge($model->no_of_attm['trans'], array('class' => 'bg-blue')) : '';
-		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('misc','Attachment'), array(
+		$counter = ($model->no_of_attm['trans'] > 0) ? ' <span id="doctrans" class="label label-info">'.$model->no_of_attm['trans'].'</span>' : ' <span id="doctrans"></span>';
+		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('misc','Attachment').$counter, array(
 			'name'=>'btnFile','id'=>'btnFile','data-toggle'=>'modal','data-target'=>'#fileuploadtrans',)
 		);
 	?>
@@ -67,6 +67,20 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In Form';
 			<?php echo $form->hiddenField($model, 'id'); ?>
 			<?php echo $form->hiddenField($model, 'status'); ?>
 
+<?php if (!Yii::app()->user->isSingleCity()) : ?>
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'city',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-3">
+					<?php 
+						$list = General::getCityListWithNoDescendant(Yii::app()->user->city_allow());
+						echo $form->dropDownList($model, 'city', $list,array('disabled'=>($model->isReadOnly()))); 
+					?>
+				</div>
+			</div>
+<?php else: ?>
+			<?php echo $form->hiddenField($model, 'city'); ?>
+<?php endif ?>
+			
 			<div class="form-group">
 				<?php echo $form->labelEx($model,'trans_dt',array('class'=>"col-sm-2 control-label")); ?>
 				<div class="col-sm-3">
@@ -198,6 +212,14 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In Form';
 						); 
 					?>
 				</div>
+
+				<?php echo $form->labelEx($model,'int_fee',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-1">
+					<?php 
+						$list = array('N'=>Yii::t('misc','No'),'Y'=>Yii::t('misc','Yes'));
+						echo $form->dropDownList($model, 'int_fee', $list,array('disabled'=>($model->isReadOnly()))); 
+					?>
+				</div>
 			</div>
 
 			<div class="form-group">
@@ -205,7 +227,7 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In Form';
 				<div class="col-sm-2">
 					<?php 
 						echo $form->numberField($model, 'year_no', 
-							array('size'=>4,'min'=>2017,'max'=>2099,
+							array('size'=>4,'min'=>2007,'max'=>2099,
 							'readonly'=>($model->isReadOnly()),
 							'prepend'=>'<span>'.Yii::t('trans','Year').'</span>')
 						); 
@@ -355,7 +377,9 @@ $js .= Script::genLookupButtonEx('btnStaff', 'staff', 'handle_staff', 'handle_st
 Yii::app()->clientScript->registerScript('lookupStaff',$js,CClientScript::POS_READY);
 
 $js = Script::genLookupButtonEx('btnChargeItem', 'accountitemin', 'item_code', 'citem_desc', 
-		array('acctcode'=>'TransInForm_acct_code','acctcodedesc'=>'TransInForm_acct_code_desc',)
+		array('acctcode'=>'TransInForm_acct_code','acctcodedesc'=>'TransInForm_acct_code_desc',),
+		false,
+		array('acctid'=>'TransInForm_acct_id',)
 	);
 Yii::app()->clientScript->registerScript('lookupChargeItem',$js,CClientScript::POS_READY);
 

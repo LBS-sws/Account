@@ -9,4 +9,5 @@
 	<td><?php echo $this->record['item_desc']; ?></td>
 	<td><?php echo $this->record['amount']; ?></td>
 	<td><?php echo $this->record['ref_no']; ?></td>
+	<td><?php echo $this->record['int_fee']; ?></td>
 </tr>

@@ -200,12 +200,18 @@ class RptReimbursement extends CReport {
 			$pdf->MultiCell(43, 25, Yii::t('report','Cashier'), 0, 'L', false, 0, '', '', true, 0, false, true, 20, 'M');
 			$pdf->MultiCell(42, 25, Yii::t('report','Payee'), 0, 'L', false, 1, '', '', true, 0, false, true, 20, 'M');
 
-			if (!empty($record['manager_img']))
+			if (!empty($record['manager_img'])) {
+				//$type = $this->examImageType($record['manager_img']); //$record['manager_img_type']
 				$pdf->Image('@'.$record['manager_img'], 35, $y+3, 28, 15, $record['manager_img_type'], '', '', false, 150, '', false, false, 0, false, false, false, false);
-			if (!empty($record['account_img']))
+			}
+			if (!empty($record['account_img'])) {
+				//$type = $this->examImageType($record['account_img']); //$record['account_img_type']
 				$pdf->Image('@'.$record['account_img'], 75, $y+3, 28, 15, $record['account_img_type'], '', '', false, 150, '', false, false, 0, false, false, false, false);
-			if (!empty($record['cashier_img']))
+			}
+			if (!empty($record['cashier_img'])) {
+				//$type = $this->examImageType($record['cashier_img']); //$record['cashier_img_type']
 				$pdf->Image('@'.$record['cashier_img'], 120, $y+3, 28, 15, $record['cashier_img_type'], '', '', false, 150, '', false, false, 0, false, false, false, false);
+			}
 
 			$y += 17;
 			
@@ -220,6 +226,18 @@ class RptReimbursement extends CReport {
 		ob_end_clean();
 		$outstring = $pdf->Output('', 'S');
 		return $outstring;
+	}
+	
+	protected function examImageType($image) {
+		$path = tempnam(sys_get_temp_dir(), 'IMG');
+		$temp = fopen($path, 'w');
+		fwrite($temp, $image);
+		fclose($temp);
+		$file_dimensions = getimagesize($path);
+		$image_type = strtolower($file_dimensions['mime']);
+		unlink($path);
+		var_dump($image_type);
+		return $image_type;
 	}
 }
 ?>

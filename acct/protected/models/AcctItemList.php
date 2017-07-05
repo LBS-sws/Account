@@ -32,7 +32,7 @@ class AcctItemList extends CListPageModel
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
 			$svalue = str_replace("'","\'",$this->searchValue);
 			switch ($this->searchField) {
-				case 'name':
+				case 'code':
 					$clause .= General::getSqlConditionClause('a.code',$svalue);
 					break;
 				case 'name':

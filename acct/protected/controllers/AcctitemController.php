@@ -39,7 +39,7 @@ class AcctitemController extends Controller
 	{
 		$model = new AcctItemList;
 		if (isset($_POST['AcctItemList'])) {
-			$model->attributes = $_POST['AcctitemList'];
+			$model->attributes = $_POST['AcctItemList'];
 		} else {
 			$session = Yii::app()->session;
 			if (isset($session['criteria_xc06']) && !empty($session['criteria_xc06'])) {

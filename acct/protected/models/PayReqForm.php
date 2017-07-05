@@ -15,6 +15,7 @@ class PayReqForm extends CFormModel
 	public $status_desc;
 	public $wfstatus;
 	public $wfstatusdesc;
+	public $city;
 	
 	public $acct_id;
 	public $ref_no;
@@ -23,6 +24,7 @@ class PayReqForm extends CFormModel
 	public $reason;
 	public $item_code;
 	public $pitem_desc;
+	public $int_fee;
 	
 	private $dyn_fields = array(
 							'acct_id',
@@ -30,6 +32,7 @@ class PayReqForm extends CFormModel
 							'acct_code',
 							'reason',
 							'item_code',
+							'int_fee',
 						);
 	
 	public $files;
@@ -56,6 +59,8 @@ class PayReqForm extends CFormModel
 		$this->trans_type_code = '';
 		$this->acct_id = 0;
 		$this->req_user = Yii::app()->user->id;
+		$this->int_fee = 'N';
+		$this->city = Yii::app()->user->city();
 		
 		parent::init();
 	}
@@ -77,6 +82,7 @@ class PayReqForm extends CFormModel
 			'acct_code'=>Yii::t('trans','Account Code'),
 			'acct_id'=>Yii::t('trans','Paid Account'),
 			'reason'=>Yii::t('trans','Reason'),
+			'int_fee'=>Yii::t('trans','Integrated Fee'),
 		);
 	}
 
@@ -84,7 +90,7 @@ class PayReqForm extends CFormModel
 	{
 		return array(
 			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount, item_code, pitem_desc, acct_code','required'),
-			array('id, item_desc, payee_id, status, status_desc, acct_code_desc','safe'), 
+			array('id, item_desc, payee_id, status, status_desc, acct_code_desc, int_fee, city','safe'), 
 			array('files, removeFileId, docMasterId, no_of_attm','safe'), 
 				
 		);
@@ -97,7 +103,9 @@ class PayReqForm extends CFormModel
 		$city = Yii::app()->user->city_allow();
 		$sql = "select *,  
 				workflow$suffix.RequestStatus('PAYMENT',id,req_dt) as wfstatus,
-				workflow$suffix.RequestStatusDesc('PAYMENT',id,req_dt) as wfstatusdesc
+				workflow$suffix.RequestStatusDesc('PAYMENT',id,req_dt) as wfstatusdesc,
+				docman$suffix.countdoc('payreq',id) as payreqcountdoc,
+				docman$suffix.countdoc('tax',id) as taxcountdoc
 				from acc_request where id=$index 
 				and ((city in ($city) and req_user<>'$user') or req_user='$user') 
 			";
@@ -117,6 +125,9 @@ class PayReqForm extends CFormModel
 				$this->status_desc = General::getTransStatusDesc($row['status']);
 				$this->wfstatus = $row['wfstatus'];
 				$this->wfstatusdesc = $row['wfstatusdesc'];
+				$this->no_of_attm['payreq'] = $row['payreqcountdoc'];
+				$this->no_of_attm['tax'] = $row['taxcountdoc'];
+				$this->city = $row['city'];
 				break;
 			}
 		
@@ -288,7 +299,7 @@ class PayReqForm extends CFormModel
 				break;
 		}
 
-		$city = Yii::app()->user->city();
+		$city = $this->city;	//Yii::app()->user->city();
 		$uid = Yii::app()->user->id;
 
 		$command=$connection->createCommand($sql);
@@ -392,7 +403,7 @@ class PayReqForm extends CFormModel
 	}
 	
 	public function isReadOnly() {
-		return ($this->scenario=='view'||$this->status=='V'|| strpos('~~PC~','~'.$this->wfstatus.'~')===false);
+		return ($this->scenario=='view'||$this->status=='V'|| strpos('~~PC~','~'.$this->wfstatus.'~')===false || !$this->allowRequestCheck());
 	}
 	
 	public function isTaxSlipReadOnly() {

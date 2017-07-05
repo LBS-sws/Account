@@ -21,6 +21,7 @@ class SignReqForm extends CFormModel
 	public $trans_dt;
 	public $acct_code;
 	public $ref_no;
+	public $int_fee;
 		
 	private $dyn_fields = array(
 							'acct_id',
@@ -29,6 +30,7 @@ class SignReqForm extends CFormModel
 							'cheque_no',
 							'invoice_no',
 							'trans_dt',
+							'int_fee',
 						);
 
 	public $files;
@@ -67,7 +69,7 @@ class SignReqForm extends CFormModel
 			'acct_code'=>Yii::t('trans','Paid Item'),
 			'acct_id'=>Yii::t('trans','Paid Account'),
 			'user_name'=>Yii::t('trans','Requestor'),
-
+			'int_fee'=>Yii::t('trans','Integrated Fee'),
 		);
 	}
 
@@ -76,7 +78,7 @@ class SignReqForm extends CFormModel
 			array('trans_dt','safe'),
 			array('cheque_no, invoice_no, acct_code, ref_no','safe'),
 			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount,','safe'),
-			array('id, item_desc, payee_id, status, status_desc, cheque_no, invoice_no, ref_no, user_name','safe'), 
+			array('id, item_desc, payee_id, status, status_desc, cheque_no, invoice_no, ref_no, user_name, int_fee','safe'), 
 			array('no_of_attm, files, removeFileId, docMasterId','safe'), 
 				
 		);
@@ -91,7 +93,9 @@ class SignReqForm extends CFormModel
 		$suffix = Yii::app()->params['envSuffix'];
 		$sql = "select a.*, b.disp_name as user_name,  
 				workflow$suffix.RequestStatus('PAYMENT',id,req_dt) as wfstatus,
-				workflow$suffix.RequestStatusDesc('PAYMENT',id,req_dt) as wfstatusdesc
+				workflow$suffix.RequestStatusDesc('PAYMENT',id,req_dt) as wfstatusdesc,
+				docman$suffix.countdoc('payreal',id) as payrealcountdoc,
+				docman$suffix.countdoc('tax',id) as taxcountdoc
 				from acc_request a, security$suffix.sec_user b where id=$index and id in ($list) 
 				and a.req_user=b.username
 			";
@@ -110,6 +114,8 @@ class SignReqForm extends CFormModel
 				$this->status = $row['status'];
 				$this->user_name = $row['user_name'];
 				$this->city = $row['city'];
+				$this->no_of_attm['payreal'] = $row['payrealcountdoc'];
+				$this->no_of_attm['tax'] = $row['taxcountdoc'];
 				break;
 			}
 		

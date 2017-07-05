@@ -11,6 +11,7 @@ class CashinAuditList extends CListPageModel
 			'req_user_name'=>Yii::t('trans','Cashier'),
 			'audit_user_name'=>Yii::t('trans','A/C Staff'),
 			'city_name'=>Yii::t('misc','City'),
+			'rec_amt'=>Yii::t('trans','Rec. Amount'),
 		);
 	}
 	
@@ -19,7 +20,12 @@ class CashinAuditList extends CListPageModel
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city_allow();
 		$sql1 = "select a.id, a.audit_dt, a.balance, b.disp_name as req_user_name, c.disp_name as audit_user_name,
-					d.name as city_name, a.city  
+					d.name as city_name, a.city,
+					(SELECT sum(if(x.adj_type='N',w.amount,-1*w.amount))
+					FROM acc_trans w, acc_trans_type x, acc_trans_audit_dtl y
+					WHERE w.trans_type_code = x.trans_type_code and w.id = y.trans_id and y.hdr_id = a.id
+					and x.trans_cat = 'IN'
+					) as rec_amt
 				from acc_trans_audit_hdr a 
 				left outer join security$suffix.sec_user b on a.req_user=b.username
 				left outer join security$suffix.sec_user c on a.audit_user=c.username
@@ -83,6 +89,7 @@ class CashinAuditList extends CListPageModel
 					'balance'=>$record['balance'],
 					'city_name'=>$record['city_name'],
 					'city'=>$record['city'],
+					'rec_amt'=>$record['rec_amt'],
 				);
 			}
 		}

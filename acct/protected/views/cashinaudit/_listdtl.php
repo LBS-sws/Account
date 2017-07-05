@@ -4,6 +4,7 @@
 <?php endif ?>
 	<td><?php echo $this->record['audit_dt']; ?></td>
 	<td><?php echo $this->record['balance']; ?></td>
+	<td><?php echo $this->record['rec_amt']; ?></td>
 	<td><?php echo $this->record['req_user_name']; ?></td>
 	<td><?php echo $this->record['audit_user_name']; ?></td>
 </tr>

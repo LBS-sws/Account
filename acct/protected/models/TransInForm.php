@@ -27,6 +27,7 @@ class TransInForm extends CFormModel
 	public $united_inv_no;
 	public $item_code;
 	public $citem_desc;
+	public $int_fee;
 	
 	private $dyn_fields = array(
 							'payer_type',
@@ -41,9 +42,12 @@ class TransInForm extends CFormModel
 							'year_no',
 							'month_no',
 							'united_inv_no',
+							'int_fee',
 						);
 	
-	public $no_of_attm = 0;
+	public $no_of_attm = array(
+							'trans'=>0
+						);
 	public $docType = 'TRANS';
 	public $docMasterId = 0;
 	public $files;
@@ -54,6 +58,7 @@ class TransInForm extends CFormModel
 		$this->trans_dt = date('Y/m/d');
 		$this->trans_type_code = '';
 		$this->acct_id = 0; //$this->getDefaultAccountValue('CASH');
+		$this->city = Yii::app()->user->city();
 		parent::init();
 	}
 	
@@ -77,6 +82,8 @@ class TransInForm extends CFormModel
 			'month_no'=>Yii::t('trans','Service Fee Date'),
 			'status_desc'=>Yii::t('trans','Status'),
 			'united_inv_no'=>Yii::t('trans','United Invoice No.'),
+			'city'=>Yii::t('misc','City'),
+			'int_fee'=>Yii::t('trans','Integrated Fee'),
 		);
 	}
 
@@ -87,18 +94,18 @@ class TransInForm extends CFormModel
 			array('trans_dt','validateTransDate'),
 			array('acct_id','compare','compareValue'=>0,'operator'=>'>','message'=>Yii::t('trans','Account cannot be empty')),
 			array('year_no, month_no','numerical','allowEmpty'=>false,'integerOnly'=>true),
-			array('year_no','in','range'=>range(2017,2099)),
+			array('year_no','in','range'=>range(2016,2099)),
 			array('month_no','in','range'=>range(1,12)),
 			array('id, trans_desc, payer_id, cheque_no, invoice_no, handle_staff, handle_staff_name, status,
 					no_of_attm, docType, files, removeFileId, docMasterId, acct_code_desc, 
-					status_desc, united_inv_no,city 
+					status_desc, united_inv_no,city, int_fee 
 				','safe'), 
 		);
 	}
 
 	public function validateTransDate($attribute, $params) {
 		$id = $this->acct_id;
-		$city = Yii::app()->user->city();
+		$city = $this->city; //Yii::app()->user->city();
 		$sql = "select trans_dt from acc_trans where acct_id=$id and city='$city' and trans_type_code='OPEN' and status='A'";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
@@ -110,7 +117,9 @@ class TransInForm extends CFormModel
 
 	public function retrieveData($index)
 	{
-		$sql = "select a.*, b.trans_id 
+		$suffix = Yii::app()->params['envSuffix'];
+		$sql = "select a.*, b.trans_id ,
+				docman$suffix.countdoc('trans',id) as transcountdoc
 				from acc_trans a left outer join acc_trans_audit_dtl b on a.id=b.trans_id 
 				where a.id=$index";
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
@@ -128,6 +137,7 @@ class TransInForm extends CFormModel
 				$this->status_desc = General::getTransStatusDesc($row['status']);
 				$this->posted = (!empty($row['trans_id']));
 				$this->city = $row['city'];
+				$this->no_of_attm['trans'] = $row['transcountdoc'];
 				break;
 			}
 		}
@@ -206,7 +216,7 @@ class TransInForm extends CFormModel
 				break;
 		}
 
-		$city = Yii::app()->user->city();
+		$city = $this->city;	//Yii::app()->user->city();
 		$uid = Yii::app()->user->id;
 
 		$command=$connection->createCommand($sql);
@@ -258,7 +268,7 @@ class TransInForm extends CFormModel
 				break;
 		}
 
-		$city = Yii::app()->user->city();
+		$city = $this->city; 	//Yii::app()->user->city();
 		$uid = Yii::app()->user->id;
 
 		foreach ($this->dyn_fields as $dynfldid) {

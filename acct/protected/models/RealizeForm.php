@@ -23,6 +23,7 @@ class RealizeForm extends CFormModel
 	public $trans_dt;
 	public $trans_id;
 	public $trans_id_c;
+	public $int_fee;
 		
 	private $dyn_fields = array(
 							'acct_id',
@@ -33,6 +34,7 @@ class RealizeForm extends CFormModel
 							'trans_dt',
 							'trans_id',
 							'trans_id_c',
+							'int_fee',
 						);
 	
 	public $files;
@@ -71,6 +73,7 @@ class RealizeForm extends CFormModel
 			'acct_code'=>Yii::t('trans','Paid Item'),
 			'acct_id'=>Yii::t('trans','Paid Account'),
 			'user_name'=>Yii::t('trans','Requestor'),
+			'int_fee'=>Yii::t('trans','Integrated Fee'),
 
 		);
 	}
@@ -80,7 +83,7 @@ class RealizeForm extends CFormModel
 			array('trans_dt','required'),
 			array('cheque_no, invoice_no','safe'),
 			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount','safe'),
-			array('id, item_desc, payee_id, status, status_desc, acct_code, city, ref_no, user_name, trans_id, trans_id_c','safe'), 
+			array('id, item_desc, payee_id, status, status_desc, acct_code, city, ref_no, user_name, trans_id, trans_id_c, int_fee','safe'), 
 			array('files, removeFileId, docMasterId','safe'), 
 			array ('no_of_attm','validateTaxSlip'),
 				
@@ -103,7 +106,9 @@ class RealizeForm extends CFormModel
 		$suffix = Yii::app()->params['envSuffix'];
 		$sql = "select a.*, b.disp_name as user_name,  
 				workflow$suffix.RequestStatus('PAYMENT',id,req_dt) as wfstatus,
-				workflow$suffix.RequestStatusDesc('PAYMENT',id,req_dt) as wfstatusdesc
+				workflow$suffix.RequestStatusDesc('PAYMENT',id,req_dt) as wfstatusdesc,
+				docman$suffix.countdoc('payreal',id) as payrealcountdoc,
+				docman$suffix.countdoc('tax',id) as taxcountdoc
 				from acc_request a, security$suffix.sec_user b where id=$index and id in ($list) 
 				and a.req_user=b.username
 			";
@@ -122,6 +127,8 @@ class RealizeForm extends CFormModel
 				$this->status = $row['status'];
 				$this->user_name = $row['user_name'];
 				$this->city = $row['city'];
+				$this->no_of_attm['payreal'] = $row['payrealcountdoc'];
+				$this->no_of_attm['tax'] = $row['taxcountdoc'];
 				break;
 			}
 		
@@ -177,6 +184,7 @@ class RealizeForm extends CFormModel
 					'invoice_no'=>$this->invoice_no,
 					'acct_code'=>$this->acct_code,
 					'united_inv_no'=>'N/A',
+					'int_fee'=>$this->int_fee,
 				);
 			$tid = $wf->genAccTransRecord($data);
 			$wf->genAccTransInfoRecord($tid, $data);

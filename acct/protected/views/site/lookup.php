@@ -3,6 +3,7 @@
 	$hidden2 = TbHtml::hiddenField('lookupcodefield', '');
 	$hidden3 = TbHtml::hiddenField('lookupvaluefield', '');
 	$hidden4 = TbHtml::hiddenField('lookupotherfield', '');
+	$hidden5 = TbHtml::hiddenField('lookupparamfield', '');
 	
 	$search = TbHtml::textField('txtlookup', '', array('class'=>'form-control','maxlength'=>500,
 				'append'=>TbHtml::button(Yii::t('misc','Search'),array('name'=>'btnLookup','id'=>'btnLookup')),
@@ -19,6 +20,7 @@
 	$hidden2
 	$hidden3
 	$hidden4
+	$hidden5
 	<div class=\"col-sm-11\">
 			$search
 	</div>

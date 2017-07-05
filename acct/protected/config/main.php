@@ -6,7 +6,7 @@
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
 return array(
-	'id'=>'swoperuat',
+	'id'=>'swoper',
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'charset'=>'UTF-8',
 	'name'=>'LBS Daily Management - UAT',
@@ -73,10 +73,10 @@ return array(
 
 		// uncomment the following to use a MySQL database
 		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=accountuat',
+			'connectionString' => 'mysql:host=localhost;dbname=account',
 			'emulatePrepare' => true,
 			'username' => 'swuser',
-			'password' => 'Swisher@168',
+			'password' => 'swisher168',
 			'charset' => 'utf8',
 		),
 		
@@ -93,12 +93,12 @@ return array(
 					'levels'=>'error, warning',
 				),
 				// uncomment the following to show log messages on web pages
-	//			array(
-	//				'class'=>'CWebLogRoute',
+				array(
+					'class'=>'CWebLogRoute',
 				//	'levels'=>'trace',
 				//	'categories'=>'vardump',
 				//	'showInFireBug'=>true
-	//			),
+				),
 			),
 		),
 		
@@ -106,7 +106,7 @@ return array(
 			'class'=>'CHttpSession',
 			'cookieMode'=>'allow',
 			'cookieParams'=>array(
-				'domain'=>'118.89.46.224',
+				'domain'=>'test.lbsgroup.com.cn',
 			),
 		),
 		
@@ -136,28 +136,33 @@ return array(
 		'concurrentLogin'=>false,
 		'noOfLoginRetry'=>5,
 		'sessionIdleTime'=>'1 hour',
-		'feedbackCcBoss'=>array('flam','JoeY'),
-		'bossEmail'=>array('dorischan@lbsgroup.com.hk'),
-		'version'=>'1.1.1',
-		'docmanPath'=>'/docman/uat',
+		'feedbackCcBoss'=>array('boss1','boss2'),
+		'bossEmail'=>array('kcleepercy@gmail.com','kcleepercy@yahoo.com.hk'),
+		'version'=>'1.1.0',
+		'docmanPath'=>'/docman/dev',
 		'systemId'=>'acct',
-		'envSuffix'=>'uat',
+		'envSuffix'=>'dev',
 		'systemMapping'=>array(
 				'drs'=>array(
-						'webroot'=>'http://118.89.46.224/dr-uat',
+						'webroot'=>'http://test.lbsgroup.com.cn/swoper-web',
 						'name'=>'Daily Report',
 						'icon'=>'fa fa-pencil-square-o',
 					),	
 				'acct'=>array(
-						'webroot'=>'http://118.89.46.224/ac-uat',
+						'webroot'=>'http:///test.lbsgroup.com.cn/acct',
 						'name'=>'Accounting',
 						'icon'=>'fa fa-money',
 					),
-                                'ops'=>array(
-                                                'webroot'=>'http://118.89.46.224/op-uat',
-                                                'name'=>'Operation',
-                                                'icon'=>'fa fa-gears',
-                                        ),
+				'ops'=>array(
+						'webroot'=>'http://test.lbsgroup.com.cn/operation',
+						'name'=>'Operation',
+						'icon'=>'fa fa-gears',
+					),
+				'hr'=>array(
+						'webroot'=>'http://test.lbsgroup.com.cn/hr',
+						'name'=>'Personnel',
+						'icon'=>'fa fa-users',
+					),
 			),
 	),
 );

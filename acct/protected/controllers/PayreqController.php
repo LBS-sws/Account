@@ -22,11 +22,11 @@ class PayreqController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','submit','request','check','cancel','fileupload','fileremove','filedownload'),
+				'actions'=>array('new','edit','delete','save','submit','request','check','cancel','fileupload','fileremove'),
 				'expression'=>array('PayreqController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view'),
+				'actions'=>array('index','view','filedownload'),
 				'expression'=>array('PayreqController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -152,6 +152,8 @@ class PayreqController extends Controller
 				$model->wfstatus = '';
 				$model->wfstatusdesc = '';
 				$model->status = 'A';
+				$model->no_of_attm['payreq'] = 0;
+				$model->no_of_attm['tax'] = 0;
 			}
 			$this->render('form',array('model'=>$model,));
 		} else {

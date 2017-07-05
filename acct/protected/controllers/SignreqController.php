@@ -22,11 +22,11 @@ class SignreqController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('edit','sign','filedownload'),
+				'actions'=>array('edit','sign'),
 				'expression'=>array('SignreqController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index'),
+				'actions'=>array('index','filedownload'),
 				'expression'=>array('SignreqController','allowReadOnly'),
 			),
 			array('deny',  // deny all users

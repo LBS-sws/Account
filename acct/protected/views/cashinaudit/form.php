@@ -55,12 +55,23 @@ $this->pageTitle=Yii::app()->name . ' - Cash Checking Form';
 					?>
 				</div>
 			</div>
+		</div>
+		<div class="form-group">
 			<?php echo $form->label($model,'balance',array('class'=>"col-sm-2 control-label")); ?>
 			<div class="col-sm-3">
 				<?php
 					echo $form->numberField($model, 'balance', 
 						array('size'=>10,
 						'readonly'=>true,
+						'prepend'=>'<span class="fa fa-cny"></span>')
+					); 
+				?>
+			</div>
+			<?php echo $form->label($model,'rec_amt',array('class'=>"col-sm-2 control-label")); ?>
+			<div class="col-sm-3">
+				<?php
+					echo $form->numberField($model, 'rec_amt', 
+						array('readonly'=>true,
 						'prepend'=>'<span class="fa fa-cny"></span>')
 					); 
 				?>

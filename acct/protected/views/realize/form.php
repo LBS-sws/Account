@@ -43,14 +43,14 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Form';
 	</div>
 	<div class="btn-group pull-right" role="group">
 	<?php 
-		$counter = ($model->no_of_attm['payreal'] > 0) ? ' '.TbHtml::badge($model->no_of_attm['payreal'], array('class' => 'bg-blue')) : '';
-		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('misc','Attachment'), array(
+		$counter = ($model->no_of_attm['payreal'] > 0) ? ' <span id="docpayreal" class="label label-info">'.$model->no_of_attm['payreal'].'</span>' : ' <span id="docpayreal"></span>';
+		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('misc','Attachment').$counter, array(
 			'name'=>'btnFile','id'=>'btnFile','data-toggle'=>'modal','data-target'=>'#fileuploadpayreal',)
 		);
 	?>
 	<?php 
-		$counter = ($model->no_of_attm['tax'] > 0) ? ' '.TbHtml::badge($model->no_of_attm['tax'], array('class' => 'bg-blue')) : '';
-		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','Tax Slip'), array(
+		$counter = ($model->no_of_attm['tax'] > 0) ? ' <span id="doctax" class="label label-info">'.$model->no_of_attm['tax'].'</span>' : ' <span id="doctax"></span>';
+		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','Tax Slip').$counter, array(
 			'name'=>'btnFileTS','id'=>'btnFileTS','data-toggle'=>'modal','data-target'=>'#fileuploadtax',)
 		);
 	?>
@@ -154,6 +154,13 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Form';
 					<?php 
 						$list = General::getAcctCodeList();
 						echo TbHtml::textField('acct_code_name', $list[$model->acct_code], array('readonly'=>true,)); 
+					?>
+				</div>
+				<?php echo $form->labelEx($model,'int_fee',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-1">
+					<?php 
+						$list = array(''=>Yii::t('misc','No'),'N'=>Yii::t('misc','No'),'Y'=>Yii::t('misc','Yes'));
+						echo TbHtml::textField('int_fee', $list[$model->int_fee], array('readonly'=>true,)); 
 					?>
 				</div>
 			</div>

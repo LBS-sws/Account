@@ -22,11 +22,11 @@ class TransinController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','fileupload','fileremove','filedownload'),
+				'actions'=>array('new','edit','delete','save','fileupload','fileremove'),
 				'expression'=>array('TransinController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view'),
+				'actions'=>array('index','view','filedownload'),
 				'expression'=>array('TransinController','allowReadOnly'),
 			),
 			array('deny',  // deny all users

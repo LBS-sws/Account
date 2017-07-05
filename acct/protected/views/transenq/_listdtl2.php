@@ -1,9 +1,12 @@
-<tr class='clickable-row' data-href='#'>
+<tr class='clickable-row <?php echo $this->record['trans_type_code']=='ADJIN' ? "text-red" : ""; ?>' data-href='#'>
 	<td><?php echo $this->record['trans_dt']; ?></td>
 	<td><?php echo $this->record['trans_type_desc']; ?></td>
 	<td><?php echo $this->record['pay_subject']; ?></td>
-	<td><?php echo $this->record['amount_in']; ?></td>
+	<td>
+		<?php echo $this->record['amount_in']; ?>
+	</td>
 	<td><?php echo $this->record['amount_out']; ?></td>
+	<td><?php echo $this->record['int_fee']; ?></td>
 	<td>
 		<?php 
 			$docId = $this->record['id'];

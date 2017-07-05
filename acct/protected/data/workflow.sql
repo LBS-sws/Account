@@ -258,7 +258,8 @@ INSERT INTO wf_transition(proc_ver_id, current_state, next_state) VALUES
 (2,3+11,8+11),
 (2,8+11,2+11),
 (2,4+11,11+11),
-(2,11+11,2+11)
+(2,11+11,2+11),
+(2,23,19)
 ;
 
 DROP TABLE IF EXISTS wf_request;

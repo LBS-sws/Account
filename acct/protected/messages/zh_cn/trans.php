@@ -47,6 +47,7 @@ return array(
 	'Handling Staff'=>'交款人',
 	'Remarks'=>'备注',
 	'Status' => '状态',
+	'Integrated Fee'=>'综合费用',
 	
 	'Client'=>'客户',
 	'Supplier'=>'供应商',
@@ -110,5 +111,6 @@ return array(
 	'Check and Submit'=>'覆核并提交',
 	'Both'=>'二者',
 	'Please check cash receive record before proceed.'=>'请确认已核对「技术员收款记录」',
+	'Rec. Amount'=>'收款总额',
 );
 ?>

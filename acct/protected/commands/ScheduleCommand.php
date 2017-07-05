@@ -11,7 +11,7 @@ class ScheduleCommand extends CConsoleCommand {
 	public function actionRptAccountStatus($whitelist='', $blacklist='') {
 		$tdate = date("Y/m/d");
 		$this->rptId = 'RptAccountStatus';
-		$this->rptName = Yii::t('report','Customer Cash In Daily Report');
+		$this->rptName = Yii::t('report','Operation Daily Report');
 		$this->reqUser = 'admin';
 		$this->format = 'EMAIL';
 	

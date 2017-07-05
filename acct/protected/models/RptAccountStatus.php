@@ -22,13 +22,13 @@ class RptAccountStatus extends CReport {
 		$suffix = Yii::app()->params['envSuffix'];
 		
 		$sql = "select a.id, c.acct_type_desc, a.acct_no, a.acct_name, a.bank_name, a.city,  
-					AccountBalance(a.id,'$city','2010-01-01 00:00:00',('$start_dt' - interval 1 Minute)) as balance_last,
-					AccountTransAmount('IN',a.id,'$city','$start_dt','$end_dt') as balance_in,
-					AccountTransAmount('IN',a.id,'$city','$week_start_dt','$end_dt') as balance_wtd_in,
-					AccountTransAmount('IN',a.id,'$city','$month_start_dt','$end_dt') as balance_mtd_in,
-					AccountTransAmount('OUT',a.id,'$city','$start_dt','$end_dt') as balance_out,
-					AccountTransAmount('OUT',a.id,'$city','$week_start_dt','$end_dt') as balance_wtd_out,
-					AccountTransAmount('OUT',a.id,'$city','$month_start_dt','$end_dt') as balance_mtd_out
+					AccountBalanceByLCD(a.id,'$city','2010-01-01 00:00:00',('$start_dt' - interval 1 Minute)) as balance_last,
+					TransAmountByLCD('IN',a.id,'$city','$start_dt','$end_dt') as balance_in,
+					TransAmountByLCD('IN',a.id,'$city','$week_start_dt','$end_dt') as balance_wtd_in,
+					TransAmountByLCD('IN',a.id,'$city','$month_start_dt','$end_dt') as balance_mtd_in,
+					TransAmountByLCD('OUT',a.id,'$city','$start_dt','$end_dt') as balance_out,
+					TransAmountByLCD('OUT',a.id,'$city','$week_start_dt','$end_dt') as balance_wtd_out,
+					TransAmountByLCD('OUT',a.id,'$city','$month_start_dt','$end_dt') as balance_mtd_out
 				from acc_account a, acc_account_type c 
 				where (a.city='$city' or a.city='99999') and a.acct_type_id=c.id
 				order by a.acct_type_id, a.acct_name
@@ -43,7 +43,8 @@ class RptAccountStatus extends CReport {
 					f.field_value as month_no,
 					g.field_value as united_inv_no,
 					h.field_value as handle_staff_name,
-					i.field_value as item_code
+					i.field_value as item_code,
+					j.field_value as int_fee
 				from acc_trans a inner join acc_trans_type b on a.trans_type_code=b.trans_type_code 
 					left outer join acc_trans_info c on a.id=c.trans_id and c.field_id='payer_type'
 					left outer join acc_trans_info d on a.id=d.trans_id and d.field_id='payer_name'
@@ -52,8 +53,9 @@ class RptAccountStatus extends CReport {
 					left outer join acc_trans_info g on a.id=g.trans_id and g.field_id='united_inv_no'
 					left outer join acc_trans_info h on a.id=h.trans_id and h.field_id='handle_staff_name'
 					left outer join acc_trans_info i on a.id=i.trans_id and i.field_id='item_code'
+					left outer join acc_trans_info j on a.id=j.trans_id and j.field_id='int_fee'
 				where a.city='$city' and a.status <> 'V'
-					and a.trans_dt >= '$start_dt' and a.trans_dt <= '$end_dt'
+					and a.lcd >= '$start_dt' and a.lcd <= '$end_dt'
 					and b.trans_cat = 'IN' 
 				order by a.trans_dt desc, a.id desc
 			";
@@ -77,7 +79,7 @@ class RptAccountStatus extends CReport {
 		$to = General::dedupToEmailList($to);
 		$cc = array();
 		
-		$subject = Yii::t('report','Customer Cash In Daily Report').' ('.General::getCityName($city).') - '.General::toDate($date);
+		$subject = Yii::t('report','Operation Daily Report').' ('.General::getCityName($city).') - '.General::toDate($date);
 		$desc = Yii::t('report','Customer Cash In Daily Report').' ('.General::getCityName($city).') - '.General::toDate($date);
 		
 		$param = array(
@@ -234,6 +236,7 @@ class RptAccountStatus extends CReport {
 				."</th><th>".Yii::t('report','Amount')
 				."</th><th>".Yii::t('report','Paid Method')
 				."</th><th>".Yii::t('report','Payee')
+				."</th><th>".Yii::t('trans','Integrated Fee')
 				."</th></tr>";
 		foreach ($this->result2 as $record) {
 			$tdate = General::toDate($record['trans_dt']);
@@ -244,6 +247,7 @@ class RptAccountStatus extends CReport {
 			$amount = number_format($record['amount'],2);
 			$method = $record['trans_type_desc'];
 			$payee = $record['handle_staff_name'];
+			$intfee = ($record['int_fee']=='Y' ? Yii::t('misc','Yes') : Yii::t('misc','No'));
 			
 			$output .= "<tr><td>".$tdate
 					."</td><td>".$custname
@@ -253,10 +257,11 @@ class RptAccountStatus extends CReport {
 					."</td><td align='right'>".$amount
 					."</td><td>".$method
 					."</td><td>".$payee
+					."</td><td>".$intfee
 					."</td></tr>";
 		}
 		if (empty($this->result2)) 
-			$output .= "<tr><td colspan=8 align='center'>".Yii::t('report','No Record')."</td></tr>";
+			$output .= "<tr><td colspan=9 align='center'>".Yii::t('report','No Record')."</td></tr>";
 		$output .= "</table>";
 		
 		return $output;

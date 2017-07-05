@@ -17,6 +17,7 @@ class TransOutForm extends CFormModel
 	public $payer_name;
 	public $cheque_no;
 	public $invoice_no;
+	public $int_fee;
 	
 	private $dyn_fields = array(
 							'payer_type',
@@ -24,6 +25,7 @@ class TransOutForm extends CFormModel
 							'payer_name',
 							'cheque_no',
 							'invoice_no',
+							'int_fee',
 						);
 	
 	public $no_of_attm = 0;
@@ -51,6 +53,7 @@ class TransOutForm extends CFormModel
 			'cheque_no'=>Yii::t('trans','Cheque No.'),
 			'invoice_no'=>Yii::t('trans','China Invoice No.'),
 			'status_desc'=>Yii::t('trans','Status'),
+			'int_fee'=>Yii::t('trans','Integrated Fee'),
 		);
 	}
 
@@ -60,7 +63,7 @@ class TransOutForm extends CFormModel
 			array('trans_type_code, trans_dt, acct_id, payer_name, payer_type, amount','required'),
 			array('trans_dt','validateTransDate'),
 			array('id, trans_desc, payer_id, cheque_no, invoice_no, status,
-					no_of_attm, docType, files, removeFileId, status_desc, city
+					no_of_attm, docType, files, removeFileId, status_desc, city, int_fee
 				','safe'), 
 		);
 	}

@@ -22,11 +22,11 @@ class ApprreqController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('edit','approve','deny','filedownload'),
+				'actions'=>array('edit','approve','deny'),
 				'expression'=>array('ApprreqController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index'),
+				'actions'=>array('index','filedownload'),
 				'expression'=>array('ApprreqController','allowReadOnly'),
 			),
 			array('deny',  // deny all users

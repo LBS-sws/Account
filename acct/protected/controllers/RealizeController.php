@@ -22,11 +22,11 @@ class RealizeController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('edit','submit','trans','cancel','fileupload','fileremove','filedownload'),
+				'actions'=>array('edit','submit','trans','cancel','fileupload','fileremove'),
 				'expression'=>array('RealizeController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index'),
+				'actions'=>array('index','filedownload'),
 				'expression'=>array('RealizeController','allowReadOnly'),
 			),
 			array('deny',  // deny all users

@@ -43,6 +43,7 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Approval';
 						'payee_name',
 						'item_desc',
 						'ref_no',
+						'int_fee',
 					);
 		if (!Yii::app()->user->isSingleCity()) $search[] = 'city_name';
 		

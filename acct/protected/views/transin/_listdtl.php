@@ -9,5 +9,6 @@
 	<td><?php echo $this->record['bank_name']; ?></td>
 	<td><?php echo $this->record['acct_no']; ?></td>
 	<td><?php echo $this->record['amount']; ?></td>
+	<td><?php echo $this->record['int_fee']; ?></td>
 	<td><?php echo $this->record['status']; ?></td>
 </tr>

@@ -14,6 +14,7 @@ class PayReqList extends CListPageModel
 			'city_name'=>Yii::t('misc','City'),
 			'status'=>Yii::t('trans','Status'),
 			'wfstatusdesc'=>Yii::t('trans','Flow Status'),
+			'int_fee'=>Yii::t('trans','Integrated Fee'),
 		);
 	}
 	
@@ -24,6 +25,7 @@ class PayReqList extends CListPageModel
 		$user = Yii::app()->user->id;
 		$sql1 = "select a.id, a.req_dt, e.trans_type_desc, a.item_desc, a.payee_name,
 					b.name as city_name, a.amount, a.status, f.field_value as ref_no, a.req_user, 
+					g.field_value as int_fee,
 					(select case workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)
 							when '' then '0DF' 
 							when 'PC' then '1PC' 
@@ -35,14 +37,16 @@ class PayReqList extends CListPageModel
 					workflow$suffix.RequestStatusDesc('PAYMENT',a.id,a.req_dt) as wfstatusdesc
 				from acc_request a inner join security$suffix.sec_city b on a.city=b.code
 					inner join acc_trans_type e on a.trans_type_code=e.trans_type_code 
-					left outer join acc_request_info f on a.id=f.req_id and f.field_id='REF_NO'
+					left outer join acc_request_info f on a.id=f.req_id and f.field_id='ref_no'
+					left outer join acc_request_info g on a.id=g.req_id and g.field_id='int_fee'
 				where a.city in ($city) 
 				and e.trans_cat='OUT' 
 			";
 		$sql2 = "select count(a.id)
 				from acc_request a inner join security$suffix.sec_city b on a.city=b.code
 					inner join acc_trans_type e on a.trans_type_code=e.trans_type_code 
-					left outer join acc_request_info f on a.id=f.req_id and f.field_id='REF_NO'
+					left outer join acc_request_info f on a.id=f.req_id and f.field_id='ref_no'
+					left outer join acc_request_info g on a.id=g.req_id and g.field_id='int_fee'
 				where ((a.city in ($city) and workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>'') or a.req_user='$user')
 				and e.trans_cat='OUT' 
 			";
@@ -65,6 +69,12 @@ class PayReqList extends CListPageModel
 				case 'ref_no':
 					$clause .= General::getSqlConditionClause('f.field_value',$svalue);
 					break;
+				case 'int_fee':
+					$field = "(select case g.field_value when 'Y' then '".Yii::t('misc','Yes')."' 
+							else '".Yii::t('misc','No')."' 
+						end) ";
+					$clause .= General::getSqlConditionClause($field,$svalue);
+					break;
 				case 'wfstatusdesc':
 					$clause .= General::getSqlConditionClause("workflow$suffix.RequestStatusDesc('PAYMENT',a.id,a.req_dt)",$svalue);
 					break;
@@ -80,6 +90,7 @@ class PayReqList extends CListPageModel
 				case 'payee_name': $orderf = 'a.payee_name'; break;
 				case 'item_desc': $orderf = 'a.item_desc'; break;
 				case 'ref_no': $orderf = 'f.field_value'; break;
+				case 'int_fee': $orderf = 'g.field_value'; break;
 				default: $orderf = $this->orderField; break;
 			}
 			$order .= " order by ".$orderf." ";
@@ -113,6 +124,7 @@ class PayReqList extends CListPageModel
 						'ref_no'=>$record['ref_no'],
 						'wfstatus'=> $wfstatus,
 						'req_user'=>$record['req_user'],
+						'int_fee'=>($record['int_fee']=='Y' ? Yii::t('misc','Yes') : Yii::t('misc','No')),
 					);
 				}
 			}

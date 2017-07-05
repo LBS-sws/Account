@@ -2,7 +2,7 @@
 <tr>
 	<td width=30%><?php echo TbHtml::label($labels['trans_type_code'],false); ?></td>
 	<td><?php 
-			$list = General::getTransTypeList('IN',true);
+			$list = General::getTransTypeList('IN',true,true);
 //			echo TbHtml::textField('trans_type_code', $list[$model->trans_type_code], array('readonly'=>true));
 			echo $list[$model->trans_type_code];
 		?>
@@ -89,6 +89,13 @@
 	<td><?php echo TbHtml::label($labels['amount'],false); ?></td>
 	<td>
 		<?php echo $model->amount;?>
+	</td>
+</tr>
+
+<tr>
+	<td><?php echo TbHtml::label($labels['int_fee'],false); ?></td>
+	<td>
+		<?php echo $model->int_fee=='Y' ? Yii::t('misc','Yes') : Yii::t('misc','No');?>
 	</td>
 </tr>
 

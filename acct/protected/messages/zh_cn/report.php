@@ -39,6 +39,7 @@ return array(
 	'Total'=>'合计',
 	'Grand Total'=>'总计',
 	'Customer Cash In Daily Report'=>'客户收款日报表',
+	'Operation Daily Report'=>'每日营运摘要',
 	'No Record'=>'没有相关记录',
 	
 	'Transaction List'=>'交易记录',

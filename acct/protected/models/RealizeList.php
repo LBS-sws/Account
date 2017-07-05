@@ -14,6 +14,7 @@ class RealizeList extends CListPageModel
 			'city_name'=>Yii::t('misc','City'),
 			'status'=>Yii::t('trans','Status'),
 			'user_name'=>Yii::t('trans','Requestor'),
+			'int_fee'=>Yii::t('trans','Integrated Fee'),
 		);
 	}
 	
@@ -27,11 +28,12 @@ class RealizeList extends CListPageModel
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city_allow();
 		$sql1 = "select a.id, a.req_dt, e.trans_type_desc, a.item_desc, a.payee_name, c.disp_name as user_name,
-					b.name as city_name, a.amount, a.status, f.field_value as ref_no 
+					b.name as city_name, a.amount, a.status, f.field_value as ref_no, g.field_value as int_fee  
 				from acc_request a inner join security$suffix.sec_city b on a.city=b.code
 					inner join acc_trans_type e on a.trans_type_code=e.trans_type_code 
 					inner join security$suffix.sec_user c on a.req_user = c.username
-					left outer join acc_request_info f on a.id=f.req_id and f.field_id='REF_NO'
+					left outer join acc_request_info f on a.id=f.req_id and f.field_id='ref_no'
+					left outer join acc_request_info g on a.id=g.req_id and g.field_id='int_fee'
 				where a.city in ($city)
 				and a.id in ($list)
 				and e.trans_cat='OUT' 
@@ -40,7 +42,8 @@ class RealizeList extends CListPageModel
 				from acc_request a inner join security$suffix.sec_city b on a.city=b.code
 					inner join acc_trans_type e on a.trans_type_code=e.trans_type_code 
 					inner join security$suffix.sec_user c on a.req_user = c.username
-					left outer join acc_request_info f on a.id=f.req_id and f.field_id='REF_NO'
+					left outer join acc_request_info f on a.id=f.req_id and f.field_id='ref_no'
+					left outer join acc_request_info g on a.id=g.req_id and g.field_id='int_fee'
 				where a.city in ($city)
 				and a.id in ($list)
 				and e.trans_cat='OUT' 
@@ -64,6 +67,12 @@ class RealizeList extends CListPageModel
 				case 'ref_no':
 					$clause .= General::getSqlConditionClause('f.field_value',$svalue);
 					break;
+				case 'int_fee':
+					$field = "(select case g.field_value when 'Y' then '".Yii::t('misc','Yes')."' 
+							else '".Yii::t('misc','No')."' 
+						end) ";
+					$clause .= General::getSqlConditionClause($field,$svalue);
+					break;
 			}
 		}
 		
@@ -76,6 +85,7 @@ class RealizeList extends CListPageModel
 				case 'payee_name': $orderf = 'a.payee_name'; break;
 				case 'item_desc': $orderf = 'a.item_desc'; break;
 				case 'ref_no': $orderf = 'f.field_value'; break;
+				case 'int_fee': $orderf = 'g.field_value'; break;
 				default: $orderf = $this->orderField; break;
 			}
 			$order .= " order by ".$orderf." ";
@@ -105,6 +115,7 @@ class RealizeList extends CListPageModel
 					'status'=>($record['status']=='A'?'':General::getTransStatusDesc($record['status'])),
 					'user_name'=>$record['user_name'],
 					'ref_no'=>$record['ref_no'],
+					'int_fee'=>($record['int_fee']=='Y' ? Yii::t('misc','Yes') : Yii::t('misc','No')),
 				);
 			}
 		}

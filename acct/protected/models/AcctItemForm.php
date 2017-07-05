@@ -88,6 +88,7 @@ class AcctItemForm extends CFormModel
 				$sql = "update acc_account_item set 
 					name = :name, 
 					item_type = :item_type,
+					acct_code = :acct_code,
 					luu = :luu
 					where code = :code";
 				break;

@@ -26,7 +26,7 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request';
 	<div class="box"><div class="box-body">
 	<div class="btn-group" role="group">
 		<?php 
-			if (Yii::app()->user->validRWFunction('XA04'))
+			if (Yii::app()->user->validRWFunction('XA04') && Yii::app()->user->validFunction('CN03'))
 				echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('misc','Add Record'), array(
 					'submit'=>Yii::app()->createUrl('payreq/new'), 
 				)); 
@@ -40,6 +40,7 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request';
 						'payee_name',
 						'item_desc',
 						'ref_no',
+						'int_fee',
 						'wfstatusdesc',
 					);
 		if (!Yii::app()->user->isSingleCity()) $search[] = 'city_name';

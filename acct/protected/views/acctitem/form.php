@@ -109,7 +109,7 @@ $this->pageTitle=Yii::app()->name . ' - Account Item Form';
 <?php $this->renderPartial('//site/removedialog'); ?>
 
 <?php
-$js = Script::genDeleteData(Yii::app()->createUrl('accttype/delete'));
+$js = Script::genDeleteData(Yii::app()->createUrl('acctitem/delete'));
 Yii::app()->clientScript->registerScript('deleteRecord',$js,CClientScript::POS_READY);
 
 $js = Script::genReadonlyField();

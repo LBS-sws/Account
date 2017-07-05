@@ -24,4 +24,9 @@
 			;
 		?>
 	</th>
+	<th>
+		<?php echo TbHtml::link($this->getLabelName('int_fee').$this->drawOrderArrow('int_fee'),'#',$this->createOrderLink('enquiry-list','int_fee'))
+			;
+		?>
+	</th>
 </tr>

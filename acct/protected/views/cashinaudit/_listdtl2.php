@@ -4,6 +4,7 @@
 	<td><?php echo $this->record['pay_subject']; ?></td>
 	<td><?php echo $this->record['amount_in']; ?></td>
 	<td><?php echo $this->record['amount_out']; ?></td>
+	<td><?php echo $this->record['int_fee']; ?></td>
 	<td>
 		<?php 
 			$docId = $this->record['id'];

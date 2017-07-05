@@ -48,18 +48,18 @@ class TransEnq2List extends CListPageModel
 			'cheque_no'=>Yii::t('trans','Cheque No.'),
 			'invoice_no'=>Yii::t('trans','China Invoice No.'),
 			'trans_desc'=>Yii::t('trans','Remarks'),
+			'int_fee'=>Yii::t('trans','Integrated Fee'),
 		);
 	}
 	
 	public function retrieveHeaderData($index,$city) {
 		$suffix = Yii::app()->params['envSuffix'];
-		$citylist = Yii::app()->user->city_allow();
 		$sql = "select a.id, a.acct_no, a.acct_name, a.bank_name, b.name as city_name,
 				AccountBalance(a.id,'$city','2010-01-01 00:00:00',now()) as balance
 				from acc_account a
 				inner join security$suffix.sec_city b on b.code='$city' 
 				inner join acc_account_type c on a.acct_type_id=c.id
-				where (a.city in ($citylist) or a.city = '99999')
+				where (a.city = '$city' or a.city = '99999')
 				and a.id=$index
 			";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
@@ -85,14 +85,15 @@ class TransEnq2List extends CListPageModel
 		$fdt = General::toMyDate($this->fm_dt);
 		$tdt = General::toMyDate($this->to_dt);
 		$sql1 = "select a.id, a.trans_dt, e.trans_type_desc, a.status, b.field_value as pay_subject, 
-				c.field_value as cheque_no, d.field_value as invoice_no, e.trans_cat, a.trans_desc,
+				c.field_value as cheque_no, d.field_value as invoice_no, e.trans_cat, a.trans_desc, g.field_value as int_fee, 
 				if(e.trans_cat='IN',a.amount,null) as amount_in,
 				if(e.trans_cat='IN',null,a.amount) as amount_out,
-				docman$suffix.countdoc('TRANS',a.id) as no_of_attm
+				docman$suffix.countdoc('TRANS',a.id) as no_of_attm, a.trans_type_code
 				from acc_trans a inner join acc_trans_type e on a.trans_type_code=e.trans_type_code
 				left outer join acc_trans_info b on a.id=b.trans_id and b.field_id='payer_name'
 				left outer join acc_trans_info c on a.id=c.trans_id and c.field_id='cheque_no'
 				left outer join acc_trans_info d on a.id=d.trans_id and d.field_id='invoice_no'
+				left outer join acc_trans_info g on a.id=g.trans_id and g.field_id='int_fee'
 				where a.status<>'V'
 				and a.trans_dt >= '$fdt' and a.trans_dt <= '$tdt'
 				and a.acct_id = $acct_id and a.city='$city'
@@ -102,6 +103,7 @@ class TransEnq2List extends CListPageModel
 				left outer join acc_trans_info b on a.id=b.trans_id and b.field_id='payer_name'
 				left outer join acc_trans_info c on a.id=c.trans_id and c.field_id='cheque_no'
 				left outer join acc_trans_info d on a.id=d.trans_id and d.field_id='invoice_no'
+				left outer join acc_trans_info g on a.id=g.trans_id and g.field_id='int_fee'
 				where a.status<>'V'
 				and a.trans_dt >= '$fdt' and a.trans_dt <= '$tdt'
 				and a.acct_id = $acct_id and a.city='$city'
@@ -123,7 +125,13 @@ class TransEnq2List extends CListPageModel
 					$clause .= General::getSqlConditionClause('c.field_value',$svalue);
 					break;
 				case 'invoice_no':
-					$clause .= General::getSqlConditionClause('a.acct_no',$svalue);
+					$clause .= General::getSqlConditionClause('d.field_value',$svalue);
+					break;
+				case 'int_fee':
+					$field = "(select case g.field_value when 'Y' then '".Yii::t('misc','Yes')."' 
+							else '".Yii::t('misc','No')."' 
+						end) ";
+					$clause .= General::getSqlConditionClause($field,$svalue);
 					break;
 			}
 		}
@@ -134,6 +142,9 @@ class TransEnq2List extends CListPageModel
 				case 'trans_dt': $orderf = 'a.trans_dt'; break;
 				case 'trans_type_desc': $orderf = 'e.trans_type_desc'; break;
 				case 'pay_subject': $orderf = 'b.field_value'; break;
+				case 'cheque_no': $orderf = 'c.field_value'; break;
+				case 'invoice_no': $orderf = 'd.field_value'; break;
+				case 'int_fee': $orderf = 'g.field_value'; break;
 				default: $orderf = $this->orderField; break;
 			}
 			$order .= " order by ".$orderf." ";
@@ -165,6 +176,8 @@ class TransEnq2List extends CListPageModel
 					'status'=>General::getTransStatusDesc($record['status']),
 					'no_of_attm'=>$record['no_of_attm'],
 					'trans_cat'=>$record['trans_cat'],
+					'trans_type_code'=>$record['trans_type_code'],
+					'int_fee'=>($record['int_fee']=='Y' ? Yii::t('misc','Yes') : Yii::t('misc','No')),
 				);
 			}
 		}

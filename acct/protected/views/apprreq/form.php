@@ -36,14 +36,14 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Approval Form';
 	</div>
 	<div class="btn-group pull-right" role="group">
 	<?php 
-		$counter = ($model->no_of_attm['payreq'] > 0) ? ' '.TbHtml::badge($model->no_of_attm['payreq'], array('class' => 'bg-blue')) : '';
-		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('misc','Attachment'), array(
+		$counter = ($model->no_of_attm['payreq'] > 0) ? ' <span id="docpayreq" class="label label-info">'.$model->no_of_attm['payreq'].'</span>' : ' <span id="docpayreq"></span>';
+		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('misc','Attachment').$counter, array(
 			'name'=>'btnFile','id'=>'btnFile','data-toggle'=>'modal','data-target'=>'#fileuploadpayreq',)
 		);
 	?>
 	<?php 
-		$counter = ($model->no_of_attm['tax'] > 0) ? ' '.TbHtml::badge($model->no_of_attm['tax'], array('class' => 'bg-blue')) : '';
-		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','Tax Slip'), array(
+		$counter = ($model->no_of_attm['tax'] > 0) ? ' <span id="doctax" class="label label-info">'.$model->no_of_attm['tax'].'</span>' : ' <span id="doctax"></span>';
+		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','Tax Slip').$counter, array(
 			'name'=>'btnFileTS','id'=>'btnFileTS','data-toggle'=>'modal','data-target'=>'#fileuploadtax',)
 		);
 	?>
@@ -111,7 +111,7 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Approval Form';
 				<?php echo $form->labelEx($model,'payee_name',array('class'=>"col-sm-2 control-label")); ?>
 				<div class="col-sm-2">
 					<?php echo $form->dropDownList($model, 'payee_type', 
-							array('C'=>Yii::t('trans','Client'),'S'=>Yii::t('trans','Supplier'),'F'=>Yii::t('trans','Staff'),'O'=>Yii::t('trans','Others')),
+							array('C'=>Yii::t('trans','Client'),'S'=>Yii::t('trans','Supplier'),'A'=>Yii::t('trans','Company A/C'),'F'=>Yii::t('trans','Staff'),'O'=>Yii::t('trans','Others')),
 							array('disabled'=>($model->isReadOnly()))
 					); ?>
 				</div>
@@ -129,6 +129,14 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Approval Form';
 				<?php echo $form->labelEx($model,'acct_code',array('class'=>"col-sm-2 control-label")); ?>
 				<div class="col-sm-4">
 					<?php echo $form->dropDownList($model, 'acct_code', General::getAcctCodeList(),array('disabled'=>($model->isReadOnly()))); ?>
+				</div>
+
+				<?php echo $form->labelEx($model,'int_fee',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-1">
+					<?php 
+						$list = array(''=>Yii::t('misc','No'),'N'=>Yii::t('misc','No'),'Y'=>Yii::t('misc','Yes'));
+						echo TbHtml::textField('int_fee', $list[$model->int_fee], array('readonly'=>true,)); 
+					?>
 				</div>
 			</div>
 

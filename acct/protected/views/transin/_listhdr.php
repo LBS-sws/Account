@@ -38,6 +38,11 @@
 		?>
 	</th>
 	<th>
+		<?php echo TbHtml::link($this->getLabelName('int_fee').$this->drawOrderArrow('int_fee'),'#',$this->createOrderLink('request-list','int_fee'))
+			;
+		?>
+	</th>
+	<th>
 		<?php echo TbHtml::link($this->getLabelName('status').$this->drawOrderArrow('status'),'#',$this->createOrderLink('trans-list','status'))
 			;
 		?>

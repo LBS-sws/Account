@@ -3529,3 +3529,2005 @@ Stack trace:
 REQUEST_URI=/acct/index.php/acctitem/save
 HTTP_REFERER=http://192.168.0.162/acct/index.php/acctitem/new
 ---
+2017/06/01 17:28:16 [warning] [application] Failed to set unsafe attribute "scenario" of "AcctItemForm".
+in /var/www/html/acct/protected/controllers/AcctitemController.php (60)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/01 17:28:16 [error] [php] include(Acctitem.php): failed to open stream: No such file or directory (/var/www/html/yii/framework/YiiBase.php:423)
+Stack trace:
+#0 /var/www/html/yii/framework/db/ar/CActiveRecord.php(387): spl_autoload_call()
+#1 /var/www/html/yii/framework/validators/CUniqueValidator.php(88): model()
+#2 /var/www/html/yii/framework/validators/CValidator.php(214): CUniqueValidator->validateAttribute()
+#3 /var/www/html/yii/framework/base/CModel.php(158): CUniqueValidator->validate()
+#4 /var/www/html/acct/protected/controllers/AcctitemController.php(61): AcctItemForm->validate()
+#5 /var/www/html/yii/framework/web/actions/CInlineAction.php(50): AcctitemController->actionSave()
+#6 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#7 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): AcctitemController->runAction()
+#8 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#9 /var/www/html/yii/framework/web/CController.php(1146): CAccessControlFilter->filter()
+#10 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): AcctitemController->filterAccessControl()
+#11 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#12 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#13 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): AcctitemController->filterEnforceNoConcurrentLogin()
+#14 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#15 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#16 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): AcctitemController->filterEnforceSessionExpiration()
+#17 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#18 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#19 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): AcctitemController->filterEnforceRegisteredStation()
+#20 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#21 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#22 /var/www/html/yii/framework/web/CController.php(266): AcctitemController->runActionWithFilters()
+#23 /var/www/html/yii/framework/web/CWebApplication.php(283): AcctitemController->run()
+#24 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController()
+#25 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#26 /var/www/html/acct/index.php(13): CWebApplication->run()
+REQUEST_URI=/acct/index.php/acctitem/save
+in /var/www/html/acct/protected/controllers/AcctitemController.php (61)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/01 17:28:40 [warning] [application] Failed to set unsafe attribute "scenario" of "AcctItemForm".
+in /var/www/html/acct/protected/controllers/AcctitemController.php (60)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/01 17:28:51 [warning] [application] Failed to set unsafe attribute "scenario" of "AcctItemForm".
+in /var/www/html/acct/protected/controllers/AcctitemController.php (60)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/02 18:28:40 [error] [exception.CHttpException.404] exception 'CHttpException' with message '系统无法找到请求的 "accountitemex" 动作.' in /var/www/html/yii/framework/web/CController.php:484
+Stack trace:
+#0 /var/www/html/yii/framework/web/CController.php(271): CController->missingAction('accountitemex')
+#1 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('accountitemex')
+#2 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('lookup/accounti...')
+#3 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#4 /var/www/html/acct/index.php(13): CApplication->run()
+#5 {main}
+REQUEST_URI=/acct/index.php/lookup/accountitemex?search=
+HTTP_REFERER=http://192.168.0.162/acct/index.php/payreq/new
+---
+2017/06/02 18:29:40 [error] [exception.CHttpException.404] exception 'CHttpException' with message '系统无法找到请求的 "accountitemex" 动作.' in /var/www/html/yii/framework/web/CController.php:484
+Stack trace:
+#0 /var/www/html/yii/framework/web/CController.php(271): CController->missingAction('accountitemex')
+#1 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('accountitemex')
+#2 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('lookup/accounti...')
+#3 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#4 /var/www/html/acct/index.php(13): CApplication->run()
+#5 {main}
+REQUEST_URI=/acct/index.php/lookup/accountitemex?search=
+HTTP_REFERER=http://192.168.0.162/acct/index.php/payreq/new
+---
+2017/06/02 18:40:11 [error] [exception.CHttpException.404] exception 'CHttpException' with message '系统无法找到请求的 "accountitemex" 动作.' in /var/www/html/yii/framework/web/CController.php:484
+Stack trace:
+#0 /var/www/html/yii/framework/web/CController.php(271): CController->missingAction('accountitemex')
+#1 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('accountitemex')
+#2 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('lookup/accounti...')
+#3 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#4 /var/www/html/acct/index.php(13): CApplication->run()
+#5 {main}
+REQUEST_URI=/acct/index.php/lookup/accountitemex?search=
+HTTP_REFERER=http://192.168.0.162/acct/index.php/payreq/new
+---
+2017/06/02 18:40:49 [error] [exception.CHttpException.404] exception 'CHttpException' with message '系统无法找到请求的 "accountitemex" 动作.' in /var/www/html/yii/framework/web/CController.php:484
+Stack trace:
+#0 /var/www/html/yii/framework/web/CController.php(271): CController->missingAction('accountitemex')
+#1 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('accountitemex')
+#2 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('lookup/accounti...')
+#3 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#4 /var/www/html/acct/index.php(13): CApplication->run()
+#5 {main}
+REQUEST_URI=/acct/index.php/lookup/accountitemex?search=
+HTTP_REFERER=http://192.168.0.162/acct/index.php/payreq/new
+---
+2017/06/03 17:27:36 [error] [system.db.CDbCommand] CDbCommand::fetchAll() failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.type' in 'where clause'. The SQL statement executed was: select a.code, concat(a.name,' (',a.code,')') as value, a.acct_code, b.name as acct_code_desc 
+				from acc_account_item a left outer join acc_account_code b on a.acct_code=b.code 
+				where (a.code like '%%' or a.name like '%%') and a.type in ('BI','CI').
+in /var/www/html/acct/protected/controllers/LookupController.php (262)
+in /var/www/html/acct/protected/controllers/LookupController.php (245)
+in /var/www/html/acct/protected/components/Controller.php (71)
+2017/06/03 17:27:36 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand 无法执行 SQL 语句: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.type' in 'where clause'. The SQL statement executed was: select a.code, concat(a.name,' (',a.code,')') as value, a.acct_code, b.name as acct_code_desc 
+				from acc_account_item a left outer join acc_account_code b on a.acct_code=b.code 
+				where (a.code like '%%' or a.name like '%%') and a.type in ('BI','CI')' in /var/www/html/yii/framework/db/CDbCommand.php:528
+Stack trace:
+#0 /var/www/html/yii/framework/db/CDbCommand.php(390): CDbCommand->queryInternal('fetchAll', Array, Array)
+#1 /var/www/html/acct/protected/controllers/LookupController.php(262): CDbCommand->queryAll()
+#2 /var/www/html/acct/protected/controllers/LookupController.php(245): LookupController->searchAccountItemEx('', 'I')
+#3 [internal function]: LookupController->actionAccountItemInEx('')
+#4 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs(Object(LookupController), Array)
+#5 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CAction->runWithParamsInternal(Object(LookupController), Object(ReflectionMethod), Array)
+#6 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#7 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#8 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#9 /var/www/html/yii/framework/web/CController.php(1146): CFilter->filter(Object(CFilterChain))
+#10 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#11 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#12 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#13 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceNoConcurrentLogin(Object(CFilterChain))
+#14 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#15 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#16 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceSessionExpiration(Object(CFilterChain))
+#17 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#18 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#19 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceRegisteredStation(Object(CFilterChain))
+#20 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#21 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#22 /var/www/html/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#23 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('accountiteminex')
+#24 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('lookup/accounti...')
+#25 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#26 /var/www/html/acct/index.php(13): CApplication->run()
+#27 {main}
+REQUEST_URI=/acct/index.php/lookup/accountiteminex?search=
+HTTP_REFERER=http://192.168.0.162/acct/index.php/payreq/new
+---
+2017/06/03 17:28:20 [error] [system.db.CDbCommand] CDbCommand::fetchAll() failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.type' in 'where clause'. The SQL statement executed was: select a.code, concat(a.name,' (',a.code,')') as value, a.acct_code, b.name as acct_code_desc 
+				from acc_account_item a left outer join acc_account_code b on a.acct_code=b.code 
+				where (a.code like '%%' or a.name like '%%') and a.type in ('BO','CO').
+in /var/www/html/acct/protected/controllers/LookupController.php (262)
+in /var/www/html/acct/protected/controllers/LookupController.php (249)
+in /var/www/html/acct/protected/components/Controller.php (71)
+2017/06/03 17:28:20 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand 无法执行 SQL 语句: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.type' in 'where clause'. The SQL statement executed was: select a.code, concat(a.name,' (',a.code,')') as value, a.acct_code, b.name as acct_code_desc 
+				from acc_account_item a left outer join acc_account_code b on a.acct_code=b.code 
+				where (a.code like '%%' or a.name like '%%') and a.type in ('BO','CO')' in /var/www/html/yii/framework/db/CDbCommand.php:528
+Stack trace:
+#0 /var/www/html/yii/framework/db/CDbCommand.php(390): CDbCommand->queryInternal('fetchAll', Array, Array)
+#1 /var/www/html/acct/protected/controllers/LookupController.php(262): CDbCommand->queryAll()
+#2 /var/www/html/acct/protected/controllers/LookupController.php(249): LookupController->searchAccountItemEx('', 'O')
+#3 [internal function]: LookupController->actionAccountItemOutEx('')
+#4 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs(Object(LookupController), Array)
+#5 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CAction->runWithParamsInternal(Object(LookupController), Object(ReflectionMethod), Array)
+#6 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#7 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#8 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#9 /var/www/html/yii/framework/web/CController.php(1146): CFilter->filter(Object(CFilterChain))
+#10 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#11 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#12 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#13 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceNoConcurrentLogin(Object(CFilterChain))
+#14 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#15 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#16 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceSessionExpiration(Object(CFilterChain))
+#17 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#18 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#19 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceRegisteredStation(Object(CFilterChain))
+#20 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#21 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#22 /var/www/html/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#23 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('accountitemoute...')
+#24 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('lookup/accounti...')
+#25 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#26 /var/www/html/acct/index.php(13): CApplication->run()
+#27 {main}
+REQUEST_URI=/acct/index.php/lookup/accountitemoutex?search=
+HTTP_REFERER=http://192.168.0.162/acct/index.php/payreq/new
+---
+2017/06/03 17:38:32 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 17:38:32 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 18:03:23 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 18:03:23 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 18:03:23 [error] [exception.CException] exception 'CException' with message '属性 "PayReqForm.paid_item" 未被定义.' in /var/www/html/yii/framework/base/CComponent.php:131
+Stack trace:
+#0 /var/www/html/acct/protected/models/PayReqForm.php(137): CComponent->__get('paid_item')
+#1 /var/www/html/acct/protected/controllers/PayreqController.php(166): PayReqForm->retrieveData('16')
+#2 [internal function]: PayreqController->actionEdit('16')
+#3 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs(Object(PayreqController), Array)
+#4 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CAction->runWithParamsInternal(Object(PayreqController), Object(ReflectionMethod), Array)
+#5 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#6 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#7 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#8 /var/www/html/yii/framework/web/CController.php(1146): CFilter->filter(Object(CFilterChain))
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#11 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceNoConcurrentLogin(Object(CFilterChain))
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#14 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceSessionExpiration(Object(CFilterChain))
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#17 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceRegisteredStation(Object(CFilterChain))
+#19 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#20 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#21 /var/www/html/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#22 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('edit')
+#23 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('payreq/edit')
+#24 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#25 /var/www/html/acct/index.php(13): CApplication->run()
+#26 {main}
+REQUEST_URI=/acct/index.php/payreq/edit?index=16
+HTTP_REFERER=http://192.168.0.162/acct/index.php/payreq/new
+---
+2017/06/03 22:17:55 [error] [exception.CHttpException.403] exception 'CHttpException' with message '您未被授权执行这个动作' in /var/www/html/yii/framework/web/auth/CAccessControlFilter.php:170
+Stack trace:
+#0 /var/www/html/yii/framework/web/auth/CAccessControlFilter.php(133): CAccessControlFilter->accessDenied(Object(WebUser), '\xE6\x82\xA8\xE6\x9C\xAA\xE8\xA2\xAB\xE6\x8E\x88\xE6\x9D\x83...')
+#1 /var/www/html/yii/framework/web/filters/CFilter.php(39): CAccessControlFilter->preFilter(Object(CFilterChain))
+#2 /var/www/html/yii/framework/web/CController.php(1146): CFilter->filter(Object(CFilterChain))
+#3 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#4 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#5 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#6 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceNoConcurrentLogin(Object(CFilterChain))
+#7 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#8 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceSessionExpiration(Object(CFilterChain))
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#11 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceRegisteredStation(Object(CFilterChain))
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#14 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#16 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('request')
+#17 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('payreq/request')
+#18 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#19 /var/www/html/acct/index.php(13): CApplication->run()
+#20 {main}
+REQUEST_URI=/acct/index.php/payreq/request
+HTTP_REFERER=http://192.168.0.162/acct/index.php/payreq/edit?index=16
+---
+2017/06/03 22:19:19 [error] [exception.CHttpException.403] exception 'CHttpException' with message '您未被授权执行这个动作' in /var/www/html/yii/framework/web/auth/CAccessControlFilter.php:170
+Stack trace:
+#0 /var/www/html/yii/framework/web/auth/CAccessControlFilter.php(133): CAccessControlFilter->accessDenied(Object(WebUser), '\xE6\x82\xA8\xE6\x9C\xAA\xE8\xA2\xAB\xE6\x8E\x88\xE6\x9D\x83...')
+#1 /var/www/html/yii/framework/web/filters/CFilter.php(39): CAccessControlFilter->preFilter(Object(CFilterChain))
+#2 /var/www/html/yii/framework/web/CController.php(1146): CFilter->filter(Object(CFilterChain))
+#3 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#4 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#5 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#6 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceNoConcurrentLogin(Object(CFilterChain))
+#7 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#8 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceSessionExpiration(Object(CFilterChain))
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#11 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceRegisteredStation(Object(CFilterChain))
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#14 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#16 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('request')
+#17 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('payreq/request')
+#18 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#19 /var/www/html/acct/index.php(13): CApplication->run()
+#20 {main}
+REQUEST_URI=/acct/index.php/payreq/request
+HTTP_REFERER=http://192.168.0.162/acct/index.php/payreq/edit?index=16
+---
+2017/06/03 22:19:34 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 22:19:34 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 22:39:23 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 22:39:23 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 23:31:34 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 23:31:34 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 23:31:34 [warning] [application] Failed to set unsafe attribute "ref_no" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 23:31:34 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 23:31:34 [error] [exception.CException] exception 'CException' with message 'PayReqForm and its behaviors do not have a method or closure named "check".' in /var/www/html/yii/framework/base/CComponent.php:266
+Stack trace:
+#0 /var/www/html/acct/protected/controllers/PayreqController.php(89): CComponent->__call('check', Array)
+#1 /var/www/html/acct/protected/controllers/PayreqController.php(89): PayReqForm->check()
+#2 /var/www/html/yii/framework/web/actions/CInlineAction.php(50): PayreqController->actionCheck()
+#3 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#4 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#5 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#6 /var/www/html/yii/framework/web/CController.php(1146): CFilter->filter(Object(CFilterChain))
+#7 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#8 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#9 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#10 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceNoConcurrentLogin(Object(CFilterChain))
+#11 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#12 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#13 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceSessionExpiration(Object(CFilterChain))
+#14 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#15 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#16 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceRegisteredStation(Object(CFilterChain))
+#17 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#18 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#19 /var/www/html/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#20 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('check')
+#21 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('payreq/check')
+#22 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#23 /var/www/html/acct/index.php(13): CApplication->run()
+#24 {main}
+REQUEST_URI=/acct/index.php/payreq/check
+HTTP_REFERER=http://192.168.0.162/acct/index.php/payreq/edit?index=17
+---
+2017/06/03 23:32:27 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 23:32:27 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 23:32:27 [warning] [application] Failed to set unsafe attribute "ref_no" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 23:32:27 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 23:46:20 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/03 23:46:20 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/04 00:27:21 [warning] [application] Failed to set unsafe attribute "scenario" of "ApprReqForm".
+in /var/www/html/acct/protected/controllers/ApprreqController.php (67)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/04 00:27:21 [warning] [application] Failed to set unsafe attribute "wfstatus" of "ApprReqForm".
+in /var/www/html/acct/protected/controllers/ApprreqController.php (67)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/04 00:27:21 [warning] [application] Failed to set unsafe attribute "user_name" of "ApprReqForm".
+in /var/www/html/acct/protected/controllers/ApprreqController.php (67)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/04 00:27:21 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "ApprReqForm".
+in /var/www/html/acct/protected/controllers/ApprreqController.php (67)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/04 00:30:28 [warning] [application] Failed to set unsafe attribute "scenario" of "RealizeForm".
+in /var/www/html/acct/protected/controllers/RealizeController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/04 01:14:16 [warning] [application] Failed to set unsafe attribute "scenario" of "TransInForm".
+in /var/www/html/acct/protected/controllers/TransinController.php (60)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/06 17:35:20 [error] [system.db.CDbCommand] CDbCommand::fetchAll() failed: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'AccountTransAmount('OUT',a.id,'SH','2017-06-05 00:00:00','2017-06-06 23:59:59') ' at line 7. The SQL statement executed was: select a.id, c.acct_type_desc, a.acct_no, a.acct_name, a.bank_name, a.city,  
+					AccountBalance(a.id,'SH','2010-01-01 00:00:00',('2017-06-06 00:00:00' - interval 1 Minute)) as balance_last,
+					AccountTransAmount('IN',a.id,'SH','2017-06-06 00:00:00','2017-06-06 23:59:59') as balance_in,
+					AccountTransAmount('IN',a.id,'SH','2017-06-05 00:00:00','2017-06-06 23:59:59') as balance_wtd_in,
+					AccountTransAmount('IN',a.id,'SH','2017/06/01 00:00:00','2017-06-06 23:59:59') as balance_mtd_in,
+					AccountTransAmount('OUT',a.id,'SH','2017-06-06 00:00:00','2017-06-06 23:59:59') as balance_out
+					AccountTransAmount('OUT',a.id,'SH','2017-06-05 00:00:00','2017-06-06 23:59:59') as balance_wtd_out
+					AccountTransAmount('OUT',a.id,'SH','2017/06/01 00:00:00','2017-06-06 23:59:59') as balance_mtd_out
+				from acc_account a, acc_account_type c 
+				where (a.city='SH' or a.city='99999') and a.acct_type_id=c.id
+				order by a.acct_type_id, a.acct_name
+			.
+2017/06/06 17:35:20 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand 无法执行 SQL 语句: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'AccountTransAmount('OUT',a.id,'SH','2017-06-05 00:00:00','2017-06-06 23:59:59') ' at line 7. The SQL statement executed was: select a.id, c.acct_type_desc, a.acct_no, a.acct_name, a.bank_name, a.city,  
+					AccountBalance(a.id,'SH','2010-01-01 00:00:00',('2017-06-06 00:00:00' - interval 1 Minute)) as balance_last,
+					AccountTransAmount('IN',a.id,'SH','2017-06-06 00:00:00','2017-06-06 23:59:59') as balance_in,
+					AccountTransAmount('IN',a.id,'SH','2017-06-05 00:00:00','2017-06-06 23:59:59') as balance_wtd_in,
+					AccountTransAmount('IN',a.id,'SH','2017/06/01 00:00:00','2017-06-06 23:59:59') as balance_mtd_in,
+					AccountTransAmount('OUT',a.id,'SH','2017-06-06 00:00:00','2017-06-06 23:59:59') as balance_out
+					AccountTransAmount('OUT',a.id,'SH','2017-06-05 00:00:00','2017-06-06 23:59:59') as balance_wtd_out
+					AccountTransAmount('OUT',a.id,'SH','2017/06/01 00:00:00','2017-06-06 23:59:59') as balance_mtd_out
+				from acc_account a, acc_account_type c 
+				where (a.city='SH' or a.city='99999') and a.acct_type_id=c.id
+				order by a.acct_type_id, a.acct_name
+			' in /var/www/html/yii/framework/db/CDbCommand.php:528
+Stack trace:
+#0 /var/www/html/yii/framework/db/CDbCommand.php(390): CDbCommand->queryInternal('fetchAll', Array, Array)
+#1 /var/www/html/acct/protected/models/RptAccountStatus.php(37): CDbCommand->queryAll()
+#2 /var/www/html/acct/protected/models/RptAccountStatus.php(8): RptAccountStatus->retrieveData()
+#3 /var/www/html/acct/protected/commands/JobQueueCommand.php(127): RptAccountStatus->genReport()
+#4 /var/www/html/acct/protected/commands/JobQueueCommand.php(31): JobQueueCommand->genReport('RptAccountStatu...', Array, 'EMAIL')
+#5 /var/www/html/yii/framework/console/CConsoleCommandRunner.php(68): JobQueueCommand->run(Array)
+#6 /var/www/html/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run(Array)
+#7 /var/www/html/yii/framework/base/CApplication.php(162): CConsoleApplication->processRequest()
+#8 /var/www/html/yii_console_ac.php(10): CApplication->run()
+#9 {main}
+---
+2017/06/06 17:36:19 [error] [php] Undefined index: balance_mth_in (/var/www/html/acct/protected/models/RptAccountStatus.php:169)
+Stack trace:
+#0 /var/www/html/acct/protected/commands/JobQueueCommand.php(127): RptAccountStatus->genReport()
+#1 /var/www/html/acct/protected/commands/JobQueueCommand.php(31): JobQueueCommand->genReport()
+#2 /var/www/html/yii/framework/console/CConsoleCommandRunner.php(68): JobQueueCommand->run()
+#3 /var/www/html/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run()
+#4 /var/www/html/yii/framework/base/CApplication.php(162): CConsoleApplication->processRequest()
+#5 /var/www/html/yii_console_ac.php(10): CConsoleApplication->run()
+
+2017/06/07 18:19:11 [warning] [application] Failed to set unsafe attribute "scenario" of "CashinAuditForm".
+in /var/www/html/acct/protected/controllers/CashinauditController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/07 18:19:21 [warning] [application] Failed to set unsafe attribute "scenario" of "CashinAuditForm".
+in /var/www/html/acct/protected/controllers/CashinauditController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/08 10:11:40 [warning] [application] Failed to set unsafe attribute "scenario" of "CashinAuditForm".
+in /var/www/html/acct/protected/controllers/CashinauditController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/09 09:35:40 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/09 09:35:40 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/09 09:35:40 [warning] [application] Failed to set unsafe attribute "ref_no" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/09 09:35:40 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/09 09:35:40 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'swuser'@'localhost' for table 'wf_state'. The SQL statement executed was: select code from workflow_w.wf_state
+				where id=23
+			.
+in /var/www/html/acct/protected/components/Workflow.php (189)
+in /var/www/html/acct/protected/components/Workflow.php (120)
+in /var/www/html/acct/protected/models/PayReqForm.php (152)
+2017/06/09 09:35:40 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Cannot update.CDbCommand 无法执行 SQL 语句: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'swuser'@'localhost' for table 'wf_state'. The SQL statement executed was: select code from workflow_w.wf_state
+				where id=23
+			' in /var/www/html/acct/protected/models/PayReqForm.php:158
+Stack trace:
+#0 /var/www/html/acct/protected/controllers/PayreqController.php(60): PayReqForm->cancel()
+#1 /var/www/html/yii/framework/web/actions/CInlineAction.php(50): PayreqController->actionCancel()
+#2 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#3 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#4 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#5 /var/www/html/yii/framework/web/CController.php(1146): CFilter->filter(Object(CFilterChain))
+#6 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#7 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#8 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceNoConcurrentLogin(Object(CFilterChain))
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#11 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceSessionExpiration(Object(CFilterChain))
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#14 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceRegisteredStation(Object(CFilterChain))
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#17 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#19 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('cancel')
+#20 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('payreq/cancel')
+#21 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#22 /var/www/html/acct/index.php(13): CApplication->run()
+#23 {main}
+REQUEST_URI=/acct/index.php/payreq/cancel
+HTTP_REFERER=http://192.168.0.162/acct/index.php/payreq/edit?index=16
+---
+2017/06/09 09:59:31 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/09 09:59:31 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/09 09:59:31 [warning] [application] Failed to set unsafe attribute "ref_no" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/09 09:59:31 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/09 10:08:20 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/09 10:08:20 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/09 10:08:20 [warning] [application] Failed to set unsafe attribute "ref_no" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/09 10:08:20 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/09 10:20:43 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/09 10:20:43 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/09 10:20:43 [warning] [application] Failed to set unsafe attribute "ref_no" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/09 10:20:43 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/10 10:10:03 [error] [exception.CException] exception 'CException' with message 'ReportController 无法找到请求的视图 "form_trans".' in /var/www/html/yii/framework/web/CController.php:879
+Stack trace:
+#0 /var/www/html/yii/framework/web/CController.php(783): CController->renderPartial('form_trans', Array, true)
+#1 /var/www/html/acct/protected/controllers/ReportController.php(60): CController->render('form_trans', Array)
+#2 /var/www/html/yii/framework/web/actions/CInlineAction.php(50): ReportController->actionTranslist()
+#3 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#4 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#5 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#6 /var/www/html/yii/framework/web/CController.php(1146): CFilter->filter(Object(CFilterChain))
+#7 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#8 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#9 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#10 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceNoConcurrentLogin(Object(CFilterChain))
+#11 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#12 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#13 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceSessionExpiration(Object(CFilterChain))
+#14 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#15 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#16 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceRegisteredStation(Object(CFilterChain))
+#17 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#18 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#19 /var/www/html/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#20 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('translist')
+#21 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('report/translis...')
+#22 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#23 /var/www/html/acct/index.php(13): CApplication->run()
+#24 {main}
+REQUEST_URI=/acct/index.php/report/translist
+HTTP_REFERER=http://192.168.0.162/acct/
+---
+2017/06/10 10:25:32 [error] [exception.CException] exception 'CException' with message '属性 "CConsoleApplication.user" 未被定义.' in /var/www/html/yii/framework/base/CComponent.php:131
+Stack trace:
+#0 /var/www/html/yii/framework/base/CModule.php(106): CComponent->__get('user')
+#1 /var/www/html/acct/protected/components/General.php(135): CModule->__get('user')
+#2 /var/www/html/acct/protected/models/RptTransList.php(69): General::getAccountList()
+#3 /var/www/html/acct/protected/models/RptTransList.php(23): RptTransList->retrieveData()
+#4 /var/www/html/acct/protected/commands/JobQueueCommand.php(127): RptTransList->genReport()
+#5 /var/www/html/acct/protected/commands/JobQueueCommand.php(31): JobQueueCommand->genReport('RptTransList', Array, 'EXCEL')
+#6 /var/www/html/yii/framework/console/CConsoleCommandRunner.php(68): JobQueueCommand->run(Array)
+#7 /var/www/html/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run(Array)
+#8 /var/www/html/yii/framework/base/CApplication.php(162): CConsoleApplication->processRequest()
+#9 /var/www/html/yii_console_ac.php(10): CApplication->run()
+#10 {main}
+---
+2017/06/10 10:28:30 [error] [php] number_format() expects parameter 1 to be double, string given (/var/www/html/acct/protected/models/RptTransList.php:89)
+Stack trace:
+#0 /var/www/html/acct/protected/commands/JobQueueCommand.php(127): RptTransList->genReport()
+#1 /var/www/html/acct/protected/commands/JobQueueCommand.php(31): JobQueueCommand->genReport()
+#2 /var/www/html/yii/framework/console/CConsoleCommandRunner.php(68): JobQueueCommand->run()
+#3 /var/www/html/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run()
+#4 /var/www/html/yii/framework/base/CApplication.php(162): CConsoleApplication->processRequest()
+#5 /var/www/html/yii_console_ac.php(10): CConsoleApplication->run()
+
+2017/06/10 10:56:40 [error] [php] Undefined index: C (/var/www/html/acct/protected/models/RptTransList.php:81)
+Stack trace:
+#0 /var/www/html/acct/protected/commands/JobQueueCommand.php(30): JobQueueCommand->genReport()
+#1 /var/www/html/yii/framework/console/CConsoleCommandRunner.php(68): JobQueueCommand->run()
+#2 /var/www/html/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run()
+#3 /var/www/html/yii/framework/base/CApplication.php(162): CConsoleApplication->processRequest()
+#4 /var/www/html/yii_console_ac.php(10): CConsoleApplication->run()
+
+2017/06/10 10:58:04 [error] [php] Undefined variable: acctcodelist (/var/www/html/acct/protected/models/RptTransList.php:87)
+Stack trace:
+#0 /var/www/html/acct/protected/commands/JobQueueCommand.php(30): JobQueueCommand->genReport()
+#1 /var/www/html/yii/framework/console/CConsoleCommandRunner.php(68): JobQueueCommand->run()
+#2 /var/www/html/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run()
+#3 /var/www/html/yii/framework/base/CApplication.php(162): CConsoleApplication->processRequest()
+#4 /var/www/html/yii_console_ac.php(10): CConsoleApplication->run()
+
+2017/06/18 19:07:05 [error] [php] Undefined variable: value (/var/www/html/acct/protected/components/WebUser.php:172)
+Stack trace:
+#0 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#1 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): SiteController->runAction()
+#2 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#3 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): SiteController->filterEnforceRegisteredStation()
+#4 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#5 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#6 /var/www/html/yii/framework/web/CController.php(266): SiteController->runActionWithFilters()
+#7 /var/www/html/yii/framework/web/CWebApplication.php(283): SiteController->run()
+#8 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController()
+#9 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#10 /var/www/html/acct/index.php(13): CWebApplication->run()
+REQUEST_URI=/acct/index.php/site/login
+in /var/www/html/acct/protected/components/WebUser.php (172)
+in /var/www/html/acct/protected/controllers/SiteController.php (117)
+in /var/www/html/acct/protected/components/Controller.php (51)
+2017/06/19 12:11:55 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/19 12:11:55 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/19 12:12:10 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/19 12:12:10 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/19 12:37:54 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/19 12:37:54 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/19 12:56:29 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/19 12:56:29 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/19 12:56:48 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (203)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/19 12:56:48 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (203)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/20 16:22:03 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/20 16:22:03 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/20 16:23:51 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/20 16:23:51 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/20 16:23:51 [warning] [application] Failed to set unsafe attribute "ref_no" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/20 16:23:51 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/21 02:25:56 [error] [exception.CHttpException.403] exception 'CHttpException' with message '您未被授权执行这个动作' in /var/www/html/yii/framework/web/auth/CAccessControlFilter.php:170
+Stack trace:
+#0 /var/www/html/yii/framework/web/auth/CAccessControlFilter.php(133): CAccessControlFilter->accessDenied(Object(WebUser), '\xE6\x82\xA8\xE6\x9C\xAA\xE8\xA2\xAB\xE6\x8E\x88\xE6\x9D\x83...')
+#1 /var/www/html/yii/framework/web/filters/CFilter.php(39): CAccessControlFilter->preFilter(Object(CFilterChain))
+#2 /var/www/html/yii/framework/web/CController.php(1146): CFilter->filter(Object(CFilterChain))
+#3 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#4 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#5 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#6 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceNoConcurrentLogin(Object(CFilterChain))
+#7 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#8 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceSessionExpiration(Object(CFilterChain))
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#11 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceRegisteredStation(Object(CFilterChain))
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#14 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#16 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('index')
+#17 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('transin/index')
+#18 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#19 /var/www/html/acct/index.php(13): CApplication->run()
+#20 {main}
+REQUEST_URI=/acct/index.php/transin/index
+HTTP_REFERER=http://test.lbsgroup.com.cn/acct/index.php/site/login
+---
+2017/06/22 16:51:33 [warning] [application] Failed to set unsafe attribute "scenario" of "AcctItemForm".
+in /var/www/html/acct/protected/controllers/AcctitemController.php (60)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/22 16:51:53 [error] [php] Undefined index: AcctitemList (/var/www/html/acct/protected/controllers/AcctitemController.php:42)
+Stack trace:
+#0 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CInlineAction->runWithParamsInternal()
+#1 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#2 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): AcctitemController->runAction()
+#3 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#4 /var/www/html/yii/framework/web/CController.php(1146): CAccessControlFilter->filter()
+#5 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): AcctitemController->filterAccessControl()
+#6 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#7 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#8 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): AcctitemController->filterEnforceNoConcurrentLogin()
+#9 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#10 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#11 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): AcctitemController->filterEnforceSessionExpiration()
+#12 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#13 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#14 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): AcctitemController->filterEnforceRegisteredStation()
+#15 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#16 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#17 /var/www/html/yii/framework/web/CController.php(266): AcctitemController->runActionWithFilters()
+#18 /var/www/html/yii/framework/web/CWebApplication.php(283): AcctitemController->run()
+#19 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController()
+#20 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#21 /var/www/html/acct/index.php(13): CWebApplication->run()
+REQUEST_URI=/acct/index.php/acctitem/index?pageNum=1
+in /var/www/html/acct/protected/controllers/AcctitemController.php (42)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/22 16:52:16 [error] [php] Undefined index: AcctitemList (/var/www/html/acct/protected/controllers/AcctitemController.php:42)
+Stack trace:
+#0 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CInlineAction->runWithParamsInternal()
+#1 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#2 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): AcctitemController->runAction()
+#3 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#4 /var/www/html/yii/framework/web/CController.php(1146): CAccessControlFilter->filter()
+#5 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): AcctitemController->filterAccessControl()
+#6 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#7 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#8 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): AcctitemController->filterEnforceNoConcurrentLogin()
+#9 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#10 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#11 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): AcctitemController->filterEnforceSessionExpiration()
+#12 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#13 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#14 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): AcctitemController->filterEnforceRegisteredStation()
+#15 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#16 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#17 /var/www/html/yii/framework/web/CController.php(266): AcctitemController->runActionWithFilters()
+#18 /var/www/html/yii/framework/web/CWebApplication.php(283): AcctitemController->run()
+#19 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController()
+#20 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#21 /var/www/html/acct/index.php(13): CWebApplication->run()
+REQUEST_URI=/acct/index.php/acctitem/index?pageNum=1
+in /var/www/html/acct/protected/controllers/AcctitemController.php (42)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/22 16:54:13 [warning] [application] Failed to set unsafe attribute "scenario" of "AcctItemForm".
+in /var/www/html/acct/protected/controllers/AcctitemController.php (60)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/28 01:25:34 [error] [system.db.CDbCommand] CDbCommand::fetchAll() failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'undefined' in 'where clause'. The SQL statement executed was: select id, code, name, cont_name, cont_phone, address from swoper_w.swo_company
+				where (code like '%%' or name like '%%') and city in (undefined).
+in /var/www/html/acct/protected/controllers/LookupController.php (62)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/28 01:25:34 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand 无法执行 SQL 语句: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'undefined' in 'where clause'. The SQL statement executed was: select id, code, name, cont_name, cont_phone, address from swoper_w.swo_company
+				where (code like '%%' or name like '%%') and city in (undefined)' in /var/www/html/yii/framework/db/CDbCommand.php:528
+Stack trace:
+#0 /var/www/html/yii/framework/db/CDbCommand.php(390): CDbCommand->queryInternal('fetchAll', Array, Array)
+#1 /var/www/html/acct/protected/controllers/LookupController.php(62): CDbCommand->queryAll()
+#2 [internal function]: LookupController->actionCompanyEx('', 'undefined')
+#3 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs(Object(LookupController), Array)
+#4 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CAction->runWithParamsInternal(Object(LookupController), Object(ReflectionMethod), Array)
+#5 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#6 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#7 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#8 /var/www/html/yii/framework/web/CController.php(1146): CFilter->filter(Object(CFilterChain))
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#11 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceNoConcurrentLogin(Object(CFilterChain))
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#14 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceSessionExpiration(Object(CFilterChain))
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#17 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceRegisteredStation(Object(CFilterChain))
+#19 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#20 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#21 /var/www/html/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#22 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('companyex')
+#23 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('lookup/companye...')
+#24 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#25 /var/www/html/acct/index.php(13): CApplication->run()
+#26 {main}
+REQUEST_URI=/acct/index.php/lookup/companyex?search=&incity=undefined
+HTTP_REFERER=http://test.lbsgroup.com.cn/acct/index.php/payreq/new
+---
+2017/06/28 01:26:44 [error] [system.db.CDbCommand] CDbCommand::fetchAll() failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'SH' in 'where clause'. The SQL statement executed was: select id, code, name, cont_name, cont_phone, address from swoper_w.swo_company
+				where (code like '%%' or name like '%%') and city in (SH).
+in /var/www/html/acct/protected/controllers/LookupController.php (62)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/28 01:26:44 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand 无法执行 SQL 语句: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'SH' in 'where clause'. The SQL statement executed was: select id, code, name, cont_name, cont_phone, address from swoper_w.swo_company
+				where (code like '%%' or name like '%%') and city in (SH)' in /var/www/html/yii/framework/db/CDbCommand.php:528
+Stack trace:
+#0 /var/www/html/yii/framework/db/CDbCommand.php(390): CDbCommand->queryInternal('fetchAll', Array, Array)
+#1 /var/www/html/acct/protected/controllers/LookupController.php(62): CDbCommand->queryAll()
+#2 [internal function]: LookupController->actionCompanyEx('', 'SH')
+#3 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs(Object(LookupController), Array)
+#4 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CAction->runWithParamsInternal(Object(LookupController), Object(ReflectionMethod), Array)
+#5 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#6 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#7 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#8 /var/www/html/yii/framework/web/CController.php(1146): CFilter->filter(Object(CFilterChain))
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#11 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceNoConcurrentLogin(Object(CFilterChain))
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#14 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceSessionExpiration(Object(CFilterChain))
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#17 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceRegisteredStation(Object(CFilterChain))
+#19 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#20 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#21 /var/www/html/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#22 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('companyex')
+#23 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('lookup/companye...')
+#24 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#25 /var/www/html/acct/index.php(13): CApplication->run()
+#26 {main}
+REQUEST_URI=/acct/index.php/lookup/companyex?search=&incity=SH
+---
+2017/06/28 01:27:11 [error] [system.db.CDbCommand] CDbCommand::fetchAll() failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'undefined' in 'where clause'. The SQL statement executed was: select id, code, name, cont_name, cont_phone, address from swoper_w.swo_company
+				where (code like '%%' or name like '%%') and city in (undefined).
+in /var/www/html/acct/protected/controllers/LookupController.php (62)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/28 01:27:11 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand 无法执行 SQL 语句: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'undefined' in 'where clause'. The SQL statement executed was: select id, code, name, cont_name, cont_phone, address from swoper_w.swo_company
+				where (code like '%%' or name like '%%') and city in (undefined)' in /var/www/html/yii/framework/db/CDbCommand.php:528
+Stack trace:
+#0 /var/www/html/yii/framework/db/CDbCommand.php(390): CDbCommand->queryInternal('fetchAll', Array, Array)
+#1 /var/www/html/acct/protected/controllers/LookupController.php(62): CDbCommand->queryAll()
+#2 [internal function]: LookupController->actionCompanyEx('', 'undefined')
+#3 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs(Object(LookupController), Array)
+#4 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CAction->runWithParamsInternal(Object(LookupController), Object(ReflectionMethod), Array)
+#5 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#6 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#7 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#8 /var/www/html/yii/framework/web/CController.php(1146): CFilter->filter(Object(CFilterChain))
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#11 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceNoConcurrentLogin(Object(CFilterChain))
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#14 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceSessionExpiration(Object(CFilterChain))
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#17 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceRegisteredStation(Object(CFilterChain))
+#19 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#20 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#21 /var/www/html/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#22 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('companyex')
+#23 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('lookup/companye...')
+#24 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#25 /var/www/html/acct/index.php(13): CApplication->run()
+#26 {main}
+REQUEST_URI=/acct/index.php/lookup/companyex?search=&incity=undefined
+---
+2017/06/28 01:43:30 [warning] [application] Failed to set unsafe attribute "scenario" of "TransInForm".
+in /var/www/html/acct/protected/controllers/TransinController.php (60)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/28 01:45:15 [warning] [application] Failed to set unsafe attribute "scenario" of "TransInForm".
+in /var/www/html/acct/protected/controllers/TransinController.php (60)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/28 01:46:03 [error] [php] Undefined index: ADJIN (/var/www/html/acct/protected/views/transenq/viewi.php:7)
+Stack trace:
+#0 /var/www/html/yii/framework/web/CController.php(870): TransenqController->renderFile()
+#1 /var/www/html/acct/protected/controllers/TransenqController.php(79): TransenqController->renderPartial()
+#2 unknown(0): TransenqController->actionViewDetail()
+#3 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs()
+#4 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CInlineAction->runWithParamsInternal()
+#5 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#6 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): TransenqController->runAction()
+#7 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#8 /var/www/html/yii/framework/web/CController.php(1146): CAccessControlFilter->filter()
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterAccessControl()
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#11 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceNoConcurrentLogin()
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#14 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceSessionExpiration()
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#17 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceRegisteredStation()
+#19 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#20 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#21 /var/www/html/yii/framework/web/CController.php(266): TransenqController->runActionWithFilters()
+#22 /var/www/html/yii/framework/web/CWebApplication.php(283): TransenqController->run()
+#23 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController()
+#24 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#25 /var/www/html/acct/index.php(13): CWebApplication->run()
+REQUEST_URI=/acct/index.php/transenq/viewdetail?index=26&type=IN
+in /var/www/html/acct/protected/views/transenq/viewi.php (7)
+in /var/www/html/acct/protected/controllers/TransenqController.php (79)
+in /var/www/html/acct/protected/components/Controller.php (71)
+2017/06/28 01:46:05 [error] [php] Undefined index: ADJIN (/var/www/html/acct/protected/views/transenq/viewi.php:7)
+Stack trace:
+#0 /var/www/html/yii/framework/web/CController.php(870): TransenqController->renderFile()
+#1 /var/www/html/acct/protected/controllers/TransenqController.php(79): TransenqController->renderPartial()
+#2 unknown(0): TransenqController->actionViewDetail()
+#3 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs()
+#4 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CInlineAction->runWithParamsInternal()
+#5 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#6 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): TransenqController->runAction()
+#7 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#8 /var/www/html/yii/framework/web/CController.php(1146): CAccessControlFilter->filter()
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterAccessControl()
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#11 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceNoConcurrentLogin()
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#14 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceSessionExpiration()
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#17 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceRegisteredStation()
+#19 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#20 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#21 /var/www/html/yii/framework/web/CController.php(266): TransenqController->runActionWithFilters()
+#22 /var/www/html/yii/framework/web/CWebApplication.php(283): TransenqController->run()
+#23 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController()
+#24 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#25 /var/www/html/acct/index.php(13): CWebApplication->run()
+REQUEST_URI=/acct/index.php/transenq/viewdetail?index=26&type=IN
+in /var/www/html/acct/protected/views/transenq/viewi.php (7)
+in /var/www/html/acct/protected/controllers/TransenqController.php (79)
+in /var/www/html/acct/protected/components/Controller.php (71)
+2017/06/28 01:46:08 [error] [php] Undefined index: ADJIN (/var/www/html/acct/protected/views/transenq/viewi.php:7)
+Stack trace:
+#0 /var/www/html/yii/framework/web/CController.php(870): TransenqController->renderFile()
+#1 /var/www/html/acct/protected/controllers/TransenqController.php(79): TransenqController->renderPartial()
+#2 unknown(0): TransenqController->actionViewDetail()
+#3 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs()
+#4 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CInlineAction->runWithParamsInternal()
+#5 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#6 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): TransenqController->runAction()
+#7 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#8 /var/www/html/yii/framework/web/CController.php(1146): CAccessControlFilter->filter()
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterAccessControl()
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#11 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceNoConcurrentLogin()
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#14 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceSessionExpiration()
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#17 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceRegisteredStation()
+#19 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#20 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#21 /var/www/html/yii/framework/web/CController.php(266): TransenqController->runActionWithFilters()
+#22 /var/www/html/yii/framework/web/CWebApplication.php(283): TransenqController->run()
+#23 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController()
+#24 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#25 /var/www/html/acct/index.php(13): CWebApplication->run()
+REQUEST_URI=/acct/index.php/transenq/viewdetail?index=26&type=IN
+in /var/www/html/acct/protected/views/transenq/viewi.php (7)
+in /var/www/html/acct/protected/controllers/TransenqController.php (79)
+in /var/www/html/acct/protected/components/Controller.php (71)
+2017/06/28 02:18:50 [warning] [application] Failed to set unsafe attribute "scenario" of "TransInForm".
+in /var/www/html/acct/protected/controllers/TransinController.php (60)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/28 02:18:59 [warning] [application] Failed to set unsafe attribute "scenario" of "TransInForm".
+in /var/www/html/acct/protected/controllers/TransinController.php (60)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/28 02:19:07 [warning] [application] Failed to set unsafe attribute "scenario" of "TransInForm".
+in /var/www/html/acct/protected/controllers/TransinController.php (60)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/28 09:35:06 [error] [php] Undefined index: ADJIN (/var/www/html/acct/protected/views/transenq/viewi.php:7)
+Stack trace:
+#0 /var/www/html/yii/framework/web/CController.php(870): TransenqController->renderFile()
+#1 /var/www/html/acct/protected/controllers/TransenqController.php(79): TransenqController->renderPartial()
+#2 unknown(0): TransenqController->actionViewDetail()
+#3 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs()
+#4 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CInlineAction->runWithParamsInternal()
+#5 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#6 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): TransenqController->runAction()
+#7 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#8 /var/www/html/yii/framework/web/CController.php(1146): CAccessControlFilter->filter()
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterAccessControl()
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#11 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceNoConcurrentLogin()
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#14 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceSessionExpiration()
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#17 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceRegisteredStation()
+#19 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#20 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#21 /var/www/html/yii/framework/web/CController.php(266): TransenqController->runActionWithFilters()
+#22 /var/www/html/yii/framework/web/CWebApplication.php(283): TransenqController->run()
+#23 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController()
+#24 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#25 /var/www/html/acct/index.php(13): CWebApplication->run()
+REQUEST_URI=/acct/index.php/transenq/viewdetail?index=26&type=IN
+in /var/www/html/acct/protected/views/transenq/viewi.php (7)
+in /var/www/html/acct/protected/controllers/TransenqController.php (79)
+in /var/www/html/acct/protected/components/Controller.php (71)
+2017/06/28 09:35:46 [error] [php] Undefined index: ADJIN (/var/www/html/acct/protected/views/transenq/viewi.php:7)
+Stack trace:
+#0 /var/www/html/yii/framework/web/CController.php(870): TransenqController->renderFile()
+#1 /var/www/html/acct/protected/controllers/TransenqController.php(79): TransenqController->renderPartial()
+#2 unknown(0): TransenqController->actionViewDetail()
+#3 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs()
+#4 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CInlineAction->runWithParamsInternal()
+#5 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#6 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): TransenqController->runAction()
+#7 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#8 /var/www/html/yii/framework/web/CController.php(1146): CAccessControlFilter->filter()
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterAccessControl()
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#11 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceNoConcurrentLogin()
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#14 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceSessionExpiration()
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#17 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceRegisteredStation()
+#19 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#20 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#21 /var/www/html/yii/framework/web/CController.php(266): TransenqController->runActionWithFilters()
+#22 /var/www/html/yii/framework/web/CWebApplication.php(283): TransenqController->run()
+#23 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController()
+#24 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#25 /var/www/html/acct/index.php(13): CWebApplication->run()
+REQUEST_URI=/acct/index.php/transenq/viewdetail?index=26&type=IN
+in /var/www/html/acct/protected/views/transenq/viewi.php (7)
+in /var/www/html/acct/protected/controllers/TransenqController.php (79)
+in /var/www/html/acct/protected/components/Controller.php (71)
+2017/06/28 12:39:31 [error] [php] getimagesize(): Read error! (/var/www/html/acct/protected/models/RptReimbursement.php:237)
+Stack trace:
+#0 /var/www/html/acct/protected/models/RptReimbursement.php(6): RptReimbursement->printReport()
+#1 /var/www/html/acct/protected/commands/JobQueueCommand.php(127): RptReimbursement->genReport()
+#2 /var/www/html/acct/protected/commands/JobQueueCommand.php(30): JobQueueCommand->genReport()
+#3 /var/www/html/yii/framework/console/CConsoleCommandRunner.php(68): JobQueueCommand->run()
+#4 /var/www/html/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run()
+#5 /var/www/html/yii/framework/base/CApplication.php(162): CConsoleApplication->processRequest()
+#6 /var/www/html/yii_console_ac.php(10): CConsoleApplication->run()
+
+2017/06/28 12:40:09 [error] [php] getimagesize(): Read error! (/var/www/html/acct/protected/models/RptReimbursement.php:238)
+Stack trace:
+#0 /var/www/html/acct/protected/models/RptReimbursement.php(6): RptReimbursement->printReport()
+#1 /var/www/html/acct/protected/commands/JobQueueCommand.php(127): RptReimbursement->genReport()
+#2 /var/www/html/acct/protected/commands/JobQueueCommand.php(30): JobQueueCommand->genReport()
+#3 /var/www/html/yii/framework/console/CConsoleCommandRunner.php(68): JobQueueCommand->run()
+#4 /var/www/html/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run()
+#5 /var/www/html/yii/framework/base/CApplication.php(162): CConsoleApplication->processRequest()
+#6 /var/www/html/yii_console_ac.php(10): CConsoleApplication->run()
+
+2017/06/28 12:44:06 [error] [php] Undefined variable: file_dimensions (/var/www/html/acct/protected/models/RptReimbursement.php:239)
+Stack trace:
+#0 /var/www/html/acct/protected/commands/JobQueueCommand.php(127): RptReimbursement->genReport()
+#1 /var/www/html/acct/protected/commands/JobQueueCommand.php(30): JobQueueCommand->genReport()
+#2 /var/www/html/yii/framework/console/CConsoleCommandRunner.php(68): JobQueueCommand->run()
+#3 /var/www/html/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run()
+#4 /var/www/html/yii/framework/base/CApplication.php(162): CConsoleApplication->processRequest()
+#5 /var/www/html/yii_console_ac.php(10): CConsoleApplication->run()
+
+2017/06/28 12:44:43 [error] [php] unlink() expects parameter 1 to be a valid path, resource given (/var/www/html/acct/protected/models/RptReimbursement.php:240)
+Stack trace:
+#0 /var/www/html/acct/protected/models/RptReimbursement.php(6): RptReimbursement->printReport()
+#1 /var/www/html/acct/protected/commands/JobQueueCommand.php(127): RptReimbursement->genReport()
+#2 /var/www/html/acct/protected/commands/JobQueueCommand.php(30): JobQueueCommand->genReport()
+#3 /var/www/html/yii/framework/console/CConsoleCommandRunner.php(68): JobQueueCommand->run()
+#4 /var/www/html/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run()
+#5 /var/www/html/yii/framework/base/CApplication.php(162): CConsoleApplication->processRequest()
+#6 /var/www/html/yii_console_ac.php(10): CConsoleApplication->run()
+
+2017/06/28 23:35:12 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/28 23:35:12 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/29 09:45:26 [error] [exception.CHttpException.999] exception 'CHttpException' with message '系统连接已经过期。请重新登录。' in /var/www/html/acct/protected/components/Controller.php:101
+Stack trace:
+#0 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceSessionExpiration(Object(CFilterChain))
+#1 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#3 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceRegisteredStation(Object(CFilterChain))
+#4 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#5 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#6 /var/www/html/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('accountitemoute...')
+#8 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('lookup/accounti...')
+#9 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#10 /var/www/html/acct/index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/acct/index.php/lookup/accountitemoutex?search=&acctid=
+HTTP_REFERER=http://test.lbsgroup.com.cn/acct/index.php/payreq/new
+---
+2017/06/29 12:40:52 [warning] [application] Failed to set unsafe attribute "scenario" of "CashinAuditForm".
+in /var/www/html/acct/protected/controllers/CashinauditController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/29 12:45:37 [warning] [application] Failed to set unsafe attribute "scenario" of "CashinAuditForm".
+in /var/www/html/acct/protected/controllers/CashinauditController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/29 12:45:43 [error] [php] Undefined index: ADJIN (/var/www/html/acct/protected/views/cashinaudit/viewi.php:7)
+Stack trace:
+#0 /var/www/html/yii/framework/web/CController.php(870): CashinauditController->renderFile()
+#1 /var/www/html/acct/protected/controllers/CashinauditController.php(101): CashinauditController->renderPartial()
+#2 unknown(0): CashinauditController->actionViewDetail()
+#3 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs()
+#4 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CInlineAction->runWithParamsInternal()
+#5 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#6 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): CashinauditController->runAction()
+#7 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#8 /var/www/html/yii/framework/web/CController.php(1146): CAccessControlFilter->filter()
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CashinauditController->filterAccessControl()
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#11 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CashinauditController->filterEnforceNoConcurrentLogin()
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#14 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CashinauditController->filterEnforceSessionExpiration()
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#17 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CashinauditController->filterEnforceRegisteredStation()
+#19 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#20 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#21 /var/www/html/yii/framework/web/CController.php(266): CashinauditController->runActionWithFilters()
+#22 /var/www/html/yii/framework/web/CWebApplication.php(283): CashinauditController->run()
+#23 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController()
+#24 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#25 /var/www/html/acct/index.php(13): CWebApplication->run()
+REQUEST_URI=/acct/index.php/cashinaudit/viewdetail?index=26&type=IN
+in /var/www/html/acct/protected/views/cashinaudit/viewi.php (7)
+in /var/www/html/acct/protected/controllers/CashinauditController.php (101)
+in /var/www/html/acct/protected/components/Controller.php (71)
+2017/06/29 14:47:37 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/29 14:47:37 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/29 14:47:44 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/29 14:47:44 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/29 14:47:53 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/29 14:47:53 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/29 16:25:29 [error] [system.db.CDbCommand] CDbCommand::fetchAll() failed: SQLSTATE[42000]: Syntax error or access violation: 1066 Not unique table/alias: 'f'. The SQL statement executed was: select a.id, a.req_dt, e.trans_type_desc, a.item_desc, a.payee_name,
+					b.name as city_name, a.amount, a.status, f.field_value as ref_no, a.req_user, 
+					(select case workflowdev.RequestStatus('PAYMENT',a.id,a.req_dt)
+							when '' then '0DF' 
+							when 'PC' then '1PC' 
+							when 'PA' then '2PA' 
+							when 'PR' then '3PR' 
+							when 'PS' then '4PS' 
+							when 'ED' then '5ED' 
+					end) as wfstatus,
+					workflowdev.RequestStatusDesc('PAYMENT',a.id,a.req_dt) as wfstatusdesc
+				from acc_request a inner join securitydev.sec_city b on a.city=b.code
+					inner join acc_trans_type e on a.trans_type_code=e.trans_type_code 
+					left outer join acc_request_info f on a.id=f.req_id and f.field_id='REF_NO'
+					left outer join acc_request_info f on a.id=f.req_id and f.field_id='INT_FEE'
+				where a.city in ('SH') 
+				and e.trans_cat='OUT' 
+			order by wfstatus, req_dt desc LIMIT 0, 25.
+in /var/www/html/acct/protected/models/PayReqList.php (96)
+in /var/www/html/acct/protected/controllers/PayreqController.php (51)
+in /var/www/html/acct/protected/components/Controller.php (71)
+2017/06/29 16:25:29 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand 无法执行 SQL 语句: SQLSTATE[42000]: Syntax error or access violation: 1066 Not unique table/alias: 'f'. The SQL statement executed was: select a.id, a.req_dt, e.trans_type_desc, a.item_desc, a.payee_name,
+					b.name as city_name, a.amount, a.status, f.field_value as ref_no, a.req_user, 
+					(select case workflowdev.RequestStatus('PAYMENT',a.id,a.req_dt)
+							when '' then '0DF' 
+							when 'PC' then '1PC' 
+							when 'PA' then '2PA' 
+							when 'PR' then '3PR' 
+							when 'PS' then '4PS' 
+							when 'ED' then '5ED' 
+					end) as wfstatus,
+					workflowdev.RequestStatusDesc('PAYMENT',a.id,a.req_dt) as wfstatusdesc
+				from acc_request a inner join securitydev.sec_city b on a.city=b.code
+					inner join acc_trans_type e on a.trans_type_code=e.trans_type_code 
+					left outer join acc_request_info f on a.id=f.req_id and f.field_id='REF_NO'
+					left outer join acc_request_info f on a.id=f.req_id and f.field_id='INT_FEE'
+				where a.city in ('SH') 
+				and e.trans_cat='OUT' 
+			order by wfstatus, req_dt desc LIMIT 0, 25' in /var/www/html/yii/framework/db/CDbCommand.php:528
+Stack trace:
+#0 /var/www/html/yii/framework/db/CDbCommand.php(390): CDbCommand->queryInternal('fetchAll', Array, Array)
+#1 /var/www/html/acct/protected/models/PayReqList.php(96): CDbCommand->queryAll()
+#2 /var/www/html/acct/protected/controllers/PayreqController.php(51): PayReqList->retrieveDataByPage(1)
+#3 [internal function]: PayreqController->actionIndex(0)
+#4 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs(Object(PayreqController), Array)
+#5 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CAction->runWithParamsInternal(Object(PayreqController), Object(ReflectionMethod), Array)
+#6 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#7 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#8 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#9 /var/www/html/yii/framework/web/CController.php(1146): CFilter->filter(Object(CFilterChain))
+#10 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#11 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#12 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#13 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceNoConcurrentLogin(Object(CFilterChain))
+#14 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#15 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#16 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceSessionExpiration(Object(CFilterChain))
+#17 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#18 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#19 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceRegisteredStation(Object(CFilterChain))
+#20 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#21 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#22 /var/www/html/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#23 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('index')
+#24 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('payreq/index')
+#25 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#26 /var/www/html/acct/index.php(13): CApplication->run()
+#27 {main}
+REQUEST_URI=/acct/index.php/payreq/index
+HTTP_REFERER=http://test.lbsgroup.com.cn/acct/index.php/realize/index
+---
+2017/06/29 18:41:44 [error] [exception.CException] exception 'CException' with message '属性 "TransInForm.int_fee" 未被定义.' in /var/www/html/yii/framework/base/CComponent.php:131
+Stack trace:
+#0 /var/www/html/yii/framework/web/helpers/CHtml.php(2158): CComponent->__get('int_fee')
+#1 /var/www/html/yii/framework/web/helpers/CHtml.php(1515): CHtml::resolveValue(Object(TransInForm), 'int_fee')
+#2 /var/www/html/acct/protected/extensions/bootstrap/helpers/TbHtml.php(2028): CHtml::activeDropDownList(Object(TransInForm), 'int_fee', Array, Array)
+#3 /var/www/html/acct/protected/extensions/bootstrap/helpers/TbHtml.php(2585): TbHtml::activeDropDownList(Object(TransInForm), 'int_fee', Array, Array)
+#4 /var/www/html/acct/protected/extensions/bootstrap/widgets/TbActiveForm.php(443): TbHtml::createActiveInput('dropDownList', Object(TransInForm), 'int_fee', Array, Array)
+#5 /var/www/html/acct/protected/extensions/bootstrap/widgets/TbActiveForm.php(330): TbActiveForm->createInput('dropDownList', Object(TransInForm), 'int_fee', Array, Array)
+#6 /var/www/html/acct/protected/views/transin/form.php(220): TbActiveForm->dropDownList(Object(TransInForm), 'int_fee', Array, Array)
+#7 /var/www/html/yii/framework/web/CBaseController.php(127): require('/var/www/html/a...')
+#8 /var/www/html/yii/framework/web/CBaseController.php(96): CBaseController->renderInternal('/var/www/html/a...', Array, true)
+#9 /var/www/html/yii/framework/web/CController.php(870): CBaseController->renderFile('/var/www/html/a...', Array, true)
+#10 /var/www/html/yii/framework/web/CController.php(783): CController->renderPartial('form', Array, true)
+#11 /var/www/html/acct/protected/controllers/TransinController.php(101): CController->render('form', Array)
+#12 [internal function]: TransinController->actionEdit('26')
+#13 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs(Object(TransinController), Array)
+#14 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CAction->runWithParamsInternal(Object(TransinController), Object(ReflectionMethod), Array)
+#15 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#17 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/CController.php(1146): CFilter->filter(Object(CFilterChain))
+#19 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#20 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#21 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#22 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceNoConcurrentLogin(Object(CFilterChain))
+#23 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#24 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#25 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceSessionExpiration(Object(CFilterChain))
+#26 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#27 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#28 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceRegisteredStation(Object(CFilterChain))
+#29 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#30 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#31 /var/www/html/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#32 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('edit')
+#33 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('transin/edit')
+#34 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#35 /var/www/html/acct/index.php(13): CApplication->run()
+#36 {main}
+REQUEST_URI=/acct/index.php/transin/edit?index=26
+HTTP_REFERER=http://test.lbsgroup.com.cn/acct/index.php/transin/index
+---
+2017/06/29 18:50:21 [error] [php] Undefined index: int_fee (/var/www/html/acct/protected/models/TransEnq2List.php:179)
+Stack trace:
+#0 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs()
+#1 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CInlineAction->runWithParamsInternal()
+#2 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#3 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): TransenqController->runAction()
+#4 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#5 /var/www/html/yii/framework/web/CController.php(1146): CAccessControlFilter->filter()
+#6 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterAccessControl()
+#7 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#8 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceNoConcurrentLogin()
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#11 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceSessionExpiration()
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#14 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceRegisteredStation()
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#17 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/CController.php(266): TransenqController->runActionWithFilters()
+#19 /var/www/html/yii/framework/web/CWebApplication.php(283): TransenqController->run()
+#20 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController()
+#21 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#22 /var/www/html/acct/index.php(13): CWebApplication->run()
+REQUEST_URI=/acct/index.php/transenq/index2?index=2&city=SH
+in /var/www/html/acct/protected/models/TransEnq2List.php (179)
+in /var/www/html/acct/protected/controllers/TransenqController.php (66)
+in /var/www/html/acct/protected/components/Controller.php (71)
+2017/06/29 18:51:38 [error] [php] Undefined index: int_fee (/var/www/html/acct/protected/models/TransEnq2List.php:180)
+Stack trace:
+#0 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs()
+#1 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CInlineAction->runWithParamsInternal()
+#2 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#3 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): TransenqController->runAction()
+#4 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#5 /var/www/html/yii/framework/web/CController.php(1146): CAccessControlFilter->filter()
+#6 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterAccessControl()
+#7 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#8 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceNoConcurrentLogin()
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#11 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceSessionExpiration()
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#14 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransenqController->filterEnforceRegisteredStation()
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#17 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/CController.php(266): TransenqController->runActionWithFilters()
+#19 /var/www/html/yii/framework/web/CWebApplication.php(283): TransenqController->run()
+#20 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController()
+#21 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#22 /var/www/html/acct/index.php(13): CWebApplication->run()
+REQUEST_URI=/acct/index.php/transenq/index2?index=2&city=SH
+in /var/www/html/acct/protected/models/TransEnq2List.php (180)
+in /var/www/html/acct/protected/controllers/TransenqController.php (66)
+in /var/www/html/acct/protected/components/Controller.php (71)
+2017/06/30 09:45:14 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:45:14 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:45:14 [warning] [application] Failed to set unsafe attribute "ref_no" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:45:14 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:45:31 [warning] [application] Failed to set unsafe attribute "scenario" of "ApprReqForm".
+in /var/www/html/acct/protected/controllers/ApprreqController.php (67)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:45:31 [warning] [application] Failed to set unsafe attribute "wfstatus" of "ApprReqForm".
+in /var/www/html/acct/protected/controllers/ApprreqController.php (67)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:45:31 [warning] [application] Failed to set unsafe attribute "user_name" of "ApprReqForm".
+in /var/www/html/acct/protected/controllers/ApprreqController.php (67)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:45:31 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "ApprReqForm".
+in /var/www/html/acct/protected/controllers/ApprreqController.php (67)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:47:00 [warning] [application] Failed to set unsafe attribute "scenario" of "RealizeForm".
+in /var/www/html/acct/protected/controllers/RealizeController.php (115)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:47:17 [warning] [application] Failed to set unsafe attribute "scenario" of "RealizeForm".
+in /var/www/html/acct/protected/controllers/RealizeController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:48:19 [warning] [application] Failed to set unsafe attribute "scenario" of "RealizeForm".
+in /var/www/html/acct/protected/controllers/RealizeController.php (115)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:48:25 [warning] [application] Failed to set unsafe attribute "scenario" of "RealizeForm".
+in /var/www/html/acct/protected/controllers/RealizeController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:49:28 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:49:28 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:49:36 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:49:36 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:55:16 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:55:16 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:55:21 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:55:21 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:56:29 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:56:29 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:56:29 [warning] [application] Failed to set unsafe attribute "ref_no" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 09:56:29 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 11:11:38 [warning] [application] Failed to set unsafe attribute "scenario" of "RealizeForm".
+in /var/www/html/acct/protected/controllers/RealizeController.php (115)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 11:11:42 [warning] [application] Failed to set unsafe attribute "scenario" of "RealizeForm".
+in /var/www/html/acct/protected/controllers/RealizeController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 11:11:51 [warning] [application] Failed to set unsafe attribute "scenario" of "RealizeForm".
+in /var/www/html/acct/protected/controllers/RealizeController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/06/30 16:47:53 [error] [php] Undefined offset: 560265 (/var/www/html/acct/protected/models/AcctItemList.php:87)
+Stack trace:
+#0 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs()
+#1 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CInlineAction->runWithParamsInternal()
+#2 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#3 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): AcctitemController->runAction()
+#4 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#5 /var/www/html/yii/framework/web/CController.php(1146): CAccessControlFilter->filter()
+#6 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): AcctitemController->filterAccessControl()
+#7 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#8 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): AcctitemController->filterEnforceNoConcurrentLogin()
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#11 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): AcctitemController->filterEnforceSessionExpiration()
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#14 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): AcctitemController->filterEnforceRegisteredStation()
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#17 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/CController.php(266): AcctitemController->runActionWithFilters()
+#19 /var/www/html/yii/framework/web/CWebApplication.php(283): AcctitemController->run()
+#20 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController()
+#21 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#22 /var/www/html/acct/index.php(13): CWebApplication->run()
+REQUEST_URI=/acct/index.php/acctitem/index?pageNum=15
+in /var/www/html/acct/protected/models/AcctItemList.php (87)
+in /var/www/html/acct/protected/controllers/AcctitemController.php (51)
+in /var/www/html/acct/protected/components/Controller.php (71)
+2017/06/30 16:59:59 [warning] [application] Failed to set unsafe attribute "scenario" of "AcctItemForm".
+in /var/www/html/acct/protected/controllers/AcctitemController.php (104)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:44:47 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:44:47 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:45:50 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (203)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:45:50 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (203)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:47:43 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:47:43 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:52:37 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:52:37 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:53:38 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:53:38 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:53:46 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (203)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:53:46 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (203)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:53:47 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:53:47 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:54:08 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:54:08 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:54:20 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (203)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:54:20 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (203)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:55:31 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 14:55:31 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:03:35 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (203)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:03:35 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (203)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:04:00 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:04:00 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (187)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:13:01 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (203)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:13:01 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (203)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:13:22 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (203)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:13:22 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (203)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:26:45 [warning] [application] Failed to set unsafe attribute "scenario" of "TransInForm".
+in /var/www/html/acct/protected/controllers/TransinController.php (119)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:26:54 [warning] [application] Failed to set unsafe attribute "scenario" of "TransInForm".
+in /var/www/html/acct/protected/controllers/TransinController.php (135)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:28:23 [warning] [application] Failed to set unsafe attribute "scenario" of "TransInForm".
+in /var/www/html/acct/protected/controllers/TransinController.php (119)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:29:18 [warning] [application] Failed to set unsafe attribute "scenario" of "TransInForm".
+in /var/www/html/acct/protected/controllers/TransinController.php (135)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:30:28 [warning] [application] Failed to set unsafe attribute "scenario" of "TransInForm".
+in /var/www/html/acct/protected/controllers/TransinController.php (119)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:30:34 [warning] [application] Failed to set unsafe attribute "scenario" of "TransInForm".
+in /var/www/html/acct/protected/controllers/TransinController.php (135)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:30:40 [warning] [application] Failed to set unsafe attribute "scenario" of "TransInForm".
+in /var/www/html/acct/protected/controllers/TransinController.php (119)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:30:44 [warning] [application] Failed to set unsafe attribute "scenario" of "TransInForm".
+in /var/www/html/acct/protected/controllers/TransinController.php (119)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:31:00 [warning] [application] Failed to set unsafe attribute "scenario" of "TransInForm".
+in /var/www/html/acct/protected/controllers/TransinController.php (60)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:41:17 [error] [php] Undefined variable: suffix (/var/www/html/acct/protected/models/TransInForm.php:123)
+Stack trace:
+#0 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs()
+#1 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CInlineAction->runWithParamsInternal()
+#2 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#3 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): TransinController->runAction()
+#4 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#5 /var/www/html/yii/framework/web/CController.php(1146): CAccessControlFilter->filter()
+#6 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransinController->filterAccessControl()
+#7 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#8 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransinController->filterEnforceNoConcurrentLogin()
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#11 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransinController->filterEnforceSessionExpiration()
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#14 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): TransinController->filterEnforceRegisteredStation()
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#17 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/CController.php(266): TransinController->runActionWithFilters()
+#19 /var/www/html/yii/framework/web/CWebApplication.php(283): TransinController->run()
+#20 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController()
+#21 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#22 /var/www/html/acct/index.php(13): CWebApplication->run()
+REQUEST_URI=/acct/index.php/transin/edit?index=30
+in /var/www/html/acct/protected/models/TransInForm.php (123)
+in /var/www/html/acct/protected/controllers/TransinController.php (98)
+in /var/www/html/acct/protected/components/Controller.php (71)
+2017/07/04 15:42:01 [warning] [application] Failed to set unsafe attribute "scenario" of "TransInForm".
+in /var/www/html/acct/protected/controllers/TransinController.php (119)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:43:06 [error] [php] Undefined index: payrealcountdoc (/var/www/html/acct/protected/models/SignReqForm.php:117)
+Stack trace:
+#0 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs()
+#1 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CInlineAction->runWithParamsInternal()
+#2 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#3 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): SignreqController->runAction()
+#4 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#5 /var/www/html/yii/framework/web/CController.php(1146): CAccessControlFilter->filter()
+#6 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): SignreqController->filterAccessControl()
+#7 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#8 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#9 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): SignreqController->filterEnforceNoConcurrentLogin()
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#11 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): SignreqController->filterEnforceSessionExpiration()
+#13 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#14 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#15 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): SignreqController->filterEnforceRegisteredStation()
+#16 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#17 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#18 /var/www/html/yii/framework/web/CController.php(266): SignreqController->runActionWithFilters()
+#19 /var/www/html/yii/framework/web/CWebApplication.php(283): SignreqController->run()
+#20 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController()
+#21 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#22 /var/www/html/acct/index.php(13): CWebApplication->run()
+REQUEST_URI=/acct/index.php/signreq/edit?index=15
+in /var/www/html/acct/protected/models/SignReqForm.php (117)
+in /var/www/html/acct/protected/controllers/SignreqController.php (58)
+in /var/www/html/acct/protected/components/Controller.php (71)
+2017/07/04 15:43:42 [error] [php] Undefined index: payreq (/var/www/html/acct/protected/views/signreq/form.php:36)
+Stack trace:
+#0 /var/www/html/yii/framework/web/CController.php(870): SignreqController->renderFile()
+#1 /var/www/html/yii/framework/web/CController.php(783): SignreqController->renderPartial()
+#2 /var/www/html/acct/protected/controllers/SignreqController.php(61): SignreqController->render()
+#3 unknown(0): SignreqController->actionEdit()
+#4 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs()
+#5 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CInlineAction->runWithParamsInternal()
+#6 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#7 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): SignreqController->runAction()
+#8 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#9 /var/www/html/yii/framework/web/CController.php(1146): CAccessControlFilter->filter()
+#10 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): SignreqController->filterAccessControl()
+#11 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#12 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#13 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): SignreqController->filterEnforceNoConcurrentLogin()
+#14 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#15 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#16 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): SignreqController->filterEnforceSessionExpiration()
+#17 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#18 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#19 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): SignreqController->filterEnforceRegisteredStation()
+#20 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter()
+#21 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#22 /var/www/html/yii/framework/web/CController.php(266): SignreqController->runActionWithFilters()
+#23 /var/www/html/yii/framework/web/CWebApplication.php(283): SignreqController->run()
+#24 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController()
+#25 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#26 /var/www/html/acct/index.php(13): CWebApplication->run()
+REQUEST_URI=/acct/index.php/signreq/edit?index=15
+in /var/www/html/acct/protected/views/signreq/form.php (36)
+in /var/www/html/acct/protected/controllers/SignreqController.php (61)
+in /var/www/html/acct/protected/components/Controller.php (71)
+2017/07/04 15:55:27 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (189)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:55:27 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (189)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:55:34 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (189)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:55:34 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (189)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:55:41 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:55:41 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:56:19 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (189)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:56:19 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (189)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:56:19 [warning] [application] Failed to set unsafe attribute "ref_no" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (189)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:56:19 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (189)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:56:46 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:56:46 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:56:46 [warning] [application] Failed to set unsafe attribute "ref_no" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 15:56:46 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 16:35:07 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 16:35:07 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 16:35:07 [warning] [application] Failed to set unsafe attribute "ref_no" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 16:35:07 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (121)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 16:57:12 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 16:57:12 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 16:57:12 [warning] [application] Failed to set unsafe attribute "ref_no" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 16:57:12 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 17:11:39 [error] [exception.CException] exception 'CException' with message '属性 "PayReqForm.city" 未被定义.' in /var/www/html/yii/framework/base/CComponent.php:131
+Stack trace:
+#0 /var/www/html/acct/protected/views/payreq/form.php(161): CComponent->__get('city')
+#1 /var/www/html/yii/framework/web/CBaseController.php(127): require('/var/www/html/a...')
+#2 /var/www/html/yii/framework/web/CBaseController.php(96): CBaseController->renderInternal('/var/www/html/a...', Array, true)
+#3 /var/www/html/yii/framework/web/CController.php(870): CBaseController->renderFile('/var/www/html/a...', Array, true)
+#4 /var/www/html/yii/framework/web/CController.php(783): CController->renderPartial('form', Array, true)
+#5 /var/www/html/acct/protected/controllers/PayreqController.php(171): CController->render('form', Array)
+#6 [internal function]: PayreqController->actionEdit('23')
+#7 /var/www/html/yii/framework/web/actions/CAction.php(107): ReflectionMethod->invokeArgs(Object(PayreqController), Array)
+#8 /var/www/html/yii/framework/web/actions/CInlineAction.php(48): CAction->runWithParamsInternal(Object(PayreqController), Object(ReflectionMethod), Array)
+#9 /var/www/html/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#10 /var/www/html/yii/framework/web/filters/CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#11 /var/www/html/yii/framework/web/filters/CFilter.php(41): CFilterChain->run()
+#12 /var/www/html/yii/framework/web/CController.php(1146): CFilter->filter(Object(CFilterChain))
+#13 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#14 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#15 /var/www/html/acct/protected/components/Controller.php(71): CFilterChain->run()
+#16 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceNoConcurrentLogin(Object(CFilterChain))
+#17 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#18 /var/www/html/acct/protected/components/Controller.php(95): CFilterChain->run()
+#19 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceSessionExpiration(Object(CFilterChain))
+#20 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#21 /var/www/html/acct/protected/components/Controller.php(51): CFilterChain->run()
+#22 /var/www/html/yii/framework/web/filters/CInlineFilter.php(59): Controller->filterEnforceRegisteredStation(Object(CFilterChain))
+#23 /var/www/html/yii/framework/web/filters/CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#24 /var/www/html/yii/framework/web/CController.php(292): CFilterChain->run()
+#25 /var/www/html/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#26 /var/www/html/yii/framework/web/CWebApplication.php(283): CController->run('edit')
+#27 /var/www/html/yii/framework/web/CWebApplication.php(142): CWebApplication->runController('payreq/edit')
+#28 /var/www/html/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#29 /var/www/html/acct/index.php(13): CApplication->run()
+#30 {main}
+REQUEST_URI=/acct/index.php/payreq/edit?index=23
+HTTP_REFERER=http://test.lbsgroup.com.cn/acct/index.php/payreq/index
+---
+2017/07/04 17:16:52 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 17:16:52 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 17:16:52 [warning] [application] Failed to set unsafe attribute "ref_no" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 17:16:52 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 17:17:25 [warning] [application] Failed to set unsafe attribute "scenario" of "ApprReqForm".
+in /var/www/html/acct/protected/controllers/ApprreqController.php (67)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 17:17:25 [warning] [application] Failed to set unsafe attribute "wfstatus" of "ApprReqForm".
+in /var/www/html/acct/protected/controllers/ApprreqController.php (67)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 17:17:25 [warning] [application] Failed to set unsafe attribute "user_name" of "ApprReqForm".
+in /var/www/html/acct/protected/controllers/ApprreqController.php (67)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 17:17:25 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "ApprReqForm".
+in /var/www/html/acct/protected/controllers/ApprreqController.php (67)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 17:31:10 [warning] [application] Failed to set unsafe attribute "scenario" of "RealizeForm".
+in /var/www/html/acct/protected/controllers/RealizeController.php (115)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 17:31:32 [warning] [application] Failed to set unsafe attribute "scenario" of "RealizeForm".
+in /var/www/html/acct/protected/controllers/RealizeController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:14:07 [warning] [application] Failed to set unsafe attribute "scenario" of "SignReqForm".
+in /var/www/html/acct/protected/controllers/SignreqController.php (69)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:14:07 [warning] [application] Failed to set unsafe attribute "city" of "SignReqForm".
+in /var/www/html/acct/protected/controllers/SignreqController.php (69)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:15:35 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:15:35 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (70)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:15:49 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (189)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:15:49 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (189)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:15:49 [warning] [application] Failed to set unsafe attribute "ref_no" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (189)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:15:49 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (189)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:16:50 [warning] [application] Failed to set unsafe attribute "scenario" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:16:50 [warning] [application] Failed to set unsafe attribute "wfstatus" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:16:50 [warning] [application] Failed to set unsafe attribute "ref_no" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:16:50 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "PayReqForm".
+in /var/www/html/acct/protected/controllers/PayreqController.php (87)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:17:42 [warning] [application] Failed to set unsafe attribute "scenario" of "ApprReqForm".
+in /var/www/html/acct/protected/controllers/ApprreqController.php (67)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:17:42 [warning] [application] Failed to set unsafe attribute "wfstatus" of "ApprReqForm".
+in /var/www/html/acct/protected/controllers/ApprreqController.php (67)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:17:42 [warning] [application] Failed to set unsafe attribute "user_name" of "ApprReqForm".
+in /var/www/html/acct/protected/controllers/ApprreqController.php (67)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:17:42 [warning] [application] Failed to set unsafe attribute "wfstatusdesc" of "ApprReqForm".
+in /var/www/html/acct/protected/controllers/ApprreqController.php (67)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:18:25 [warning] [application] Failed to set unsafe attribute "scenario" of "RealizeForm".
+in /var/www/html/acct/protected/controllers/RealizeController.php (115)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:18:32 [warning] [application] Failed to set unsafe attribute "scenario" of "RealizeForm".
+in /var/www/html/acct/protected/controllers/RealizeController.php (115)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:18:46 [warning] [application] Failed to set unsafe attribute "scenario" of "RealizeForm".
+in /var/www/html/acct/protected/controllers/RealizeController.php (59)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:20:43 [warning] [application] Failed to set unsafe attribute "scenario" of "SignReqForm".
+in /var/www/html/acct/protected/controllers/SignreqController.php (69)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)
+2017/07/04 18:20:43 [warning] [application] Failed to set unsafe attribute "city" of "SignReqForm".
+in /var/www/html/acct/protected/controllers/SignreqController.php (69)
+in /var/www/html/acct/protected/components/Controller.php (71)
+in /var/www/html/acct/protected/components/Controller.php (95)

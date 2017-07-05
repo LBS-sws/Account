@@ -90,12 +90,13 @@ class WorkflowPayment extends WorkflowDMS {
 		$suffix = Yii::app()->params['envSuffix'];
 		$rtn = '';
 		$sql = "select a.*, x.disp_name, b.field_value as ref_no, c.field_value as acct_code,
-					d.field_value as reason 
+					d.field_value as reason, e.field_value as int_fee  
 				from acc_request a 
 				left outer join security$suffix.sec_user x on a.req_user=x.username 
 				left outer join acc_request_info b on a.id=b.req_id and b.field_id='ref_no'
 				left outer join acc_request_info c on a.id=c.req_id and c.field_id='acct_code'
 				left outer join acc_request_info d on a.id=d.req_id and d.field_id='reason'
+				left outer join acc_request_info e on a.id=e.req_id and e.field_id='int_fee'
 				where a.id=$id
 			";
 		$row = $this->connection->createCommand($sql)->queryRow();
@@ -110,6 +111,7 @@ class WorkflowPayment extends WorkflowDMS {
 			$rtn .= Yii::t('trans','Payee').': '.$row['payee_name'].'<br>';
 			$rtn .= Yii::t('trans','Paid Item').': '.$row['acct_code'].' '.(empty($row['acct_code']) ? '' : $codelist[$row['acct_code']]).'<br>';
 			$rtn .= Yii::t('trans','Amount').': '.$row['amount'].'<br>';
+			$rtn .= Yii::t('trans','Integrated Fee').': '.($row['int_fee']=='Y' ? Yii::t('misc','Yes') : Yii::t('misc','No')).'<br>';
 			if (!empty($row['reason']))
 				$rtn .= Yii::t('trans','Reason').': '.$row['reason'].'<br>';
 		}
@@ -383,6 +385,7 @@ class WorkflowPayment extends WorkflowDMS {
 					'cheque_no'=>'cheque_no',
 					'invoice_no'=>'invoice_no',
 					'acct_code'=>'acct_code',
+					'int_fee'=>'int_fee',
 			);
 		$sql = "insert into acc_trans_info
 					(trans_id, field_id, field_value, lcu, luu)
@@ -481,6 +484,7 @@ class WorkflowPayment extends WorkflowDMS {
 					'invoice_no'=>'invoice_no',
 					'acct_code'=>'acct_code',
 					'united_inv_no'=>'united_inv_no',
+					'int_fee'=>'int_fee',
 			);
 		$sql = "insert into acc_trans_info
 					(trans_id, field_id, field_value, lcu, luu)

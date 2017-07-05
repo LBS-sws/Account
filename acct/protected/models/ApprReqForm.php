@@ -23,12 +23,14 @@ class ApprReqForm extends CFormModel
 	public $ref_no;
 	public $acct_code;
 	public $reason;
+	public $int_fee;
 	
 	private $dyn_fields = array(
 							'acct_id',
 							'ref_no',
 							'acct_code',
 							'reason',
+							'int_fee',
 						);
 	
 	public $files;
@@ -62,6 +64,7 @@ class ApprReqForm extends CFormModel
 			'acct_id'=>Yii::t('trans','Paid Account'),
 			'user_name'=>Yii::t('trans','Requestor'),
 			'reason'=>Yii::t('trans','Reason'),
+			'int_fee'=>Yii::t('trans','Integrated Fee'),
 		);
 	}
 
@@ -69,7 +72,7 @@ class ApprReqForm extends CFormModel
 	{
 		return array(
 			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount','safe'),
-			array('id, item_desc, payee_id, status, status_desc, ref_no, acct_code, type, remarks, reason','safe'), 
+			array('id, item_desc, payee_id, status, status_desc, ref_no, acct_code, type, remarks, reason, int_fee','safe'), 
 			array('files, removeFileId, docMasterId, no_of_attm','safe'), 
 				
 		);
@@ -88,7 +91,9 @@ class ApprReqForm extends CFormModel
 
 		$sql = "select a.*, b.disp_name as user_name,  
 				workflow$suffix.RequestStatus('PAYMENT',id,req_dt) as wfstatus,
-				workflow$suffix.RequestStatusDesc('PAYMENT',id,req_dt) as wfstatusdesc
+				workflow$suffix.RequestStatusDesc('PAYMENT',id,req_dt) as wfstatusdesc,
+				docman$suffix.countdoc('payreq',id) as payreqcountdoc,
+				docman$suffix.countdoc('tax',id) as taxcountdoc
 				from acc_request a, security$suffix.sec_user b where id=$index and id in ($list) 
 				and a.req_user=b.username
 			";
@@ -113,6 +118,8 @@ class ApprReqForm extends CFormModel
 				$this->user_name = $row['user_name'];
 				$this->city = $row['city'];
 				$this->type = $type;
+				$this->no_of_attm['payreq'] = $row['payreqcountdoc'];
+				$this->no_of_attm['tax'] = $row['taxcountdoc'];
 				break;
 			}
 		

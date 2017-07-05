@@ -62,6 +62,13 @@
 </tr>
 
 <tr>
+	<td><?php echo TbHtml::label($labels['int_fee'],false); ?></td>
+	<td>
+		<?php echo $model->int_fee=='Y' ? Yii::t('misc','Yes') : Yii::t('misc','No');?>
+	</td>
+</tr>
+
+<tr>
 	<td><?php echo TbHtml::label($labels['trans_desc'],false); ?></td>
 	<td>
 		<?php 

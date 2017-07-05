@@ -46,6 +46,16 @@ CREATE TABLE dm_file(
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 CREATE INDEX idx_dm_file_01 ON dm_file(mast_id);
 
+DELIMITER //
+CREATE FUNCTION countdoc(doctype varchar(10), docid int unsigned) RETURNS int
+BEGIN
+	DECLARE no_of_doc int;
+	SELECT count(b.id) INTO no_of_doc FROM dm_master a, dm_file b
+	WHERE a.id = b.mast_id AND a.doc_type_code = doctype AND a.doc_id = docid AND b.remove<>'Y';
+	RETURN no_of_doc;
+END //
+DELIMITER ;
+
 /*
 DROP TABLE IF EXISTS dm_detail;
 CREATE TABLE dm_detail(

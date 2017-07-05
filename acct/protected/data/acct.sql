@@ -281,6 +281,25 @@ END //
 DELIMITER ;
 
 DELIMITER //
+DROP FUNCTION IF EXISTS AccountBalanceByLCD //
+CREATE FUNCTION AccountBalanceByLCD(p_acct_id int unsigned, p_city char(5), p_fm_dt datetime, p_to_dt datetime) RETURNS decimal(11,2)
+BEGIN
+	DECLARE balance decimal(11,2);
+	SET balance = (
+		SELECT sum(case b.trans_cat
+					when 'IN' then (if(b.adj_type='N',a.amount,-1*a.amount))
+					when 'OUT' then (if(b.adj_type='N',-1*a.amount,a.amount))
+				end)
+		FROM acc_trans a, acc_trans_type b
+		WHERE a.acct_id = p_acct_id and a.trans_type_code = b.trans_type_code
+		and a.lcd >= p_fm_dt and a.lcd <= p_to_dt
+		and a.status <> 'V' and a.city = p_city
+	);
+	RETURN balance;
+END //
+DELIMITER ;
+
+DELIMITER //
 DROP FUNCTION IF EXISTS AccountTransAmount //
 CREATE FUNCTION AccountTransAmount(p_cat char(5), p_acct_id int unsigned, p_city char(5), p_fm_dt datetime, p_to_dt datetime) RETURNS decimal(11,2)
 BEGIN
@@ -290,6 +309,23 @@ BEGIN
 		FROM acc_trans a, acc_trans_type b
 		WHERE a.acct_id = p_acct_id and a.trans_type_code = b.trans_type_code
 		and a.trans_dt >= p_fm_dt and a.trans_dt <= p_to_dt
+		and a.status <> 'V' and a.city = p_city
+		and b.trans_cat = p_cat
+	);
+	RETURN balance;
+END //
+DELIMITER ;
+
+DELIMITER //
+DROP FUNCTION IF EXISTS TransAmountByLCD //
+CREATE FUNCTION TransAmountByLCD(p_cat char(5), p_acct_id int unsigned, p_city char(5), p_fm_dt datetime, p_to_dt datetime) RETURNS decimal(11,2)
+BEGIN
+	DECLARE balance decimal(11,2);
+	SET balance = (
+		SELECT sum(if(b.adj_type='N',a.amount,-1*a.amount))
+		FROM acc_trans a, acc_trans_type b
+		WHERE a.acct_id = p_acct_id and a.trans_type_code = b.trans_type_code
+		and a.lcd >= p_fm_dt and a.lcd <= p_to_dt
 		and a.status <> 'V' and a.city = p_city
 		and b.trans_cat = p_cat
 	);

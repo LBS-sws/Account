@@ -39,6 +39,7 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In';
 						'acct_type_desc',
 						'bank_name',
 						'acct_no',
+						'int_fee',
 						'status',
 					);
 		if (!Yii::app()->user->isSingleCity()) $search[] = 'city_name';
@@ -47,8 +48,6 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In';
 			'model'=>$model,
 				'viewhdr'=>'//transin/_listhdr',
 				'viewdtl'=>'//transin/_listdtl',
-				'gridsize'=>'24',
-				'height'=>'600',
 				'search'=>$search,
 		));
 	?>
