@@ -10,6 +10,7 @@ class TransOutForm extends CFormModel
 	public $amount;
 	public $status;
 	public $status_desc;
+	public $posted;
 	public $city;
 	
 	public $payer_type = 'O';
@@ -17,26 +18,40 @@ class TransOutForm extends CFormModel
 	public $payer_name;
 	public $cheque_no;
 	public $invoice_no;
+	public $acct_code;
+	public $acct_code_desc;
+	public $item_code;
+	public $citem_desc;
 	public $int_fee;
+	public $reason;
+	public $req_ref_no;
 	
 	private $dyn_fields = array(
 							'payer_type',
 							'payer_id',
 							'payer_name',
+							'acct_code',
+							'item_code',
 							'cheque_no',
 							'invoice_no',
 							'int_fee',
+							'reason',
+							'req_ref_no',
 						);
 	
-	public $no_of_attm = 0;
+	public $no_of_attm = array(
+							'trans'=>0
+						);
 	public $docType = 'TRANS';
+	public $docMasterId = 0;
 	public $files;
 	public $removeFileId = 0;
 
 	public function init() {
 		$this->trans_dt = date('Y/m/d');
-		$this->trans_type_code = 'CASHOUT';
-		$this->acct_id = $this->getDefaultAccountValue('CASH');
+		$this->trans_type_code = '';
+		$this->acct_id = 0; //$this->getDefaultAccountValue('CASH');
+		$this->city = Yii::app()->user->city();
 		parent::init();
 	}
 	
@@ -52,8 +67,13 @@ class TransOutForm extends CFormModel
 			'city_name'=>Yii::t('misc','City'),
 			'cheque_no'=>Yii::t('trans','Cheque No.'),
 			'invoice_no'=>Yii::t('trans','China Invoice No.'),
+			'acct_code'=>Yii::t('trans','Account Code'),
+			'item_code'=>Yii::t('trans','Charge Item'),
+			'citem_desc'=>Yii::t('trans','Charge Item'),
 			'status_desc'=>Yii::t('trans','Status'),
 			'int_fee'=>Yii::t('trans','Integrated Fee'),
+			'reason'=>Yii::t('trans','Reason'),
+			'req_ref_no'=>Yii::t('trans','Request Ref. No.'),
 		);
 	}
 
@@ -61,9 +81,8 @@ class TransOutForm extends CFormModel
 	{
 		return array(
 			array('trans_type_code, trans_dt, acct_id, payer_name, payer_type, amount','required'),
-			array('trans_dt','validateTransDate'),
-			array('id, trans_desc, payer_id, cheque_no, invoice_no, status,
-					no_of_attm, docType, files, removeFileId, status_desc, city, int_fee
+			array('id, trans_desc, payer_id, cheque_no, invoice_no, status,acct_code,item_code, citem_desc
+					no_of_attm, docType, files, removeFileId, status_desc, city, int_fee, reason, req_ref_no
 				','safe'), 
 		);
 	}
@@ -81,7 +100,11 @@ class TransOutForm extends CFormModel
 
 	public function retrieveData($index)
 	{
-		$sql = "select * from acc_trans where id=$index";
+		$suffix = Yii::app()->params['envSuffix'];
+		$sql = "select a.*, b.trans_id ,
+				docman$suffix.countdoc('trans',id) as transcountdoc
+				from acc_trans a left outer join acc_trans_audit_dtl b on a.id=b.trans_id 
+				where a.id=$index";
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
 		if (count($rows) > 0)
 		{
@@ -95,7 +118,9 @@ class TransOutForm extends CFormModel
 				$this->amount = $row['amount'];
 				$this->status = $row['status'];
 				$this->status_desc = General::getTransStatusDesc($row['status']);
+				$this->posted = (!empty($row['trans_id']));
 				$this->city = $row['city'];
+				$this->no_of_attm['trans'] = $row['transcountdoc'];
 				break;
 			}
 		}
@@ -110,6 +135,12 @@ class TransOutForm extends CFormModel
 				}
 			}
 		}
+
+		$acctcodelist = General::getAcctCodeList();
+		$acctitemlist = General::getAcctItemList();
+		if (isset($acctcodelist[$this->acct_code])) $this->acct_code_desc = $acctcodelist[$this->acct_code];
+		if (isset($acctitemlist[$this->item_code])) $this->citem_desc = $acctitemlist[$this->item_code];
+
 		return true;
 	}
 	
@@ -159,7 +190,7 @@ class TransOutForm extends CFormModel
 				break;
 		}
 
-		$city = Yii::app()->user->city();
+		$city = $this->city;	//Yii::app()->user->city();
 		$uid = Yii::app()->user->id;
 
 		$command=$connection->createCommand($sql);
@@ -214,7 +245,7 @@ class TransOutForm extends CFormModel
 				break;
 		}
 
-		$city = Yii::app()->user->city();
+		$city = $this->city;	//Yii::app()->user->city();
 		$uid = Yii::app()->user->id;
 
 		$command=$connection->createCommand($sql);
@@ -249,41 +280,60 @@ class TransOutForm extends CFormModel
 
 	protected function saveInfo(&$connection) {
 		$sql = '';
-		if ($this->scenario=='delete') return;
 		switch ($this->scenario) {
 			case 'new':
 				$sql = "replace into acc_trans_info(
 						trans_id, field_id, field_value, luu, lcu) values (
 						:id, :field_id, :field_value, :luu, :lcu)";
 				break;
-			case 'edit':
-				$sql = "update acc_trans_info set 
-						field_value = :field_value ,
-						luu = :luu
-						where trans_id = :id and field_id = :field_id 
+			case 'edit' || 'delete':
+				$sql = "insert into acc_trans_info(
+						trans_id, field_id, field_value, luu, lcu) values (
+						:id, :field_id, :field_value, :luu, :lcu)
+						on duplicate key update
+						field_value = :field_value, luu = :luu
 					";
 				break;
 		}
 
-		$city = Yii::app()->user->city();
+		$city = $this->city;	//Yii::app()->user->city();
 		$uid = Yii::app()->user->id;
 
-		foreach ($this->dyn_fields as $dynfldid) {
-			if (isset($this->$dynfldid)) {
-				$command=$connection->createCommand($sql);
-				if (strpos($sql,':id')!==false)
-					$command->bindParam(':id',$this->id,PDO::PARAM_INT);
-				if (strpos($sql,':field_id')!==false)
-					$command->bindParam(':field_id',$dynfldid,PDO::PARAM_STR);
-				if (strpos($sql,':field_value')!==false) {
-					$value = $this->$dynfldid;
-					$command->bindParam(':field_value',$value,PDO::PARAM_STR);
+		if ($this->scenario=='delete') {
+			$command=$connection->createCommand($sql);
+			if (strpos($sql,':id')!==false)
+				$command->bindParam(':id',$this->id,PDO::PARAM_INT);
+			if (strpos($sql,':field_id')!==false) {
+				$field_id = 'reason';
+				$command->bindParam(':field_id',$field_id,PDO::PARAM_STR);
+			}
+			if (strpos($sql,':field_value')!==false) {
+				$value = $this->reason;
+				$command->bindParam(':field_value',$value,PDO::PARAM_STR);
+			}
+			if (strpos($sql,':lcu')!==false)
+				$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
+			if (strpos($sql,':luu')!==false)
+				$command->bindParam(':luu',$uid,PDO::PARAM_STR);
+			$command->execute();
+		} else {
+			foreach ($this->dyn_fields as $dynfldid) {
+				if (isset($this->$dynfldid)) {
+					$command=$connection->createCommand($sql);
+					if (strpos($sql,':id')!==false)
+						$command->bindParam(':id',$this->id,PDO::PARAM_INT);
+					if (strpos($sql,':field_id')!==false)
+						$command->bindParam(':field_id',$dynfldid,PDO::PARAM_STR);
+					if (strpos($sql,':field_value')!==false) {
+						$value = $this->$dynfldid;
+						$command->bindParam(':field_value',$value,PDO::PARAM_STR);
+					}
+					if (strpos($sql,':lcu')!==false)
+						$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
+					if (strpos($sql,':luu')!==false)
+						$command->bindParam(':luu',$uid,PDO::PARAM_STR);
+					$command->execute();
 				}
-				if (strpos($sql,':lcu')!==false)
-					$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
-				if (strpos($sql,':luu')!==false)
-					$command->bindParam(':luu',$uid,PDO::PARAM_STR);
-				$command->execute();
 			}
 		}
 
@@ -302,7 +352,11 @@ class TransOutForm extends CFormModel
 		return $rtn;
 	}
 		
+	public function voidRight() {
+		return Yii::app()->user->validFunction('CN05');
+	}
+
 	public function isReadOnly() {
-		return ($this->scenario=='view'||$this->status=='V');
+		return true;
 	}
 }

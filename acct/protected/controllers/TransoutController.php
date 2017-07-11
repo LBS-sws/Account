@@ -22,12 +22,12 @@ class TransoutController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('new','edit','delete','save'),
-				'expression'=>array('TransoutController','allowReadWrite'),
+				'actions'=>array('new','edit','delete','save','fileupload','fileremove'),
+				'expression'=>array('TransOutController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view'),
-				'expression'=>array('TransoutController','allowReadOnly'),
+				'actions'=>array('index','view','filedownload'),
+				'expression'=>array('TransOutController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -100,9 +100,9 @@ class TransoutController extends Controller
 	{
 		$model = new TransOutForm('delete');
 		if (isset($_POST['TransOutForm'])) {
-			$model->attributes = $_POST['TransInForm'];
+			$model->attributes = $_POST['TransOutForm'];
 			$model->saveData();
-			Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Record Deleted'));
+			Dialog::message(Yii::t('dialog','Information'), Yii::t('trans','Record Voided'));
 			$this->redirect(Yii::app()->createUrl('transout/edit',array('index'=>$model->id)));
 		}
 	}

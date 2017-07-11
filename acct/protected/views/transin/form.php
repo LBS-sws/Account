@@ -44,9 +44,9 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In Form';
 				'submit'=>Yii::app()->createUrl('transin/save'))); 
 			?>
 <?php endif ?>
-<?php if ($model->scenario=='edit' && !$model->isReadOnly()): ?>
+<?php if ($model->voidRight() && $model->status!='V'): ?>
 	<?php echo TbHtml::button('<span class="fa fa-remove"></span> '.Yii::t('trans','Void'), array(
-			'name'=>'btnDelete','id'=>'btnDelete','data-toggle'=>'modal','data-target'=>'#removedialog',)
+			'name'=>'btnDelete','id'=>'btnDelete','data-toggle'=>'modal','data-target'=>'#rmkdialog',)
 		);
 	?>
 <?php endif ?>
@@ -266,6 +266,17 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In Form';
 				</div>
 			</div>
 
+<?php if (!empty($model->req_ref_no)): ?>
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'req_ref_no',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-3">
+					<?php echo $form->textField($model, 'req_ref_no', 
+						array('size'=>50,'maxlength'=>255,'readonly'=>true
+					)); ?>
+				</div>
+			</div>
+<?php endif ?>
+
 <?php if ($model->status=='V'): ?>
 			<div class="form-group">
 				<?php echo $form->labelEx($model,'status_desc',array('class'=>"col-sm-2 control-label")); ?>
@@ -273,6 +284,17 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In Form';
 					<?php echo $form->textField($model, 'status_desc', 
 						array('size'=>50,'maxlength'=>255,'readonly'=>true
 					)); ?>
+				</div>
+			</div>
+<?php endif ?>
+
+<?php if (!empty($model->reason)): ?>
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'reason',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-7">
+					<?php echo $form->textArea($model, 'reason', 
+						array('rows'=>3,'cols'=>60,'maxlength'=>1000,'readonly'=>true)
+					); ?>
 				</div>
 			</div>
 <?php endif ?>
@@ -290,6 +312,7 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In Form';
 													'ronly'=>($model->scenario=='view' || $model->isReadOnly()),
 													)); 
 ?>
+<?php $this->renderPartial('//transin/reason',array('model'=>$model,'form'=>$form)); ?>
 
 <?php
 Script::genFileUpload($model,$form->id,'TRANS');
@@ -389,8 +412,14 @@ Yii::app()->clientScript->registerScript('lookupProduct',$js,CClientScript::POS_
 $js = Script::genLookupSelect();
 Yii::app()->clientScript->registerScript('lookupSelect',$js,CClientScript::POS_READY);
 
-$js = Script::genDeleteData(Yii::app()->createUrl('transin/delete'));
-Yii::app()->clientScript->registerScript('deleteRecord',$js,CClientScript::POS_READY);
+//$link = Yii::app()->createUrl('transin/delete');
+//$js = "
+//$('#btnDeleteData').on('click',function() {
+//	$('#removedialog').modal('hide');
+//	$('#rmkdialog').modal('show');
+//});
+//";
+//Yii::app()->clientScript->registerScript('deleteRecord',$js,CClientScript::POS_READY);
 
 if (!$model->isReadOnly()) {
 	$js = Script::genDatePicker(array(

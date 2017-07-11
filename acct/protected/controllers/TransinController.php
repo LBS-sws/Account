@@ -108,7 +108,7 @@ class TransinController extends Controller
 		if (isset($_POST['TransInForm'])) {
 			$model->attributes = $_POST['TransInForm'];
 			$model->saveData();
-			Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Record Deleted'));
+			Dialog::message(Yii::t('dialog','Information'), Yii::t('trans','Record Voided'));
 			$this->redirect(Yii::app()->createUrl('transin/edit',array('index'=>$model->id)));
 		}
 	}

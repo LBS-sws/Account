@@ -29,10 +29,10 @@ return array(
 				'access'=>'XE01',
 				'url'=>'/transin/index',
 			),
-//			'Transaction(Out)'=>array(
-//				'access'=>'XE03',
-//				'url'=>'/transout/index',
-//			),
+			'Transaction(Out)'=>array(
+				'access'=>'XE03',
+				'url'=>'/transout/index',
+			),
 			'Transaction Enquiry'=>array(
 				'access'=>'XE02',
 				'url'=>'/transenq/index',

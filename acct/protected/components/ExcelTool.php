@@ -18,7 +18,11 @@ class ExcelTool {
 	}
 	
 	public function readFile($fname) {
-		$this->objPHPExcel = file_exists($fname) ? PHPExcel_IOFactory::createReader('Excel2007')->load($fname) : null;
+		$this->objPHPExcel = file_exists($fname) ? $this->loadFile($fname) : null;
+	}
+	
+	protected function loadFile($fname) {
+		return PHPExcel_IOFactory::createReaderForFile($fname)->load($fname);
 	}
 	
 	public function getColumn($index){

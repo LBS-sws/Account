@@ -504,6 +504,61 @@ class General {
 		}
 	}
 
+	public static function dollarToChinese($value) {
+		$remain = ($value * 100) % 100;
+		$dollar = $value - ($remain / 100);
+		$cent = $remain % 10;
+		$tencent = ($remain - $cent) / 10;
+		$rtn = self::numberToChinese((string)$dollar).'圓';
+		$rtn .= $tencent==0 ? '' : self::numberToChinese((string)$tencent).'角';
+		$rtn .= $cent==0 ? '' : self::numberToChinese((string)$cent).'仙';
+		return $rtn;
+	}
+	
+	public static function numberToChinese($input) {
+		$number = ['零', '壹', '貳', '參', '肆', '伍', '陸', '柒', '捌', '玖'];
+		$unit = ['', '拾', '佰', '仟'];
+		$unit2 = ['', '萬', '億', '兆'];
+ 
+		$zeroed = false; // 是否出現零
+		$partedNonZero = false; // 是否出現非零數字
+		var_dump($input);
+ 
+		$rtn = '';
+		for ($char = strlen($input) - 1; $char >= 0; $char--)
+		{
+			// 取得數字
+			$digit = $input[strlen($input) - $char - 1];
+ 
+			// 判斷數字是否為零
+			if ($digit != 0)
+			{
+				// 顯示剛剛出現的零(如果有)
+				if ($zeroed) {
+					$zeroed = false;
+					$rtn .= $number[0];
+				}
+ 
+				// 顯示非零數字和單位
+				$rtn .= $number[$digit].$unit[$char % 4];
+				// 標記有非零數字
+				$partedNonZero = true;
+			}
+			else
+			{
+				// 標記有零
+				$zeroed = true;
+			}
+ 
+			// 跨單位時，出現非零數字要顯示單位
+			if ($partedNonZero && $char % 4 == 0) {
+				$rtn .= $unit2[$char / 4];
+				$zeroed = false;
+				$partedNonZero = false;
+			}	
+		}
+		return $rtn;
+	}
 }
 
 ?>

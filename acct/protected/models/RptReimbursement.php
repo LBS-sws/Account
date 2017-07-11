@@ -188,9 +188,11 @@ class RptReimbursement extends CReport {
 			$pdf->MultiCell(120, 35, $record['detail_info'], 1, 'L', false, 0, '', '', true, 0, false, true, 33, 'T');
 			$pdf->MultiCell(50, 35, $record['amount'], 1, 'C', false, 1, '', '', true, 0, false, true, 33, 'T');
 			$y += 35;
+
+			$dollar = General::dollarToChinese($record['amount']);
 			
 			$pdf->SetFont('droidsansfallback', 'B', 10, '', false);
-			$pdf->MultiCell(120, 10, Yii::t('report','Total RMB'), 1, 'L', false, 0, '', '', true, 0, false, true, 10, 'M');
+			$pdf->MultiCell(120, 10, Yii::t('report','Total RMB').' '.$dollar, 1, 'L', false, 0, '', '', true, 0, false, true, 10, 'M');
 			$pdf->MultiCell(50, 10, $record['amount'], 1, 'C', false, 1, '', '', true, 0, false, true, 10, 'M');
 			$y += 10;
 			

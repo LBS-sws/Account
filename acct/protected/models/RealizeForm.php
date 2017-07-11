@@ -81,6 +81,7 @@ class RealizeForm extends CFormModel
 	public function rules() {
 		return array(
 			array('trans_dt','required'),
+			array('trans_dt','validateTransDate'),
 			array('cheque_no, invoice_no','safe'),
 			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount','safe'),
 			array('id, item_desc, payee_id, status, status_desc, acct_code, city, ref_no, user_name, trans_id, trans_id_c, int_fee','safe'), 
@@ -88,6 +89,22 @@ class RealizeForm extends CFormModel
 			array ('no_of_attm','validateTaxSlip'),
 				
 		);
+	}
+
+	public function validateTransDate($attribute, $params) {
+		$dt1 = General::toDate($this->$attribute);
+		if ($dt1 > date("Y/m/d")) {
+			$this->addError($attribute, Yii::t('trans','Invalid transaction date (later than today)'));
+		} else {
+			$id = $this->acct_id;
+			$city = $this->city; //Yii::app()->user->city();
+			$sql = "select trans_dt from acc_trans where acct_id=$id and city='$city' and trans_type_code='OPEN' and status='A'";
+			$row = Yii::app()->db->createCommand($sql)->queryRow();
+			if ($row!==false) {
+				$dt0 = General::toDate($row['trans_dt']);
+				if ($dt0 > $dt1) $this->addError($attribute, Yii::t('trans','Invalid transaction date (eariler than openning balance date)'));
+			}
+		}
 	}
 
 	public function validateTaxSlip($attribute, $params) {
@@ -142,6 +159,8 @@ class RealizeForm extends CFormModel
 					}
 				}
 			}
+			
+			if (empty($this->trans_dt)) $this->trans_dt = $this->req_dt;
 		}
 		return (count($rows) > 0);
 	}

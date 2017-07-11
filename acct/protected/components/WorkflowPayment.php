@@ -386,6 +386,7 @@ class WorkflowPayment extends WorkflowDMS {
 					'invoice_no'=>'invoice_no',
 					'acct_code'=>'acct_code',
 					'int_fee'=>'int_fee',
+					'req_ref_no'=>'ref_no',
 			);
 		$sql = "insert into acc_trans_info
 					(trans_id, field_id, field_value, lcu, luu)
@@ -485,6 +486,7 @@ class WorkflowPayment extends WorkflowDMS {
 					'acct_code'=>'acct_code',
 					'united_inv_no'=>'united_inv_no',
 					'int_fee'=>'int_fee',
+					'req_ref_no'=>'ref_no',
 			);
 		$sql = "insert into acc_trans_info
 					(trans_id, field_id, field_value, lcu, luu)

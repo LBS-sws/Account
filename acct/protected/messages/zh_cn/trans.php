@@ -71,6 +71,7 @@ return array(
 	'Cash In'=>'现金收款',
 	'Cash Out'=>'现金付款',
 
+	'Request Ref. No.'=>'申请参考编号',
 	'Ref. No.'=>'参考编号',
 	'Req. Date'=>'申请日期',
 	'Details'=>'明细',
@@ -112,5 +113,8 @@ return array(
 	'Both'=>'二者',
 	'Please check cash receive record before proceed.'=>'请确认已核对「技术员收款记录」',
 	'Rec. Amount'=>'收款总额',
+	'Invalid transaction date (eariler than openning balance date)'=>'交易日期无效(日期早于开初始日期)',
+	'Invalid transaction date (later than today)'=>'交易日期无效(日期是今天以后)',
+	'Record Voided'=>'记录撤消',
 );
 ?>

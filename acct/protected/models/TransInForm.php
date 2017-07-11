@@ -28,6 +28,8 @@ class TransInForm extends CFormModel
 	public $item_code;
 	public $citem_desc;
 	public $int_fee;
+	public $reason;
+	public $req_ref_no;
 	
 	private $dyn_fields = array(
 							'payer_type',
@@ -43,6 +45,8 @@ class TransInForm extends CFormModel
 							'month_no',
 							'united_inv_no',
 							'int_fee',
+							'reason',
+							'req_ref_no',
 						);
 	
 	public $no_of_attm = array(
@@ -84,6 +88,8 @@ class TransInForm extends CFormModel
 			'united_inv_no'=>Yii::t('trans','United Invoice No.'),
 			'city'=>Yii::t('misc','City'),
 			'int_fee'=>Yii::t('trans','Integrated Fee'),
+			'reason'=>Yii::t('trans','Reason'),
+			'req_ref_no'=>Yii::t('trans','Request Ref. No.'),
 		);
 	}
 
@@ -98,7 +104,7 @@ class TransInForm extends CFormModel
 			array('month_no','in','range'=>range(1,12)),
 			array('id, trans_desc, payer_id, cheque_no, invoice_no, handle_staff, handle_staff_name, status,
 					no_of_attm, docType, files, removeFileId, docMasterId, acct_code_desc, 
-					status_desc, united_inv_no,city, int_fee 
+					status_desc, united_inv_no,city, int_fee, reason, req_ref_no 
 				','safe'), 
 		);
 	}
@@ -111,7 +117,7 @@ class TransInForm extends CFormModel
 		if ($row!==false) {
 			$dt0 = General::toDate($row['trans_dt']);
 			$dt1 = General::toDate($this->$attribute);
-			if ($dt0 > $dt1) $this->addError($attribute, Yii::t('transin','Invalid transaction date (eariler than openning balance date)'));
+			if ($dt0 > $dt1) $this->addError($attribute, Yii::t('trans','Invalid transaction date (eariler than openning balance date)'));
 		}
 	}
 
@@ -251,14 +257,13 @@ class TransInForm extends CFormModel
 
 	protected function saveInfo(&$connection) {
 		$sql = '';
-		if ($this->scenario=='delete') return;
 		switch ($this->scenario) {
 			case 'new':
 				$sql = "insert into acc_trans_info(
 						trans_id, field_id, field_value, luu, lcu) values (
 						:id, :field_id, :field_value, :luu, :lcu)";
 				break;
-			case 'edit':
+			case 'edit' || 'delete':
 				$sql = "insert into acc_trans_info(
 						trans_id, field_id, field_value, luu, lcu) values (
 						:id, :field_id, :field_value, :luu, :lcu)
@@ -271,22 +276,41 @@ class TransInForm extends CFormModel
 		$city = $this->city; 	//Yii::app()->user->city();
 		$uid = Yii::app()->user->id;
 
-		foreach ($this->dyn_fields as $dynfldid) {
-			if (isset($this->$dynfldid)) {
-				$command=$connection->createCommand($sql);
-				if (strpos($sql,':id')!==false)
-					$command->bindParam(':id',$this->id,PDO::PARAM_INT);
-				if (strpos($sql,':field_id')!==false)
-					$command->bindParam(':field_id',$dynfldid,PDO::PARAM_STR);
-				if (strpos($sql,':field_value')!==false) {
-					$value = $this->$dynfldid;
-					$command->bindParam(':field_value',$value,PDO::PARAM_STR);
+		if ($this->scenario=='delete') {
+			$command=$connection->createCommand($sql);
+			if (strpos($sql,':id')!==false)
+				$command->bindParam(':id',$this->id,PDO::PARAM_INT);
+			if (strpos($sql,':field_id')!==false) {
+				$field_id = 'reason';
+				$command->bindParam(':field_id',$field_id,PDO::PARAM_STR);
+			}
+			if (strpos($sql,':field_value')!==false) {
+				$value = $this->reason;
+				$command->bindParam(':field_value',$value,PDO::PARAM_STR);
+			}
+			if (strpos($sql,':lcu')!==false)
+				$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
+			if (strpos($sql,':luu')!==false)
+				$command->bindParam(':luu',$uid,PDO::PARAM_STR);
+			$command->execute();
+		} else {
+			foreach ($this->dyn_fields as $dynfldid) {
+				if (isset($this->$dynfldid)) {
+					$command=$connection->createCommand($sql);
+					if (strpos($sql,':id')!==false)
+						$command->bindParam(':id',$this->id,PDO::PARAM_INT);
+					if (strpos($sql,':field_id')!==false)
+						$command->bindParam(':field_id',$dynfldid,PDO::PARAM_STR);
+					if (strpos($sql,':field_value')!==false) {
+						$value = $this->$dynfldid;
+						$command->bindParam(':field_value',$value,PDO::PARAM_STR);
+					}
+					if (strpos($sql,':lcu')!==false)
+						$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
+					if (strpos($sql,':luu')!==false)
+						$command->bindParam(':luu',$uid,PDO::PARAM_STR);
+					$command->execute();
 				}
-				if (strpos($sql,':lcu')!==false)
-					$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
-				if (strpos($sql,':luu')!==false)
-					$command->bindParam(':luu',$uid,PDO::PARAM_STR);
-				$command->execute();
 			}
 		}
 
@@ -309,7 +333,11 @@ class TransInForm extends CFormModel
 		return Yii::app()->user->validFunction('CN02');
 	}
 	
+	public function voidRight() {
+		return Yii::app()->user->validFunction('CN05');
+	}
+
 	public function isReadOnly() {
-		return ($this->scenario=='view'||$this->status=='V'||$this->posted);
+		return ($this->scenario=='view'||$this->status=='V'||$this->posted||!empty($this->req_ref_no));
 	}
 }

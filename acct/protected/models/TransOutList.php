@@ -21,20 +21,26 @@ class TransOutList extends CListPageModel
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city_allow();
 		$sql1 = "select a.id, a.trans_dt, e.trans_type_desc, c.acct_type_desc, d.bank_name, d.acct_no, 
-					b.name as city_name, a.amount, a.status    
-				from acc_trans a, security$suffix.sec_city b, acc_account_type c, acc_account d, acc_trans_type e  
-				where a.city=b.code and a.city in ($city)
-				and a.acct_id = d.id
-				and a.trans_type_code=e.trans_type_code and a.trans_type_code<>'OPEN' 
-				and d.acct_type_id=c.id 
+					b.name as city_name, a.amount, a.status, g.field_value as int_fee      
+				from acc_trans a
+				inner join security$suffix.sec_city b on a.city=b.code 
+				inner join acc_account d on a.acct_id = d.id
+				inner join acc_account_type c on d.acct_type_id=c.id 
+				inner join acc_trans_type e on a.trans_type_code=e.trans_type_code
+				left outer join acc_trans_info g on a.id=g.trans_id and g.field_id='int_fee'
+				where a.city in ($city)
+				and a.trans_type_code<>'OPEN' 
 				and e.trans_cat='OUT' 
 			";
 		$sql2 = "select count(a.id)
-				from acc_trans a, security$suffix.sec_city b, acc_account_type c, acc_account d, acc_trans_type e  
-				where a.city=b.code and a.city in ($city)
-				and a.acct_id = d.id
-				and a.trans_type_code=e.trans_type_code and a.trans_type_code<>'OPEN'  
-				and d.acct_type_id=c.id 
+				from acc_trans a
+				inner join security$suffix.sec_city b on a.city=b.code 
+				inner join acc_account d on a.acct_id = d.id
+				inner join acc_account_type c on d.acct_type_id=c.id 
+				inner join acc_trans_type e on a.trans_type_code=e.trans_type_code
+				left outer join acc_trans_info g on a.id=g.trans_id and g.field_id='int_fee'
+				where a.city in ($city)
+				and a.trans_type_code<>'OPEN' 
 				and e.trans_cat='OUT' 
 			";
 		$clause = "";
@@ -56,6 +62,18 @@ class TransOutList extends CListPageModel
 				case 'city_name':
 					$clause .= General::getSqlConditionClause('b.name',$svalue);
 					break;
+				case 'int_fee':
+					$field = "(select case g.field_value when 'Y' then '".Yii::t('misc','Yes')."' 
+							else '".Yii::t('misc','No')."' 
+						end) ";
+					$clause .= General::getSqlConditionClause($field,$svalue);
+					break;
+				case 'status':
+					$field = "(select case a.status when 'V' then '".Yii::t('app','Void')."' 
+							else '' 
+						end) ";
+					$clause .= General::getSqlConditionClause($field,$svalue);
+					break;
 			}
 		}
 		
@@ -67,6 +85,8 @@ class TransOutList extends CListPageModel
 				case 'acct_type_desc': $orderf = 'c.acct_type_desc'; break;
 				case 'acct_no': $orderf = 'd.acct_no'; break;
 				case 'bank_name': $orderf = 'd.bank_name'; break;
+				case 'amount': $orderf = 'a.amount'; break;
+				case 'status': $orderf = 'a.status'; break;
 				default: $orderf = $this->orderField; break;
 			}
 			$order .= " order by ".$orderf." ";
@@ -95,6 +115,7 @@ class TransOutList extends CListPageModel
 					'bank_name'=>$record['bank_name'],
 					'city_name'=>$record['city_name'],
 					'status'=>($record['status']=='A'?'':General::getTransStatusDesc($record['status'])),
+					'int_fee'=>($record['int_fee']=='Y' ? Yii::t('misc','Yes') : Yii::t('misc','No')),
 				);
 			}
 		}

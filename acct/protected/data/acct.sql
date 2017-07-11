@@ -260,6 +260,29 @@ CREATE TABLE acc_email_queue (
 	lud timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS acc_import_queue;
+CREATE TABLE acc_import_queue (
+	id int unsigned NOT NULL auto_increment primary key,
+	import_type varchar(20) NOT NULL,
+	req_dt datetime,
+	fin_dt datetime,
+	username varchar(30) NOT NULL,
+	status char(1) NOT NULL,
+	class_name varchar(250) NOT NULL,
+	ts timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+	file_name varchar(255),
+	log_content varchar(5000),
+	file_content longblob
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS acc_import_queue_param;
+CREATE TABLE acc_import_queue_param (
+	id int unsigned NOT NULL auto_increment primary key,
+	queue_id int unsigned NOT NULL,
+	param_field varchar(50) NOT NULL,
+	param_value varchar(5000),
+	ts timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DELIMITER //
 DROP FUNCTION IF EXISTS AccountBalance //

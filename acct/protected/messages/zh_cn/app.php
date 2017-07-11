@@ -1,9 +1,9 @@
 <?php
 return array(
 	'Daily Report System'=>'日报表系统',
-	'Daily Report System - UAT'=>'日报表系统 - 测试版(云端)',
+	'Daily Report System - UAT'=>'日报表系统 - 测试版',
 	'LBS Daily Management'=>'LBS 日常管理',
-	'LBS Daily Management - UAT'=>'LBS 日常管理 - 测试版(云端)',
+	'LBS Daily Management - UAT'=>'LBS 日常管理 - 测试版',
 
 	'System Change'=>'系统切换',
 	'Daily Report'=>'日报表系统',
@@ -45,6 +45,7 @@ return array(
 	'Transaction Adjustment'=>'交易调整权限',
 	'Request for Payment Check'=>'要求覆核付款申请',
 	'Payment Check'=>'覆核并提交付款申请',
+	'Void Transaction'=>'撤消交易记录',
 	
 	'User'=>'帐户',
 	'Group'=>'群组',
