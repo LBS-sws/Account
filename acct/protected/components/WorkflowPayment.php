@@ -385,6 +385,7 @@ class WorkflowPayment extends WorkflowDMS {
 					'cheque_no'=>'cheque_no',
 					'invoice_no'=>'invoice_no',
 					'acct_code'=>'acct_code',
+					'item_code'=>'item_code',
 					'int_fee'=>'int_fee',
 					'req_ref_no'=>'ref_no',
 			);
@@ -484,6 +485,7 @@ class WorkflowPayment extends WorkflowDMS {
 					'cheque_no'=>'cheque_no',
 					'invoice_no'=>'invoice_no',
 					'acct_code'=>'acct_code',
+					'item_code'=>'item_code',
 					'united_inv_no'=>'united_inv_no',
 					'int_fee'=>'int_fee',
 					'req_ref_no'=>'ref_no',

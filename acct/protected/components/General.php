@@ -505,11 +505,10 @@ class General {
 	}
 
 	public static function dollarToChinese($value) {
-		$remain = ($value * 100) % 100;
-		$dollar = $value - ($remain / 100);
+		list($dollar, $remain) = split("\.",str_replace(",","",$value));
 		$cent = $remain % 10;
 		$tencent = ($remain - $cent) / 10;
-		$rtn = self::numberToChinese((string)$dollar).'圓';
+		$rtn = self::numberToChinese($dollar).'圓';
 		$rtn .= $tencent==0 ? '' : self::numberToChinese((string)$tencent).'角';
 		$rtn .= $cent==0 ? '' : self::numberToChinese((string)$cent).'仙';
 		return $rtn;

@@ -10,6 +10,9 @@ class RptReimbursement extends CReport {
 		$end_dt = $this->criteria['END_DT'];
 		$ref_no = $this->criteria['REF_NO'];
 		$city = $this->criteria['CITY'];
+		$currcode = City::getCurrency($city);
+		$currname = Currency::getName($currcode); 
+
 		
 		$payee_type = array(
 						'C'=>Yii::t('trans','Client'),
@@ -99,6 +102,7 @@ class RptReimbursement extends CReport {
 				$temp['manager_img'] = $muser->getUserInfoImage('signature');
 				$type = $muser->getUserInfoImage('signature_file_type');
 				$temp['manager_img_type'] = $this->getImageType($type);
+				$temp['curr_name'] = $currname;
 				
 				$this->data[] = $temp;
 			}
@@ -192,7 +196,7 @@ class RptReimbursement extends CReport {
 			$dollar = General::dollarToChinese($record['amount']);
 			
 			$pdf->SetFont('droidsansfallback', 'B', 10, '', false);
-			$pdf->MultiCell(120, 10, Yii::t('report','Total RMB').' '.$dollar, 1, 'L', false, 0, '', '', true, 0, false, true, 10, 'M');
+			$pdf->MultiCell(120, 10, Yii::t('report','Total').' '.$record['curr_name'].' '.$dollar, 1, 'L', false, 0, '', '', true, 0, false, true, 10, 'M');
 			$pdf->MultiCell(50, 10, $record['amount'], 1, 'C', false, 1, '', '', true, 0, false, true, 10, 'M');
 			$y += 10;
 			

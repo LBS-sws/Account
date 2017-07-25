@@ -50,6 +50,10 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Approval Form';
 	</div>
 	</div></div>
 
+<?php
+	$currcode = City::getCurrency($model->city);
+	$sign = Currency::getSign($currcode); 
+?>
 	<div class="box box-info">
 		<div class="box-body">
 			<?php echo $form->hiddenField($model, 'scenario'); ?>
@@ -126,9 +130,27 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Approval Form';
 			</div>
 
 			<div class="form-group">
+				<?php echo $form->labelEx($model,'pitem_desc',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-7">
+					<?php 
+						echo $form->hiddenField($model, 'item_code');
+						echo $form->textField($model, 'pitem_desc', 
+							array('maxlength'=>500,'readonly'=>true,
+							)
+						); 
+					?>
+				</div>
+			</div>
+
+			<div class="form-group">
 				<?php echo $form->labelEx($model,'acct_code',array('class'=>"col-sm-2 control-label")); ?>
 				<div class="col-sm-4">
-					<?php echo $form->dropDownList($model, 'acct_code', General::getAcctCodeList(),array('disabled'=>($model->isReadOnly()))); ?>
+					<?php 
+						echo $form->hiddenField($model, 'acct_code');
+						echo $form->textField($model, 'acct_code_desc', 
+							array('maxlength'=>500,'readonly'=>true,)
+						); 
+					?>
 				</div>
 
 				<?php echo $form->labelEx($model,'int_fee',array('class'=>"col-sm-2 control-label")); ?>
@@ -156,7 +178,7 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Approval Form';
 						echo $form->numberField($model, 'amount', 
 							array('size'=>10,'min'=>0,
 							'readonly'=>($model->isReadOnly()),
-							'prepend'=>'<span class="fa fa-cny"></span>')
+							'prepend'=>'<span class="fa '.$sign.'"></span>')
 						); 
 					?>
 				</div>

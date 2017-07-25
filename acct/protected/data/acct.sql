@@ -107,6 +107,13 @@ CREATE TABLE acc_trans(
 	lud timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS acc_trans_t3;
+CREATE TABLE acc_trans_t3(
+	t3_doc_no varchar(50) not null primary key,
+	trans_id int unsigned not null
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 DROP TABLE IF EXISTS acc_trans_info;
 CREATE TABLE acc_trans_info(
 	trans_id int unsigned not null,
@@ -270,8 +277,7 @@ CREATE TABLE acc_import_queue (
 	status char(1) NOT NULL,
 	class_name varchar(250) NOT NULL,
 	ts timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-	file_name varchar(255),
-	log_content varchar(5000),
+	file_type varchar(15),
 	file_content longblob
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -281,6 +287,7 @@ CREATE TABLE acc_import_queue_param (
 	queue_id int unsigned NOT NULL,
 	param_field varchar(50) NOT NULL,
 	param_value varchar(5000),
+	param_text text,
 	ts timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

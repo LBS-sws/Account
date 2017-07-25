@@ -74,6 +74,7 @@ class TransOutForm extends CFormModel
 			'int_fee'=>Yii::t('trans','Integrated Fee'),
 			'reason'=>Yii::t('trans','Reason'),
 			'req_ref_no'=>Yii::t('trans','Request Ref. No.'),
+			'city'=>Yii::t('trans','City'),
 		);
 	}
 

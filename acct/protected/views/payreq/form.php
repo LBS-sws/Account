@@ -99,6 +99,10 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 	</div>
 	</div></div>
 
+<?php
+	$currcode = City::getCurrency($model->city);
+	$sign = Currency::getSign($currcode); 
+?>
 	<div class="box box-info">
 		<div class="box-body">
 			<?php echo $form->hiddenField($model, 'scenario'); ?>
@@ -272,7 +276,7 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 						echo $form->numberField($model, 'amount', 
 							array('size'=>10,'min'=>0,
 							'readonly'=>($model->isReadOnly()),
-							'prepend'=>'<span class="fa fa-cny"></span>')
+							'prepend'=>'<span class="fa '.$sign.'"></span>')
 						); 
 					?>
 				</div>

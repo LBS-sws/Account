@@ -13,6 +13,7 @@ class TransOutList extends CListPageModel
 			'amount'=>Yii::t('trans','Amount'),
 			'city_name'=>Yii::t('misc','City'),
 			'status'=>Yii::t('trans','Status'),
+			'int_fee'=>Yii::t('trans','Integrated Fee'),
 		);
 	}
 	

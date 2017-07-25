@@ -135,4 +135,15 @@ CREATE TABLE sec_city(
 	lud timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
 ) DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS sec_city_info;
+CREATE TABLE sec_city_info(
+	code char(5) not null primary key,
+	field_id varchar(30) not null,
+	field_value varchar(2000),
+	lcu varchar(30),
+	luu varchar(30),
+	lcd timestamp default CURRENT_TIMESTAMP,
+	lud timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+	UNIQUE KEY idx_sec_city_info_1 (code,field_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

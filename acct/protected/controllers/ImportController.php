@@ -14,7 +14,7 @@ class ImportController extends Controller
 	public function accessRules() {
 		return array(
 			array('allow', 
-				'actions'=>array('upload','submit'),
+				'actions'=>array('loadfile','submit','index','activate'),
 				'expression'=>array('ImportController','allowExecute'),
 			),
 			array('deny',  // deny all users
@@ -23,63 +23,89 @@ class ImportController extends Controller
 		);
 	}
 
-	public function actionLoadFile() {
+	public function actionIndex() {
+		$model = new ImportForm();
+		$this->render('form',array('model'=>$model,));
+	}
+
+	public function actionSubmit() {
+		$model = new ImportForm();
 		if (isset($_POST['ImportForm'])) {
-			$model = new ImportForm();
 			$model->attributes = $_POST['ImportForm'];
 			if ($model->validate()) {
 				if ($file = CUploadedFile::getInstance($model,'import_file')) {
-					$model->signature_file_type = $file->type;
+					$model->file_type = $file->extensionName;
 					$content = file_get_contents($file->tempName);
-					$model->signature = base64_encode($content);
+					$model->file_content = $content; //base64_encode($content);
+					$qid = $model->addItemToQueue();
+					$model->queue_id = $qid;
+					$model->setMapping();
+					$model->activateQueueItem();
+					Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Job submitted. Please go to Import Manager to retrieve the result.'));
 				} else {
-					$model->signature_file_type = '';
-					$model->signature = '';
-				}
-				$model->saveData();
-				$model->scenario = 'edit';
-				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-				$this->redirect(Yii::app()->createUrl('user/edit',array('index'=>$model->username)));
+					$message = Yii::t('import','Upload file error');
+					Dialog::message(Yii::t('dialog','Error Message'), $message);
+				}		
 			} else {
 				$message = CHtml::errorSummary($model);
 				Dialog::message(Yii::t('dialog','Validation Message'), $message);
-				$this->render('form',array('model'=>$model,));
 			}
 		}
+		$this->render('form',array('model'=>$model,));
 	}
 	
-	public function actionReimburse() {
-		$model = new Report01Form;
-		if (isset($_POST['Report01Form'])) {
-			$model->attributes = $_POST['Report01Form'];
+	public function actionLoadFile() {
+		$rtn = '';
+		$model = new ImportForm();
+		if (isset($_POST['ImportForm'])) {
+			$model->attributes = $_POST['ImportForm'];
+			if ($file = CUploadedFile::getInstance($model,'import_file')) {
+				$model->file_type = $file->extensionName;
+				$content = file_get_contents($file->tempName);
+				$model->file_content = $content;	//base64_encode($content);
+
+				$readerType = strtolower($file->extensionName)=='xlsx' ? 'Excel2007' : 'Excel5';
+				$filename = $file->tempName;
+
+				$excel = new ExcelTool();
+				$excel->start();
+		
+				$excel->readFileByType($filename, $readerType);
+				$i = 0;
+				$fileFields = array();
+				$ws = $excel->setActiveSheet(0);
+				do {
+					$fldname = $excel->getCellValue($excel->getColumn($i),1); 
+					if (!empty($fldname)) $fileFields[$i] = $fldname;
+					$i++;
+				} while (!empty($fldname));
+
+				$excel->end();
+				
+				$qid = $model->addItemToQueue();
+				$rtn = $model->genMappingList($fileFields, $qid);
+			}
+		}
+		echo $rtn;	
+	}
+	
+	public function actionActivate() {
+		$model = new ImportForm();
+		if (isset($_POST['ImportForm'])) {
+			$model->attributes = $_POST['ImportForm'];
 			if ($model->validate()) {
-				$model->addQueueItem();
-				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Report submitted. Please go to Report Manager to retrieve the output.'));
+				$model->activateQueueItem();
+				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Submit Done'));
 			} else {
 				$message = CHtml::errorSummary($model);
 				Dialog::message(Yii::t('dialog','Validation Message'), $message);
 			}
 		}
-		$this->render('form_reimb',array('model'=>$model));
+		$this->render('form',array('model'=>$model,));
 	}
-
-	public function actionTranslist() {
-		$model = new Report02Form;
-		if (isset($_POST['Report02Form'])) {
-			$model->attributes = $_POST['Report02Form'];
-			if ($model->validate()) {
-				$model->addQueueItem();
-				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Report submitted. Please go to Report Manager to retrieve the output.'));
-			} else {
-				$message = CHtml::errorSummary($model);
-				Dialog::message(Yii::t('dialog','Validation Message'), $message);
-			}
-		}
-		$this->render('form_trans',array('model'=>$model));
-	}
-
+	
 	public static function allowExecute() {
-		return Yii::app()->user->validFunction(self::$actions[Yii::app()->controller->action->id]);
+		return Yii::app()->user->validFunction('XF02');
 	}
 }
 ?>

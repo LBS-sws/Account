@@ -25,10 +25,10 @@ $this->pageTitle=Yii::app()->name . ' - Transaction Out Form';
 	<div class="box"><div class="box-body">
 	<div class="btn-group" role="group">
 		<?php 
-			if ($model->scenario!='new' && !$model->isReadOnly()) {
-				echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('misc','Add Another'), array(
-					'submit'=>Yii::app()->createUrl('transout/new')));
-			}
+//			if ($model->scenario!='new' && !$model->isReadOnly()) {
+//				echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('misc','Add Another'), array(
+//					'submit'=>Yii::app()->createUrl('transout/new')));
+//			}
 		?>
 		<?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
 				'submit'=>Yii::app()->createUrl('transout/index'))); 
@@ -66,14 +66,13 @@ $this->pageTitle=Yii::app()->name . ' - Transaction Out Form';
 				<?php echo $form->labelEx($model,'city',array('class'=>"col-sm-2 control-label")); ?>
 				<div class="col-sm-3">
 					<?php 
-						$list = General::getCityListWithNoDescendant(Yii::app()->user->city_allow());
-						echo $form->dropDownList($model, 'city', $list,array('disabled'=>($model->isReadOnly()))); 
+						$list = General::getCityList();
+						echo TbHtml::textField('city_desc', $list[$model->city],array('readonly'=>true)); 
 					?>
 				</div>
 			</div>
-<?php else: ?>
-			<?php echo $form->hiddenField($model, 'city'); ?>
 <?php endif ?>
+			<?php echo $form->hiddenField($model, 'city'); ?>
 			
 			<div class="form-group">
 				<?php echo $form->labelEx($model,'trans_dt',array('class'=>"col-sm-2 control-label")); ?>
@@ -103,7 +102,7 @@ $this->pageTitle=Yii::app()->name . ' - Transaction Out Form';
 				<div class="col-sm-7">
 					<?php 
 						if ($model->isReadOnly()) {
-							$list = General::getAccountList();
+							$list = General::getAccountList($model->city);
 							echo $form->hiddenField($model, 'acct_id');
 							echo TbHtml::textField('acct_id_desc',$list[$model->acct_id],array('readonly'=>true));
 						} else

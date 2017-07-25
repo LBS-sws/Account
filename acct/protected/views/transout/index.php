@@ -23,6 +23,7 @@ $this->pageTitle=Yii::app()->name . ' - Transaction Out';
 </section>
 
 <section class="content">
+<!--
 	<div class="box"><div class="box-body">
 	<div class="btn-group" role="group">
 		<?php 
@@ -33,6 +34,7 @@ $this->pageTitle=Yii::app()->name . ' - Transaction Out';
 		?>
 	</div>
 	</div></div>
+-->
 	<?php 
 		$search = array(
 						'trans_type_desc',

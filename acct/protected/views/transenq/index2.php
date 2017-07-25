@@ -22,6 +22,10 @@ $this->pageTitle=Yii::app()->name . ' - Transaction Enquiry';
 -->
 </section>
 
+<?php
+	$currcode = City::getCurrency($model->city);
+	$sign = Currency::getSign($currcode); 
+?>
 <section class="content">
 	<div class="box"><div class="box-body">
 		<div class="form-group">
@@ -76,7 +80,7 @@ $this->pageTitle=Yii::app()->name . ' - Transaction Enquiry';
 					echo $form->numberField($model, 'balance', 
 						array('size'=>10,
 						'readonly'=>true,
-						'prepend'=>'<span class="fa fa-cny"></span>')
+						'prepend'=>'<span class="fa '.$sign.'"></span>')
 					); 
 				?>
 			</div>

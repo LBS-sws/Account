@@ -20,7 +20,10 @@ class SignReqForm extends CFormModel
 	public $invoice_no;
 	public $trans_dt;
 	public $acct_code;
+	public $acct_code_desc;
 	public $ref_no;
+	public $item_code;
+	public $pitem_desc;
 	public $int_fee;
 		
 	private $dyn_fields = array(
@@ -30,6 +33,7 @@ class SignReqForm extends CFormModel
 							'cheque_no',
 							'invoice_no',
 							'trans_dt',
+							'item_code',
 							'int_fee',
 						);
 
@@ -57,7 +61,6 @@ class SignReqForm extends CFormModel
 			'amount'=>Yii::t('trans','Amount'),
 			'city_name'=>Yii::t('misc','City'),
 			'status_desc'=>Yii::t('trans','Status'),
-			'req_dt'=>Yii::t('trans','Trans. Date'),
 			'trans_dt'=>Yii::t('trans','Trans. Date'),
 			'acct_id'=>Yii::t('trans','Account'),
 			'trans_desc'=>Yii::t('trans','Remarks'),
@@ -66,18 +69,24 @@ class SignReqForm extends CFormModel
 			'invoice_no'=>Yii::t('trans','China Invoice No.'),
 			'status_desc'=>Yii::t('trans','Status'),
 			'ref_no'=>Yii::t('trans','Ref. No.'),
-			'acct_code'=>Yii::t('trans','Paid Item'),
+			'item_code'=>Yii::t('trans','Paid Item'),
+			'pitem_desc'=>Yii::t('trans','Paid Item'),
+			'acct_code'=>Yii::t('trans','Account Code'),
 			'acct_id'=>Yii::t('trans','Paid Account'),
 			'user_name'=>Yii::t('trans','Requestor'),
 			'int_fee'=>Yii::t('trans','Integrated Fee'),
 		);
 	}
 
+	public function init() {
+		$this->city = Yii::app()->user->city();
+	}
+	
 	public function rules() {
 		return array(
 			array('trans_dt','safe'),
 			array('cheque_no, invoice_no, acct_code, ref_no','safe'),
-			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount,','safe'),
+			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, item_code, pitem_desc, amount,','safe'),
 			array('id, item_desc, payee_id, status, status_desc, cheque_no, invoice_no, ref_no, user_name, int_fee','safe'), 
 			array('no_of_attm, files, removeFileId, docMasterId','safe'), 
 				
@@ -129,6 +138,11 @@ class SignReqForm extends CFormModel
 					}
 				}
 			}
+
+			$acctcodelist = General::getAcctCodeList();
+			$acctitemlist = General::getAcctItemList();
+			if (isset($acctcodelist[$this->acct_code])) $this->acct_code_desc = $acctcodelist[$this->acct_code];
+			if (isset($acctitemlist[$this->item_code])) $this->pitem_desc = $acctitemlist[$this->item_code];
 		}
 		return (count($rows) > 0);
 	}

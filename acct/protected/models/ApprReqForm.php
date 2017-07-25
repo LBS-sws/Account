@@ -22,7 +22,10 @@ class ApprReqForm extends CFormModel
 	public $acct_id;
 	public $ref_no;
 	public $acct_code;
+	public $acct_code_desc;
 	public $reason;
+	public $item_code;
+	public $pitem_desc;
 	public $int_fee;
 	
 	private $dyn_fields = array(
@@ -30,6 +33,7 @@ class ApprReqForm extends CFormModel
 							'ref_no',
 							'acct_code',
 							'reason',
+							'item_code',
 							'int_fee',
 						);
 	
@@ -48,6 +52,10 @@ class ApprReqForm extends CFormModel
 							'tax'=>0
 						);
 	
+	public function init() {
+		$this->city = Yii::app()->user->city();
+	}
+	
 	public function attributeLabels()
 	{
 		return array(
@@ -60,7 +68,9 @@ class ApprReqForm extends CFormModel
 			'status_desc'=>Yii::t('trans','Status'),
 			'wfstatusdesc'=>Yii::t('trans','Flow Status'),
 			'ref_no'=>Yii::t('trans','Ref. No.'),
-			'acct_code'=>Yii::t('trans','Paid Item'),
+			'item_code'=>Yii::t('trans','Paid Item'),
+			'pitem_desc'=>Yii::t('trans','Paid Item'),
+			'acct_code'=>Yii::t('trans','Account Code'),
 			'acct_id'=>Yii::t('trans','Paid Account'),
 			'user_name'=>Yii::t('trans','Requestor'),
 			'reason'=>Yii::t('trans','Reason'),
@@ -71,7 +81,7 @@ class ApprReqForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount','safe'),
+			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, item_code, pitem_desc, amount','safe'),
 			array('id, item_desc, payee_id, status, status_desc, ref_no, acct_code, type, remarks, reason, int_fee','safe'), 
 			array('files, removeFileId, docMasterId, no_of_attm','safe'), 
 				
@@ -133,6 +143,11 @@ class ApprReqForm extends CFormModel
 					}
 				}
 			}
+
+			$acctcodelist = General::getAcctCodeList();
+			$acctitemlist = General::getAcctItemList();
+			if (isset($acctcodelist[$this->acct_code])) $this->acct_code_desc = $acctcodelist[$this->acct_code];
+			if (isset($acctitemlist[$this->item_code])) $this->pitem_desc = $acctitemlist[$this->item_code];
 		}
 		return (count($rows) > 0);
 	}

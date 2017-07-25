@@ -13,6 +13,10 @@ class AccountForm extends CFormModel
 	public $city;
 	public $trans_city;
 
+	public function init() {
+		$this->city = Yii::app()->user->city();
+	}
+	
 	public function attributeLabels()
 	{
 		return array(

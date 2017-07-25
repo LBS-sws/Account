@@ -1,69 +1,136 @@
 <?php
-class JobQueueCommand extends CConsoleCommand {
+class ImportCommand extends CConsoleCommand {
 	protected $webroot;
+	protected $city;
+	protected $uid;
 	
 	public function run($args) {
 		$this->webroot = Yii::app()->params['webroot'];
-		$sql = "select a.id, a.ts, a.rpt_type, a.username, a.rpt_desc, a.req_dt  
-					from acc_queue a
+		$sql = "select a.id, a.ts, a.import_type, a.username, a.class_name, a.req_dt, file_type, file_content   
+					from acc_import_queue a
 				where a.status='P' order by a.req_dt limit 1";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row===false) return;
 		
 		$id = $row['id'];
 		$ts = $row['ts'];
-		$format = empty($row['rpt_type']) ? 'EXCEL' : $row['rpt_type'];
-		$uid = $row['username'];
+		$this->uid = $row['username'];
 		
 		if ($id!=0) $param = $this->getQueueParam($id);
 		
 		if (($id!=0) && !empty($param) && $this->markStatus($id, $ts, 'I')) {
-			if (isset($param['LANGUAGE'])) Yii::app()->language = $param['LANGUAGE'];
-			$param['UID'] = $uid;
-			$param['REQ_DT'] = $row['req_dt'];
-			$param['RPT_DESC'] = $row['rpt_desc'];
+			$this->city = $param['CITY'];
+			$mapping = json_decode($param['MAPPING']);
+			$classname = $row['class_name'];
+			$importtype = $row['import_type'];
+			$uid = $this->uid;
 			$ts = $this->getTimeStamp($id);
 				
-			$rpt_desc = $param['RPT_DESC'];
-			$mesg = "ID:$id NAME:$rpt_desc FORMAT:$format USER:$uid\n";
-				
-			$out = $this->genReport($param['RPT_ID'], $param, $format);
+			$mesg = "ID:$id NAME:$importtype CLASS:$classname USER:$uid\n";
+			echo $mesg;
+	
+			$excelfile = $this->writeExcelFile($row['file_content']);
+			$data = $this->formatData($excelfile, $row['file_type'], $mapping);
+			$this->import($classname, $data, $id);
 			
-			if (!empty($out)) {
-				$this->saveOutput($id, $ts, $out, 'C');
-				echo $mesg;
-				echo "\t-Done (default)\n";
-			} else {
-					$this->markStatus($id, $ts, 'F');
-					echo $mesg;
-					echo "\t-FAIL\n";
+			$this->markStatus($id, $ts, 'C');
+			echo "\t-Done (default)\n";
+		}
+	}
+
+	protected function import($classname, $data, $queueid) {
+		$model = new $classname();
+		$logmsgErr = '';
+		$logmsgOk = '';
+		$cnt = 0;
+		
+		$connection = Yii::app()->db;
+		$transaction=$connection->beginTransaction();
+		try {
+			foreach ($data as $row) {
+				$msgErr = $model->validateData($row);
+				$msgOk = '';
+				if ($msgErr=='') {
+					$cnt++;
+					$msgOk = $model->importData($connection, $row);
+				}
+				
+				$logmsgErr .= (empty($logmsgErr) ? "" : (empty($msgErr) ? "" : "\n")).$msgErr;
+				$logmsgOk .= (empty($logmsgOk) ? "" : (empty($msgOk) ? "" : "\n")).$msgOk;
+				echo (empty($msgErr) ? $msgOk : $msgErr)."\n";
+				
+				if ($cnt == 500) {
+					$logmsg = empty($logmsgErr) ? Yii::t('import','Import Success!') : Yii::t('import','Import Error:')."\n".$logmsgErr;
+					$logmsg .= "\n\n".Yii::t('import','Imported Rows:')."\n".$logmsgOk;
+					
+					$this->saveLog($connection, $queueid, $logmsg);
+					$transaction->commit();
+					$transaction=$connection->beginTransaction();
+					$cnt = 0;
+				}
 			}
+			if ($cnt > 0) {
+				$logmsg = empty($logmsgErr) ? Yii::t('import','Import Success!') : Yii::t('import','Import Error:')."\n".$logmsgErr;
+				$logmsg .= "\n\n".Yii::t('import','Imported Rows:')."\n".$logmsgOk;
+				
+				$this->saveLog($connection, $queueid, $logmsg);
+				$transaction->commit();
+			}
+		} catch(Exception $e) {
+			$transaction->rollback();
+			echo 'Error: '.$e->getMessage();
 		}
 	}
 	
-	protected function updateQueueUser($id, $users) {
-		if (!empty($users)) {
-			foreach ($users as $username) {
-				$sql = "select id from acc_queue_user where queue_id=$id and username='$username' limit 1";
-				if (Yii::app()->db->createCommand($sql)->queryRow()===false) {
-					$sql = "insert into acc_queue_user (queue_id, username)
-							values(:queue_id, :username)
-					";
-
-					$command=Yii::app()->db->createCommand($sql);
-					if (strpos($sql,':queue_id')!==false)
-						$command->bindParam(':queue_id',$id,PDO::PARAM_INT);
-					if (strpos($sql,':username')!==false)
-						$command->bindParam(':username',$username,PDO::PARAM_STR);
-					$command->execute();
+	protected function writeExcelFile($content) {
+		$file = tempnam(sys_get_temp_dir(), 'excel_');
+		$handle = fopen($file, "w");
+		fwrite($handle, $content);
+		fclose($handle);
+		return $file;
+	}
+	
+	protected function formatData($filename, $fileext, $mapping) {
+		$rtn = array();
+		
+		$excel = new ExcelTool();
+		$excel->start();
+		$readerType = strtolower($fileext)=='xlsx' ? 'Excel2007' : 'Excel5';
+		$excel->readFileByType($filename, $readerType);
+		
+		$emptycnt = 0;
+		$rowidx = 2;
+		$ws = $excel->setActiveSheet(0);
+		do {
+			$fields = array();
+			$emptyrow = true;
+			foreach ($mapping as $item) {
+				if ($item->filefield >= 0) {
+					$value = $excel->getCellValue($excel->getColumn($item->filefield),$rowidx); 
+					$fields[$item->dbfieldid] = $value;
+					if ($emptyrow && !empty($value)) $emptyrow = false;
 				}
 			}
-		}
+			if ($emptyrow) {
+				$emptycnt++;
+			} else {
+				if (!isset($fields['uid'])) $fields['uid'] = $this->uid;
+				if (!isset($fields['city'])) $fields['city'] = $this->city;
+				if (!isset($fields['excel_row'])) $fields['excel_row'] = $rowidx;
+				$rtn[] = $fields;
+			}
+			$rowidx++;
+		} while ($emptycnt <= 2);
+		
+		$excel->end();
+		unlink($filename);
+		
+		return $rtn;
 	}
 	
 	protected function getQueueParam($qid) {
 		$rtn = array();
-		$sql = "select * from acc_queue_param where queue_id=".$qid;
+		$sql = "select * from acc_import_queue_param where queue_id=".$qid;
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
 		if (count($rows) > 0) {
 			foreach ($rows as $row) {
@@ -76,7 +143,9 @@ class JobQueueCommand extends CConsoleCommand {
 	}
 	
 	protected function markStatus($id, $ts, $sts) {
-		$sql = "update acc_queue set status=:status where id=:id and ts=:ts";
+		$sql = $sts=='C' 
+			? "update acc_import_queue set status=:status, fin_dt=now() where id=:id and ts=:ts"
+			: "update acc_import_queue set status=:status where id=:id and ts=:ts";
 		$command=Yii::app()->db->createCommand($sql);
 		if (strpos($sql,':id')!==false)
 			$command->bindParam(':id',$id,PDO::PARAM_INT);
@@ -88,29 +157,19 @@ class JobQueueCommand extends CConsoleCommand {
 		return ($cnt>0);
 	}
 	
-	protected function saveOutput($id, $ts, $outstring, $sts) {
-		try {
-			$sql = "update acc_queue set status=:sts, fin_dt=now(), rpt_content=:content where id=:id and ts=:ts";
-			$command=Yii::app()->db->createCommand($sql);
-			if (strpos($sql,':id')!==false)
-				$command->bindParam(':id',$id,PDO::PARAM_INT);
-			if (strpos($sql,':content')!==false)
-				$command->bindParam(':content',$outstring,PDO::PARAM_LOB);
-			if (strpos($sql,':ts')!==false)
-				$command->bindParam(':ts',$ts,PDO::PARAM_STR);
-			if (strpos($sql,':sts')!==false)
-				$command->bindParam(':sts',$sts,PDO::PARAM_STR);
-			$cnt = $command->execute();
-		}
-		catch(Exception $e) {
-			throw new CDbException($e->getMessage(),$e->getCode());
-		}
-		return ($cnt>0);
+	protected function saveLog(&$connection, $id, $msg) {
+		$sql = "update acc_import_queue_param set param_text=:msg where queue_id=:id and param_field='LOG'";
+		$command=$connection->createCommand($sql);
+		if (strpos($sql,':id')!==false)
+			$command->bindParam(':id',$id,PDO::PARAM_INT);
+		if (strpos($sql,':msg')!==false)
+			$command->bindParam(':msg',$msg,PDO::PARAM_STR);
+		$command->execute();
 	}
 	
 	protected function getTimeStamp($id) {
 		$ts = '';
-		$sql = "select ts from acc_queue where id=".$id;
+		$sql = "select ts from acc_import_queue where id=".$id;
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
 		if (count($rows) > 0) {
 			foreach ($rows as $row) {
@@ -119,19 +178,6 @@ class JobQueueCommand extends CConsoleCommand {
 			}
 		}
 		return $ts;
-	}
-
-	protected function genReport($rptid, $param, $format) {
-		$report = new $rptid();
-		$report->criteria = $param;
-		$output = $report->genReport();
-		return $output;
-	}
-
-	protected function getCityName($code) {
-		$suffix = Yii::app()->params['envSuffix'];
-		$sql = "select name from security$suffix.sec_city where code='$code'";
-		return Yii::app()->db->createCommand($sql)->queryScalar();
 	}
 }
 ?>

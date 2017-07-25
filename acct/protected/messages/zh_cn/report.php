@@ -41,6 +41,7 @@ return array(
 	'Customer Cash In Daily Report'=>'客户收款日报表',
 	'Operation Daily Report'=>'每日营业择要报告',
 	'No Record'=>'没有相关记录',
+	'Account Name'=>'账户名称',
 	
 	'Transaction List'=>'交易记录',
 );

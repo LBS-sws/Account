@@ -103,7 +103,8 @@ class TransoutController extends Controller
 			$model->attributes = $_POST['TransOutForm'];
 			$model->saveData();
 			Dialog::message(Yii::t('dialog','Information'), Yii::t('trans','Record Voided'));
-			$this->redirect(Yii::app()->createUrl('transout/edit',array('index'=>$model->id)));
+			$url = $this->allowReadWrite() ? 'transout/edit' : 'transout/view';
+			$this->redirect(Yii::app()->createUrl($url,array('index'=>$model->id)));
 		}
 	}
 	

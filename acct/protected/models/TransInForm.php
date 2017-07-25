@@ -30,6 +30,9 @@ class TransInForm extends CFormModel
 	public $int_fee;
 	public $reason;
 	public $req_ref_no;
+	public $detail;
+	public $remarks;
+	public $t3_doc_no;
 	
 	private $dyn_fields = array(
 							'payer_type',
@@ -47,6 +50,9 @@ class TransInForm extends CFormModel
 							'int_fee',
 							'reason',
 							'req_ref_no',
+							'detail',
+							'remarks',
+							't3_doc_no',
 						);
 	
 	public $no_of_attm = array(
@@ -73,7 +79,7 @@ class TransInForm extends CFormModel
 			'trans_type_code'=>Yii::t('trans','Trans. Type'),
 			'acct_id'=>Yii::t('trans','Account'),
 			'payer_name'=>Yii::t('trans','Payer'),
-			'trans_desc'=>Yii::t('trans','Remarks'),
+			'trans_desc'=>Yii::t('trans','Remarks 1'),
 			'amount'=>Yii::t('trans','Amount'),
 			'city_name'=>Yii::t('misc','City'),
 			'cheque_no'=>Yii::t('trans','Cheque No.'),
@@ -90,6 +96,9 @@ class TransInForm extends CFormModel
 			'int_fee'=>Yii::t('trans','Integrated Fee'),
 			'reason'=>Yii::t('trans','Reason'),
 			'req_ref_no'=>Yii::t('trans','Request Ref. No.'),
+			'detail'=>Yii::t('trans','Details'),
+			'remarks'=>Yii::t('trans','Remarks 2'),
+			't3_doc_no'=>Yii::t('trans','T3 Document No.'),
 		);
 	}
 
@@ -104,7 +113,7 @@ class TransInForm extends CFormModel
 			array('month_no','in','range'=>range(1,12)),
 			array('id, trans_desc, payer_id, cheque_no, invoice_no, handle_staff, handle_staff_name, status,
 					no_of_attm, docType, files, removeFileId, docMasterId, acct_code_desc, 
-					status_desc, united_inv_no,city, int_fee, reason, req_ref_no 
+					status_desc, united_inv_no,city, int_fee, reason, req_ref_no, detail, remarks 
 				','safe'), 
 		);
 	}
@@ -338,6 +347,6 @@ class TransInForm extends CFormModel
 	}
 
 	public function isReadOnly() {
-		return ($this->scenario=='view'||$this->status=='V'||$this->posted||!empty($this->req_ref_no));
+		return ($this->scenario=='view'||$this->status=='V'||$this->posted||!empty($this->req_ref_no)||!empty($this->t3_doc_no));
 	}
 }

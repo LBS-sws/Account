@@ -13,7 +13,9 @@ class RptTransList extends CReport {	protected function fields() {		return arr
 			'service_dt'=>array('label'=>Yii::t('trans','Service Fee Date'),'width'=>22,'align'=>'C'),
 			'united_inv_no'=>array('label'=>Yii::t('trans','United Invoice No.'),'width'=>30,'align'=>'L'),
 			'int_fee'=>array('label'=>Yii::t('trans','Integrated Fee'),'width'=>20,'align'=>'C'),
-			'amount'=>array('label'=>Yii::t('trans','Amount'),'width'=>20,'align'=>'R'),			'item_desc'=>array('label'=>Yii::t('trans','Remarks'),'width'=>40,'align'=>'L'),		);	}
+			'amount'=>array('label'=>Yii::t('trans','Amount'),'width'=>20,'align'=>'R'),			'detail'=>array('label'=>Yii::t('trans','Detail'),'width'=>40,'align'=>'L'),
+			'item_desc'=>array('label'=>Yii::t('trans','Remarks 1'),'width'=>40,'align'=>'L'),			'remarks'=>array('label'=>Yii::t('trans','Remarks 2'),'width'=>40,'align'=>'L'),
+		);	}	
 	public function genReport() {
 		$this->retrieveData();
 		$this->title = $this->getReportName();
@@ -88,7 +90,9 @@ class RptTransList extends CReport {	protected function fields() {		return arr
 				$temp['united_inv_no'] = isset($dtl[$row['id']]['united_inv_no']) ? $dtl[$row['id']]['united_inv_no'] : '';
 				$temp['int_fee'] = isset($dtl[$row['id']]['int_fee']) ? ($dtl[$row['id']]['int_fee']=='Y' ? Yii::t('misc','Yes') : Yii::t('misc','No')) : Yii::t('misc','No');
 				$temp['amount'] = number_format((isset($row['amount']) ? $row['amount'] : '0'),2,'.','');
+				$temp['detail'] = isset($row['detail']) ? $row['detail'] : '';
 				$temp['item_desc'] = isset($row['trans_desc']) ? $row['trans_desc'] : '';
+				$temp['remarks'] = isset($row['remarks']) ? $row['remarks'] : '';
 				$this->data[] = $temp;
 			}
 		}

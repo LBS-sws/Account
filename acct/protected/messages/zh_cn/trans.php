@@ -48,6 +48,9 @@ return array(
 	'Remarks'=>'备注',
 	'Status' => '状态',
 	'Integrated Fee'=>'综合费用',
+	'Remarks 1'=>'备注1',
+	'Remarks 2'=>'备注2',
+	'T3 Document No.'=>'T3单据编号',
 	
 	'Client'=>'客户',
 	'Supplier'=>'供应商',
@@ -74,7 +77,7 @@ return array(
 	'Request Ref. No.'=>'申请参考编号',
 	'Ref. No.'=>'参考编号',
 	'Req. Date'=>'申请日期',
-	'Details'=>'明细',
+	'Details'=>'摘要',		//'明细',
 	'Requestor'=>'申请人',
 	'Flow Status'=>'流程状态',
 	'Paid Account'=>'付款账户',
@@ -116,5 +119,6 @@ return array(
 	'Invalid transaction date (eariler than openning balance date)'=>'交易日期无效(日期早于开初始日期)',
 	'Invalid transaction date (later than today)'=>'交易日期无效(日期是今天以后)',
 	'Record Voided'=>'记录撤消',
+	'City'=>'地区',
 );
 ?>

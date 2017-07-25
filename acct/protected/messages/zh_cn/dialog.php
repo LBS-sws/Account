@@ -29,6 +29,7 @@ return array(
 	'This record is already in use'=>'这纪录正被使用',
 	'Unable to login.'=>'无法登录',
 	'Report submitted. Please go to Report Manager to retrieve the output.'=>'报表请求已经提交. 请到报表管理员读取报表.',
+	'Job submitted. Please go to Import Manager to retrieve the result.'=>'工作请求已经提交. 请到数据导入管理员查看结果.',
 	'Hold down <kbd>Ctrl</kbd> button to select multiple options'=>'按住<kbd>CTRL</kbd>键选择多个选项',
 	'Save Done and Sent Notification' => '记录保存完成并发出电邮通知',
 	'Save Done but Fail in Sent Notification' => '记录保存完成但发出电邮通知不成功',

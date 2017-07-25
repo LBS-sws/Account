@@ -47,6 +47,10 @@ $this->pageTitle=Yii::app()->name . ' - Account Form';
 	</div>
 	</div></div>
 
+<?php
+	$currcode = City::getCurrency($model->city);
+	$sign = Currency::getSign($currcode); 
+?>
 	<div class="box box-info">
 		<div class="box-body">
 			<?php echo $form->hiddenField($model, 'scenario'); ?>
@@ -112,7 +116,7 @@ $this->pageTitle=Yii::app()->name . ' - Account Form';
 						echo $form->numberField($model, 'open_bal', 
 							array('size'=>10,'min'=>0,
 							'readonly'=>($model->scenario=='view'||($model->scenario!='new'&&$model->isOccupied($model->id))),
-							'prepend'=>'<span class="fa fa-cny"></span>')
+							'prepend'=>'<span class="fa '.$sign.'"></span>')
 						); 
 					?>
 				</div>

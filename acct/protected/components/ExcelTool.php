@@ -21,6 +21,10 @@ class ExcelTool {
 		$this->objPHPExcel = file_exists($fname) ? $this->loadFile($fname) : null;
 	}
 	
+	public function readFileByType($fname, $type) {
+		$this->objPHPExcel = file_exists($fname) ? PHPExcel_IOFactory::createReader($type)->load($fname) : null;
+	}
+
 	protected function loadFile($fname) {
 		return PHPExcel_IOFactory::createReaderForFile($fname)->load($fname);
 	}

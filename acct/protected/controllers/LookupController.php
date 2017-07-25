@@ -44,7 +44,7 @@ class LookupController extends Controller
 		$suffix = $suffix=='dev' ? '_w' : $suffix;
 		$city = empty($incity) ? Yii::app()->user->city() : $incity;
 		$searchx = str_replace("'","\'",$search);
-		$sql = "select id, concat(left(concat(code,space(8)),8),name) as value from swoper$suffix.swo_company
+		$sql = "select id, concat(left(concat(code,space(8)),8),if(full_name is null or full_name='',name,full_name)) as value from swoper$suffix.swo_company
 				where (code like '%$searchx%' or name like '$searchx%') and city='$city'";
 		$result = Yii::app()->db->createCommand($sql)->queryAll();
 		$data = TbHtml::listData($result, 'id', 'value');
@@ -57,14 +57,14 @@ class LookupController extends Controller
 		$city = empty($incity) ? Yii::app()->user->city() : $incity;
 		$result = array();
 		$searchx = str_replace("'","\'",$search);
-		$sql = "select id, code, name, cont_name, cont_phone, address from swoper$suffix.swo_company
+		$sql = "select id, code, name, full_name, cont_name, cont_phone, address from swoper$suffix.swo_company
 				where (code like '%$searchx%' or name like '%$searchx%') and city='$city'";
 		$records = Yii::app()->db->createCommand($sql)->queryAll();
 		if (count($records) > 0) {
 			foreach ($records as $k=>$record) {
 				$result[] = array(
 						'id'=>$record['id'],
-						'value'=>substr($record['code'].str_repeat(' ',8),0,8).$record['name'],
+						'value'=>substr($record['code'].str_repeat(' ',8),0,8).(empty($record['full_name'])?$record['name']:$record['full_name']),
 						'contact'=>trim($record['cont_name']).'/'.trim($record['cont_phone']),
 						'address'=>$record['address'],
 					);
@@ -79,7 +79,7 @@ class LookupController extends Controller
 		$suffix = $suffix=='dev' ? '_w' : $suffix;
 		$city = empty($incity) ? Yii::app()->user->city() : $incity;
 		$searchx = str_replace("'","\'",$search);
-		$sql = "select id, concat(left(concat(code,space(8)),8),name) as value from swoper$suffix.swo_supplier
+		$sql = "select id, concat(left(concat(code,space(8)),8),if(full_name is null or full_name='',name,full_name)) as value from swoper$suffix.swo_supplier
 				where (code like '%$searchx%' or name like '$searchx%') and city='$city'";
 		$result = Yii::app()->db->createCommand($sql)->queryAll();
 		$data = TbHtml::listData($result, 'id', 'value');
@@ -92,14 +92,14 @@ class LookupController extends Controller
 		$city = empty($incity) ? Yii::app()->user->city() : $incity;
 		$result = array();
 		$searchx = str_replace("'","\'",$search);
-		$sql = "select id, code, name, cont_name, cont_phone, address from swoper$suffix.swo_supplier
+		$sql = "select id, code, name, full_name, cont_name, cont_phone, address from swoper$suffix.swo_supplier
 				where (code like '%$searchx%' or name like '%$searchx%') and city='$city'";
 		$records = Yii::app()->db->createCommand($sql)->queryAll();
 		if (count($records) > 0) {
 			foreach ($records as $k=>$record) {
 				$result[] = array(
 						'id'=>$record['id'],
-						'value'=>substr($record['code'].str_repeat(' ',8),0,8).$record['name'],
+						'value'=>substr($record['code'].str_repeat(' ',8),0,8).(empty($record['full_name'])?$record['name']:$record['full_name']),
 						'contact'=>trim($record['cont_name']).'/'.trim($record['cont_phone']),
 						'address'=>$record['address'],
 					);

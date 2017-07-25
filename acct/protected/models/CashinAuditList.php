@@ -89,7 +89,7 @@ class CashinAuditList extends CListPageModel
 					'balance'=>$record['balance'],
 					'city_name'=>$record['city_name'],
 					'city'=>$record['city'],
-					'rec_amt'=>$record['rec_amt'],
+					'rec_amt'=>empty($record['rec_amt']) ? '0.00' : $record['rec_amt'],
 				);
 			}
 		}

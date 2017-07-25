@@ -60,6 +60,19 @@ return array(
 			),
 		),
 	),
+	'Import'=>array(
+		'access'=>'XF',
+		'items'=>array(
+			'Import'=>array(
+				'access'=>'XF02',
+				'url'=>'/import/index',
+			),
+			'Import Manager'=>array(
+				'access'=>'XF01',
+				'url'=>'/iqueue/index',
+			),
+		),
+	),
 	'System Setting'=>array(
 		'access'=>'XC',
 		'items'=>array(

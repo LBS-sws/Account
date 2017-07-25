@@ -21,6 +21,10 @@ $this->pageTitle=Yii::app()->name . ' - Cash Checking Form';
 -->
 </section>
 
+<?php
+	$currcode = City::getCurrency($model->city);
+	$sign = Currency::getSign($currcode); 
+?>
 <section class="content">
 	<div class="box"><div class="box-body">
 	<div class="btn-group" role="group">
@@ -63,7 +67,7 @@ $this->pageTitle=Yii::app()->name . ' - Cash Checking Form';
 					echo $form->numberField($model, 'balance', 
 						array('size'=>10,
 						'readonly'=>true,
-						'prepend'=>'<span class="fa fa-cny"></span>')
+						'prepend'=>'<span class="fa '.$sign.'"></span>')
 					); 
 				?>
 			</div>
@@ -72,7 +76,7 @@ $this->pageTitle=Yii::app()->name . ' - Cash Checking Form';
 				<?php
 					echo $form->numberField($model, 'rec_amt', 
 						array('readonly'=>true,
-						'prepend'=>'<span class="fa fa-cny"></span>')
+						'prepend'=>'<span class="fa '.$sign.'"></span>')
 					); 
 				?>
 			</div>

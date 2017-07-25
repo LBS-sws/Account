@@ -35,7 +35,7 @@ class RptAccountStatus extends CReport {
 			";
 		$this->result1 = Yii::app()->db->createCommand($sql)->queryAll();
 
-		$sql = "select a.*, 
+		$sql = "select a.*, k.acct_no, k.acct_name, k.bank_name, 
 					b.trans_type_desc, 
 					c.field_value as payer_type,  
 					d.field_value as payer_name,
@@ -46,6 +46,7 @@ class RptAccountStatus extends CReport {
 					i.field_value as item_code,
 					j.field_value as int_fee
 				from acc_trans a inner join acc_trans_type b on a.trans_type_code=b.trans_type_code 
+					left outer join acc_account k on a.acct_id=k.id 
 					left outer join acc_trans_info c on a.id=c.trans_id and c.field_id='payer_type'
 					left outer join acc_trans_info d on a.id=d.trans_id and d.field_id='payer_name'
 					left outer join acc_trans_info e on a.id=e.trans_id and e.field_id='year_no'
@@ -229,6 +230,7 @@ class RptAccountStatus extends CReport {
 		
 		$output = "<table border=1>";
 		$output .= "<tr><th>".Yii::t('report','Date')
+				."</th><th>".Yii::t('report','Account Name')
 				."</th><th>".Yii::t('report','Customer Name')
 				."</th><th>".Yii::t('report','Charge Item')
 				."</th><th>".Yii::t('report','Service Month')
@@ -240,6 +242,7 @@ class RptAccountStatus extends CReport {
 				."</th></tr>";
 		foreach ($this->result2 as $record) {
 			$tdate = General::toDate($record['trans_dt']);
+			$account = $record['acct_name'].'('.$record['acct_no'].')';
 			$custname = $record['payer_name'];
 			$chgitem = empty($record['item_code']) ? '' : $acctcode[$record['item_code']];
 			$servicedt = $record['year_no'].'/'.$record['month_no'];
@@ -250,6 +253,7 @@ class RptAccountStatus extends CReport {
 			$intfee = ($record['int_fee']=='Y' ? Yii::t('misc','Yes') : Yii::t('misc','No'));
 			
 			$output .= "<tr><td>".$tdate
+					."</td><td>".$account
 					."</td><td>".$custname
 					."</td><td>".$chgitem
 					."</td><td>".$servicedt

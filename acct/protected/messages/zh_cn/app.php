@@ -14,6 +14,9 @@ return array(
 	'Data Entry'=>'数据输入',
 	'Misc'=>'其他',
 
+	'Import'=>'数据导入',
+	'Import Manager'=>'数据导入管理员',
+
 	'Payment Request'=>'付款申请',
 	'Request Approval'=>'申请审核',
 	'Reimbursement'=>'报销单申请',

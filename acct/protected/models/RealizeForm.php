@@ -18,6 +18,9 @@ class RealizeForm extends CFormModel
 	public $acct_id;
 	public $ref_no;
 	public $acct_code;
+	public $acct_code_desc;
+	public $item_code;
+	public $pitem_desc;
 	public $cheque_no;
 	public $invoice_no;
 	public $trans_dt;
@@ -35,6 +38,7 @@ class RealizeForm extends CFormModel
 							'trans_id',
 							'trans_id_c',
 							'int_fee',
+							'item_code',
 						);
 	
 	public $files;
@@ -61,7 +65,6 @@ class RealizeForm extends CFormModel
 			'amount'=>Yii::t('trans','Amount'),
 			'city_name'=>Yii::t('misc','City'),
 			'status_desc'=>Yii::t('trans','Status'),
-			'req_dt'=>Yii::t('trans','Trans. Date'),
 			'trans_dt'=>Yii::t('trans','Trans. Date'),
 			'acct_id'=>Yii::t('trans','Account'),
 			'trans_desc'=>Yii::t('trans','Remarks'),
@@ -70,7 +73,9 @@ class RealizeForm extends CFormModel
 			'invoice_no'=>Yii::t('trans','China Invoice No.'),
 			'status_desc'=>Yii::t('trans','Status'),
 			'ref_no'=>Yii::t('trans','Ref. No.'),
-			'acct_code'=>Yii::t('trans','Paid Item'),
+			'item_code'=>Yii::t('trans','Paid Item'),
+			'pitem_desc'=>Yii::t('trans','Paid Item'),
+			'acct_code'=>Yii::t('trans','Account Code'),
 			'acct_id'=>Yii::t('trans','Paid Account'),
 			'user_name'=>Yii::t('trans','Requestor'),
 			'int_fee'=>Yii::t('trans','Integrated Fee'),
@@ -83,7 +88,7 @@ class RealizeForm extends CFormModel
 			array('trans_dt','required'),
 			array('trans_dt','validateTransDate'),
 			array('cheque_no, invoice_no','safe'),
-			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount','safe'),
+			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, item_code, pitem_desc, amount','safe'),
 			array('id, item_desc, payee_id, status, status_desc, acct_code, city, ref_no, user_name, trans_id, trans_id_c, int_fee','safe'), 
 			array('files, removeFileId, docMasterId','safe'), 
 			array ('no_of_attm','validateTaxSlip'),
@@ -161,6 +166,11 @@ class RealizeForm extends CFormModel
 			}
 			
 			if (empty($this->trans_dt)) $this->trans_dt = $this->req_dt;
+
+			$acctcodelist = General::getAcctCodeList();
+			$acctitemlist = General::getAcctItemList();
+			if (isset($acctcodelist[$this->acct_code])) $this->acct_code_desc = $acctcodelist[$this->acct_code];
+			if (isset($acctitemlist[$this->item_code])) $this->pitem_desc = $acctitemlist[$this->item_code];
 		}
 		return (count($rows) > 0);
 	}
@@ -202,6 +212,7 @@ class RealizeForm extends CFormModel
 					'cheque_no'=>$this->cheque_no,
 					'invoice_no'=>$this->invoice_no,
 					'acct_code'=>$this->acct_code,
+					'item_code'=>$this->item_code,
 					'united_inv_no'=>'N/A',
 					'int_fee'=>$this->int_fee,
 				);

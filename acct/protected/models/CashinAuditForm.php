@@ -33,6 +33,7 @@ class CashinAuditForm extends CListPageModel
 		$this->acct_id = 2;
 		$this->noOfItem = 0;
 		$this->rec_amt = 0;
+		$this->city = Yii::app()->user->city();
 		parent::init();
 	}
 	
@@ -171,7 +172,7 @@ class CashinAuditForm extends CListPageModel
 		$date = General::toMyDate($this->audit_dt);
 		$acctId = $this->acct_id;
 		$sql = "select x.id, y.disp_name as req_user_name, z.disp_name as audit_user_name, x.balance, 
-				x.acct_id, a.acct_no, a.acct_name, a.bank_name, b.name as city_name, x.city
+				x.acct_id, a.acct_no, a.acct_name, a.bank_name, b.name as city_name, x.city, x.audit_dt 
 				from acc_trans_audit_hdr x 
 				inner join acc_account a on x.acct_id=a.id 
 				inner join security$suffix.sec_city b on b.code=x.city 
@@ -184,6 +185,7 @@ class CashinAuditForm extends CListPageModel
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->hdr_id = $row['id'];
+			$this->audit_dt = General::toDate($row['audit_dt']);
 			$this->acct_id = $row['acct_id'];
 //			$this->acct_no = $row['acct_no'];
 //			$this->acct_name = $row['acct_name'];
@@ -343,7 +345,7 @@ class CashinAuditForm extends CListPageModel
 		if (strpos($sql,':acct_id')!==false)
 			$command->bindParam(':acct_id',$this->acct_id,PDO::PARAM_INT);
 		if (strpos($sql,':balance')!==false) {
-			$amt = General::toMyNumber($this->balance);
+			$amt = $this->balance==0 ? '0.00' : General::toMyNumber($this->balance);
 			$command->bindParam(':balance',$amt,PDO::PARAM_STR);
 		}
 		if (strpos($sql,':req_user')!==false)

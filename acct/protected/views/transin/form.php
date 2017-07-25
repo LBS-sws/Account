@@ -61,6 +61,10 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In Form';
 	</div>
 	</div></div>
 
+<?php
+	$currcode = City::getCurrency($model->city);
+	$sign = Currency::getSign($currcode); 
+?>
 	<div class="box box-info">
 		<div class="box-body">
 			<?php echo $form->hiddenField($model, 'scenario'); ?>
@@ -72,14 +76,13 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In Form';
 				<?php echo $form->labelEx($model,'city',array('class'=>"col-sm-2 control-label")); ?>
 				<div class="col-sm-3">
 					<?php 
-						$list = General::getCityListWithNoDescendant(Yii::app()->user->city_allow());
-						echo $form->dropDownList($model, 'city', $list,array('disabled'=>($model->isReadOnly()))); 
+						$list = General::getCityList();
+						echo TbHtml::textField('city_desc', $list[$model->city],array('readonly'=>true)); 
 					?>
 				</div>
 			</div>
-<?php else: ?>
-			<?php echo $form->hiddenField($model, 'city'); ?>
 <?php endif ?>
+			<?php echo $form->hiddenField($model, 'city'); ?>
 			
 			<div class="form-group">
 				<?php echo $form->labelEx($model,'trans_dt',array('class'=>"col-sm-2 control-label")); ?>
@@ -118,7 +121,7 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In Form';
 				<div class="col-sm-7">
 					<?php 
 						$list0 = array(0=>Yii::t('misc','-- None --'));
-						$list1 = General::getAccountList('','1');
+						$list1 = General::getAccountList($model->city,'1');
 						$list = $list0 + $list1;
 						echo $form->dropDownList($model, 'acct_id', $list,array('disabled'=>($model->isReadOnly()))); 
 					?>
@@ -251,9 +254,18 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In Form';
 						echo $form->numberField($model, 'amount', 
 							array('size'=>10,'min'=>0,
 							'readonly'=>($model->isReadOnly()),
-							'prepend'=>'<span class="fa fa-cny"></span>')
+							'prepend'=>'<span class="fa '.$sign.'"></span>')
 						); 
 					?>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'detail',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-7">
+					<?php echo $form->textArea($model, 'detail', 
+						array('rows'=>3,'cols'=>60,'maxlength'=>1000,'readonly'=>($model->isReadOnly()))
+					); ?>
 				</div>
 			</div>
 
@@ -266,12 +278,32 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In Form';
 				</div>
 			</div>
 
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'remarks',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-7">
+					<?php echo $form->textArea($model, 'remarks', 
+						array('rows'=>3,'cols'=>60,'maxlength'=>1000,'readonly'=>($model->isReadOnly()))
+					); ?>
+				</div>
+			</div>
+
 <?php if (!empty($model->req_ref_no)): ?>
 			<div class="form-group">
 				<?php echo $form->labelEx($model,'req_ref_no',array('class'=>"col-sm-2 control-label")); ?>
 				<div class="col-sm-3">
 					<?php echo $form->textField($model, 'req_ref_no', 
 						array('size'=>50,'maxlength'=>255,'readonly'=>true
+					)); ?>
+				</div>
+			</div>
+<?php endif ?>
+
+<?php if (!empty($model->t3_doc_no)): ?>
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'t3_doc_no',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-3">
+					<?php echo $form->textField($model, 't3_doc_no', 
+						array('size'=>50,'readonly'=>true
 					)); ?>
 				</div>
 			</div>
