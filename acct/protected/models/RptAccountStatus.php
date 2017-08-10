@@ -23,12 +23,13 @@ class RptAccountStatus extends CReport {
 		
 		$sql = "select a.id, c.acct_type_desc, a.acct_no, a.acct_name, a.bank_name, a.city,  
 					AccountBalanceByLCD(a.id,'$city','2010-01-01 00:00:00',('$start_dt' - interval 1 Minute)) as balance_last,
-					TransAmountByLCD('IN',a.id,'$city','$start_dt','$end_dt') as balance_in,
-					TransAmountByLCD('IN',a.id,'$city','$week_start_dt','$end_dt') as balance_wtd_in,
-					TransAmountByLCD('IN',a.id,'$city','$month_start_dt','$end_dt') as balance_mtd_in,
-					TransAmountByLCD('OUT',a.id,'$city','$start_dt','$end_dt') as balance_out,
-					TransAmountByLCD('OUT',a.id,'$city','$week_start_dt','$end_dt') as balance_wtd_out,
-					TransAmountByLCD('OUT',a.id,'$city','$month_start_dt','$end_dt') as balance_mtd_out
+					TransAmountByLCDWoIntTrf('IN',a.id,'$city','$start_dt','$end_dt') as balance_in,
+					TransAmountByLCDWoIntTrf('IN',a.id,'$city','$week_start_dt','$end_dt') as balance_wtd_in,
+					TransAmountByLCDWoIntTrf('IN',a.id,'$city','$month_start_dt','$end_dt') as balance_mtd_in,
+					TransAmountByLCDWoIntTrf('OUT',a.id,'$city','$start_dt','$end_dt') as balance_out,
+					TransAmountByLCDWoIntTrf('OUT',a.id,'$city','$week_start_dt','$end_dt') as balance_wtd_out,
+					TransAmountByLCDWoIntTrf('OUT',a.id,'$city','$month_start_dt','$end_dt') as balance_mtd_out,
+					AccountBalanceByLCD(a.id,'$city','2010-01-01 00:00:00','$end_dt') as balance_today
 				from acc_account a, acc_account_type c 
 				where (a.city='$city' or a.city='99999') and a.acct_type_id=c.id
 				order by a.acct_type_id, a.acct_name
@@ -124,6 +125,7 @@ class RptAccountStatus extends CReport {
 					'wtd_out'=>0,
 					'mtd_in'=>0,
 					'mtd_out'=>0,
+					'today'=>0,
 				);
 		$gtotal = array(
 					'last'=>0,
@@ -133,6 +135,7 @@ class RptAccountStatus extends CReport {
 					'wtd_out'=>0,
 					'mtd_in'=>0,
 					'mtd_out'=>0,
+					'today'=>0,
 				);
 		foreach ($this->result1 as $record) {
 			if (empty($type)) $type = $record['acct_type_desc'];
@@ -147,7 +150,7 @@ class RptAccountStatus extends CReport {
 					."</td><td align='right'>".number_format($total['wtd_in'],2)
 					."</td><td align='right'>".number_format($total['out'],2)
 					."</td><td align='right'>".number_format($total['in'],2)
-					."</td><td align='right'>".number_format($total['last']+$total['in']-$total['out'],2)
+					."</td><td align='right'>".number_format($total['today'],2)
 					."</td></tr>";
 				
 				$section = '';
@@ -159,6 +162,7 @@ class RptAccountStatus extends CReport {
 				$total['wtd_out'] = 0;
 				$total['mtd_in'] = 0;
 				$total['mtd_out'] = 0;
+				$total['today'] = 0;
 				$type = $record['acct_type_desc'];
 			}
 			
@@ -169,6 +173,7 @@ class RptAccountStatus extends CReport {
 			$total['wtd_out'] += $record['balance_wtd_out'];
 			$total['mtd_in'] += $record['balance_mtd_in'];
 			$total['mtd_out'] += $record['balance_mtd_out'];
+			$total['today'] += $record['balance_today'];
 			
 			$gtotal['last'] += $record['balance_last'];
 			$gtotal['in'] += $record['balance_in'];
@@ -177,6 +182,7 @@ class RptAccountStatus extends CReport {
 			$gtotal['wtd_out'] += $record['balance_wtd_out'];
 			$gtotal['mtd_in'] += $record['balance_mtd_in'];
 			$gtotal['mtd_out'] += $record['balance_mtd_out'];
+			$gtotal['today'] += $record['balance_today'];
 			
 			$cnt++;
 			
@@ -189,11 +195,11 @@ class RptAccountStatus extends CReport {
 					."</td><td align='right'>".number_format($record['balance_wtd_in'],2)
 					."</td><td align='right'>".number_format($record['balance_out'],2)
 					."</td><td align='right'>".number_format($record['balance_in'],2)
-					."</td><td align='right'>".number_format($record['balance_last']+$record['balance_in']-$record['balance_out'],2)
+					."</td><td align='right'>".number_format($record['balance_today'],2)
 					."</td></tr>";
 		}
 		if (empty($this->result1)) {
-			$output .= "<tr><td colspan=6 align='center'>".Yii::t('report','No Record')."</td></tr>";
+			$output .= "<tr><td colspan=10 align='center'>".Yii::t('report','No Record')."</td></tr>";
 		} else {
 			$output .= "<tr><td rowspan=$cnt>$type</td>";
 			$output .= $section;
@@ -205,10 +211,10 @@ class RptAccountStatus extends CReport {
 				."</td><td align='right'>".number_format($total['wtd_in'],2)
 				."</td><td align='right'>".number_format($total['out'],2)
 				."</td><td align='right'>".number_format($total['in'],2)
-				."</td><td align='right'>".number_format($total['last']+$total['in']-$total['out'],2)
+				."</td><td align='right'>".number_format($total['today'],2)
 				."</td></tr>";
 
-			$output .= "<tr><td colspan=6 align='center'>&nbsp;</td></tr>";
+			$output .= "<tr><td colspan=10 align='center'>&nbsp;</td></tr>";
 			$output .= "<tr><td colspan=2>".Yii::t('report','Grand Total')
 				."</td><td align='right'>".number_format($gtotal['last'],2)
 				."</td><td align='right'>".number_format($gtotal['mtd_out'],2)
@@ -217,7 +223,7 @@ class RptAccountStatus extends CReport {
 				."</td><td align='right'>".number_format($gtotal['wtd_in'],2)
 				."</td><td align='right'>".number_format($gtotal['out'],2)
 				."</td><td align='right'>".number_format($gtotal['in'],2)
-				."</td><td align='right'>".number_format($gtotal['last']+$gtotal['in']-$gtotal['out'],2)
+				."</td><td align='right'>".number_format($gtotal['today'],2)
 				."</td></tr>";
 		}
 		$output .= "</table>";

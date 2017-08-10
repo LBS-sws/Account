@@ -62,7 +62,9 @@ return array(
 	'Session expired.'=>'系统连接已经过期。请重新登录。',
 	'Message'=>'讯息',
 	'All rights reserved'=>'版权所有',
-	'Copyright'=>'版权'
+	'Copyright'=>'版权',
+	'**Please use Firefox web browser in order to use LBS Daily Management System for best result'
+	=>'**为求使用史伟莎日常管理系统达至最佳效果，请使用火狐浏览器',
 );
 
 ?>

@@ -37,18 +37,24 @@ class ImpReceipt {
 	}
 	
 	public function validateData($data) {
+		$name = $this->getDbFields();
 		$connection = Yii::app()->db;
 		$dt = $this->convertExcelDate($data['trans_dt']);
-		$rtn = !empty($dt)? '' : Yii::t('import','Trans. Date').' '.Yii::t('import','cannot be blank').' /';
-		$rtn .= $this->validateDate($dt,'Y-m-d') ? '' : Yii::t('import','Trans. Date').' '.Yii::t('import','is not valid').' /';
-		$rtn .= !empty($data['t3_doc_no']) ? '' : Yii::t('import','T3 Document No.').' '.Yii::t('import','cannot be blank').' /';
-		$rtn .= !empty($data['amount']) ? '' : Yii::t('import','Amount').' '.Yii::t('import','cannot be blank').' /';
-		$rtn .= is_numeric($data['amount']) ? '' : Yii::t('import','Amount').' '.Yii::t('import','is not valid').' /';
-		$rtn .= !empty($data['method']) ? '' : Yii::t('import','Payment Method').' '.Yii::t('import','cannot be blank').' /';
-		$rtn .= !empty($data['item_source']) ? '' : Yii::t('import','Item Source').' '.Yii::t('import','cannot be blank').' /';
-		$rtn .= $data['item_source']=='QT99' || !empty($data['cust_code']) ? '' : Yii::t('import','Customer Code').' '.Yii::t('import','cannot be blank').' /';
-		$rtn .= $data['item_source']=='QT99' || !empty($data['cust_full_name']) ? '' : Yii::t('import','Customer Full Name').' '.Yii::t('import','cannot be blank').' /';
-		$rtn .= empty($data['cust_code']) || $this->getCustomerId($connection, $data['cust_code'])!=0 ? '' : Yii::t('import','Customer Code').' '.Yii::t('import','cannot be found in system').' /';
+		$rtn = !empty($dt)? '' : $name['trans_dt'].' '.Yii::t('import','cannot be blank').' /';
+		$rtn .= $this->validateDate($dt,'Y-m-d') ? '' : $name['trans_dt'].' '.Yii::t('import','is not valid').' /';
+		$rtn .= !empty($data['t3_doc_no']) 
+				? (strlen($data['t3_doc_no'])>50 ? $name['t3_doc_no'].' '.Yii::t('import','is too long').' /' : '') 
+				: $name['t3_doc_no'].' '.Yii::t('import','cannot be blank').' /';
+		$rtn .= !empty($data['amount']) ? '' : $name['amount'].' '.Yii::t('import','cannot be blank').' /';
+		$rtn .= is_numeric($data['amount']) ? '' : $name['amount'].' '.Yii::t('import','is not valid').' /';
+		$rtn .= !empty($data['method']) ? '' : $name['method'].' '.Yii::t('import','cannot be blank').' /';
+		$rtn .= !empty($data['item_source']) ? '' : $name['item_source'].' '.Yii::t('import','cannot be blank').' /';
+		$rtn .= $data['item_source']=='QT99' || !empty($data['cust_code']) ? '' : $name['cust_code'].' '.Yii::t('import','cannot be blank').' /';
+		$rtn .= $data['item_source']=='QT99' || !empty($data['cust_full_name']) ? '' : $name['cust_full_name'].' '.Yii::t('import','cannot be blank').' /';
+		$rtn .= empty($data['cust_code']) || $this->getCustomerId($connection, $data['cust_code'])!=0 ? '' : $name['cust_code'].' '.Yii::t('import','cannot be found in system').' /';
+		$rtn .= !empty($data['detail']) && strlen($data['detail'])>1000 ? $name['detail'].' '.Yii::t('import','is too long').' /' : '';
+		$rtn .= !empty($data['remarks1']) && strlen($data['remarks1'])>1000 ? $name['remarks1'].' '.Yii::t('import','is too long').' /' : '';
+		$rtn .= !empty($data['remarks2']) && strlen($data['remarks2'])>1000 ? $name['remakrs2'].' '.Yii::t('import','is too long').' /' : '';
 		return empty($rtn) ? '' : Yii::t('import','ERROR').'- /'.Yii::t('import','Row No.').': '.$data['excel_row'].' /'.$rtn;
 	}
 	

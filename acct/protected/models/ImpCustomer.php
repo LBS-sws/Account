@@ -8,6 +8,7 @@ class ImpCustomer {
 				'cont_name'=>Yii::t('import','Contact Name'),
 				'cont_phone'=>Yii::t('import','Contact Phone'),
 				'address'=>Yii::t('import','Address'),
+				'tax_reg_no'=>Yii::t('import','Taxpayer No.'),
 			);
 	}
 	
@@ -20,12 +21,22 @@ class ImpCustomer {
 				'cont_name'=>2,
 				'cont_phone'=>3,
 				'address'=>4,
+				'tax_reg_no'=>6,
 			);
 	}
 	
 	public function validateData($data) {
-		$rtn = !empty($data['code'])? '' : Yii::t('import','Code').' '.Yii::t('import','cannot be blank').' /';
-		$rtn .= !empty($data['name']) ? '' : Yii::t('import','Name').' '.Yii::t('import','cannot be blank').' /';
+		$rtn = !empty($data['code'])
+				? (strlen($data['code'])>20 ? Yii::t('import','Code').' '.Yii::t('import','is too long').' /' : '') 
+				: Yii::t('import','Code').' '.Yii::t('import','cannot be blank').' /';
+		$rtn .= !empty($data['name']) 
+				? (strlen($data['name'])>1000 ? Yii::t('import','Name').' '.Yii::t('import','is too long').' /' : '') 
+				: Yii::t('import','Name').' '.Yii::t('import','cannot be blank').' /';
+		$rtn .= !empty($data['full_name']) && strlen($data['full_name'])>1000 ? Yii::t('import','Full Name').' '.Yii::t('import','is too long').' /' : '';
+		$rtn .= !empty($data['cont_name']) && strlen($data['cont_name'])>100 ? Yii::t('import','Contact Name').' '.Yii::t('import','is too long').' /' : '';
+		$rtn .= !empty($data['cont_phone']) && strlen($data['cont_phone'])>30 ? Yii::t('import','Contact Phone').' '.Yii::t('import','is too long').' /' : '';
+		$rtn .= !empty($data['address']) && strlen($data['address'])>1000 ? Yii::t('import','Address').' '.Yii::t('import','is too long').' /' : '';
+		$rtn .= !empty($data['tax_reg_no']) && strlen($data['tax_reg_no'])>100 ? Yii::t('import','Taxpayer No.').' '.Yii::t('import','is too long').' /' : '';
 		$rtn .= !empty($data['city']) ? '' : Yii::t('import','City').' '.Yii::t('import','cannot be blank').' /';
 		return empty($rtn) ? '' : Yii::t('import','ERROR').'- /'.Yii::t('import','Row No.').': '.$data['excel_row'].' /'.$rtn;
 	}
@@ -43,9 +54,9 @@ class ImpCustomer {
 		$action = ($row===false) ? Yii::t('import','INSERT') : Yii::t('import','UPDATE');
 		$sql = ($row===false)
 				? "insert into swoper$suffix.swo_company 
-						(code, name, full_name, cont_name, cont_phone, address, city, lcu, luu)
+						(code, name, full_name, cont_name, cont_phone, address, tax_reg_no, city, lcu, luu)
 					values
-						(:code, :name, :full_name, :cont_name, :cont_phone, :address, :city, :uid, :uid)
+						(:code, :name, :full_name, :cont_name, :cont_phone, :address, :tax_reg_no, :city, :uid, :uid)
 				"
 				: "update swoper$suffix.swo_company 
 					set name = :name, 
@@ -53,6 +64,7 @@ class ImpCustomer {
 						cont_name = :cont_name, 
 						cont_phone = :cont_phone, 
 						address = :address, 
+						tax_reg_no = :tax_reg_no,
 						lcu = :uid, 
 						luu = :uid
 					where
@@ -72,6 +84,8 @@ class ImpCustomer {
 			$command->bindParam(':cont_phone',$data['cont_phone'],PDO::PARAM_STR);
 		if (strpos($sql,':address')!==false)
 			$command->bindParam(':address',$data['address'],PDO::PARAM_STR);
+		if (strpos($sql,':tax_reg_no')!==false)
+			$command->bindParam(':tax_reg_no',$data['tax_reg_no'],PDO::PARAM_STR);
 		if (strpos($sql,':uid')!==false)
 			$command->bindParam(':uid',$data['uid'],PDO::PARAM_STR);
 		if (strpos($sql,':city')!==false)

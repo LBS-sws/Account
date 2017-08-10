@@ -31,9 +31,10 @@ class ImportCommand extends CConsoleCommand {
 	
 			$excelfile = $this->writeExcelFile($row['file_content']);
 			$data = $this->formatData($excelfile, $row['file_type'], $mapping);
-			$this->import($classname, $data, $id);
+			$log = $this->import($classname, $data, $id);
 			
-			$this->markStatus($id, $ts, 'C');
+			$sts = (strpos($log, Yii::t('import','ERROR'))===false) ? 'C' : 'F';
+			$this->markStatus($id, $ts, $sts);
 			echo "\t-Done (default)\n";
 		}
 	}
@@ -42,6 +43,7 @@ class ImportCommand extends CConsoleCommand {
 		$model = new $classname();
 		$logmsgErr = '';
 		$logmsgOk = '';
+		$logmsg = '';
 		$cnt = 0;
 		
 		$connection = Yii::app()->db;
@@ -69,17 +71,17 @@ class ImportCommand extends CConsoleCommand {
 					$cnt = 0;
 				}
 			}
-			if ($cnt > 0) {
-				$logmsg = empty($logmsgErr) ? Yii::t('import','Import Success!') : Yii::t('import','Import Error:')."\n".$logmsgErr;
-				$logmsg .= "\n\n".Yii::t('import','Imported Rows:')."\n".$logmsgOk;
-				
-				$this->saveLog($connection, $queueid, $logmsg);
-				$transaction->commit();
-			}
+			$logmsg = empty($logmsgErr) ? Yii::t('import','Import Success!') : Yii::t('import','Import Error:')."\n".$logmsgErr;
+			$logmsg .= "\n\n".Yii::t('import','Imported Rows:')."\n".$logmsgOk;
+			$this->saveLog($connection, $queueid, $logmsg);
+			$transaction->commit();
+
 		} catch(Exception $e) {
 			$transaction->rollback();
 			echo 'Error: '.$e->getMessage();
+			$logmsg .= "\n\n".Yii::t('import','ERROR').' '.$e->getMessage();
 		}
+		return $logmsg;
 	}
 	
 	protected function writeExcelFile($content) {
@@ -118,6 +120,7 @@ class ImportCommand extends CConsoleCommand {
 				if (!isset($fields['city'])) $fields['city'] = $this->city;
 				if (!isset($fields['excel_row'])) $fields['excel_row'] = $rowidx;
 				$rtn[] = $fields;
+				$emptycnt = 0;
 			}
 			$rowidx++;
 		} while ($emptycnt <= 2);
@@ -143,7 +146,7 @@ class ImportCommand extends CConsoleCommand {
 	}
 	
 	protected function markStatus($id, $ts, $sts) {
-		$sql = $sts=='C' 
+		$sql = ($sts=='C' || $sts=='F')
 			? "update acc_import_queue set status=:status, fin_dt=now() where id=:id and ts=:ts"
 			: "update acc_import_queue set status=:status where id=:id and ts=:ts";
 		$command=Yii::app()->db->createCommand($sql);

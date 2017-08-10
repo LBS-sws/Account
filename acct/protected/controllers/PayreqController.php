@@ -256,6 +256,7 @@ class PayreqController extends Controller
 				from acc_trans a
 				left outer join acc_trans_audit_dtl x on a.id=x.trans_id 
 				where x.trans_id is null and a.acct_id=2 and a.city='$city' 
+				and a.status <> 'V' 
 				order by a.trans_dt
 				limit 1
 			";

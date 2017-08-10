@@ -41,6 +41,15 @@ $this->pageTitle=Yii::app()->name . ' - Login';
 				?>
 			</div>
 		</div>
+		
+		<div class="row">
+		<p>&nbsp;</p>
+		<p class="text-center">
+			<small>
+				<?php echo Yii::t('misc','**Please use Firefox web browser in order to use LBS Daily Management System for best result'); ?>
+			</small>
+		</p>
+		</div>
 			<!-- /.col -->
 
 <?php $this->endWidget(); ?>

@@ -47,6 +47,6 @@ return array(
 	'Item Source'=>'款项来源',
 	'Remarks 1'=>'备注1',
 	'Remarks 2'=>'备注2',
-
+	'Taxpayer No.'=>'纳税人登记号',
 );
 ?>

@@ -18,11 +18,11 @@ class IqueueList extends CListPageModel
 		$uid = Yii::app()->user->id;
 		$sql1 = "select a.*
 				from acc_import_queue a 
-				where a.username='".$uid."' 
+				where a.status<>'N' and a.username='".$uid."' 
 			";
 		$sql2 = "select count(a.id)
 				from acc_import_queue a 
-				where a.username='".$uid."' 
+				where a.status<>'N' and a.username='".$uid."' 
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {

@@ -321,6 +321,7 @@ BEGIN
 		and c.start_dt <= p_req_dt
 		and c.end_dt >= p_req_dt
 		and a.doc_id = p_doc_id
+		order by a.id desc
 		LIMIT 1
 	);
 	RETURN status;
@@ -346,7 +347,7 @@ BEGIN
 		and a.id = e.request_id
 		and a.current_state = e.new_state
 		and e.old_state = f.id
-		order by e.id desc 
+		order by a.id desc, e.id desc 
 		LIMIT 1
 	);
 	RETURN status;
@@ -372,7 +373,7 @@ BEGIN
 		and a.id = e.request_id
 		and a.current_state = e.new_state
 		and e.old_state = f.id
-		order by e.id desc 
+		order by a.id desc, e.id desc 
 		LIMIT 1
 	);
 	RETURN status_desc;
@@ -396,7 +397,7 @@ BEGIN
 		and c.end_dt >= p_req_dt
 		and a.doc_id = p_doc_id
 		and a.id = e.request_id
-		order by e.id desc 
+		order by a.id desc, e.id desc 
 		LIMIT 1
 	);
 	RETURN status_dt;
@@ -421,7 +422,7 @@ BEGIN
 		and a.doc_id = p_doc_id
 		and a.id = e.request_id
 		and e.status = 'C'
-		order by e.id desc 
+		order by a.id desc, e.id desc 
 		LIMIT 1
 	);
 	RETURN action_user;

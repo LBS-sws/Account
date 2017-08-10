@@ -12,7 +12,7 @@
 	<td>
 		<?php 
 			echo $this->record['status']; 
-			if ($this->record['sts']=='C')
+			if ($this->record['sts']=='C'||$this->record['sts']=='F')
 				echo "&nbsp;<a href='javascript:showlog($id);'><span class='fa fa-info-circle' title='$title'></span></a>";
 		?>
 	</td>
