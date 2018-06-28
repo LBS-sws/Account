@@ -62,6 +62,27 @@ $this->pageTitle=Yii::app()->name . ' - Report';
 				</div>
 			</div>
 
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'trans_cat',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-3">
+					<?php echo $form->dropDownList($model, 'trans_cat', 
+						array('ALL'=>Yii::t('report','-- All --'), 'IN'=>Yii::t('code','In'),'OUT'=>Yii::t('code','Out')));
+					?>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'acct_id',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-7">
+					<?php 
+						$list0 = array(0=>Yii::t('report','-- All --'));
+						$list1 = General::getAccountList($model->city);
+						$list = $list0 + $list1;
+						echo $form->dropDownList($model, 'acct_id', $list); 
+					?>
+				</div>
+			</div>
+			
 		</div>
 	</div>
 </section>

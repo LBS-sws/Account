@@ -22,6 +22,7 @@ class PayReqForm extends CFormModel
 	public $acct_code;
 	public $acct_code_desc;
 	public $reason;
+	public $reason_cf;
 	public $item_code;
 	public $pitem_desc;
 	public $int_fee;
@@ -31,6 +32,7 @@ class PayReqForm extends CFormModel
 							'ref_no',
 							'acct_code',
 							'reason',
+							'reason_cf',
 							'item_code',
 							'int_fee',
 						);
@@ -38,14 +40,17 @@ class PayReqForm extends CFormModel
 	public $files;
 
 	public $docMasterId = array(
+							'payreal'=>0,
 							'payreq'=>0,
 							'tax'=>0
 						);
 	public $removeFileId = array(
+							'payreal'=>0,
 							'payreq'=>0,
 							'tax'=>0
 						);
 	public $no_of_attm = array(
+							'payreal'=>0,
 							'payreq'=>0,
 							'tax'=>0
 						);
@@ -74,6 +79,7 @@ class PayReqForm extends CFormModel
 			'item_desc'=>Yii::t('trans','Details'),
 			'amount'=>Yii::t('trans','Amount'),
 			'city_name'=>Yii::t('misc','City'),
+			'city'=>Yii::t('misc','City'),
 			'status_desc'=>Yii::t('trans','Status'),
 			'wfstatusdesc'=>Yii::t('trans','Flow Status'),
 			'ref_no'=>Yii::t('trans','Ref. No.'),
@@ -82,20 +88,27 @@ class PayReqForm extends CFormModel
 			'acct_code'=>Yii::t('trans','Account Code'),
 			'acct_id'=>Yii::t('trans','Paid Account'),
 			'reason'=>Yii::t('trans','Reason'),
+			'reason_cf'=>Yii::t('trans','Reason'),
 			'int_fee'=>Yii::t('trans','Integrated Fee'),
 		);
 	}
 
-	public function rules()
-	{
+	public function rules() {
 		return array(
 			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount, item_code, pitem_desc, acct_code','required'),
-			array('id, item_desc, payee_id, status, status_desc, acct_code_desc, int_fee, city','safe'), 
+			array('acct_id','validateAcctId'),
+			array('id, item_desc, payee_id, status, status_desc, acct_code_desc, int_fee, city, reason, reason_cf','safe'), 
 			array('files, removeFileId, docMasterId, no_of_attm','safe'), 
 				
 		);
 	}
 
+	public function validateAcctId($attribute, $params) {
+		if ($this->$attribute=='0') {
+			$this->addError($attribute, Yii::t('trans','Paid Account cannot be blank'));
+		}
+	}
+	
 	public function retrieveData($index)
 	{
 		$suffix = Yii::app()->params['envSuffix'];
@@ -104,6 +117,7 @@ class PayReqForm extends CFormModel
 		$sql = "select *,  
 				workflow$suffix.RequestStatus('PAYMENT',id,req_dt) as wfstatus,
 				workflow$suffix.RequestStatusDesc('PAYMENT',id,req_dt) as wfstatusdesc,
+				docman$suffix.countdoc('payreal',id) as payrealcountdoc,
 				docman$suffix.countdoc('payreq',id) as payreqcountdoc,
 				docman$suffix.countdoc('tax',id) as taxcountdoc
 				from acc_request where id=$index 
@@ -125,6 +139,7 @@ class PayReqForm extends CFormModel
 				$this->status_desc = General::getTransStatusDesc($row['status']);
 				$this->wfstatus = $row['wfstatus'];
 				$this->wfstatusdesc = $row['wfstatusdesc'];
+				$this->no_of_attm['payreal'] = $row['payrealcountdoc'];
 				$this->no_of_attm['payreq'] = $row['payreqcountdoc'];
 				$this->no_of_attm['tax'] = $row['taxcountdoc'];
 				$this->city = $row['city'];
@@ -150,12 +165,27 @@ class PayReqForm extends CFormModel
 		return (count($rows) > 0);
 	}
 	
+	public function voidRecord() {
+		try {
+			$reqId = $this->id;
+			$uid = Yii::app()->user->id;
+			$sql = "update acc_request set status='V', luu='$uid'
+					where id = $reqId
+				";
+			Yii::app()->db->createCommand($sql)->execute();
+		}
+		catch(Exception $e) {
+			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
+		}
+	}
+
 	public function cancel() {
+		$uid = Yii::app()->user->id;
 		$wf = new WorkflowPayment;
 		$connection = $wf->openConnection();
 		try {
 			$reqId = $this->id;
-			$sql = "update acc_request set status='V'
+			$sql = "update acc_request set status='V', luu='$uid' 
 					where id = $reqId
 				";
 			$connection->createCommand($sql)->execute();
@@ -225,8 +255,8 @@ class PayReqForm extends CFormModel
 		$wf = new WorkflowPayment;
 		$connection = $wf->openConnection();
 		try {
-			$this->saveReq($connection);
-			$this->saveInfo($connection);
+//			$this->saveReq($connection);
+//			$this->saveInfo($connection);
 			$this->updateDocman($connection,'PAYREQ');
 			$this->updateDocman($connection,'TAX');
 			if ($wf->startProcess('PAYMENT',$this->id,$this->req_dt)) {
@@ -410,11 +440,19 @@ class PayReqForm extends CFormModel
 		return ($this->scenario=='view'||(!empty($this->wfstatus) && strpos('~ED~PS~SI~RC~C~D~','~'.$this->wfstatus.'~')!==false));
 	}
 	
+	public function isPayrealReady() {
+		return (!empty($this->wfstatus) && strpos('~ED~PR~QR~PS~SI~RC~RR~RE~','~'.$this->wfstatus.'~')!==false);
+	}
+
 	public function allowRequestCheck() {
 		return Yii::app()->user->validFunction('CN03');
 	}
 
 	public function allowSubmit() {
 		return Yii::app()->user->validFunction('CN04');
+	}
+
+	public function allowVoid() {
+		return Yii::app()->user->validFunction('CN06');
 	}
 }

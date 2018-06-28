@@ -15,6 +15,7 @@ class AccountList extends CListPageModel
 			'acct_name'=>Yii::t('code','Account Name'),
 			'bank_name'=>Yii::t('code','Bank'),
 			'city_name'=>Yii::t('code','City'),
+			'coa'=>Yii::t('code','COA'),
 		);
 	}
 	
@@ -22,7 +23,7 @@ class AccountList extends CListPageModel
 	{
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city();
-		$sql1 = "select a.id, a.acct_no, a.acct_name, a.bank_name, b.name as city_name, c.acct_type_desc, a.city   
+		$sql1 = "select a.id, a.acct_no, a.acct_name, a.bank_name, b.name as city_name, c.acct_type_desc, a.coa, a.city   
 				from acc_account a 
 				inner join acc_account_type c on a.acct_type_id=c.id
 				left outer join security$suffix.sec_city b on a.city=b.code
@@ -52,6 +53,9 @@ class AccountList extends CListPageModel
 					break;
 				case 'city_name':
 					$clause .= General::getSqlConditionClause('b.name',$svalue);
+					break;
+				case 'coa':
+					$clause .= General::getSqlConditionClause('a.coa',$svalue);
 					break;
 			}
 		}
@@ -85,6 +89,7 @@ class AccountList extends CListPageModel
 					'bank_name'=>$record['bank_name'],
 					'city_name'=>$record['city_name'],
 					'city'=>$record['city'],
+					'coa'=>$record['coa'],
 				);
 			}
 		}

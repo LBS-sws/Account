@@ -19,14 +19,34 @@ class RptTransList extends CReport {	protected function fields() {		return arr
 	public function genReport() {
 		$this->retrieveData();
 		$this->title = $this->getReportName();
-		$this->subtitle = Yii::t('report','Date').':'.$this->criteria['START_DT'].' - '.$this->criteria['END_DT'];
+		$this->subtitle = Yii::t('report','Date').':'.$this->criteria['START_DT'].' - '.$this->criteria['END_DT'].' / '
+			.Yii::t('code','Type').':'.$this->getTypeDesc($this->criteria['TRANS_CAT']).' / '
+			.Yii::t('trans','Account').':'.$this->getAccountName($this->criteria['ACCT_ID'])
+			;
 		return $this->exportExcel();
 	}
 
+	protected function getTypeDesc($value) {
+		$desc = array('ALL'=>Yii::t('report','-- All --'), 'IN'=>Yii::t('code','In'),'OUT'=>Yii::t('code','Out'));
+		return isset($desc[$value]) ? $desc[$value] : '';
+	}
+	
+	protected function getAccountName($value) {
+		$list0 = array(0=>Yii::t('report','-- All --'));
+		$list1 = General::getAccountList($this->criteria['CITY']);
+		$list = $list0 + $list1;
+		return isset($list[$value]) ? $list[$value] : '';
+	}
+	
 	public function retrieveData() {
 		$start_dt = $this->criteria['START_DT'];
 		$end_dt = $this->criteria['END_DT'];
 		$city = $this->criteria['CITY'];
+		$trans_cat = $this->criteria['TRANS_CAT'];
+		$account = $this->criteria['ACCT_ID'];
+		
+		$condition = ($trans_cat=='ALL' ? "" : " and b.trans_cat='$trans_cat' ")
+					.($account==0 ? "" : " and a.acct_id=$account ");
 
 		$sql = "select a.*, 
 					b.trans_type_desc, 
@@ -34,7 +54,8 @@ class RptTransList extends CReport {	protected function fields() {		return arr
 				from acc_trans a inner join acc_trans_type b on a.trans_type_code=b.trans_type_code 
 				where a.city='$city' and a.status <> 'V'
 					and a.trans_dt >= '$start_dt' and a.trans_dt <= '$end_dt'
-				order by a.trans_dt desc, a.id desc
+					$condition 
+				order by a.trans_dt desc, a.id desc 
 			";
 		$mrows = Yii::app()->db->createCommand($sql)->queryAll();
 		if (count($mrows) > 0) {
@@ -83,8 +104,12 @@ class RptTransList extends CReport {	protected function fields() {		return arr
 				$temp['cheque_no'] = isset($dtl[$row['id']]['cheque_no']) ? $dtl[$row['id']]['cheque_no'] : '';
 				$temp['invoice_no'] = isset($dtl[$row['id']]['invoice_no']) ? $dtl[$row['id']]['invoice_no'] : '';
 				$temp['handle_staff_name'] = isset($dtl[$row['id']]['handle_staff_name']) ? $dtl[$row['id']]['handle_staff_name'] : '';
-				$temp['item_code_desc'] = isset($dtl[$row['id']]['item_code']) ? (empty($dtl[$row['id']]['item_code']) ? '' : $acctitemlist[$dtl[$row['id']]['item_code']]) : '';
-				$temp['acct_code_desc'] = isset($dtl[$row['id']]['acct_code']) ? (empty($dtl[$row['id']]['acct_code']) ? '' : $acctcodelist[$dtl[$row['id']]['acct_code']]) : '';
+				$temp['item_code_desc'] = isset($dtl[$row['id']]['item_code']) 
+						? (empty($dtl[$row['id']]['item_code']) || !isset($acctitemlist[$dtl[$row['id']]['item_code']]) ? '' : $acctitemlist[$dtl[$row['id']]['item_code']]) 
+						: '';
+				$temp['acct_code_desc'] = isset($dtl[$row['id']]['acct_code']) 
+						? (empty($dtl[$row['id']]['acct_code']) || !isset($acctcodelist[$dtl[$row['id']]['acct_code']]) ? '' : $acctcodelist[$dtl[$row['id']]['acct_code']]) 
+						: '';
 				$temp['service_dt'] = (isset($dtl[$row['id']]['year_no']) ? $dtl[$row['id']]['year_no'] : '').'/'
 					.(isset($dtl[$row['id']]['month_no']) ? $dtl[$row['id']]['month_no'] : '');
 				$temp['united_inv_no'] = isset($dtl[$row['id']]['united_inv_no']) ? $dtl[$row['id']]['united_inv_no'] : '';

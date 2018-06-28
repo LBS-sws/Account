@@ -7,6 +7,10 @@ class ExcelTool {
 		$phpExcelPath = Yii::getPathOfAlias('ext.phpexcel');
 		spl_autoload_unregister(array('YiiBase','autoload'));
 		include($phpExcelPath . DIRECTORY_SEPARATOR . 'PHPExcel.php');
+
+		$cacheMethod = PHPExcel_CachedObjectStorageFactory:: cache_to_phpTemp;
+		$cacheSettings = array( ' memoryCacheSize ' => '8MB');
+		PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
 	}
 	
 	public function end() {

@@ -2,6 +2,14 @@
 
 class ApprReqList extends CListPageModel
 {
+	public $type;
+	
+	public function rules() {
+		$rtn = parent::rules();
+		$rtn[] = array('type','safe');
+		return $rtn;
+	}
+	
 	public function attributeLabels()
 	{
 		return array(	
@@ -15,6 +23,10 @@ class ApprReqList extends CListPageModel
 			'status'=>Yii::t('trans','Status'),
 			'user_name'=>Yii::t('trans','Requestor'),
 			'int_fee'=>Yii::t('trans','Integrated Fee'),
+			'pitem_desc'=>Yii::t('trans','Paid Item'),
+			'payreqcountdoc'=>Yii::t('misc','Attachment'),
+			'taxcountdoc'=>Yii::t('trans','Tax Slip'),
+			'acct_type_desc'=>Yii::t('trans','Paid Account'),
 		);
 	}
 	
@@ -30,12 +42,19 @@ class ApprReqList extends CListPageModel
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city_allow();
 		$sql1 = "select a.id, a.req_dt, e.trans_type_desc, a.item_desc, a.payee_name, c.disp_name as user_name,
-					b.name as city_name, a.amount, a.status, f.field_value as ref_no,g.field_value as int_fee 
+					b.name as city_name, a.amount, a.status, f.field_value as ref_no,g.field_value as int_fee,
+					h.field_value as item_code, k.acct_type_desc,
+					docman$suffix.countdoc('payreq',a.id) as payreqcountdoc,
+					docman$suffix.countdoc('tax',a.id) as taxcountdoc
 				from acc_request a inner join security$suffix.sec_city b on a.city=b.code
 					inner join acc_trans_type e on a.trans_type_code=e.trans_type_code 
 					inner join security$suffix.sec_user c on a.req_user = c.username
 					left outer join acc_request_info f on a.id=f.req_id and f.field_id='ref_no'
 					left outer join acc_request_info g on a.id=g.req_id and g.field_id='int_fee'
+					left outer join acc_request_info h on a.id=h.req_id and h.field_id='item_code'
+					left outer join acc_request_info i on a.id=i.req_id and i.field_id='acct_id'
+					left outer join acc_account j on j.id=i.field_value
+					left outer join acc_account_type k on k.id=j.acct_type_id
 				where a.city in ($city)
 				and a.id in ($list)
 				and e.trans_cat='OUT' 
@@ -46,6 +65,10 @@ class ApprReqList extends CListPageModel
 					inner join security$suffix.sec_user c on a.req_user = c.username
 					left outer join acc_request_info f on a.id=f.req_id and f.field_id='ref_no'
 					left outer join acc_request_info g on a.id=g.req_id and g.field_id='int_fee'
+					left outer join acc_request_info h on a.id=h.req_id and h.field_id='item_code'
+					left outer join acc_request_info i on a.id=i.req_id and i.field_id='acct_id'
+					left outer join acc_account j on j.id=i.field_value
+					left outer join acc_account_type k on k.id=j.acct_type_id
 				where a.city in ($city)
 				and a.id in ($list)
 				and e.trans_cat='OUT' 
@@ -75,6 +98,9 @@ class ApprReqList extends CListPageModel
 						end) ";
 					$clause .= General::getSqlConditionClause($field,$svalue);
 					break;
+				case 'acct_type_desc': 
+					$orderf = 'k.acct_type_desc'; 
+					break;
 			}
 		}
 		
@@ -88,6 +114,7 @@ class ApprReqList extends CListPageModel
 				case 'item_desc': $orderf = 'a.item_desc'; break;
 				case 'ref_no': $orderf = 'f.field_value'; break;
 				case 'int_fee': $orderf = 'g.field_value'; break;
+				case 'acct_type_desc': $orderf = 'k.acct_type_desc'; break;
 				default: $orderf = $this->orderField; break;
 			}
 			$order .= " order by ".$orderf." ";
@@ -105,6 +132,7 @@ class ApprReqList extends CListPageModel
 		$list = array();
 		$this->attr = array();
 		if (count($records) > 0) {
+			$acctitemlist = General::getAcctItemList();
 			foreach ($records as $k=>$record) {
 				$this->attr[] = array(
 					'id'=>$record['id'],
@@ -119,6 +147,11 @@ class ApprReqList extends CListPageModel
 					'ref_no'=>$record['ref_no'],
 					'type'=>$type,
 					'int_fee'=>($record['int_fee']=='Y' ? Yii::t('misc','Yes') : Yii::t('misc','No')),
+					'select'=>'N',
+					'pitem_desc'=>(isset($acctitemlist[$record['item_code']]) ? $acctitemlist[$record['item_code']] : ''),
+					'payreqcountdoc'=>$record['payreqcountdoc'],
+					'taxcountdoc'=>$record['taxcountdoc'],
+					'acct_type_desc'=>$record['acct_type_desc'],
 				);
 			}
 		}
@@ -127,4 +160,24 @@ class ApprReqList extends CListPageModel
 		return true;
 	}
 
+	public function batchApprove()
+	{
+		$wf = new WorkflowPayment;
+		$connection = $wf->openConnection();
+		try {
+			foreach ($this->attr as $record) {
+				if (isset($record['select']) && $record['select']=='Y') {
+					if ($wf->startProcess('PAYMENT',$record['id'],$record['req_dt'])) {
+						$wf->saveRequestData('APPROVER',Yii::app()->user->id);
+						$wf->takeAction('APPROVE');
+					}
+				}
+			}
+			$wf->transaction->commit();
+		}
+		catch(Exception $e) {
+			$wf->transaction->rollback();
+			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
+		}
+	}
 }

@@ -46,5 +46,10 @@ return array(
 	'Region Director'=>'区域总监',
 	'Region Head'=>'区域领导',
 	
+	'COA'=>'会计科目',
+	'This COA already exists'=>'此会计科目已存在',
+	
+	'Delegated User'=>'授权帐户',
+	'Delegation Form'=>'授权表单',
 );
 ?>

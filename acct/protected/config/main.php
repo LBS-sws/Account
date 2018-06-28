@@ -106,7 +106,7 @@ return array(
 			'class'=>'CHttpSession',
 			'cookieMode'=>'allow',
 			'cookieParams'=>array(
-				'domain'=>'test.lbsgroup.com.cn',
+				'domain'=>'192.168.0.162',
 			),
 		),
 		
@@ -144,24 +144,31 @@ return array(
 		'envSuffix'=>'dev',
 		'systemMapping'=>array(
 				'drs'=>array(
-						'webroot'=>'http://test.lbsgroup.com.cn/swoper-web',
+						'webroot'=>'http://192.168.0.162/swoper-web',
 						'name'=>'Daily Report',
 						'icon'=>'fa fa-pencil-square-o',
 					),	
 				'acct'=>array(
-						'webroot'=>'http:///test.lbsgroup.com.cn/acct',
+						'webroot'=>'http:///192.168.0.162/acct',
 						'name'=>'Accounting',
 						'icon'=>'fa fa-money',
 					),
 				'ops'=>array(
-						'webroot'=>'http://test.lbsgroup.com.cn/operation',
+						'webroot'=>'http://192.168.0.162/operation',
 						'name'=>'Operation',
 						'icon'=>'fa fa-gears',
 					),
 				'hr'=>array(
-						'webroot'=>'http://test.lbsgroup.com.cn/hr',
+						'webroot'=>'http://192.168.0.162/hr',
 						'name'=>'Personnel',
 						'icon'=>'fa fa-users',
+					),
+				'twapp'=>array(
+						'webroot'=>'https://app.lbsgroup.com.tw/web',
+						'script'=>'remoteLoginTwApp',
+						'name'=>'New United',
+						'icon'=>'fa fa-users',
+						'external'=>true,
 					),
 			),
 	),

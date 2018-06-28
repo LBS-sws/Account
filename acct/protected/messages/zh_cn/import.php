@@ -23,6 +23,7 @@ return array(
 	'Import Success!'=>'导入成功!',
 	'Import Error:'=>'导入错误:',
 	'Imported Rows:'=>'巳导入行号:',
+	'is too long'=>'的资料过长',
 
 	'INSERT'=>'新增',
 	'UPDATE'=>'更新',
@@ -48,5 +49,12 @@ return array(
 	'Remarks 1'=>'备注1',
 	'Remarks 2'=>'备注2',
 	'Taxpayer No.'=>'纳税人登记号',
+	'Contact Phone'=>'电话',
+	'Contact Name'=>'联系人',
+	'Address'=>'地址',
+	'Full Name'=>'全称',
+	'Bank'=>'开户行',
+	'Account No.'=>'账户号码',
+	'COA'=>'会计科目',
 );
 ?>

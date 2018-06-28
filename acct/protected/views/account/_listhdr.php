@@ -20,4 +20,9 @@
 			;
 		?>
 	</th>
+	<th>
+		<?php echo TbHtml::link($this->getLabelName('coa').$this->drawOrderArrow('coa'),'#',$this->createOrderLink('account-list','coa'))
+			;
+		?>
+	</th>
 </tr>

@@ -105,14 +105,15 @@ class TransInForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('trans_type_code, trans_dt, acct_id, payer_name, payer_type, amount, acct_code, year_no, month_no, item_code, citem_desc','required'),
+			array('trans_type_code, trans_dt, acct_id, payer_name, payer_type, amount, acct_code, item_code, citem_desc','required'),
 			array('trans_dt','validateTransDate'),
 			array('acct_id','compare','compareValue'=>0,'operator'=>'>','message'=>Yii::t('trans','Account cannot be empty')),
-			array('year_no, month_no','numerical','allowEmpty'=>false,'integerOnly'=>true),
+			array('year_no, month_no','numerical','allowEmpty'=>true,'integerOnly'=>true),
+			array('amount','compare','operator'=>'>=','compareValue'=>0),
 			array('year_no','in','range'=>range(2016,2099)),
 			array('month_no','in','range'=>range(1,12)),
 			array('id, trans_desc, payer_id, cheque_no, invoice_no, handle_staff, handle_staff_name, status,
-					no_of_attm, docType, files, removeFileId, docMasterId, acct_code_desc, 
+					no_of_attm, docType, files, removeFileId, docMasterId, acct_code_desc, year_no, month_no, 
 					status_desc, united_inv_no,city, int_fee, reason, req_ref_no, detail, remarks 
 				','safe'), 
 		);

@@ -22,11 +22,11 @@ class PayreqController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','submit','request','check','cancel','fileupload','fileremove'),
+				'actions'=>array('new','edit','delete','save','submit','request','cancel','fileupload','fileremove'),
 				'expression'=>array('PayreqController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view','filedownload'),
+				'actions'=>array('index','view','check','filedownload','void'),
 				'expression'=>array('PayreqController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -42,8 +42,8 @@ class PayreqController extends Controller
 			$model->attributes = $_POST['PayReqList'];
 		} else {
 			$session = Yii::app()->session;
-			if (isset($session['criteria_xa04']) && !empty($session['criteria_xa04'])) {
-				$criteria = $session['criteria_xa04'];
+			if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+				$criteria = $session[$model->criteriaName()];
 				$model->setCriteria($criteria);
 			}
 		}
@@ -59,6 +59,17 @@ class PayreqController extends Controller
 			$model->attributes = $_POST['PayReqForm'];
 			$model->cancel();
 			Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Cancel Done'));
+			$this->redirect(Yii::app()->createUrl('payreq/edit',array('index'=>$model->id)));
+		}
+	}
+
+	public function actionVoid()
+	{
+		if (isset($_POST['PayReqForm'])) {
+			$model = new PayReqForm($_POST['PayReqForm']['scenario']);
+			$model->attributes = $_POST['PayReqForm'];
+			$model->voidRecord();
+			Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Void Done'));
 			$this->redirect(Yii::app()->createUrl('payreq/edit',array('index'=>$model->id)));
 		}
 	}
@@ -88,7 +99,8 @@ class PayreqController extends Controller
 			if ($model->validate()) {
 				$model->check();
 				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Checking and Submission Done'));
-				$this->redirect(Yii::app()->createUrl('payreq/edit',array('index'=>$model->id)));
+				$url = $this->allowReadWrite() ? 'payreq/edit' : 'payreq/view';
+				$this->redirect(Yii::app()->createUrl($url,array('index'=>$model->id)));
 			} else {
 				$message = CHtml::errorSummary($model);
 				Dialog::message(Yii::t('dialog','Validation Message'), $message);

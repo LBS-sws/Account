@@ -27,15 +27,24 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Approval Form';
 		<?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
 				'submit'=>Yii::app()->createUrl('signreq/index'))); 
 		?>
-		<?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Approve'), array(
+		<?php echo TbHtml::button('<span class="fa fa-check"></span> '.Yii::t('misc','Approve'), array(
 				'submit'=>Yii::app()->createUrl('signreq/sign'))); 
+		?>
+		<?php echo TbHtml::button('<span class="fa fa-remove"></span> '.Yii::t('trans','Return'), array(
+			'id'=>'btnDeny', 'name'=>'btnDeny'));
 		?>
 	</div>
 	<div class="btn-group pull-right" role="group">
 	<?php 
 		$counter = ($model->no_of_attm['payreal'] > 0) ? ' <span id="docpayreal" class="label label-info">'.$model->no_of_attm['payreal'].'</span>' : ' <span id="docpayreal"></span>';
 		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('misc','Attachment').$counter, array(
-			'name'=>'btnFile','id'=>'btnFile','data-toggle'=>'modal','data-target'=>'#fileuploadpayreal',)
+			'name'=>'btnFileRE','id'=>'btnFileRE','data-toggle'=>'modal','data-target'=>'#fileuploadpayreal',)
+		);
+	?>
+	<?php 
+		$counter = ($model->no_of_attm['payreq'] > 0) ? ' <span id="docpayreq" class="label label-info">'.$model->no_of_attm['payreq'].'</span>' : ' <span id="docpayreq"></span>';
+		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','Req. Attachment').$counter, array(
+			'name'=>'btnFile','id'=>'btnFile','data-toggle'=>'modal','data-target'=>'#fileuploadpayreq',)
 		);
 	?>
 	<?php 
@@ -110,7 +119,8 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Approval Form';
 					<?php echo $form->hiddenField($model, 'acct_id'); ?>
 					<?php 
 						$list = General::getAccountList($model->city);
-						echo TbHtml::textField('acct_name', $list[$model->acct_id], array('readonly'=>true,)); 
+						$desc = isset($list[$model->acct_id]) ? $list[$model->acct_id] : '';
+						echo TbHtml::textField('acct_name', $desc, array('readonly'=>true,)); 
 					?>
 				</div>
 			</div>
@@ -238,15 +248,31 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Approval Form';
 ?>
 <?php $this->renderPartial('//site/fileupload',array('model'=>$model,
 													'form'=>$form,
+													'doctype'=>'PAYREQ',
+													'header'=>Yii::t('trans','Req. Attachment'),
+													'ronly'=>$model->isReadOnly(),
+													)); 
+?>
+<?php $this->renderPartial('//site/fileupload',array('model'=>$model,
+													'form'=>$form,
 													'doctype'=>'TAX',
 													'header'=>Yii::t('trans','Tax Slip'),
 													'ronly'=>$model->isReadOnly(),
 													)); 
 ?>
+<?php $this->renderPartial('//signreq/reason',array('model'=>$model,'form'=>$form)); ?>
 
 <?php
 Script::genFileUpload($model,$form->id,'PAYREAL');
+Script::genFileUpload($model,$form->id,'PAYREQ');
 Script::genFileUpload($model,$form->id,'TAX');
+
+$js=<<<EOF
+$('#btnDeny').on('click',function(){
+	$('#rmkdialog').modal('show');
+});
+EOF;
+Yii::app()->clientScript->registerScript('denyPopup',$js,CClientScript::POS_READY);
 
 $js = Script::genReadonlyField();
 Yii::app()->clientScript->registerScript('readonlyClass',$js,CClientScript::POS_READY);

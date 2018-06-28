@@ -13,11 +13,15 @@ class ListPageWidget extends CWidget
 	public $hasPageBar = true;
 	public $searchlinkparam = array();
 	
+	public $advancedSearch = false;
+	
 	public $record;
 	public $recordptr;
 	
 	public function run()
 	{
+		$modelName = get_class($this->model);
+		
 		$layout = '<div class="box">';
 		$layout .= '<div class="box-header"><h3 class="box-title"><strong>'.$this->title.'</strong></h3>';
 		$layout .= '</div>';
@@ -64,6 +68,59 @@ class ListPageWidget extends CWidget
 		$layout .= '</div>';
 
 		echo $layout;
+
+		$link = '/'.$this->controller->uniqueId.'/'.$this->controller->action->id;
+		$url = Yii::app()->createUrl($link);
+		$formurl = Yii::app()->createAbsoluteUrl($link);
+		$fldid = get_class($this->model).'_noOfItem';
+
+
+		if ($this->hasSearchBar && $this->advancedSearch) {
+			$fldlist = array('NA'=>Yii::t('misc','-- None --'));
+			foreach ($this->model->searchColumns() as $field=>$value) {
+				$fldlist[$field] = Yii::t('app',$this->getLabelName($field));
+			}
+			$this->controller->renderPartial('//site/filter',array('model'=>$this->model, 'fieldlist'=>$fldlist, 'formurl'=>$formurl));
+		}
+		
+		$js = "
+$('#$fldid').on('change', function(){Loading.show();jQuery.yii.submitForm(this,'$url',{});return false;});
+		";
+		Yii::app()->clientScript->registerScript('ListPageRefresh',$js,CClientScript::POS_READY);
+
+		if ($this->hasSearchBar) {
+			$droplistid = $modelName.'_searchField';
+			$textid = $modelName.'_searchValue';
+			
+			$param = array('pageNum'=>1);
+			if (!empty($this->searchlinkparam)) $param = array_merge($param, $this->searchlinkparam);
+			$path = Yii::app()->createAbsoluteUrl($link, $param);
+			
+			$js = <<<EOF
+$('#btnSearch').on('click', function(){
+	if ($('#$droplistid').val()=='ex_advanced') {
+		$('#filterdialog').modal('show');
+	} else {
+		jQuery.yii.submitForm(this,'$path',{});
+	}
+});
+EOF;
+			Yii::app()->clientScript->registerScript('ListPageSearchButton',$js,CClientScript::POS_READY);
+			
+			if ($this->advancedSearch) {
+				$js = <<<EOF
+$('#$droplistid').on('change', function(){
+	if ($(this).val()=='ex_advanced') {
+		$('#$textid').val('');
+		$('#$textid').attr('readonly',true);
+	} else {
+		$('#$textid').attr('readonly',false);
+	}
+});
+EOF;
+				Yii::app()->clientScript->registerScript('ListPageAdvancedSrch',$js,CClientScript::POS_READY);
+			}
+		}
 	}
 
 	protected function navBar() 
@@ -83,7 +140,8 @@ class ListPageWidget extends CWidget
 		
 		$param = array('pageNum'=>1);
 		if (!empty($this->searchlinkparam)) $param = array_merge($param, $this->searchlinkparam);
-		$url = Yii::app()->createUrl($link,$param);
+//		$url = Yii::app()->createUrl($link,$param);
+		$url = "javascript:Loading.show();window.location.href='".Yii::app()->createUrl($link,$param)."';";
 		$items[] = array('label'=>'1','url'=>$url,'active'=>($pageno == 1));
 		$cnt = 1;
 
@@ -103,7 +161,8 @@ class ListPageWidget extends CWidget
 		{
 			$param = array('pageNum'=>$pos);
 			if (!empty($this->searchlinkparam)) $param = array_merge($param, $this->searchlinkparam);
-			$url = Yii::app()->createUrl($link,$param);
+//			$url = Yii::app()->createUrl($link,$param);
+			$url = "javascript:Loading.show();window.location.href='".Yii::app()->createUrl($link,$param)."';";
 			$items[] = array('label'=>$pos,'url'=>$url,'active'=>($pageno == $pos));
 			$pos++;
 			$cnt++;
@@ -117,8 +176,9 @@ class ListPageWidget extends CWidget
 			
 			$param = array('pageNum'=>$totalpage);
 			if (!empty($this->searchlinkparam)) $param = array_merge($param, $this->searchlinkparam);
-			$url = Yii::app()->createUrl($link,$param);
-			$items[] = array('label'=>$totalpage,'url'=>$url,'active'=>($pageno == $totalpage));
+//			$url = Yii::app()->createUrl($link,$param);
+			$url = "javascript:Loading.show();window.location.href='".Yii::app()->createUrl($link,$param)."';";
+			$items[] = array('label'=>$totalpage,'url'=>$url,'active'=>($pageno == $totalpage),);
 
 			$cnt++;
 		}
@@ -127,22 +187,33 @@ class ListPageWidget extends CWidget
 		return TbHtml::pagination($items, array('class'=>'pagination pagination-sm no-margin'));
 	}
 	
-	protected function searchBar()
-	{
+	protected function searchBar() {
 		$modelName = get_class($this->model);
 		$link = '/'.$this->controller->uniqueId.'/'.$this->controller->action->id;
 		$param = array('pageNum'=>1);
 		if (!empty($this->searchlinkparam)) $param = array_merge($param, $this->searchlinkparam);
 		$list[''] = Yii::t('misc','-- Field --');
-		foreach ($this->search as $field)
-		{
-			$list[$field] = Yii::t('app',$this->getLabelName($field));
+		$labelplus = '';
+		if ($this->advancedSearch) {
+			$list['ex_advanced'] = Yii::t('misc','<< Advanced >>');
+			$labelplus = ' <span class="fa fa-plus"></span>';
 		}
-		$layout = TbHtml::dropDownList($modelName.'[searchField]',$this->model->searchField,$list);
+		$flag = true;
+		$columns = $this->model->searchColumns();
+		if (!$this->advancedSearch && empty($columns)) {
+			$columns = $this->search ;
+			$flag = false;
+		}
+		foreach ($columns as $field=>$value) {
+			$val = ($flag) ? $field : $value;
+			$list[$val] = Yii::t('app',$this->getLabelName($val));
+		}
+		$layout = TbHtml::dropDownList($modelName.'[searchField]',$this->model->searchField,$list,array('id'=>$modelName.'_searchField'));
 		$layout .= TbHtml::textField($modelName.'[searchValue]',$this->model->searchValue,
-					array('size'=>15,
+					array('size'=>15,'id'=>$modelName.'_searchValue','readonly'=>($this->model->isAdvancedSearch()),
 						'placeholder'=>Yii::t('misc','Search'),
-						'append'=>TbHtml::button('<span class="fa fa-search"></span> '.Yii::t('misc','Search'), array('submit'=>Yii::app()->createUrl($link,$param),)),
+//						'append'=>TbHtml::button('<span class="fa fa-search"></span> '.Yii::t('misc','Search'), array('submit'=>Yii::app()->createUrl($link,$param),)),
+						'append'=>TbHtml::button('<span class="fa fa-search"></span> '.Yii::t('misc','Search').$labelplus, array('id'=>'btnSearch',)),
 				));
 		return $layout;
 	}
@@ -159,9 +230,14 @@ class ListPageWidget extends CWidget
 					'0'=>Yii::t('misc','All'),
 				);
 		$fldname = $modelName.'[noOfItem]';
+/*
 		$layout = '<div class="col-sm-3">'.Yii::t('misc','Display').': '
 				.TbHtml::dropDownList($fldname,$this->model->noOfItem,$list,
 					array('submit'=>Yii::app()->createUrl($link),)
+				).'</div>';
+*/
+		$layout = '<div class="col-sm-3">'.Yii::t('misc','Display').': '
+				.TbHtml::dropDownList($fldname,$this->model->noOfItem,$list
 				).'</div>';
 		return $layout;
 	}

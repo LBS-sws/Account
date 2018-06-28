@@ -14,6 +14,7 @@ class ImpReceipt {
 				'item_source'=>Yii::t('import','Item Source'),
 				'remarks1'=>Yii::t('import','Remarks 1'),
 				'remarks2'=>Yii::t('import','Remarks 2'),
+				'coa'=>Yii::t('import','COA'),
 			);
 	}
 	
@@ -30,9 +31,9 @@ class ImpReceipt {
 				'amount'=>7,
 				'method'=>8,
 				'item_source'=>9,
-				'remarks1'=>10,
+//				'remarks1'=>10,
+				'coa'=>10,
 				'remarks2'=>11,
-
 			);
 	}
 	
@@ -53,27 +54,36 @@ class ImpReceipt {
 		$rtn .= $data['item_source']=='QT99' || !empty($data['cust_full_name']) ? '' : $name['cust_full_name'].' '.Yii::t('import','cannot be blank').' /';
 		$rtn .= empty($data['cust_code']) || $this->getCustomerId($connection, $data['cust_code'])!=0 ? '' : $name['cust_code'].' '.Yii::t('import','cannot be found in system').' /';
 		$rtn .= !empty($data['detail']) && strlen($data['detail'])>1000 ? $name['detail'].' '.Yii::t('import','is too long').' /' : '';
-		$rtn .= !empty($data['remarks1']) && strlen($data['remarks1'])>1000 ? $name['remarks1'].' '.Yii::t('import','is too long').' /' : '';
+//		$rtn .= !empty($data['remarks1']) && strlen($data['remarks1'])>1000 ? $name['remarks1'].' '.Yii::t('import','is too long').' /' : '';
 		$rtn .= !empty($data['remarks2']) && strlen($data['remarks2'])>1000 ? $name['remakrs2'].' '.Yii::t('import','is too long').' /' : '';
+		$rtn .= !empty($data['coa'])? '' : $name['coa'].' '.Yii::t('import','cannot be blank').' /';
+		$rtn .= !empty($data['coa']) && $this->existCOA($connection, $data['coa'],$data['city']) ? '' : $name['coa'].' '.Yii::t('import','is not valid').' /';
 		return empty($rtn) ? '' : Yii::t('import','ERROR').'- /'.Yii::t('import','Row No.').': '.$data['excel_row'].' /'.$rtn;
 	}
+	
 	
 	public function importData(&$connection, $data) {
 		$trans_dt = $this->convertExcelDate($data['trans_dt']);
 		$trans_type_code = ($data['method']=='1001') ? 'CASHIN' : 'BANKIN';
-		$acct_id = $this->getDefAccount($connection, $trans_type_code, $data['city']);
-		$trans_desc = $data['remarks1'];
+		$acct_id = ($trans_type_code=='CASHIN') 
+				? $this->getDefAccount($connection, $trans_type_code, $data['city'])
+				: $this->getAccount($connection, $data['coa'], $data['city']);
+//		$acct_id = $this->getDefAccount($connection, $trans_type_code, $data['city']);
+//		$trans_desc = $data['remarks1'];
+		$trans_desc = '';
 		$amount = General::toMyNumber($data['amount']);
 		$status = 'A';
 		$payer_type = ($data['item_source']=='QT99') ? 'O' : 'C';
 		$payer_id = ($data['item_source']=='QT99') ? 0 : $this->getCustomerId($connection, $data['cust_code']);
-		$payer_name = ($data['item_source']=='QT99') ? '' : $data['cust_full_name'];
+		$payer_name = empty($data['cust_full_name']) ? $data['cust_name'] : $data['cust_full_name'];
 		$cheque_no = '';
 		$invoice_no = '';
 		$handle_staff = 0;
 		$handle_staff_name = '';
 		$acct_code = $data['item_source'];
-		$item_code = '';
+		$item_code = ($data['item_source']=='QT99')
+				? ($data['method']=='1001' ? 'CI0016' : 'BI0002')
+				: ($data['method']=='1001' ? 'CI0001' : 'BI0001');
 		$year_no = empty($data['year_month']) ? '' : '20'.substr($data['year_month'],0,2);
 		$month_no = empty($data['year_month']) ? '' : substr($data['year_month'],-2);
 		$united_inv_no = '';
@@ -206,6 +216,12 @@ class ImpReceipt {
 		return ($row===false) ? 0 : $row['acct_id'];
 	}
 	
+	protected function getAccount(&$connection, $coa, $city) {
+		$sql = "select id from acc_account where coa='$coa' and city='$city'";
+		$row = $connection->createCommand($sql)->queryRow();
+		return ($row===false) ? 0 : $row['id'];
+	}
+
 	protected function getCustomerId(&$connection, $code) {
 		$suffix = Yii::app()->params['envSuffix'];
 		$suffix = $suffix=='dev' ? '_w' : $suffix;
@@ -217,6 +233,12 @@ class ImpReceipt {
 	protected function validateDate($date, $format = 'Y-m-d H:i:s') {
 		$d = DateTime::createFromFormat($format, $date);
 		return $d && $d->format($format) == $date;
+	}
+	
+	protected function existCOA(&$connection, $value, $city) {
+		$sql = "select coa from acc_account where coa='$value' and (city='$city' or city='99999') limit 1";
+		$row = $connection->createCommand($sql)->queryRow();
+		return ($row!==false);
 	}
 	
 	protected function convertExcelDate($value) {

@@ -68,9 +68,16 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 	?>
 <?php endif ?>
 
-<?php if ($model->scenario=='edit' && strpos('~PA~PC~','~'.$model->wfstatus.'~')!==false && (empty($model->req_user) || $model->req_user==Yii::app()->user->id)): ?>
+<?php if ($model->scenario=='edit' && strpos('~PA~PB~PC~','~'.$model->wfstatus.'~')!==false && (empty($model->req_user) || $model->req_user==Yii::app()->user->id)): ?>
 	<?php echo TbHtml::button('<span class="fa fa-remove"></span> '.Yii::t('misc','Cancel'), array(
 			'name'=>'btnCancel','id'=>'btnCancel','data-toggle'=>'modal','data-target'=>'#canceldialog',)
+		);
+	?>
+<?php endif ?>
+
+<?php if ($model->wfstatus=='ED' && $model->status!='V' && $model->allowVoid()): ?>
+	<?php echo TbHtml::button('<span class="fa fa-remove"></span> '.Yii::t('misc','Void'), array(
+			'name'=>'btnVoid','id'=>'btnVoid','data-toggle'=>'modal','data-target'=>'#voiddialog',)
 		);
 	?>
 <?php endif ?>
@@ -88,6 +95,14 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','Tax Slip').$counter, array(
 			'name'=>'btnFileTS','id'=>'btnFileTS','data-toggle'=>'modal','data-target'=>'#fileuploadtax',)
 		);
+	?>
+	<?php 
+	if ($model->isPayrealReady()) {
+		$counter = ($model->no_of_attm['payreal'] > 0) ? ' <span id="docpayreal" class="label label-info">'.$model->no_of_attm['payreal'].'</span>' : ' <span id="docpayreal"></span>';
+		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','Reimburse. Attm.').$counter, array(
+			'name'=>'btnFilePR','id'=>'btnFilePR','data-toggle'=>'modal','data-target'=>'#fileuploadpayreal',)
+		);
+	}
 	?>
 <?php if (!empty($model->wfstatus)): ?>
 	<?php 
@@ -111,6 +126,18 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 			<?php echo $form->hiddenField($model, 'wfstatus'); ?>
 			<?php echo $form->hiddenField($model, 'req_user'); ?>
 
+<?php if (!Yii::app()->user->isSingleCity()) : ?>
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'city',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-3">
+					<?php 
+						$list = General::getCityList();
+						echo TbHtml::textField('city_desc', $list[$model->city],array('readonly'=>true)); 
+					?>
+				</div>
+			</div>
+<?php endif ?>
+
 <?php if (!empty($model->wfstatus)): ?>
 			<div class="form-group">
 				<?php echo $form->labelEx($model,'ref_no',array('class'=>"col-sm-2 control-label")); ?>
@@ -119,6 +146,9 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 						array('readonly'=>true,	)); 
 					?>
 				</div>
+			<?php if ($model->status=='V' && $model->wfstatus=='ED'): ?>
+				<div class="col-sm-2 text-red"><?php echo '( '.General::getTransStatusDesc($model->status).' )'; ?></div>
+			<?php endif ?>
 			</div>
 <?php endif ?>
 
@@ -163,7 +193,8 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 					<?php echo $form->hiddenField($model, 'acct_id'); ?>
 					<?php 
 						$list = General::getAccountList($model->city);
-						echo TbHtml::textField('acct_name', $list[$model->acct_id], array('readonly'=>true,)); 
+						$desc = isset($list[$model->acct_id]) ? $list[$model->acct_id] : '';
+						echo TbHtml::textField('acct_name', $desc, array('readonly'=>true,)); 
 					?>
 <?php else: ?>
 					<?php 
@@ -293,6 +324,17 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 			</div>
 <?php endif ?>
 
+<?php if ($model->wfstatus=='ED' && !empty($model->reason_cf)): ?>
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'reason_cf',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-7">
+					<?php echo $form->textArea($model, 'reason_cf', 
+						array('rows'=>3,'cols'=>60,'maxlength'=>1000,'readonly'=>($model->isReadOnly()))
+					); ?>
+				</div>
+			</div>
+<?php endif ?>
+
 <?php if (!empty($model->wfstatus)): ?>
 			<div class="form-group">
 				<?php echo $form->labelEx($model,'wfstatusdesc',array('class'=>"col-sm-2 control-label")); ?>
@@ -309,6 +351,7 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 
 <?php $this->renderPartial('//site/removedialog'); ?>
 <?php $this->renderPartial('//site/canceldialog'); ?>
+<?php $this->renderPartial('//site/voiddialog'); ?>
 <?php $this->renderPartial('//site/lookup'); ?>
 <?php $this->renderPartial('//site/fileupload',array('model'=>$model,
 													'form'=>$form,
@@ -324,6 +367,13 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 													'ronly'=>$model->isTaxSlipReadOnly(),
 													)); 
 ?>
+<?php $this->renderPartial('//site/fileupload',array('model'=>$model,
+													'form'=>$form,
+													'doctype'=>'PAYREAL',
+													'header'=>Yii::t('trans','Reimburse. Attm.'),
+													'ronly'=>true,
+													)); 
+?>
 <?php 
 	if (!empty($model->wfstatus))
 		$this->renderPartial('//site/flowinfo',array('model'=>$model)); 
@@ -332,6 +382,7 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 <?php
 Script::genFileUpload($model,$form->id,'PAYREQ');
 Script::genFileUpload($model,$form->id,'TAX');
+Script::genFileUpload($model,$form->id,'PAYREAL');
 
 $defaclist = General::getJsDefaultAccountList();
 
@@ -420,6 +471,20 @@ function canceldata() {
 }
 	";
 Yii::app()->clientScript->registerScript('CancelRecord',$js,CClientScript::POS_READY);
+
+$link = Yii::app()->createUrl('payreq/void');
+$js = "
+$('#btnVoidData').on('click',function() {
+	$('#voiddialog').modal('hide');
+	voiddata();
+});
+
+function voiddata() {
+	var elm=$('#btnVoid');
+	jQuery.yii.submitForm(elm,'$link',{});
+}
+	";
+Yii::app()->clientScript->registerScript('VoidRecord',$js,CClientScript::POS_READY);
 
 //if (!$model->isReadOnly()) {
 //	$js = Script::genDatePicker(array(

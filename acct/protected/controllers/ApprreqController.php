@@ -22,11 +22,11 @@ class ApprreqController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('edit','approve','deny'),
+				'actions'=>array('edit','approve','deny','batchapprove'),
 				'expression'=>array('ApprreqController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','filedownload'),
+				'actions'=>array('index','filedownload','listfile','listtax'),
 				'expression'=>array('ApprreqController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -60,6 +60,22 @@ class ApprreqController extends Controller
 		}
 	}
 
+	public function actionBatchapprove() {
+		$model = new ApprReqList;
+		if (isset($_POST['ApprReqList'])) {
+			$model->attributes = $_POST['ApprReqList'];
+//			if ($model->validate()) {
+				$model->batchApprove();
+				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Request Approved'));
+				$this->redirect(Yii::app()->createUrl('apprreq/index',array('type'=>$model->type,)));
+//			} else {
+//				$message = CHtml::errorSummary($model);
+//				Dialog::message(Yii::t('dialog','Validation Message'), $message);
+//				$this->render('form',array('model'=>$model,));
+//			}
+		}
+	}
+	
 	public function actionApprove()
 	{
 		if (isset($_POST['ApprReqForm'])) {
@@ -103,7 +119,16 @@ class ApprreqController extends Controller
 		}
 	}
 
+	public function actionListfile($docId) {
+		$d = new DocMan('PAYREQ',$docId,'ApprReqList');
+		echo $d->genFileListView();
+	}
 	
+	public function actionListtax($docId) {
+		$d = new DocMan('TAX',$docId,'ApprReqList');
+		echo $d->genFileListView();
+	}
+
 	/**
 	 * Performs the AJAX validation.
 	 * @param CModel the model to be validated

@@ -42,8 +42,8 @@ class TransoutController extends Controller
 			$model->attributes = $_POST['TransOutList'];
 		} else {
 			$session = Yii::app()->session;
-			if (isset($session['criteria_xe03']) && !empty($session['criteria_xe03'])) {
-				$criteria = $session['criteria_xe03'];
+			if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+				$criteria = $session[$model->criteriaName()];
 				$model->setCriteria($criteria);
 			}
 		}

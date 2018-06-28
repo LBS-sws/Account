@@ -21,6 +21,9 @@ class DocMan {
 	public $closeButtonName = 'btnUploadClose';
 	public $widgetName = 'fileupload';
 	
+	public $imageMaxSize = 512000;
+	public $docMaxSize = 8388608;
+	
 	protected $baseDir;
 	
 	private $_allowedFiles = array(
@@ -141,10 +144,20 @@ class DocMan {
 				$ext = pathinfo($dispname,PATHINFO_EXTENSION);
 				$filename .= '.'.$ext;
 				$filetype = $this->files['type'][$idx];
+				$filesize = $this->files['size'][$idx];
 				$path = $this->hashDirectory($filename);
-				if (rename($phyname, $path.'/'.$filename)) {
-					$recs[] = array('path'=>$path, 'filename'=>$filename, 'dispname'=>$dispname, 'filetype'=>$filetype);
+				$success = false;
+				if ($filesize <= $this->imageMaxSize || strpos($filetype,'image/')===false) {
+					$success = (rename($phyname, $path.'/'.$filename));
+				} else {
+					$ratio = round($this->imageMaxSize/$filesize * 100);
+					
+					$imageconv = new SimpleImage();
+					$imageconv->load($phyname);
+					$imageconv->scale($ratio);
+					$success = $imageconv->save($path.'/'.$filename);
 				}
+				if ($success) $recs[] = array('path'=>$path, 'filename'=>$filename, 'dispname'=>$dispname, 'filetype'=>$filetype);
 			}
 		}
 		$connection = Yii::app()->db;

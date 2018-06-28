@@ -27,65 +27,105 @@ $this->pageTitle=Yii::app()->name . ' - Transaction Enquiry';
 	$sign = Currency::getSign($currcode); 
 ?>
 <section class="content">
-	<div class="box"><div class="box-body">
-		<div class="form-group">
-			<?php echo $form->labelEx($model,'fm_dt',array('class'=>"col-sm-1 control-label")); ?>
-			<div class="col-sm-3">
-				<div class="input-group date">
-					<div class="input-group-addon">
-						<i class="fa fa-calendar"></i>
+	<div class="box">
+		<div class="box-body">
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'fm_dt',array('class'=>"col-sm-1 control-label")); ?>
+				<div class="col-sm-3">
+					<div class="input-group date">
+						<div class="input-group-addon">
+							<i class="fa fa-calendar"></i>
+						</div>
+						<?php echo $form->textField($model, 'fm_dt', 
+							array('class'=>'form-control pull-right',
+							)); 
+						?>
 					</div>
-					<?php echo $form->textField($model, 'fm_dt', 
-						array('class'=>'form-control pull-right',
-						)); 
+				</div>
+				<?php echo $form->labelEx($model,'to_dt',array('class'=>"col-sm-1 control-label")); ?>
+				<div class="col-sm-3">
+					<div class="input-group date">
+						<div class="input-group-addon">
+							<i class="fa fa-calendar"></i>
+						</div>
+						<?php echo $form->textField($model, 'to_dt', 
+							array('class'=>'form-control pull-right',
+							)); 
+						?>
+					</div>
+				</div>
+				<div class="col-sm-3 pull-right">
+					<?php 
+						echo TbHtml::button('<span class="fa fa-search"></span> '.Yii::t('misc','Search'),
+						array('submit'=>Yii::app()->createUrl('transenq/index2',array('index'=>$model->acct_id,'city'=>$model->city,'pageNum'=>1)),)); 
+					?>
+					<?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
+						'submit'=>Yii::app()->createUrl('transenq/index'))); 
 					?>
 				</div>
 			</div>
-			<?php echo $form->labelEx($model,'to_dt',array('class'=>"col-sm-1 control-label")); ?>
-			<div class="col-sm-3">
-				<div class="input-group date">
-					<div class="input-group-addon">
-						<i class="fa fa-calendar"></i>
+		</div>
+	</div>
+	<?php echo $form->hiddenField($model,'acct_id'); ?>
+	<?php echo $form->hiddenField($model,'city'); ?>
+	
+	<div class="box">
+		<div class="box-body">
+				<div class="col-md-3">
+					<div class="form-group">
+						<?php echo $form->labelEx($model,'acct_name', array('class'=>'col-sm-6')); ?>
+						<?php echo $form->textField($model, 'acct_name', 
+								array('size'=>50,'maxlength'=>255,'readonly'=>true, 'class'=>'form-control',
+							)); ?>
 					</div>
-					<?php echo $form->textField($model, 'to_dt', 
-						array('class'=>'form-control pull-right',
-						)); 
-					?>
 				</div>
-			</div>
-			<div class="col-sm-3 pull-right">
-				<?php 
-					echo TbHtml::button('<span class="fa fa-search"></span> '.Yii::t('misc','Search'),
-					array('submit'=>Yii::app()->createUrl('transenq/index2',array('index'=>$model->acct_id,'city'=>$model->city,'pageNum'=>1)),)); 
-				?>
-				<?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
-					'submit'=>Yii::app()->createUrl('transenq/index'))); 
-				?>
-			</div>
+
+				<div class="col-md-3">
+					<div class="form-group">
+						<?php echo $form->labelEx($model,'balance', array('class'=>'col-sm-7')); ?>
+						<?php
+							echo $form->numberField($model, 'balance', 
+								array('size'=>10,
+								'readonly'=>true,
+								'prepend'=>'<span class="fa '.$sign.'"></span>',
+								'class'=>'form-control',
+								)
+							); 
+						?>
+					</div>
+				</div>
+
+				<div class="col-md-3">
+					<div class="form-group">
+						<?php echo $form->labelEx($model,'sum_in',array('class'=>"col-sm-6")); ?>
+						<?php 
+							echo $form->numberField($model, 'sum_in', 
+								array('size'=>10,
+								'readonly'=>true,
+								'prepend'=>'<span class="fa '.$sign.'"></span>',
+								'class'=>'form-control',
+								)
+							); 
+						?>
+					</div>
+				</div>
+
+				<div class="col-md-3">
+					<div class="form-group">
+						<?php echo $form->labelEx($model,'sum_out',array('class'=>"col-sm-5")); ?>
+						<?php
+							echo $form->numberField($model, 'sum_out', 
+								array('size'=>10,
+								'readonly'=>true,
+								'prepend'=>'<span class="fa '.$sign.'"></span>',
+								'class'=>'form-control',
+								)
+							); 
+						?>
+					</div>
+				</div>
 		</div>
-	</div></div>
-	<div class="box"><div class="box-body">
-		<div class="form-group">
-			<?php echo $form->hiddenField($model,'acct_id'); ?>
-			<?php echo $form->hiddenField($model,'city'); ?>
-			<?php echo $form->labelEx($model,'acct_name',array('class'=>"col-sm-2 control-label")); ?>
-			<div class="col-sm-4">
-				<?php echo $form->textField($model, 'acct_name', 
-						array('size'=>50,'maxlength'=>255,'readonly'=>true
-				)); ?>
-			</div>
-			<?php echo $form->labelEx($model,'balance',array('class'=>"col-sm-2 control-label")); ?>
-			<div class="col-sm-4">
-				<?php
-					echo $form->numberField($model, 'balance', 
-						array('size'=>10,
-						'readonly'=>true,
-						'prepend'=>'<span class="fa '.$sign.'"></span>')
-					); 
-				?>
-			</div>
-		</div>
-	</div></div>
+	</div>
 	<?php 
 		$search = array(
 						'trans_type_desc',
@@ -117,6 +157,14 @@ $this->pageTitle=Yii::app()->name . ' - Transaction Enquiry';
 													)); 
 ?>
 <?php $this->renderPartial('//transenq/dtlview',array('model'=>$model)); ?>
+
+<?php
+	$url = Yii::app()->createUrl('/transenq/index2').'?index='.$model->acct_id.'&city='.$model->city.'&pageNum='.$model->pageNum;
+	$js = "
+$('#TransEnq2List_noOfItem').on('change', function(){Loading.show();jQuery.yii.submitForm(this,'$url',{});return false;});
+	";
+	Yii::app()->clientScript->registerScript('ListPageRefresh',$js,CClientScript::POS_READY);
+?>
 
 <?php
 	Script::genFileDownload($model,$form->id,'TRANS');

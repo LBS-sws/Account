@@ -53,7 +53,8 @@ INSERT INTO wf_action(id, proc_ver_id, code, name) values
 (13,2,'REIMAPPR','报销单签字'),
 (14,2,'REIMCANCEL','取消报销单申请'),
 (15,2,'REQUEST','要求覆核付款申请'),
-(16,2,'CHECK','覆核并提交付款申请')
+(16,2,'CHECK','覆核并提交付款申请'),
+(17,2,'REIMREJ','报销单退回')
 ;
 
 DROP TABLE IF EXISTS wf_task;
@@ -103,7 +104,10 @@ INSERT INTO wf_task(id, proc_ver_id, name, function_call, param) values
 (32,2,'Status=Cancel','transit','RC'),
 (33,2,'Status=Checked','transit','CK'),
 (34,2,'Status=Pending for Checking','transit','PC'),
-(35,2,'Route to Account','routeToAccount','')
+(35,2,'Route to Account','routeToAccount',''),
+(36,2,'Status=Pending for Reapply Reimbursement','transit','QR'),
+(37,2,'Status=Return Reimbursement','transit','RR'),
+(38,2,'Cancel Transaction','cancelTransaction','')
 ;
 
 DROP TABLE IF EXISTS wf_action_task;
@@ -177,7 +181,13 @@ INSERT INTO wf_action_task(action_id, task_id, seq_no) values
 (16,31,2),
 (16,2+16,3),
 (16,10+16,4),
-(16,1+16,5)
+(16,1+16,5),
+(17,37,1),
+(17,17,3),
+(17,36,4),
+(17,28,5),
+(17,38,2),
+(14,38,2)
 ;
 
 DROP TABLE IF EXISTS wf_state;
@@ -215,8 +225,11 @@ INSERT INTO wf_state(id, proc_ver_id, code, name) VALUES
 (21,2,'SI','已签字报销单'),
 (22,2,'RC','已取消报销单申请'),
 (23,2,'PC','有待覆核付款申请'),
-(24,2,'CK','已覆核付款申请')
+(24,2,'CK','已覆核付款申请'),
+(25,2,'RR','已退回报销单'),
+(26,2,'QR','有待报销单再申请')
 ;
+
 
 DROP TABLE IF EXISTS wf_transition;
 CREATE TABLE wf_transition(
@@ -259,7 +272,11 @@ INSERT INTO wf_transition(proc_ver_id, current_state, next_state) VALUES
 (2,8+11,2+11),
 (2,4+11,11+11),
 (2,11+11,2+11),
-(2,23,19)
+(2,23,19),
+(2,16,25),
+(2,25,26),
+(2,26,20),
+(2,26,22)
 ;
 
 DROP TABLE IF EXISTS wf_request;
@@ -271,6 +288,7 @@ CREATE TABLE wf_request(
 	lcd timestamp default CURRENT_TIMESTAMP,
 	lud timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE INDEX idx_request_01 ON wf_request(proc_ver_id, doc_id);
 
 DROP TABLE IF EXISTS wf_request_data;
 CREATE TABLE wf_request_data(
@@ -292,6 +310,7 @@ CREATE TABLE wf_request_transit_log(
 	lcd timestamp default CURRENT_TIMESTAMP,
 	lud timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE INDEX idx_req_txn_log_1 ON wf_request_transit_log(request_id, old_state);
 
 DROP TABLE IF EXISTS wf_request_resp_user;
 CREATE TABLE wf_request_resp_user(
@@ -565,3 +584,85 @@ CREATE TABLE wf_request_action(
 	lcd timestamp default CURRENT_TIMESTAMP,
 	lud timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS CopyWorkflow //
+CREATE PROCEDURE CopyWorkflow(p_from_ver_id int unsigned, p_to_ver_id int unsigned)
+BEGIN
+  DELETE FROM wf_action_task WHERE action_id IN (
+    SELECT id FROM wf_action WHERE proc_ver_id = p_to_ver_id
+  );
+  
+  DELETE FROM wf_action WHERE proc_ver_id = p_to_ver_id;
+  
+  DELETE FROM wf_state WHERE proc_ver_id = p_to_ver_id;
+  
+  DELETE FROM wf_task WHERE proc_ver_id = p_to_ver_id;
+  
+  DELETE FROM wf_transition WHERE proc_ver_id = p_to_ver_id;
+  
+  INSERT INTO wf_action(proc_ver_id, code, name)
+    SELECT p_to_ver_id, code, name
+	FROM wf_action
+	WHERE proc_ver_id = p_from_ver_id;
+  
+  INSERT INTO wf_state(proc_ver_id, code, name)
+    SELECT p_to_ver_id, code, name
+	FROM wf_state
+	WHERE proc_ver_id = p_from_ver_id;
+	
+  INSERT INTO wf_task(proc_ver_id, name, function_call, param)
+    SELECT p_to_ver_id, name, function_call, param
+	FROM wf_task
+	WHERE proc_ver_id = p_from_ver_id;
+  
+  INSERT INTO wf_transition(proc_ver_id, current_state, next_state)
+    SELECT p_to_ver_id, d.id, e.id
+	FROM wf_transition a, wf_state b, wf_state c, wf_state d, wf_state e
+	WHERE a.proc_ver_id = p_from_ver_id 
+	AND a.current_state = b.id 
+	AND a.next_state = c.id
+	AND b.code = d.code AND d.proc_ver_id = p_to_ver_id
+	AND c.code = e.code AND e.proc_ver_id = p_to_ver_id
+	;
+  
+  INSERT INTO wf_action_task(action_id, task_id, seq_no)
+    SELECT c.id, e.id, a.seq_no
+	FROM wf_action_task a, wf_action b, wf_action c, wf_task d, wf_task e
+	WHERE a.action_id IN (SELECT x.id FROM wf_action x WHERE x.proc_ver_id = p_from_ver_id)
+	AND a.action_id = b.id 
+	AND b.code = c.code AND c.proc_ver_id = p_to_ver_id
+	AND a.task_id = d.id
+	AND d.name = e.name AND e.proc_ver_id = p_to_ver_id
+	AND d.function_call = e.function_call AND d.param = e.param
+    ;
+END //
+DELIMITER ;
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS ShowTransition //
+CREATE PROCEDURE ShowTransition(p_ver_id int unsigned)
+BEGIN
+  SELECT a.proc_ver_id, b.code, b.name, c.code, c.name
+  FROM wf_transition a, wf_state b, wf_state c
+  WHERE a.proc_ver_id = p_ver_id
+  AND a.current_state = b.id 
+  AND a.next_state = c.id
+  ORDER BY a.current_state, a.next_state
+  ;
+END //
+DELIMITER ;
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS ShowActionTask //
+CREATE PROCEDURE ShowActionTask(p_ver_id int unsigned)
+BEGIN
+  SELECT b.code, b.name, a.seq_no, c.name, c.function_call, c.param
+  FROM wf_action_task a, wf_action b, wf_task c
+  WHERE a.action_id = b.id AND b.proc_ver_id = p_ver_id
+  AND a.task_id = c.id AND c.proc_ver_id = p_ver_id
+  ORDER BY b.code, a.seq_no
+  ;
+END //
+DELIMITER ;

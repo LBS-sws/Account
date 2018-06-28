@@ -8,8 +8,7 @@
 	$search = TbHtml::textField('txtlookup', '', array('class'=>'form-control','maxlength'=>500,
 				'append'=>TbHtml::button(Yii::t('misc','Search'),array('name'=>'btnLookup','id'=>'btnLookup')),
 			)); 
-	$list = TbHtml::listBox('lstlookup', '', array(), array(
-				'size'=>'15')
+	$list = CHtml::listBox('lstlookup', '', array(), array('class'=>'form-control','size'=>10,)
 			);
 
 	$mesg = TbHtml::label(Yii::t('dialog','Hold down <kbd>Ctrl</kbd> button to select multiple options'), false);

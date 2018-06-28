@@ -10,9 +10,9 @@ class ImportForm extends CFormModel
 	public $mapping = array();
 	public $city;
 	protected $choice = array(
+						'Receipt'=>'ImpReceipt',
 						'Customer'=>'ImpCustomer',
 						'Supplier'=>'ImpSupplier',
-						'Receipt'=>'ImpReceipt',
 					);
 
 	public function attributeLabels()

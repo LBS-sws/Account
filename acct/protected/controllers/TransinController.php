@@ -42,8 +42,8 @@ class TransinController extends Controller
 			$model->attributes = $_POST['TransInList'];
 		} else {
 			$session = Yii::app()->session;
-			if (isset($session['criteria_xe01']) && !empty($session['criteria_xe01'])) {
-				$criteria = $session['criteria_xe01'];
+			if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+				$criteria = $session[$model->criteriaName()];
 				$model->setCriteria($criteria);
 			}
 		}

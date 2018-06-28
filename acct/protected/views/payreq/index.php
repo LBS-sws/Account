@@ -1,7 +1,6 @@
 <?php
 $this->pageTitle=Yii::app()->name . ' - Payment Request';
 ?>
-
 <?php $form=$this->beginWidget('TbActiveForm', array(
 'id'=>'request-list',
 'enableClientValidation'=>true,
@@ -23,33 +22,25 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request';
 </section>
 
 <section class="content">
+<?php if (Yii::app()->user->validRWFunction('XA04') && Yii::app()->user->validFunction('CN03')) : ?>
 	<div class="box"><div class="box-body">
 	<div class="btn-group" role="group">
 		<?php 
-			if (Yii::app()->user->validRWFunction('XA04') && Yii::app()->user->validFunction('CN03'))
 				echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('misc','Add Record'), array(
 					'submit'=>Yii::app()->createUrl('payreq/new'), 
 				)); 
 		?>
 	</div>
 	</div></div>
+<?php endif; ?>
 	<?php 
-		$search = array(
-						'req_dt',
-						'trans_type_desc',
-						'payee_name',
-						'item_desc',
-						'ref_no',
-						'int_fee',
-						'wfstatusdesc',
-					);
 		if (!Yii::app()->user->isSingleCity()) $search[] = 'city_name';
 		$this->widget('ext.layout.ListPageWidget', array(
 			'title'=>Yii::t('trans','Request List'),
 			'model'=>$model,
 				'viewhdr'=>'//payreq/_listhdr',
 				'viewdtl'=>'//payreq/_listdtl',
-				'search'=>$search,
+				'advancedSearch'=>true,
 		));
 	?>
 </section>
@@ -58,6 +49,7 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request';
 	echo $form->hiddenField($model,'totalRow');
 	echo $form->hiddenField($model,'orderField');
 	echo $form->hiddenField($model,'orderType');
+	echo $form->hiddenField($model,'filter');
 ?>
 <?php $this->endWidget(); ?>
 

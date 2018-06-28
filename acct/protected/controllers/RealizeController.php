@@ -22,11 +22,11 @@ class RealizeController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('edit','submit','trans','cancel','fileupload','fileremove'),
+				'actions'=>array('edit','submit','batchsubmit','trans','cancel','fileupload','fileremove'),
 				'expression'=>array('RealizeController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','filedownload'),
+				'actions'=>array('index','filedownload','listfile','listtax','listpayreal'),
 				'expression'=>array('RealizeController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -66,6 +66,23 @@ class RealizeController extends Controller
 				$message = CHtml::errorSummary($model);
 				Dialog::message(Yii::t('dialog','Validation Message'), $message);
 				$this->render('form',array('model'=>$model,));
+			}
+		}
+	}
+
+	public function actionBatchsubmit()
+	{
+		$model = new RealizeList;
+		if (isset($_POST['RealizeList'])) {
+			$model->attributes = $_POST['RealizeList'];
+			if ($model->validate()) {
+				$model->batchSubmit();
+				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Submission Done'));
+				$this->redirect(Yii::app()->createUrl('realize/index'));
+			} else {
+				$message = CHtml::errorSummary($model);
+				Dialog::message(Yii::t('dialog','Validation Message'), $message);
+				$this->render('index',array('model'=>$model,));
 			}
 		}
 	}
@@ -153,6 +170,21 @@ class RealizeController extends Controller
 		} else {
 				throw new CHttpException(404,'Record not found.');
 		}
+	}
+
+	public function actionListfile($docId) {
+		$d = new DocMan('PAYREQ',$docId,'RealizeList');
+		echo $d->genFileListView();
+	}
+	
+	public function actionListtax($docId) {
+		$d = new DocMan('TAX',$docId,'RealizeList');
+		echo $d->genFileListView();
+	}
+
+	public function actionListpayreal($docId) {
+		$d = new DocMan('PAYREAL',$docId,'RealizeList');
+		echo $d->genFileListView();
 	}
 
 	/**

@@ -101,6 +101,15 @@ $this->pageTitle=Yii::app()->name . ' - Account Form';
 			</div>
 
 			<div class="form-group">
+				<?php echo $form->labelEx($model,'coa',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-4">
+					<?php echo $form->textField($model, 'coa', 
+						array('size'=>30,'maxlength'=>255,'readonly'=>($model->isReadOnly()))
+					); ?>
+				</div>
+			</div>
+
+			<div class="form-group">
 				<?php echo $form->labelEx($model,'remarks',array('class'=>"col-sm-2 control-label")); ?>
 				<div class="col-sm-7">
 					<?php echo $form->textArea($model, 'remarks', 

@@ -2,8 +2,11 @@
 return array(
 	'Are you sure?' => '确定保存?',
 	'Are you sure to cancel?'=>'确定取消?',
+	'Are you sure to void?'=>'确定撤消?',
 	'Cancel Record'=>'取消记录',
 	'Cancel'=>'取消',
+	'Void Record'=>'撤消记录',
+	'Void'=>'撤消',
 	'Incorrect old password.' => '旧密码不正确',
 	'Incorrect username or password.' => '用户名称或密码不正确',
 	'Account is locked.'=>'帐户被锁定',
@@ -46,6 +49,7 @@ return array(
 	'Submission Done'=>'提交完成',
 	'Request Signed'=>'签字完成',
 	'Cancel Done'=>'取消完成',
+	'Void Done'=>'撤消完成',
 	'Reimbursement Approved'=>'报销单申请审核完成',
 	'Unable to open this record. Maybe you don\'t have corresponding access right.'=>'无法打开此记录。也许你没有相应的访问权限。',
 	'Flow Info'=>'流程信息',
@@ -56,5 +60,7 @@ return array(
 	'Confirmation Done'=>'确认完成',
 	'Request Checking Done'=>'要求覆核完成',
 	'Checking and Submission Done'=>'覆核并提交完成',
+	'Reimbursement Returned'=>'报销单申请退回',
+	'Exceeds file upload limit.'=>'超出文件上传限制。',
 );
 ?>

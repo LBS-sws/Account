@@ -14,6 +14,8 @@ class RealizeForm extends CFormModel
 	public $status;
 	public $user_name;
 	public $city;
+	public $wfstatus;
+	public $reason;
 	
 	public $acct_id;
 	public $ref_no;
@@ -45,14 +47,17 @@ class RealizeForm extends CFormModel
 
 	public $docMasterId = array(
 							'payreal'=>0,
+							'payreq'=>0,
 							'tax'=>0
 						);
 	public $removeFileId = array(
 							'payreal'=>0,
+							'payreq'=>0,
 							'tax'=>0
 						);
 	public $no_of_attm = array(
 							'payreal'=>0,
+							'payreq'=>0,
 							'tax'=>0
 						);
 
@@ -79,7 +84,7 @@ class RealizeForm extends CFormModel
 			'acct_id'=>Yii::t('trans','Paid Account'),
 			'user_name'=>Yii::t('trans','Requestor'),
 			'int_fee'=>Yii::t('trans','Integrated Fee'),
-
+			'reason'=>Yii::t('trans','Return Reason'),
 		);
 	}
 
@@ -88,8 +93,8 @@ class RealizeForm extends CFormModel
 			array('trans_dt','required'),
 			array('trans_dt','validateTransDate'),
 			array('cheque_no, invoice_no','safe'),
-			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, item_code, pitem_desc, amount','safe'),
-			array('id, item_desc, payee_id, status, status_desc, acct_code, city, ref_no, user_name, trans_id, trans_id_c, int_fee','safe'), 
+			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, item_code, pitem_desc, amount, wfstatus','safe'),
+			array('id, item_desc, payee_id, status, status_desc, acct_code, city, ref_no, user_name, trans_id, trans_id_c, int_fee, reason','safe'), 
 			array('files, removeFileId, docMasterId','safe'), 
 			array ('no_of_attm','validateTaxSlip'),
 				
@@ -122,7 +127,9 @@ class RealizeForm extends CFormModel
 	public function retrieveData($index) {
 		$wf = new WorkflowPayment;
 		$wf->connection = Yii::app()->db;
-		$list = $wf->getPendingRequestIdList('PAYMENT', 'PR', Yii::app()->user->id);
+		$list1 = $wf->getPendingRequestIdList('PAYMENT', 'PR', Yii::app()->user->id);
+		$list2 = $wf->getPendingRequestIdList('PAYMENT', 'QR', Yii::app()->user->id);
+		$list = $list1.(!empty($list1) && !empty($list2) ? ',' : '').$list2;
 		if (empty($list)) $list = '0';
 
 		$suffix = Yii::app()->params['envSuffix'];
@@ -130,6 +137,7 @@ class RealizeForm extends CFormModel
 				workflow$suffix.RequestStatus('PAYMENT',id,req_dt) as wfstatus,
 				workflow$suffix.RequestStatusDesc('PAYMENT',id,req_dt) as wfstatusdesc,
 				docman$suffix.countdoc('payreal',id) as payrealcountdoc,
+				docman$suffix.countdoc('payreq',id) as payreqcountdoc,
 				docman$suffix.countdoc('tax',id) as taxcountdoc
 				from acc_request a, security$suffix.sec_user b where id=$index and id in ($list) 
 				and a.req_user=b.username
@@ -150,7 +158,9 @@ class RealizeForm extends CFormModel
 				$this->user_name = $row['user_name'];
 				$this->city = $row['city'];
 				$this->no_of_attm['payreal'] = $row['payrealcountdoc'];
+				$this->no_of_attm['payreq'] = $row['payreqcountdoc'];
 				$this->no_of_attm['tax'] = $row['taxcountdoc'];
+				$this->wfstatus = $row['wfstatus'];
 				break;
 			}
 		
@@ -171,7 +181,19 @@ class RealizeForm extends CFormModel
 			$acctitemlist = General::getAcctItemList();
 			if (isset($acctcodelist[$this->acct_code])) $this->acct_code_desc = $acctcodelist[$this->acct_code];
 			if (isset($acctitemlist[$this->item_code])) $this->pitem_desc = $acctitemlist[$this->item_code];
+			
+			if ($this->wfstatus=='QR') {
+				if ($wf->initReadOnlyProcess('PAYMENT',$this->id,$this->req_dt)) {
+					$this->reason = "";
+					$reasons = $wf->getLastStateActionRemarks('REIMREJ');
+					foreach ($reasons as $reason) {
+						$this->reason = $reason;
+						break;
+					}
+				}
+			}
 		}
+
 		return (count($rows) > 0);
 	}
 	
@@ -179,6 +201,7 @@ class RealizeForm extends CFormModel
 		$wf = new WorkflowPayment;
 		$connection = $wf->openConnection();
 		try {
+			$this->saveReq($connection);
 			$this->saveInfo($connection);
 			if ($wf->startProcess('PAYMENT',$this->id,$this->req_dt)) {
 				$wf->takeAction('REIMBURSE');
@@ -195,6 +218,7 @@ class RealizeForm extends CFormModel
 		$wf = new WorkflowPayment;
 		$connection = $wf->openConnection();
 		try {
+			$this->saveReq($connection);
 			$this->saveInfo($connection);
 
 			$data = array(
@@ -215,6 +239,7 @@ class RealizeForm extends CFormModel
 					'item_code'=>$this->item_code,
 					'united_inv_no'=>'N/A',
 					'int_fee'=>$this->int_fee,
+					'ref_no'=>$this->ref_no,
 				);
 			$tid = $wf->genAccTransRecord($data);
 			$wf->genAccTransInfoRecord($tid, $data);
@@ -235,9 +260,15 @@ class RealizeForm extends CFormModel
 	}
 
 	public function cancel() {
+		$uid = Yii::app()->user->id;
 		$wf = new WorkflowPayment;
 		$connection = $wf->openConnection();
 		try {
+			$reqId = $this->id;
+			$sql = "update acc_request set status='V', luu='$uid' 
+					where id = $reqId
+				";
+			$connection->createCommand($sql)->execute();
 			if ($wf->startProcess('PAYMENT',$this->id,$this->req_dt)) {
 				$wf->takeAction('REIMCANCEL');
 			}
@@ -247,6 +278,55 @@ class RealizeForm extends CFormModel
 			$wf->transaction->rollback();
 			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
 		}
+	}
+
+	protected function saveReq(&$connection)
+	{
+		$sql = "update acc_request set 
+					req_dt = :req_dt, 
+					payee_type = :payee_type, 
+					payee_id = :payee_id, 
+					payee_name = :payee_name, 
+					trans_type_code = :trans_type_code,
+					item_desc = :item_desc, 
+					amount = :amount, 
+					luu = :luu
+				where id = :id and city=:city and req_user=:req_user
+			";
+
+		$city = $this->city;	//Yii::app()->user->city();
+		$uid = Yii::app()->user->id;
+
+		$command=$connection->createCommand($sql);
+		if (strpos($sql,':id')!==false)
+			$command->bindParam(':id',$this->id,PDO::PARAM_INT);
+		if (strpos($sql,':trans_type_code')!==false)
+			$command->bindParam(':trans_type_code',$this->trans_type_code,PDO::PARAM_STR);
+		if (strpos($sql,':payee_id')!==false)
+			$command->bindParam(':payee_id',$this->payee_id,PDO::PARAM_INT);
+		if (strpos($sql,':payee_type')!==false)
+			$command->bindParam(':payee_type',$this->payee_type,PDO::PARAM_STR);
+		if (strpos($sql,':payee_name')!==false)
+			$command->bindParam(':payee_name',$this->payee_name,PDO::PARAM_STR);
+		if (strpos($sql,':req_dt')!==false)
+			$command->bindParam(':req_dt',$this->req_dt,PDO::PARAM_STR);
+		if (strpos($sql,':req_user')!==false)
+			$command->bindParam(':req_user',$uid,PDO::PARAM_STR);
+		if (strpos($sql,':amount')!==false) {
+			$amt = General::toMyNumber($this->amount);
+			$command->bindParam(':amount',$amt,PDO::PARAM_STR);
+		}
+		if (strpos($sql,':item_desc')!==false)
+			$command->bindParam(':item_desc',$this->item_desc,PDO::PARAM_STR);
+		if (strpos($sql,':city')!==false)
+			$command->bindParam(':city',$city,PDO::PARAM_STR);
+		if (strpos($sql,':luu')!==false)
+			$command->bindParam(':luu',$uid,PDO::PARAM_STR);
+		if (strpos($sql,':lcu')!==false)
+			$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
+		$command->execute();
+
+		return true;
 	}
 
 	protected function saveInfo(&$connection) {

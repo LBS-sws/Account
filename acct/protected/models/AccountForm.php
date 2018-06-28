@@ -12,6 +12,7 @@ class AccountForm extends CFormModel
 	public $open_dt;
 	public $city;
 	public $trans_city;
+	public $coa;
 
 	public function init() {
 		$this->city = Yii::app()->user->city();
@@ -27,17 +28,30 @@ class AccountForm extends CFormModel
 			'remarks'=>Yii::t('code','Remarks'),
 			'open_bal'=>Yii::t('code','Open Balance'),
 			'open_dt'=>Yii::t('code','Balance Date'),
+			'coa'=>Yii::t('code','COA'),
 		);
 	}
 
 	public function rules()
 	{
 		return array(
-			array('acct_type_id, open_bal, open_dt','required'),
+			array('acct_type_id, coa, open_bal, open_dt','required'),
+			array('coa','validateCoa'),
 			array('id, acct_no, acct_name, bank_name, remarks, city, trans_city','safe'), 
 		);
 	}
 
+	public function validateCoa($attribute, $params) {
+		if ($this->id==1 || $this->id==2) return;
+		$coa = $this->coa;
+		$city = $this->city; //Yii::app()->user->city();
+		$sql = "select id from acc_account where coa='$coa' and city='$city' limit 1";
+		$row = Yii::app()->db->createCommand($sql)->queryRow();
+		if ($row!==false) {
+			if ($this->id != $row['id']) $this->addError($attribute, Yii::t('code','This COA already exists'));
+		}
+	}
+	
 	public function retrieveData($index, $city)
 	{
 		$citylist = Yii::app()->user->city_allow();
@@ -60,6 +74,7 @@ class AccountForm extends CFormModel
 				$this->remarks = $row['remarks'];
 				$this->open_bal = $row['amount'];
 				$this->open_dt = General::toDate($row['trans_dt']);
+				$this->coa = $row['coa'];
 				$this->city = $row['city'];
 				$this->trans_city = $row['trans_city'];
 				break;
@@ -92,8 +107,8 @@ class AccountForm extends CFormModel
 				break;
 			case 'new':
 				$sql = "insert into acc_account(
-						acct_type_id, acct_no, acct_name, bank_name, remarks, city, luu, lcu) values (
-						:acct_type_id, :acct_no, :acct_name, :bank_name, :remarks, :city, :luu, :lcu)";
+						acct_type_id, acct_no, acct_name, bank_name, coa, remarks, city, luu, lcu) values (
+						:acct_type_id, :acct_no, :acct_name, :bank_name, :coa, :remarks, :city, :luu, :lcu)";
 				break;
 			case 'edit':
 				$sql = "update acc_account set 
@@ -101,6 +116,7 @@ class AccountForm extends CFormModel
 					acct_no = :acct_no,
 					acct_name = :acct_name,
 					bank_name = :bank_name, 
+					coa = :coa, 
 					remarks = :remarks,
 					luu = :luu
 					where id = :id and city=:city";
@@ -121,6 +137,8 @@ class AccountForm extends CFormModel
 			$command->bindParam(':acct_name',$this->acct_name,PDO::PARAM_STR);
 		if (strpos($sql,':bank_name')!==false)
 			$command->bindParam(':bank_name',$this->bank_name,PDO::PARAM_STR);
+		if (strpos($sql,':coa')!==false)
+			$command->bindParam(':coa',$this->coa,PDO::PARAM_STR);
 		if (strpos($sql,':remarks')!==false)
 			$command->bindParam(':remarks',$this->remarks,PDO::PARAM_STR);
 		if (strpos($sql,':city')!==false)
@@ -175,7 +193,8 @@ class AccountForm extends CFormModel
 			$command->bindParam(':trans_dt',$tdate,PDO::PARAM_STR);
 		}
 		if (strpos($sql,':amount')!==false) {
-			$amt = General::toMyNumber($this->open_bal);
+//			$amt = General::toMyNumber($this->open_bal);
+			$amt = $this->open_bal;
 			$command->bindParam(':amount',$amt,PDO::PARAM_STR);
 		}
 		if (strpos($sql,':trans_city')!==false)

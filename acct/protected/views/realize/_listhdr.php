@@ -1,4 +1,5 @@
 <tr>
+	<th><?php echo TbHtml::checkBox('chkboxAll',false); ?></th>
 <?php if (!Yii::app()->user->isSingleCity()) : ?>
 	<th>
 		<?php echo TbHtml::link($this->getLabelName('city_name').$this->drawOrderArrow('city_name'),'#',$this->createOrderLink('request-list','city_name'))
@@ -17,7 +18,17 @@
 		?>
 	</th>
 	<th>
+		<?php echo TbHtml::link($this->getLabelName('acct_type_desc').$this->drawOrderArrow('acct_type_desc'),'#',$this->createOrderLink('request-list','acct_type_desc'))
+			;
+		?>
+	</th>
+	<th>
 		<?php echo TbHtml::link($this->getLabelName('payee_name').$this->drawOrderArrow('payee_name'),'#',$this->createOrderLink('request-list','payee_name'))
+			;
+		?>
+	</th>
+	<th>
+		<?php echo TbHtml::link($this->getLabelName('pitem_desc').$this->drawOrderArrow('pitem_desc'),'#',$this->createOrderLink('request-list','pitem_desc'))
 			;
 		?>
 	</th>
@@ -38,6 +49,21 @@
 	</th>
 	<th>
 		<?php echo TbHtml::link($this->getLabelName('int_fee').$this->drawOrderArrow('int_fee'),'#',$this->createOrderLink('request-list','int_fee'))
+			;
+		?>
+	</th>
+	<th>
+		<?php echo TbHtml::link($this->getLabelName('payrealcountdoc'),'#',$this->createOrderLink('request-list','payrealcountdoc'))
+			;
+		?>
+	</th>
+	<th>
+		<?php echo TbHtml::link($this->getLabelName('payreqcountdoc'),'#',$this->createOrderLink('request-list','payreqcountdoc'))
+			;
+		?>
+	</th>
+	<th>
+		<?php echo TbHtml::link($this->getLabelName('taxcountdoc'),'#',$this->createOrderLink('request-list','taxcountdoc'))
 			;
 		?>
 	</th>

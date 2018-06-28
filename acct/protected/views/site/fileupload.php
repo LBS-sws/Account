@@ -1,5 +1,6 @@
 <?php
 	$doc = new DocMan($doctype,$model->id,get_class($model));
+	if (isset($model->uploadMaxSize) && $model->uploadMaxSize > 0) $doc->docMaxSize = $model->uploadMaxSize;
 
 	$ftrbtn = array();
 	if (!$ronly) $ftrbtn[] = TbHtml::button(Yii::t('dialog','Upload'), array('id'=>$doc->uploadButtonName,));
@@ -30,17 +31,26 @@
 <div id="inputFile">
 <?php
 if (!$ronly) {
+	$warning = Yii::t('dialog','Exceeds file upload limit.');
 	$this->widget('CMultiFileUpload', array(
 		'name'=>$doc->inputName,
 		'model'=>$model,
 		'attribute'=>'files',
-		'accept'=>'jpg|gif|png|xlsx|xls|docx|doc|pdf|tif',
+		'accept'=>'jpeg|jpg|gif|png|xlsx|xls|docx|doc|pdf|tif',
 		'remove'=>Yii::t('dialog','Remove'),
 		'file'=>' $file',
 		'options'=>array(
 			'list'=>'#'.$doc->listName,
 //			'onFileSelect'=>'function(e, v, m){ alert("onFileSelect - "+v) }',
-//			'afterFileSelect'=>'function(e, v, m){ $("ServiceFrom_files").attr("value","00"); }',
+			'afterFileSelect'=>'function(e ,v ,m){
+					var fileSize = e.files[0].size;
+					if(fileSize>'.$doc->docMaxSize.'){ 
+						alert("'.$warning.' ('.$doc->docMaxSize.' Bytes)");
+							$(".MultiFile-remove").last().click(); 
+					}                      
+					return true;
+
+                }',
 //        'onFileAppend'=>'function(e, v, m){ alert("onFileAppend - "+v) }',
 //        'afterFileAppend'=>'function(e, v, m){ alert("afterFileAppend - "+v) }',
 //        'onFileRemove'=>'function(e, v, m){ alert("onFileRemove - "+v) }',

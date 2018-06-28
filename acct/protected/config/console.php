@@ -4,7 +4,7 @@
 // Any writable CConsoleApplication properties can be configured here.
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-	'name'=>'Daily Report System - UAT',
+	'name'=>'LBS Daily Management - UAT',
 	'timeZone'=>'Asia/Hong_Kong',
 	'sourceLanguage'=> 'en',
 	'language'=>'zh_cn',
@@ -22,10 +22,10 @@ return array(
 	// application components
 	'components'=>array(
 		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=accountuat',
+			'connectionString' => 'mysql:host=localhost;dbname=account',
 			'emulatePrepare' => true,
 			'username' => 'swuser',
-			'password' => 'Swisher@168',
+			'password' => 'swisher168',
 			'charset' => 'utf8',
 		),
 		'log'=>array(
@@ -43,7 +43,7 @@ return array(
 	// using Yii::app()->params['paramName']
 	'params'=>array(
 		'systemEmail'=>'it@lbsgroup.com.hk',
-		'webroot'=>'http://118.89.46.224/ac-uat',
-		'envSuffix'=>'uat',
+		'webroot'=>'http://192.168.0.162/acct',
+		'envSuffix'=>'dev',
 	),
 );

@@ -37,6 +37,40 @@ class ScheduleCommand extends CConsoleCommand {
 		}
 	}
 
+	public function actionRptReceiptOverview($whitelist='', $blacklist='') {
+		$tdate = date("Y/m/d");
+		$this->rptId = 'RptReceiptOverview';
+		$this->rptName = Yii::t('report','Daily Receipt Overview Report');
+		$this->reqUser = 'admin';
+		$this->format = 'EMAIL';
+	
+		$this->data = array(
+				'RPT_ID'=>$this->rptId,
+				'RPT_NAME'=>$this->rptName,
+				'TARGET_DT'=>General::toMyDate($tdate),
+				'LANGUAGE'=>'zh_cn',
+				'WHITELIST'=>$whitelist,
+				'BLACKLIST'=>$blacklist,
+			);
+		$this->addQueueItem();
+	}
+
+	public function actionRptNotification() {
+		$tdate = date("Y/m/d");
+		$this->rptId = 'RptNotification';
+		$this->rptName = Yii::t('report','Consolidated Notification Report');
+		$this->reqUser = 'admin';
+		$this->format = 'EMAIL';
+	
+		$this->data = array(
+						'RPT_ID'=>$this->rptId,
+						'RPT_NAME'=>$this->rptName,
+						'TARGET_DT'=>General::toMyDate($tdate),
+						'LANGUAGE'=>'zh_cn',
+					);
+		$this->addQueueItem();
+	}
+
 	protected function addQueueItem() {
 		$connection = Yii::app()->db;
 		$transaction=$connection->beginTransaction();

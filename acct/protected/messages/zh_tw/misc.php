@@ -52,13 +52,34 @@ return array(
 'Deny'=>'拒絕',
 'Save Draft'=>'保存草稿',
 'Sign'=>'簽字',
+'Draft'=>'草稿',
+'Flow'=>'流程',
+'Confirm'=>'確認',
+'OK'=>'確認',
+'Void'=>'撤消',
 
 'Invalid Station. Please register first.'=>'工作站無效。請先登記。 ',
 'User ID has been logged in more than one station.'=>'帳戶已被登錄到另一工作站。 ',
 'Session expired.'=>'系統連接已經過期。請重新登錄。 ',
 'Message'=>'訊息',
 'All rights reserved'=>'版權所有',
-'Copyright'=>'版權'
+'Copyright'=>'版權',
+'**Please use Firefox web browser in order to use LBS Daily Management System for best result'
+=>'**為求使用史偉莎日常管理系統達至最佳效果，請使用火狐瀏覽器',
+
+'contain'=>'包含',
+'equal'=>'等於',
+'not equal'=>'不等於',
+'greater or equal'=>'大過或等於',
+'greater than'=>'大過',
+'less or equal'=>'小過或等於',
+'less than'=>'小過',
+'-- Advanced --'=>'-- 進階 --',
+'<< Advanced >>'=>'<< 進階搜尋 >>',
+'Advanced'=>'進階',
+'Clear'=>'清除',
+
+'Misc'=>'其他',
 );
 
 ?>

@@ -39,6 +39,7 @@ $this->pageTitle=Yii::app()->name . ' - Account';
 						'acct_no',
 						'acct_name',
 						'bank_name',
+						'coa',
 					);
 		if (!Yii::app()->user->isSingleCity()) $search[] = 'city_name';
 		$this->widget('ext.layout.ListPageWidget', array(

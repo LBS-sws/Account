@@ -144,6 +144,7 @@ CREATE TABLE acc_request(
 	lcd timestamp default CURRENT_TIMESTAMP,
 	lud timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE INDEX idx_request_1 ON acc_request(city, req_user, req_dt, payee_name);
 
 DROP TABLE IF EXISTS acc_request_info;
 CREATE TABLE acc_request_info(
@@ -287,7 +288,7 @@ CREATE TABLE acc_import_queue_param (
 	queue_id int unsigned NOT NULL,
 	param_field varchar(50) NOT NULL,
 	param_value varchar(5000),
-	param_text text,
+	param_text longtext character set utf8mb4 collate utf8mb4_unicode_ci null,
 	ts timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

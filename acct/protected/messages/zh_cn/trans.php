@@ -22,6 +22,9 @@ return array(
 	'Request List'=>'申请列表',
 	'Payment Request Form'=>'付款申请表单',
 	
+	'Request Confirmation'=>'申请确认',
+	'Payment Request Confirmation Form'=>'付款申请确认表单',
+
 	'Request Approval'=>'申请审核',
 	'Payment Request Approval Form'=>'付款申请审核表单',
 	
@@ -40,6 +43,8 @@ return array(
 	'Amount'=>'金額',
 	'Amount(In)'=>'金額(收款)',
 	'Amount(Out)'=>'金額(付款)',
+	'Total(In)'=>'总額(收款)',
+	'Total(Out)'=>'总額(付款)',
 	'Payer'=>'付款人',
 	'Payee'=>'收款人',
 	'Cheque No.'=>'支票号码',
@@ -100,7 +105,8 @@ return array(
 	'This record is checked already'=>'此记录已对账',
 	'Company A/C'=>'本公司账户',
 	'Pending (Direct)'=>'待处理 (直接)',
-	'Pending (Related)'=>'待处理 (下属审核)',
+//	'Pending (Related)'=>'待处理 (下属审核)',
+	'Pending (Related)'=>'待处理 (相关审核)',
 	'Tax Slip'=>'税票',
 	'United Invoice No.'=>'United 账单号码',
 	
@@ -120,5 +126,14 @@ return array(
 	'Invalid transaction date (later than today)'=>'交易日期无效(日期是今天以后)',
 	'Record Voided'=>'记录撤消',
 	'City'=>'地区',
+	'Batch Approve'=>'批量批准',
+	'Batch Submit'=>'批量提交',
+	'Batch Confirm'=>'批量确认',
+	'Return'=>'退回',
+	'Return Reason'=>'退回原因',
+	'Paid Account cannot be blank'=>'付款账户不能为无',
+	
+	'Req. Attachment'=>'申请附件',
+	'Reimburse. Attm.'=>'报销单附件',
 );
 ?>

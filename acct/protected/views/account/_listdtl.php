@@ -5,4 +5,5 @@
 	<td><?php echo $this->record['acct_no']; ?></td>
 	<td><?php echo $this->record['acct_name']; ?></td>
 	<td><?php echo $this->record['bank_name']; ?></td>
+	<td><?php echo $this->record['coa']; ?></td>
 </tr>

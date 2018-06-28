@@ -8,6 +8,10 @@ return array(
 				'access'=>'XA04',
 				'url'=>'/payreq/index',
 			),
+			'Request Confirmation'=>array(
+				'access'=>'XA08',
+				'url'=>'/confreq/index',
+			),
 			'Request Approval'=>array(
 				'access'=>'XA05',
 				'url'=>'/apprreq/index',
@@ -54,9 +58,19 @@ return array(
 				'access'=>'XB03',
 				'url'=>'/report/translist',
 			),
+			'Operation Daily Report'=>array(
+				'access'=>'XB04',
+				'url'=>'#',
+				'hidden'=>true,
+			),
 			'Report Manager'=>array(
 				'access'=>'XB01',
 				'url'=>'/queue/index',
+			),
+			'Daily Receipt Overview Report'=>array(
+				'access'=>'XB05',
+				'url'=>'#',
+				'hidden'=>true,
 			),
 		),
 	),
@@ -102,6 +116,10 @@ return array(
 			'Approver'=>array(
 				'access'=>'XC04',
 				'url'=>'/approver/index',
+			),
+			'Delegation'=>array(
+				'access'=>'XC07',
+				'url'=>'/delegate/index',
 			),
 		),
 	),

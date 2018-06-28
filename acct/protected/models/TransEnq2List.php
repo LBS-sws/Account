@@ -12,6 +12,8 @@ class TransEnq2List extends CListPageModel
 	public $bank_name;
 	public $city_name;
 	public $balance;
+	public $sum_in;
+	public $sum_out;
 	
 	public function rules()	{
 		$rtn1 = parent::rules();
@@ -19,7 +21,7 @@ class TransEnq2List extends CListPageModel
 			array('fm_dt, to_dt','date','allowEmpty'=>false,
 				'format'=>array('yyyy/MM/dd','yyyy-MM-dd','yyyy/M/d','yyyy-M-d',),
 			),
-			array('acct_id, city, acct_no, acct_name, bank_name, city_name, balance','safe'),
+			array('acct_id, city, acct_no, acct_name, bank_name, city_name, balance, sum_in, sum_out','safe'),
 		);
 		return array_merge($rtn1, $rtn2);
 	}
@@ -49,6 +51,8 @@ class TransEnq2List extends CListPageModel
 			'invoice_no'=>Yii::t('trans','China Invoice No.'),
 			'trans_desc'=>Yii::t('trans','Remarks'),
 			'int_fee'=>Yii::t('trans','Integrated Fee'),
+			'sum_in'=>Yii::t('trans','Total(In)'),
+			'sum_out'=>Yii::t('trans','Total(Out)'),
 		);
 	}
 	
@@ -98,7 +102,7 @@ class TransEnq2List extends CListPageModel
 				and a.trans_dt >= '$fdt' and a.trans_dt <= '$tdt'
 				and a.acct_id = $acct_id and a.city='$city'
 			";
-		$sql2 = "select count(a.id)
+		$sql2 = "select count(a.id) as cur_total, sum(if(e.trans_cat='IN',a.amount,0)) as sum_in, sum(if(e.trans_cat='IN',0,a.amount)) as sum_out 
 				from acc_trans a inner join acc_trans_type e on a.trans_type_code=e.trans_type_code
 				left outer join acc_trans_info b on a.id=b.trans_id and b.field_id='payer_name'
 				left outer join acc_trans_info c on a.id=c.trans_id and c.field_id='cheque_no'
@@ -153,7 +157,12 @@ class TransEnq2List extends CListPageModel
 		if ($order=="") $order = "order by a.trans_dt desc, a.id desc";
 
 		$sql = $sql2.$clause;
-		$this->totalRow = Yii::app()->db->createCommand($sql)->queryScalar();
+		$row = Yii::app()->db->createCommand($sql)->queryRow();
+		if ($row !== false) {
+			$this->totalRow = $row['cur_total'];
+			$this->sum_in = $row['sum_in'];
+			$this->sum_out = $row['sum_out'];
+		}
 		
 		$sql = $sql1.$clause.$order;
 		$sql = $this->sqlWithPageCriteria($sql, $this->pageNum);

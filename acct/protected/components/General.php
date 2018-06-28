@@ -135,15 +135,17 @@ class General {
 		$city = empty($in_city) ? Yii::app()->user->city() : $in_city;
 
 		$list = array();
-		$cond = empty($exclude) ? '' : " and id not in ($exclude) ";
-		$sql = "select id, acct_no, acct_name, bank_name from acc_account
-				where city in ('$city','99999') $cond
-				order by id
+		$cond = empty($exclude) ? '' : " and a.id not in ($exclude) ";
+		$sql = "select a.id, a.acct_no, a.acct_name, a.bank_name, b.acct_type_desc  
+				from acc_account a, acc_account_type b
+				where a.acct_type_id=b.id and a.city in ('$city','99999') $cond
+				order by a.id
 			";
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
 		if (count($rows) > 0) {
 			foreach ($rows as $row) {
-				$list[$row['id']] = (empty($row['acct_name']) ? '' : $row['acct_name'].' ')
+				$list[$row['id']] = (empty($row['acct_type_desc']) ? '' : '('.$row['acct_type_desc'].') ')
+									.(empty($row['acct_name']) ? '' : $row['acct_name'].' ')
 									.(empty($row['acct_no']) ? '' : $row['acct_no'].' ')
 									.(empty($row['bank_name']) ? '' : '('.$row['bank_name'].')')
 				;

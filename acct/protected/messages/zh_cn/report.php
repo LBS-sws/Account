@@ -30,6 +30,8 @@ return array(
 	'WTD Received'=>'本周收款',
 	'MTD Paid'=>'本月付款',
 	'MTD Received'=>'本月收款',
+	'YTD Paid'=>'本年付款',
+	'YTD Received'=>'本年收款',
 	'Curr. Balance'=>'今日金额',
 	'Customer Name'=>'客户名称',
 	'Charge Item'=>'收款项目',
@@ -40,9 +42,17 @@ return array(
 	'Grand Total'=>'总计',
 	'Customer Cash In Daily Report'=>'客户收款日报表',
 	'Operation Daily Report'=>'每日营业择要报告',
+	'Payment Receive Daily Report'=>'每日收款择要',
 	'No Record'=>'没有相关记录',
 	'Account Name'=>'账户名称',
+	'Daily Receipt Overview Report'=>'每天收款总览',
 	
 	'Transaction List'=>'交易记录',
+	'Consolidated Notification Report'=>'综合通知报表',
+	'Subject'=>'主题',
+	'Title'=>'标题',
+	'Content'=>'内容',
+	'User'=>'帐户',
+	'-- All --'=>'-- 全部 --',
 );
 ?>

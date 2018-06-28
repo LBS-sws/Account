@@ -38,8 +38,9 @@ class RptReimbursement extends CReport {
 			$sql = "select a.*, workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'SI') as sts_dt,
 						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PC') as acctstaff,
 						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PS') as approver
-					from acc_request a, acc_request_info b
-					where a.city='$city' and a.id=b.req_id and b.field_id='REF_NO' and a.status<>'V' 
+					from acc_request a 
+					inner join acc_request_info b on a.id=b.req_id and b.field_id='REF_NO' 
+					where a.city='$city' and a.status<>'V' 
 				";
 			$sql .= (strpos($ref_no,'%')===false) ? " and b.field_value='$ref_no'" : " and b.field_value like '$ref_no'";
 		}	
@@ -72,14 +73,19 @@ class RptReimbursement extends CReport {
 					}
 				}
 
-				$temp['detail_info'] = ((empty($temp['acct_code'])) ? '' 
-								: $temp['acct_code'].' '.$acctcodelist[$temp['acct_code']])
-								."\n".Yii::t('trans','Payee').": "
+//				$temp['detail_info'] = ((empty($temp['acct_code'])) ? '' 
+//								: $temp['acct_code'].' '.$acctcodelist[$temp['acct_code']])
+//								."\n".Yii::t('trans','Payee').": "
+//								. $temp['payee']
+//								."\n".Yii::t('trans','Account').": "
+//								. $acctlist[$temp['acct_id']]
+//								."\n\n".Yii::t('report','Remarks').": "
+//								. ((empty($temp['item_desc'])) ? '' : $temp['item_desc'])
+//								;
+				$temp['detail_info'] = Yii::t('trans','Payee').": "
 								. $temp['payee']
 								."\n".Yii::t('trans','Account').": "
 								. $acctlist[$temp['acct_id']]
-								."\n\n".Yii::t('report','Remarks').": "
-								. ((empty($temp['item_desc'])) ? '' : $temp['item_desc'])
 								;
 				
 				

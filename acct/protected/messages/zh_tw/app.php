@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 return array(
 'Daily Report System'=>'日報表系統',
 'Daily Report System - UAT'=>'日報表系統 - 測試版',
@@ -8,23 +8,40 @@ return array(
 'System Change'=>'系統切換',
 'Daily Report'=>'日報表系統',
 'Accounting'=>'會計系統',
+'Operation'=>'營運系統',
+'Personnel'=>'人事系統',
+'Sales'=>'銷售系統',
+
+'Quiz'=>'測驗系統',
+'Academic Credit'=>'學分系統',
 
 'Data Entry'=>'數據輸入',
+'Misc'=>'其他',
+
+'Import'=>'數據導入',
+'Import Manager'=>'數據導入管理員',
 
 'Payment Request'=>'付款申請',
 'Request Approval'=>'申請審核',
-'Payment Realization'=>'付款清賬',
-'Signature'=>'簽字',
+'Reimbursement'=>'報銷單申請',
+'Reimbursement Approval'=>'報銷單簽字',
 
 'Transaction'=>'交易記錄',
 'Transaction(In)'=>'收款記錄',
 'Transaction(Out)'=>'付款記錄',
-'Transaction Enquiry'=>'交易查詢',
+'Transaction Enquiry'=>'賬戶查詢',
 'Cash Received Audit'=>'現金收款審計',
 'Approver'=>'審核人員',
+'Cash In Check'=>'客戶現金對賬',
+'Default Account'=>'默認賬戶',
+'Accounting Item'=>'會計項目',
 
 'Report'=>'報表',
+'Reimbursement Form'=>'費用報銷單',
+'Transaction List'=>'交易記錄',
+'Operation Daily Report'=>'每日營業擇要報告',
 'Report Manager'=>'報表管理員',
+'Daily Receipt Overview Report'=>'每天收款總覽',
 
 'System Setting'=>'系統設置',
 'Security'=>'保安',
@@ -32,6 +49,14 @@ return array(
 
 'Change Password' => '更改密碼',
 'Languages' => '語言',
+
+'Checker Right'=>'會計對賬權限',
+'Transaction Adjustment'=>'交易調整權限',
+'Request for Payment Check'=>'要求覆核付款申請',
+'Payment Check'=>'覆核並提交付款申請',
+'Void Transaction'=>'撤消交易記錄',
+'Void Reimbursement'=>'撤消報銷單',
+'Batch Approve'=>'批量批准',
 
 'User'=>'帳戶',
 'Group'=>'群組',
@@ -63,5 +88,6 @@ return array(
 'Account Type'=>'賬戶類別',
 'Transaction Type'=>'交易類別',
 'Account'=>'賬戶',
+'Delegation'=>'授權',
 );
 ?>

@@ -56,6 +56,7 @@ return array(
 	'Flow'=>'流程',
 	'Confirm'=>'确认',
 	'OK'=>'确认',
+	'Void'=>'撤消',
 	
 	'Invalid Station. Please register first.'=>'工作站无效。请先登记。',
 	'User ID has been logged in more than one station.'=>'帐户已被登录到另一工作站。',
@@ -65,6 +66,20 @@ return array(
 	'Copyright'=>'版权',
 	'**Please use Firefox web browser in order to use LBS Daily Management System for best result'
 	=>'**为求使用史伟莎日常管理系统达至最佳效果，请使用火狐浏览器',
+
+	'contain'=>'包含',
+	'equal'=>'等于',
+	'not equal'=>'不等于',
+	'greater or equal'=>'大过或等于',
+	'greater than'=>'大过',
+	'less or equal'=>'小过或等于',
+	'less than'=>'小过',
+	'-- Advanced --'=>'-- 进阶 --',
+	'<< Advanced >>'=>'<< 进阶搜寻 >>',
+	'Advanced'=>'进阶',
+	'Clear'=>'清除',
+	
+	'Misc'=>'其他',
 );
 
 ?>

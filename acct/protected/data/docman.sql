@@ -27,7 +27,7 @@ CREATE TABLE dm_master(
 	lcd timestamp default CURRENT_TIMESTAMP,
 	lud timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-CREATE UNIQUE INDEX idx_dm_master_01 ON dm_master(doc_type_code, doc_id);
+/* CREATE UNIQUE INDEX idx_dm_master_01 ON dm_master(doc_type_code, doc_id); */
 
 DROP TABLE IF EXISTS dm_file;
 CREATE TABLE dm_file(

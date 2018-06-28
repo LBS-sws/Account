@@ -3,6 +3,20 @@ class UserMenuWidget extends CWidget
 {
 	public function run()
 	{
+		$logoutUrl = array();
+		$logoutUrl[] = Yii::app()->createUrl("site/logout");
+		
+		foreach (Yii::app()->params['systemMapping'] as $id=>$value) {
+			if (Yii::app()->user->validSystem($id)) {
+				$url = $value['webroot'];
+				if (isset($value['external'])) {
+					$logoutUrl[] = array('id'=>$id, 'url'=>$url.'/remote/lbslogout.php');
+				}
+			}
+		}
+		$jsonUrl = json_encode($logoutUrl);
+		$jsonUrl = str_replace('"','\"',$jsonUrl);
+
 		$image = Yii::app()->baseUrl."/images/user-icon.png";
 		$display_name = Yii::app()->user->user_display_name();
 		$login_time = Yii::t('app','Last Logon Time').': '.Yii::app()->user->logon_time();
@@ -50,7 +64,7 @@ class UserMenuWidget extends CWidget
 					<!-- Menu Footer-->
 					<li class=\"user-footer\">
 						<div class=\"pull-right\">
-							<a href=\"$logout_url\" class=\"btn bg-blue btn-block\">$logout_lbl</a>
+							<a href=\"#\" onclick='DMSLogout(\"$jsonUrl\");' class=\"btn bg-blue btn-block\">$logout_lbl</a>
 						</div>
 					</li>
 				</ul>

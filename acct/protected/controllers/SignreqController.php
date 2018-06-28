@@ -22,11 +22,11 @@ class SignreqController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('edit','sign'),
+				'actions'=>array('edit','sign','batchsign','reject'),
 				'expression'=>array('SignreqController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','filedownload'),
+				'actions'=>array('index','filedownload','listfile','listtax','listpayreal'),
 				'expression'=>array('SignreqController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -77,6 +77,28 @@ class SignreqController extends Controller
 		}
 	}
 
+	public function actionBatchsign()
+	{
+		$model = new SignReqList;
+		if (isset($_POST['SignReqList'])) {
+			$model->attributes = $_POST['SignReqList'];
+			$model->batchSign();
+			Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Reimbursement Approved'));
+			$this->redirect(Yii::app()->createUrl('signreq/index'));
+		}
+	}
+
+	public function actionReject()
+	{
+		if (isset($_POST['SignReqForm'])) {
+			$model = new SignReqForm($_POST['SignReqForm']['scenario']);
+			$model->attributes = $_POST['SignReqForm'];
+			$model->reject();
+			Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Reimbursement Returned'));
+			$this->redirect(Yii::app()->createUrl('signreq/index'));
+		}
+	}
+
 	public function actionFileDownload($mastId, $docId, $fileId, $doctype) {
 		$sql = "select city from acc_request where id = $docId";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
@@ -92,6 +114,21 @@ class SignreqController extends Controller
 		} else {
 				throw new CHttpException(404,'Record not found.');
 		}
+	}
+
+	public function actionListfile($docId) {
+		$d = new DocMan('PAYREQ',$docId,'SignReqList');
+		echo $d->genFileListView();
+	}
+	
+	public function actionListpayreal($docId) {
+		$d = new DocMan('PAYREAL',$docId,'SignReqList');
+		echo $d->genFileListView();
+	}
+	
+	public function actionListtax($docId) {
+		$d = new DocMan('TAX',$docId,'SignReqList');
+		echo $d->genFileListView();
 	}
 
 	/**

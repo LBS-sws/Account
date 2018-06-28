@@ -45,7 +45,13 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Form';
 	<?php 
 		$counter = ($model->no_of_attm['payreal'] > 0) ? ' <span id="docpayreal" class="label label-info">'.$model->no_of_attm['payreal'].'</span>' : ' <span id="docpayreal"></span>';
 		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('misc','Attachment').$counter, array(
-			'name'=>'btnFile','id'=>'btnFile','data-toggle'=>'modal','data-target'=>'#fileuploadpayreal',)
+			'name'=>'btnFileRE','id'=>'btnFileRE','data-toggle'=>'modal','data-target'=>'#fileuploadpayreal',)
+		);
+	?>
+	<?php 
+		$counter = ($model->no_of_attm['payreq'] > 0) ? ' <span id="docpayreq" class="label label-info">'.$model->no_of_attm['payreq'].'</span>' : ' <span id="docpayreq"></span>';
+		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','Req. Attachment').$counter, array(
+			'name'=>'btnFile','id'=>'btnFile','data-toggle'=>'modal','data-target'=>'#fileuploadpayreq',)
 		);
 	?>
 	<?php 
@@ -70,6 +76,18 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Form';
 			<?php echo $form->hiddenField($model, 'city'); ?>
 			<?php echo $form->hiddenField($model, 'trans_id'); ?>
 			<?php echo $form->hiddenField($model, 'trans_id_c'); ?>
+			<?php echo $form->hiddenField($model, 'int_fee'); ?>
+
+	<?php if ($model->wfstatus=='QR') : ?>
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'reason',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-7">
+					<?php echo $form->textArea($model, 'reason', 
+						array('rows'=>2,'cols'=>60,'maxlength'=>1000,'readonly'=>true)
+					); ?>
+				</div>
+			</div>
+	<?php endif ?>
 
 			<div class="form-group">
 				<?php echo $form->labelEx($model,'ref_no',array('class'=>"col-sm-2 control-label")); ?>
@@ -110,8 +128,13 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Form';
 				<div class="col-sm-7">
 					<?php echo $form->hiddenField($model, 'trans_type_code'); ?>
 					<?php 
-						$list = General::getTransTypeList('OUT');
-						echo TbHtml::textField('trans_type_desc', $list[$model->trans_type_code], array('readonly'=>true,)); 
+						if ($model->wfstatus=='QR') {
+							$list = array_merge(array(''=>Yii::t('misc','-- None --')), General::getTransTypeList('OUT'));
+							echo $form->dropDownList($model, 'trans_type_code', $list); 
+						} else {
+							$list = General::getTransTypeList('OUT');
+							echo TbHtml::textField('trans_type_desc', $list[$model->trans_type_code], array('readonly'=>true,));
+						}
 					?>
 				</div>
 			</div>
@@ -119,10 +142,18 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Form';
 			<div class="form-group">
 				<?php echo $form->labelEx($model,'acct_id',array('class'=>"col-sm-2 control-label")); ?>
 				<div class="col-sm-7">
-					<?php echo $form->hiddenField($model, 'acct_id'); ?>
 					<?php 
-						$list = General::getAccountList($model->city);
-						echo TbHtml::textField('acct_name', $list[$model->acct_id], array('readonly'=>true,)); 
+						if ($model->wfstatus=='QR') {
+							$list0 = array(0=>Yii::t('misc','-- None --'));
+							$list1 = General::getAccountList();
+							$list = $list0 + $list1;
+							echo $form->dropDownList($model, 'acct_id', $list); 
+						} else {
+							echo $form->hiddenField($model, 'acct_id');
+							$list = General::getAccountList($model->city);
+							$desc = isset($list[$model->acct_id]) ? $list[$model->acct_id] : '';
+							echo TbHtml::textField('acct_name', $desc, array('readonly'=>true,)); 
+						}
 					?>
 				</div>
 			</div>
@@ -138,14 +169,19 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Form';
 									'A'=>Yii::t('trans','Company A/C'),
 									'O'=>Yii::t('trans','Others')
 								);
-						echo TbHtml::textField('payee_type_name', $list[$model->payee_type], array('readonly'=>true,)); 
+						if ($model->wfstatus=='QR') {
+							echo $form->dropDownList($model, 'payee_type', $list);
+						} else {
+							echo TbHtml::textField('payee_type_name', $list[$model->payee_type], array('readonly'=>true,)); 
+						}
 					?>
 				</div>
 				<div class="col-sm-7">
 					<?php 
 						echo $form->textField($model, 'payee_name', 
-							array('size'=>60,'maxlength'=>500,'readonly'=>true,)
-						); 
+							array('size'=>60,'maxlength'=>500,'readonly'=>($model->wfstatus!='QR'),
+							'append'=>TbHtml::button('<span class="fa fa-search"></span> '.Yii::t('trans','Payee'),array('name'=>'btnPayee','id'=>'btnPayee','disabled'=>($model->wfstatus!='QR'))),
+						)); 
 						echo $form->hiddenField($model, 'payee_id');
 					?>
 				</div>
@@ -157,7 +193,12 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Form';
 					<?php 
 						echo $form->hiddenField($model, 'item_code');
 						echo $form->textField($model, 'pitem_desc', 
-							array('maxlength'=>500,'readonly'=>true,
+							array('maxlength'=>500,'readonly'=>($model->wfstatus!='QR'),
+							'append'=>TbHtml::button('<span class="fa fa-search"></span> '.Yii::t('trans','Paid Item'),
+										array('name'=>'btnPaidItem','id'=>'btnPaidItem',
+											'disabled'=>($model->wfstatus!='QR')
+										)
+								)
 							)
 						); 
 					?>
@@ -177,8 +218,14 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Form';
 				<?php echo $form->labelEx($model,'int_fee',array('class'=>"col-sm-2 control-label")); ?>
 				<div class="col-sm-1">
 					<?php 
-						$list = array(''=>Yii::t('misc','No'),'N'=>Yii::t('misc','No'),'Y'=>Yii::t('misc','Yes'));
-						echo TbHtml::textField('int_fee', $list[$model->int_fee], array('readonly'=>true,)); 
+						if ($model->wfstatus=='QR') {
+							$list = array('N'=>Yii::t('misc','No'),'Y'=>Yii::t('misc','Yes'));
+							echo $form->dropDownList($model, 'int_fee', $list); 
+						} else {
+							echo $form->hiddenField($model, 'int_fee');
+							$list = array(''=>Yii::t('misc','No'),'N'=>Yii::t('misc','No'),'Y'=>Yii::t('misc','Yes'));
+							echo TbHtml::textField('int_fee', $list[$model->int_fee], array('readonly'=>true,)); 
+						}
 					?>
 				</div>
 			</div>
@@ -187,7 +234,7 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Form';
 				<?php echo $form->labelEx($model,'item_desc',array('class'=>"col-sm-2 control-label")); ?>
 				<div class="col-sm-7">
 					<?php echo $form->textArea($model, 'item_desc', 
-						array('rows'=>3,'cols'=>60,'maxlength'=>1000,'readonly'=>true)
+						array('rows'=>3,'cols'=>60,'maxlength'=>1000,'readonly'=>($model->wfstatus!='QR'))
 					); ?>
 				</div>
 			</div>
@@ -198,7 +245,7 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Form';
 					<?php
 						echo $form->numberField($model, 'amount', 
 							array('size'=>10,'min'=>0,
-							'readonly'=>true,
+							'readonly'=>($model->wfstatus!='QR'),
 							'prepend'=>'<span class="fa '.$sign.'"></span>')
 						); 
 					?>
@@ -252,6 +299,13 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Form';
 ?>
 <?php $this->renderPartial('//site/fileupload',array('model'=>$model,
 													'form'=>$form,
+													'doctype'=>'PAYREQ',
+													'header'=>Yii::t('trans','Req. Attachment'),
+													'ronly'=>true,
+													)); 
+?>
+<?php $this->renderPartial('//site/fileupload',array('model'=>$model,
+													'form'=>$form,
 													'doctype'=>'TAX',
 													'header'=>Yii::t('trans','Tax Slip'),
 													'ronly'=>$model->isReadOnly(),
@@ -260,6 +314,7 @@ $this->pageTitle=Yii::app()->name . ' - Reimbursement Form';
 
 <?php
 Script::genFileUpload($model,$form->id,'PAYREAL');
+Script::genFileUpload($model,$form->id,'PAYREQ');
 Script::genFileUpload($model,$form->id,'TAX');
 
 $link = Yii::app()->createUrl('realize/cancel');

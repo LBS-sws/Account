@@ -20,13 +20,6 @@ class UserForm extends CFormModel
 	public $email;
 	public $rights = array();
 
-	public $info_fields = array(
-							'signature'=>'blob',
-							'signature_file_type'=>'value'
-						);
-	public $signature;
-	public $signature_file_type;
-		
 	private $systems;
 	private $localelabels;
 
@@ -48,7 +41,6 @@ class UserForm extends CFormModel
 			'city'=>Yii::t('user','City'),
 			'lock'=>Yii::t('user','Lock'),
 			'email'=>Yii::t('user','Email'),
-			'signature'=>Yii::t('user','Signature'),
 		);
 	}
 
@@ -68,11 +60,9 @@ class UserForm extends CFormModel
 				),
 			array('status','in','range'=>array('A','I'),'allowEmpty'=>false),
 			array('logon_time, logoff_time, fail_count, lock, rights','safe'), 
-			array('signature_file_type','safe'), 
 			array('password','required','on'=>'new'),
 			array('password','safe','on'=>'edit, delete'),
 			array('email','email','allowEmpty'=>true,),
-			array('signature','file','types'=>'jpg, png','allowEmpty'=>true),
 		);
 	}
 
@@ -175,6 +165,17 @@ class UserForm extends CFormModel
 				break;
 			}
 
+/*
+	array('drs'=>array('name'=>'Daily Report',
+					'item'=>array(
+						'Data Entry'=>array(
+							'A07'=>'Staff Info',
+						),
+					),
+				),
+		'acct'=>array(),
+	)
+*/
 			$sql = "select system_id, a_read_only, a_read_write, a_control 
 						from security$suffix.sec_user_access
 						where username='$index'
@@ -191,20 +192,6 @@ class UserForm extends CFormModel
 													((strpos($dtl['a_read_only'],$key)!==false) ? 'RO' :
 													((strpos($dtl['a_control'],$key)!==false) ? 'CN' : 'NA'
 													));
-					}
-				}
-			}
-			
-			$sql = "select field_id, field_value, field_blob
-					from security$suffix.sec_user_info
-					where username='$index'
-				";
-			$info = Yii::app()->db->createCommand($sql)->queryAll();
-			if (count($info) > 0){
-				foreach ($info as $rec) {
-					switch ($rec['field_id']) {
-						case 'signature': $this->signature = $rec['field_blob']; break;
-						case 'signature_file_type': $this->signature_file_type = $rec['field_value']; break;
 					}
 				}
 			}
@@ -227,7 +214,6 @@ class UserForm extends CFormModel
 		try {
 			$this->saveUser($connection);
 			$this->saveRights($connection);
-			$this->saveInfo($connection);
 			$transaction->commit();
 		}
 		catch(Exception $e) {
@@ -328,51 +314,5 @@ class UserForm extends CFormModel
 			$command->bindParam(':luu',$uid,PDO::PARAM_STR);
 			$command->execute();
 		}
-	}
-	
-	protected function saveInfo(&$connection) {
-		$suffix = Yii::app()->params['envSuffix'];
-
-		switch ($this->scenario) {
-			case 'delete':
-				$sql = "delete from security$suffix.sec_user_info where username = :username";
-				break;
-			case 'new':
-			case 'edit':
-				$sql = "insert into security$suffix.sec_user_info 
-							(username, field_id, field_value, field_blob, lcu, luu)
-						values 
-							(:username, :field_id, :field_value, :field_blob, :lcu, :luu)
-						on duplicate key update 
-							field_value = :field_value, field_blob = :field_blob, luu = :luu
-					";
-				break;
-		}
-
-		$uid = Yii::app()->user->id;
-		foreach($this->info_fields as $fldid=>$fldtype) {
-			if (($fldid!='signature' && $fldid!='signature_file_type') || !empty($this->$fldid)) {
-				$value = ($fldtype=='value') ? $this->$fldid : '';
-				$blob = ($fldtype=='blob') ? $this->$fldid : '';
-			
-				$command=$connection->createCommand($sql);
-				$command->bindParam(':username',$this->username,PDO::PARAM_STR);
-				$command->bindParam(':field_id',$fldid,PDO::PARAM_STR);
-				$command->bindParam(':field_value',$value,PDO::PARAM_STR);
-				$command->bindParam(':field_blob',$blob,PDO::PARAM_LOB);
-				$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
-				$command->bindParam(':luu',$uid,PDO::PARAM_STR);
-				$command->execute();
-			}
-		}
-	}
-	
-	public function getSignatureString() {
-		$rtn = '';
-		if (!empty($this->signature)) {
-			$type = ($this->signature_file_type=='jpg') ? 'jpeg' : $this->signature_file_type;
-			$rtn = "data:image/$type;base64,".$this->signature;
-		}
-		return $rtn;
 	}
 }

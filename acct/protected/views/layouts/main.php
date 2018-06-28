@@ -6,6 +6,9 @@
 		Yii::app()->bootstrap->bootstrapPath = Yii::app()->basePath.'/../../bootstrap-3.3.7-dist';
 		Yii::app()->bootstrap->adminLtePath = Yii::app()->basePath.'/../../AdminLTE-2.3.7';
 		Yii::app()->bootstrap->register(); 
+
+		$sfile = Yii::app()->baseUrl.'/js/dms.js';
+		Yii::app()->clientScript->registerScriptFile($sfile,CClientScript::POS_HEAD);
 	?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -61,6 +64,8 @@
 		</nav>
 	</header>
 
+	<?php $this->widget('ext.widgets.loading.LoadingWidget'); ?>
+	
 	<!-- Full Width Column -->
 	<div class="content-wrapper">
 		<div class="container">
@@ -90,7 +95,7 @@
 if (!Yii::app()->user->isGuest) {
 	$checkurl = Yii::app()->createUrl("ajax/checksession");
 	$loginurl = Yii::app()->createUrl("site/logout");
-	$js = "
+	$js = <<<EOF
 var checkLogin = function() {
     $.ajax({
 		type: 'GET', 
@@ -110,9 +115,9 @@ var checkLogin = function() {
 	});
 };
 var logincheckinterval = setInterval(checkLogin, 30000);
-	";
+EOF;
 	Yii::app()->clientScript->registerScript('checksession',$js,CClientScript::POS_READY);
-	$js = "
+	$js = <<<EOF
 $(function () {
   $('[data-toggle=\"tooltip\"]').tooltip()
 });
@@ -120,16 +125,28 @@ $(function () {
 $('#btnSysChange').on('click',function() {
 	$('#syschangedialog').modal('show');
 });
-	";
+EOF;
+	$incl_js = false;
 	foreach (Yii::app()->params['systemMapping'] as $id=>$value) {
 		if (Yii::app()->user->validSystem($id)) {
 			$oid = 'btnSys'.$id;
 			$url = $value['webroot'];
-			$temp = '
-$("#'.$oid.'").on("click",function(){$("#syschangedialog").modal("hide");window.location="'.$url.'";});
-				';
+			if (!isset($value['script'])) {
+				$temp = '$("#'.$oid.'").on("click",function(){$("#syschangedialog").modal("hide");window.location="'.$url.'";});';
+			} else {
+				$func_name = $value['script'];
+				$lang = Yii::app()->language;
+				$homeurl = Yii::app()->createUrl("");
+				$incl_js = true;
+				$temp = '$("#'.$oid.'").on("click",function(){$("#syschangedialog").modal("hide");'.$func_name.'("'.$id.'","'.$url.'","'.$homeurl.'");});';
+			}
 			$js .= $temp;
 		}
+	}
+	
+	if ($incl_js) {
+		$sfile = Yii::app()->baseUrl.'/js/systemlink.js';
+		Yii::app()->clientScript->registerScriptFile($sfile,CClientScript::POS_HEAD);
 	}
 	Yii::app()->clientScript->registerScript('systemchange',$js,CClientScript::POS_READY);
 }

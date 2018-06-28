@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 return array(
 	'Daily Report System'=>'日报表系统',
 	'Daily Report System - UAT'=>'日报表系统 - 测试版',
@@ -10,6 +10,10 @@ return array(
 	'Accounting'=>'会计系统',
 	'Operation'=>'营运系统',
 	'Personnel'=>'人事系统',
+	'Sales'=>'销售系统',
+
+	'Quiz'=>'测验系统',
+        'Academic Credit'=>'学分系统',
 
 	'Data Entry'=>'数据输入',
 	'Misc'=>'其他',
@@ -18,6 +22,7 @@ return array(
 	'Import Manager'=>'数据导入管理员',
 
 	'Payment Request'=>'付款申请',
+	'Request Confirmation'=>'申请确认',
 	'Request Approval'=>'申请审核',
 	'Reimbursement'=>'报销单申请',
 	'Reimbursement Approval'=>'报销单签字',
@@ -35,7 +40,9 @@ return array(
 	'Report'=>'报表',
 	'Reimbursement Form'=>'费用报销单',
 	'Transaction List'=>'交易记录',
+	'Operation Daily Report'=>'每日营业择要报告',
 	'Report Manager'=>'报表管理员',
+	'Daily Receipt Overview Report'=>'每天收款总览',
 
 	'System Setting'=>'系统设置',
 	'Security'=>'保安',
@@ -49,6 +56,8 @@ return array(
 	'Request for Payment Check'=>'要求覆核付款申请',
 	'Payment Check'=>'覆核并提交付款申请',
 	'Void Transaction'=>'撤消交易记录',
+	'Void Reimbursement'=>'撤消报销单',
+	'Batch Approve'=>'批量批准',
 	
 	'User'=>'帐户',
 	'Group'=>'群组',
@@ -80,5 +89,6 @@ return array(
 	'Account Type'=>'账户类别',
 	'Transaction Type'=>'交易类别',
 	'Account'=>'账户',
+	'Delegation'=>'授权',
 );
 ?>

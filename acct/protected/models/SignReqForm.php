@@ -14,6 +14,7 @@ class SignReqForm extends CFormModel
 	public $status;
 	public $user_name;
 	public $city;
+	public $reason;
 	
 	public $acct_id;
 	public $cheque_no;
@@ -41,14 +42,17 @@ class SignReqForm extends CFormModel
 						
 	public $docMasterId = array(
 							'payreal'=>0,
+							'payreq'=>0,
 							'tax'=>0
 						);
 	public $removeFileId = array(
 							'payreal'=>0,
+							'payreq'=>0,
 							'tax'=>0
 						);
 	public $no_of_attm = array(
 							'payreal'=>0,
+							'payreq'=>0,
 							'tax'=>0
 						);
 
@@ -75,6 +79,7 @@ class SignReqForm extends CFormModel
 			'acct_id'=>Yii::t('trans','Paid Account'),
 			'user_name'=>Yii::t('trans','Requestor'),
 			'int_fee'=>Yii::t('trans','Integrated Fee'),
+			'reason'=>Yii::t('trans','Return Reason'),
 		);
 	}
 
@@ -86,7 +91,7 @@ class SignReqForm extends CFormModel
 		return array(
 			array('trans_dt','safe'),
 			array('cheque_no, invoice_no, acct_code, ref_no','safe'),
-			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, item_code, pitem_desc, amount,','safe'),
+			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, item_code, pitem_desc, amount, reason','safe'),
 			array('id, item_desc, payee_id, status, status_desc, cheque_no, invoice_no, ref_no, user_name, int_fee','safe'), 
 			array('no_of_attm, files, removeFileId, docMasterId','safe'), 
 				
@@ -103,6 +108,7 @@ class SignReqForm extends CFormModel
 		$sql = "select a.*, b.disp_name as user_name,  
 				workflow$suffix.RequestStatus('PAYMENT',id,req_dt) as wfstatus,
 				workflow$suffix.RequestStatusDesc('PAYMENT',id,req_dt) as wfstatusdesc,
+				docman$suffix.countdoc('payreq',id) as payreqcountdoc,
 				docman$suffix.countdoc('payreal',id) as payrealcountdoc,
 				docman$suffix.countdoc('tax',id) as taxcountdoc
 				from acc_request a, security$suffix.sec_user b where id=$index and id in ($list) 
@@ -124,6 +130,7 @@ class SignReqForm extends CFormModel
 				$this->user_name = $row['user_name'];
 				$this->city = $row['city'];
 				$this->no_of_attm['payreal'] = $row['payrealcountdoc'];
+				$this->no_of_attm['payreq'] = $row['payreqcountdoc'];
 				$this->no_of_attm['tax'] = $row['taxcountdoc'];
 				break;
 			}
@@ -153,6 +160,21 @@ class SignReqForm extends CFormModel
 		try {
 			if ($wf->startProcess('PAYMENT',$this->id,$this->req_dt)) {
 				$wf->takeAction('REIMAPPR');
+			}
+			$wf->transaction->commit();
+		}
+		catch(Exception $e) {
+			$wf->transaction->rollback();
+			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
+		}
+	}
+	
+	public function reject() {
+		$wf = new WorkflowPayment;
+		$connection = $wf->openConnection();
+		try {
+			if ($wf->startProcess('PAYMENT',$this->id,$this->req_dt)) {
+				$wf->takeAction('REIMREJ', $this->reason);
 			}
 			$wf->transaction->commit();
 		}

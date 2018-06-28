@@ -22,7 +22,7 @@ class AjaxController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('dummy',),
+				'actions'=>array('dummy','remotelogin'),
 				'users'=>array('@'),
 			),
 			array('deny',  // deny all users
@@ -39,6 +39,36 @@ class AjaxController extends Controller
 		Yii::app()->end();
 	}
 
+	public function actionRemotelogin() {
+		$rtn = '';
+		if (!Yii::app()->user->isGuest) {
+			$id = Yii::app()->user->staffid(); 
+			if (!empty($id)) {
+				$suffix = Yii::app()->params['envSuffix'];
+				$sql = "select code,code_old from hr$suffix.hr_employee where id=$id";
+				$row = Yii::app()->db->createCommand($sql)->queryRow();
+				if ($row !== false) {
+					$staffcode = $row['code'];
+					$staffocode = empty($row['code_old']) ? $row['code'] : $row['code_old'];
+					$lang = Yii::app()->language;
+					$lang = ($lang=='zh_cn' ? 'zhcn' : ($lang=='zh_tw' ? 'zhtw' : 'en'));
+					$sesskey = Yii::app()->user->sessionkey();
+					$salt = 'lbscorp168';
+					$key = md5($staffcode.$salt.$sesskey.$staffocode);
+					$temp = array(
+							'id'=>$staffcode.':'.$staffocode,
+							'sk'=>$sesskey,
+							'ky'=>$key,
+							'lang'=>$lang,
+						);
+					$rtn = json_encode($temp);
+				}
+			}
+		}
+		echo $rtn;
+		Yii::app()->end();
+	}
+	
 	public function actionChecksession() {
 		$rtn = true;
 		if (!Yii::app()->user->isGuest && Yii::app()->params['sessionIdleTime']!=='') {

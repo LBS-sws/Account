@@ -52,25 +52,24 @@ class ImpCustomer {
 		$row = $command->queryRow();
 		
 		$action = ($row===false) ? Yii::t('import','INSERT') : Yii::t('import','UPDATE');
-		$sql = ($row===false)
-				? "insert into swoper$suffix.swo_company 
+		if ($row===false) {
+			$sql = "insert into swoper$suffix.swo_company 
 						(code, name, full_name, cont_name, cont_phone, address, tax_reg_no, city, lcu, luu)
 					values
 						(:code, :name, :full_name, :cont_name, :cont_phone, :address, :tax_reg_no, :city, :uid, :uid)
-				"
-				: "update swoper$suffix.swo_company 
-					set name = :name, 
-						full_name = :full_name, 
-						cont_name = :cont_name, 
-						cont_phone = :cont_phone, 
-						address = :address, 
-						tax_reg_no = :tax_reg_no,
-						lcu = :uid, 
-						luu = :uid
-					where
-						code = :code and city = :city 
-				"
-				;
+					";
+		} else {
+			$sql = "update swoper$suffix.swo_company set ";
+			if (!empty($data['name'])) $sql .= "name = :name, ";
+			if (!empty($data['full_name'])) $sql .= "full_name = :full_name, ";
+			if (!empty($data['cont_name'])) $sql .= "cont_name = :cont_name, ";
+			if (!empty($data['cont_phone'])) $sql .= "cont_phone = :cont_phone, ";
+			if (!empty($data['address'])) $sql .= "address = :address, ";
+			if (!empty($data['tax_reg_no'])) $sql .= "tax_reg_no = :tax_reg_no, ";
+			$sql .=	"lcu = :uid, luu = :uid
+					where code = :code and city = :city 
+				";
+		}
 		$command=$connection->createCommand($sql);
 		if (strpos($sql,':code')!==false)
 			$command->bindParam(':code',$data['code'],PDO::PARAM_STR);

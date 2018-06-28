@@ -17,6 +17,24 @@ class TransInList extends CListPageModel
 		);
 	}
 	
+	public function searchColumns() {
+		$search = array(
+				'trans_dt'=>"date_format(a.trans_dt,'%Y/%m/%d')",
+				'trans_type_desc'=>'e.trans_type_desc',
+				'acct_type_desc'=>'c.acct_type_desc',
+				'bank_name'=>'d.bank_name',
+				'acct_no'=>'d.acct_no',
+				'int_fee'=>"(select case g.field_value when 'Y' then '".Yii::t('misc','Yes')."' 
+							else '".Yii::t('misc','No')."' 
+						end) ",
+				'status'=>"(select case a.status when 'V' then '".Yii::t('app','Void')."' 
+							else '' 
+						end) ",
+		);
+		if (!Yii::app()->user->isSingleCity()) $search['city_name'] = 'b.name';
+		return $search;
+	}
+
 	public function retrieveDataByPage($pageNum=1)
 	{
 		$suffix = Yii::app()->params['envSuffix'];
@@ -45,36 +63,13 @@ class TransInList extends CListPageModel
 				and e.trans_cat='IN' 
 			";
 		$clause = "";
-		if (!empty($this->searchField) && !empty($this->searchValue)) {
-			$svalue = str_replace("'","\'",$this->searchValue);
-			switch ($this->searchField) {
-				case 'trans_type_desc':
-					$clause .= General::getSqlConditionClause('e.trans_type_desc',$svalue);
-					break;
-				case 'acct_type_desc':
-					$clause .= General::getSqlConditionClause('c.acct_type_desc',$svalue);
-					break;
-				case 'acct_no':
-					$clause .= General::getSqlConditionClause('d.acct_no',$svalue);
-					break;
-				case 'bank_name':
-					$clause .= General::getSqlConditionClause('d.bank_name',$svalue);
-					break;
-				case 'city_name':
-					$clause .= General::getSqlConditionClause('b.name',$svalue);
-					break;
-				case 'int_fee':
-					$field = "(select case g.field_value when 'Y' then '".Yii::t('misc','Yes')."' 
-							else '".Yii::t('misc','No')."' 
-						end) ";
-					$clause .= General::getSqlConditionClause($field,$svalue);
-					break;
-				case 'status':
-					$field = "(select case a.status when 'V' then '".Yii::t('app','Void')."' 
-							else '' 
-						end) ";
-					$clause .= General::getSqlConditionClause($field,$svalue);
-					break;
+		if (!empty($this->searchField) && (!empty($this->searchValue) || $this->isAdvancedSearch())) {
+			if ($this->isAdvancedSearch()) {
+				$clause = $this->buildSQLCriteria();
+			} else {
+				$svalue = str_replace("'","\'",$this->searchValue);
+				$columns = $this->searchColumns();
+				$clause .= General::getSqlConditionClause($columns[$this->searchField],$svalue);
 			}
 		}
 		
@@ -121,7 +116,7 @@ class TransInList extends CListPageModel
 			}
 		}
 		$session = Yii::app()->session;
-		$session['criteria_xe01'] = $this->getCriteria();
+		$session[$this->criteriaName()] = $this->getCriteria();
 		return true;
 	}
 

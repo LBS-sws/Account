@@ -36,22 +36,12 @@ $this->pageTitle=Yii::app()->name . ' - Transaction Out';
 	</div></div>
 -->
 	<?php 
-		$search = array(
-						'trans_type_desc',
-						'acct_type_desc',
-						'bank_name',
-						'acct_no',
-						'status',
-					);
-		if (!Yii::app()->user->isSingleCity()) $search[] = 'city_name';
 		$this->widget('ext.layout.ListPageWidget', array(
 			'title'=>Yii::t('trans','Transaction List'),
 			'model'=>$model,
 				'viewhdr'=>'//transout/_listhdr',
 				'viewdtl'=>'//transout/_listdtl',
-				'gridsize'=>'24',
-				'height'=>'600',
-				'search'=>$search,
+				'advancedSearch'=>true,
 		));
 	?>
 </section>
@@ -60,6 +50,7 @@ $this->pageTitle=Yii::app()->name . ' - Transaction Out';
 	echo $form->hiddenField($model,'totalRow');
 	echo $form->hiddenField($model,'orderField');
 	echo $form->hiddenField($model,'orderType');
+	echo $form->hiddenField($model,'filter');
 ?>
 <?php $this->endWidget(); ?>
 
