@@ -14,6 +14,7 @@ return array(
 	'Information' => '信息',
 	'OK' => '确定',
 	'Password changed' => '密码更改完成',
+	'Option changed' => '选项更改完成',
 	'New password and confirm password not match' => '新密码与确认密码不匹配',
 	'Save' => '保存',
 	'Save Record' => '保存记录',

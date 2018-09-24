@@ -244,19 +244,28 @@ class WorkflowPayment extends WorkflowDMS {
 		$toaddr = (isset($params['to_addr'])) ? $params['to_addr'] : $this->getCurrentStateRespEmail();
 		$temp = array();
 		foreach ($toaddr as $key=>$email) {
-			if (!in_array($key,$username)) $username[] = $key;
-			if (!in_array($email,$temp)) $temp[] = $email;
+			if ($this->canNotify($key)) {
+				if (!in_array($key,$username)) $username[] = $key;
+				if (!in_array($email,$temp)) $temp[] = $email;
+			}
 		}
 		$toaddr = $temp;
 
 		$ccaddr = (isset($params['cc_addr'])) ? $params['cc_addr'] : array();
 		$temp = array();
 		foreach ($ccaddr as $key=>$email) {
-			if (!in_array($key,$username)) $username[] = $key;
-			if (!in_array($email,$temp)) $temp[] = $email;
+			if ($this->canNotify($key)) {
+				if (!in_array($key,$username)) $username[] = $key;
+				if (!in_array($email,$temp)) $temp[] = $email;
+			}
 		}
 		$ccaddr = $temp;
 
+		if (empty($toaddr) && !empty($ccaddr)) {
+			$toaddr = $ccaddr;
+			$ccaddr = array();
+		}
+		
 		$subjectPrefix = isset($params['subjtype']) 
 			? ($params['subjtype']=='action' 
 				? Yii::t('workflow','[Action]') 
@@ -865,6 +874,12 @@ class WorkflowPayment extends WorkflowDMS {
 		return $rtn;
 	}
 
+	protected function canNotify($userid) {
+		$sql = "select status from acc_notify_option where username='$userid'";
+		$row = $this->connection->createCommand($sql)->queryRow();
+		return ($row===false || $row['status']=='Y');
+	}
+	
 	protected function saveTransId($transId, $req, $type='') {
 		$sql = "insert into acc_request_info(
 					req_id, field_id, field_value, luu, lcu) values (

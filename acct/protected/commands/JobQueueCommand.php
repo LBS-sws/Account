@@ -26,13 +26,8 @@ class JobQueueCommand extends CConsoleCommand {
 				
 			$rpt_desc = $param['RPT_DESC'];
 			$mesg = "ID:$id NAME:$rpt_desc FORMAT:$format USER:$uid\n";
-			
-			try {
-				$out = $this->genReport($param['RPT_ID'], $param, $format);
-			} catch(Exception $e) {
-				$mesg .= $e->getMessage()."\n";
-				$out = '';
-			}
+				
+			$out = $this->genReport($param['RPT_ID'], $param, $format);
 			
 			if (!empty($out)) {
 				$this->saveOutput($id, $ts, $out, 'C');

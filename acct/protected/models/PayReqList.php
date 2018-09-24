@@ -27,7 +27,7 @@ class PayReqList extends CListPageModel
 			'acct_type_desc'=>'j.acct_type_desc',
 			'payee_name'=>'a.payee_name',
 			'item_desc'=>'a.item_desc',
-			'ref_no'=>'a.item_desc',
+			'ref_no'=>'f.field_value',
 			'int_fee'=>"(select case g.field_value when 'Y' then '".Yii::t('misc','Yes')."' 
 							else '".Yii::t('misc','No')."' 
 						end) ",

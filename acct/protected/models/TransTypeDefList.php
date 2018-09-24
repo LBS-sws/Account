@@ -18,14 +18,14 @@ class TransTypeDefList extends CListPageModel
 		$city = Yii::app()->user->city_allow();
 		$sql1 = "select a.*, c.code as city, c.name as city_name, b.acct_id, d.acct_no, d.acct_name 
 				from acc_trans_type a 
-				inner join securitydev.sec_city c on c.code in ($city)
+				inner join security$suffix.sec_city c on c.code in ($city)
 				left outer join acc_trans_type_def b on a.trans_type_code=b.trans_type_code and b.city=c.code
 				left outer join acc_account d on d.id=b.acct_id 
 				where a.adj_type='N' and a.trans_type_code<>'OPEN' 
 			";
 		$sql2 = "select count(a.trans_type_code)
 				from acc_trans_type a 
-				inner join securitydev.sec_city c on c.code in ($city)
+				inner join security$suffix.sec_city c on c.code in ($city)
 				left outer join acc_trans_type_def b on a.trans_type_code=b.trans_type_code and b.city=c.code
 				left outer join acc_account d on d.id=b.acct_id 
 				where a.adj_type='N' and a.trans_type_code<>'OPEN' 

@@ -230,24 +230,26 @@ class Workflow {
 						(:from_addr, :to_addr, :cc_addr, :subject, :description, :message, 'P', 'admin')
 					";
 			foreach ($params as $record) {
-				if (!isset($record['send']) || $record['send']=='Y') {
-					$command = $this->connection->createCommand($sql);
-					if (strpos($sql,':from_addr')!==false)
-						$command->bindParam(':from_addr',$record['from_addr'],PDO::PARAM_STR);
-					if (strpos($sql,':to_addr')!==false)
-						$command->bindParam(':to_addr',$record['to_addr'],PDO::PARAM_STR);
-					if (strpos($sql,':cc_addr')!==false)
-						$command->bindParam(':cc_addr',$record['cc_addr'],PDO::PARAM_STR);
-					if (strpos($sql,':subject')!==false)
-						$command->bindParam(':subject',$record['subject'],PDO::PARAM_STR);
-					if (strpos($sql,':description')!==false)
-						$command->bindParam(':description',$record['description'],PDO::PARAM_STR);
-					if (strpos($sql,':message')!==false)
-						$command->bindParam(':message',$record['message'],PDO::PARAM_STR);
-					$command->execute();
-				}
+				if (!empty($record['to_addr']) || !empty($record['cc_addr'])) {
+					if (!isset($record['send']) || $record['send']=='Y') {
+						$command = $this->connection->createCommand($sql);
+						if (strpos($sql,':from_addr')!==false)
+							$command->bindParam(':from_addr',$record['from_addr'],PDO::PARAM_STR);
+						if (strpos($sql,':to_addr')!==false)
+							$command->bindParam(':to_addr',$record['to_addr'],PDO::PARAM_STR);
+						if (strpos($sql,':cc_addr')!==false)
+							$command->bindParam(':cc_addr',$record['cc_addr'],PDO::PARAM_STR);
+						if (strpos($sql,':subject')!==false)
+							$command->bindParam(':subject',$record['subject'],PDO::PARAM_STR);
+						if (strpos($sql,':description')!==false)
+							$command->bindParam(':description',$record['description'],PDO::PARAM_STR);
+						if (strpos($sql,':message')!==false)
+							$command->bindParam(':message',$record['message'],PDO::PARAM_STR);
+						$command->execute();
+					}
 				
-				$this->notification($record);
+					$this->notification($record);
+				}
 			}
 		}
 	}

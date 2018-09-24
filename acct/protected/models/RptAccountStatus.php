@@ -96,6 +96,13 @@ class RptAccountStatus extends CReport {
 
 		$to = General::getEmailByUserIdArray($mgr);
 		$to = General::dedupToEmailList($to);
+// Remove Joe Yiu from to address
+		$tmp = $to;
+		$to = array();
+		foreach($tmp as $itm) {
+			if ($itm != 'joeyiu@lbsgroup.com.cn') $to[] = $itm;
+		}
+//
 		$cc = array();
 		
 		$subject = Yii::t('report','Payment Receive Daily Report').' ('.General::getCityName($city).') - '.General::toDate($date);

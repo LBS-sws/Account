@@ -121,6 +121,10 @@ return array(
 				'access'=>'XC07',
 				'url'=>'/delegate/index',
 			),
+			'Notification Option'=>array(
+				'access'=>'XC08',
+				'url'=>'/site/notifyopt',
+			),
 		),
 	),
 //	'Security'=>array(

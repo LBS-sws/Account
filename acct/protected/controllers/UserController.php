@@ -59,6 +59,14 @@ class UserController extends Controller
 			$model = new UserForm($_POST['UserForm']['scenario']);
 			$model->attributes = $_POST['UserForm'];
 			if ($model->validate()) {
+				if ($file = CUploadedFile::getInstance($model,'signature')) {
+					$model->signature_file_type = $file->type;
+					$content = file_get_contents($file->tempName);
+					$model->signature = base64_encode($content);
+				} else {
+					$model->signature_file_type = '';
+					$model->signature = '';
+				}
 				$model->saveData();
 				$model->scenario = 'edit';
 				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
@@ -68,7 +76,6 @@ class UserController extends Controller
 				Dialog::message(Yii::t('dialog','Validation Message'), $message);
 				$this->render('form',array('model'=>$model,));
 			}
-//			$this->actionEdit($model->username);
 		}
 	}
 

@@ -198,4 +198,16 @@ class SiteController extends Controller
 		$model->language = Yii::app()->language;
 		$this->render('language',array('model'=>$model));
 	}
+
+	public function actionNotifyopt() {
+		$model=new NotifyoptForm;
+
+		if(isset($_POST['NotifyoptForm'])) {
+			$model->attributes=$_POST['NotifyoptForm'];
+			$model->save();
+			Dialog::message('Info', Yii::t('dialog','Option changed'));
+		}
+		$model->retrieveData();
+		$this->render('notifyopt',array('model'=>$model));
+	}
 }

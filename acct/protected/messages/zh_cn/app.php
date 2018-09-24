@@ -90,5 +90,6 @@ return array(
 	'Transaction Type'=>'交易类别',
 	'Account'=>'账户',
 	'Delegation'=>'授权',
+	'Notification Option'=>'通知选项',
 );
 ?>
