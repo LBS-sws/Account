@@ -12,7 +12,7 @@ return array(
 	'Personnel'=>'人事系统',
 	'Sales'=>'销售系统',
 
-	'Quiz'=>'测验系统',
+    'Quiz'=>'培训测验系统',
         'Academic Credit'=>'学分系统',
 
 	'Data Entry'=>'数据输入',
