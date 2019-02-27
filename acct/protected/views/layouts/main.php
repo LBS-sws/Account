@@ -7,8 +7,8 @@
 		Yii::app()->bootstrap->adminLtePath = Yii::app()->basePath.'/../../AdminLTE-2.3.7';
 		Yii::app()->bootstrap->register(); 
 
-		$sfile = Yii::app()->baseUrl.'/js/dms.js';
-		Yii::app()->clientScript->registerScriptFile($sfile,CClientScript::POS_HEAD);
+                $sfile = Yii::app()->baseUrl.'/js/dms.js';
+                Yii::app()->clientScript->registerScriptFile($sfile,CClientScript::POS_HEAD);
 	?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -41,9 +41,10 @@
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse pull-left" id="navbar-collapse">
 				<?php
+					$sysmap = General::systemMapping();
 					$sysId = Yii::app()->session['system'];
-					$sysTitle = Yii::app()->params['systemMapping'][$sysId]['name'];
-					$sysIcon = Yii::app()->params['systemMapping'][$sysId]['icon'];
+					$sysTitle = $sysmap[$sysId]['name'];
+					$sysIcon = $sysmap[$sysId]['icon'];
 					echo "<button id='btnSysChange' type='button' 
 						class='btn btn-default navbar-btn navbar-left' data-toggle='tooltip' data-placement='bottom' title='".Yii::t('app','System Change')."'>"
 						.Yii::t('app',$sysTitle)."</button>";
@@ -95,7 +96,7 @@
 if (!Yii::app()->user->isGuest) {
 	$checkurl = Yii::app()->createUrl("ajax/checksession");
 	$loginurl = Yii::app()->createUrl("site/logout");
-	$js = <<<EOF
+	$js = "
 var checkLogin = function() {
     $.ajax({
 		type: 'GET', 
@@ -110,14 +111,14 @@ var checkLogin = function() {
 			}
 		},
 		error: function(xhr, status, error) {
-			skip = 1;
+			skip=1;
 		}
 	});
 };
 var logincheckinterval = setInterval(checkLogin, 30000);
-EOF;
+	";
 	Yii::app()->clientScript->registerScript('checksession',$js,CClientScript::POS_READY);
-	$js = <<<EOF
+	$js = "
 $(function () {
   $('[data-toggle=\"tooltip\"]').tooltip()
 });
@@ -125,9 +126,9 @@ $(function () {
 $('#btnSysChange').on('click',function() {
 	$('#syschangedialog').modal('show');
 });
-EOF;
+	";
 	$incl_js = false;
-	foreach (Yii::app()->params['systemMapping'] as $id=>$value) {
+	foreach (General::systemMapping() as $id=>$value) {
 		if (Yii::app()->user->validSystem($id)) {
 			$oid = 'btnSys'.$id;
 			$url = $value['webroot'];

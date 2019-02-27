@@ -12,8 +12,9 @@ return array(
 	'Personnel'=>'人事系统',
 	'Sales'=>'销售系统',
 
-    'Quiz'=>'培训测验系统',
+	'Quiz'=>'测验系统',
         'Academic Credit'=>'学分系统',
+	'Online Library'=>'网上文库',
 
 	'Data Entry'=>'数据输入',
 	'Misc'=>'其他',
@@ -36,6 +37,8 @@ return array(
 	'Cash In Check'=>'客户现金对账',
 	'Default Account'=>'默认账户',
 	'Accounting Item'=>'会计项目',
+	'T3 Balance Checking'=>'T3余额对账',
+	'Balance Adjustment'=>'余额差异调整表',
 	
 	'Report'=>'报表',
 	'Reimbursement Form'=>'费用报销单',
@@ -43,6 +46,8 @@ return array(
 	'Operation Daily Report'=>'每日营业择要报告',
 	'Report Manager'=>'报表管理员',
 	'Daily Receipt Overview Report'=>'每天收款总览',
+	'Daily Reimbursement Approval Summary'=>'每日报销审核汇总',
+	'Daily Request Approval Summary'=>'每日费用申请审核汇总',
 
 	'System Setting'=>'系统设置',
 	'Security'=>'保安',
@@ -58,6 +63,7 @@ return array(
 	'Void Transaction'=>'撤消交易记录',
 	'Void Reimbursement'=>'撤消报销单',
 	'Batch Approve'=>'批量批准',
+	'T3 Checker Right'=>'T3对账权限',
 	
 	'User'=>'帐户',
 	'Group'=>'群组',
@@ -91,5 +97,7 @@ return array(
 	'Account'=>'账户',
 	'Delegation'=>'授权',
 	'Notification Option'=>'通知选项',
+	'System Use'=>'系统使用',
+
 );
 ?>

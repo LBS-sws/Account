@@ -14,6 +14,7 @@ return array(
 
 'Quiz'=>'測驗系統',
 'Academic Credit'=>'學分系統',
+'Online Library'=>'網上文庫',
 
 'Data Entry'=>'數據輸入',
 'Misc'=>'其他',
@@ -89,5 +90,6 @@ return array(
 'Transaction Type'=>'交易類別',
 'Account'=>'賬戶',
 'Delegation'=>'授權',
+'System Use'=>'系統使用',
 );
 ?>

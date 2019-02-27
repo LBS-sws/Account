@@ -133,12 +133,13 @@ class General {
 	public static function getAccountList($in_city='',$exclude='')
 	{
 		$city = empty($in_city) ? Yii::app()->user->city() : $in_city;
+		if (strpos($city, "'")===false) $city = "'".$city."'";
 
 		$list = array();
 		$cond = empty($exclude) ? '' : " and a.id not in ($exclude) ";
 		$sql = "select a.id, a.acct_no, a.acct_name, a.bank_name, b.acct_type_desc  
 				from acc_account a, acc_account_type b
-				where a.acct_type_id=b.id and a.city in ('$city','99999') $cond
+				where a.acct_type_id=b.id and a.city in ($city,'99999') $cond
 				order by a.id
 			";
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
@@ -439,7 +440,7 @@ class General {
 
 	public static function getInstalledSystemList() {
 		$rtn = array();
-		$systems = Yii::app()->params['systemMapping'];
+		$systems = General::systemMapping();
 		foreach ($systems as $key=>$value) {
 			$rtn[$key] = Yii::t('app',$value['name']);
 		}
@@ -450,7 +451,7 @@ class General {
 		$rtn = array();
 		$sysid = Yii::app()->user->system();
 		$basePath = Yii::app()->basePath;
-		$systems = Yii::app()->params['systemMapping'];
+		$systems = General::systemMapping();
 		$cpathid = end(explode('/',$systems[$sysid]['webroot']));
 		foreach ($systems as $key=>$value) {
 			$rtn[$key] = array('name'=>$value['name'], 'item'=>array());
@@ -478,13 +479,18 @@ class General {
 		return $rtn;
 	}
 
+	public function systemMapping() {
+		$rtn = require(Yii::app()->basePath.'/config/system.php');
+		return $rtn;
+	}
+
 	public static function getLocaleAppLabels() {
 		$rtn = array();
 		$sysid = Yii::app()->user->system();
 		$basePath = Yii::app()->basePath;
 		$lang = Yii::app()->language;
 		if (Yii::app()->sourceLanguage!=$lang) {
-			$systems = Yii::app()->params['systemMapping'];
+			$systems = General::systemMapping();
 			$cpathid = end(explode('/',$systems[$sysid]['webroot']));
 			foreach ($systems as $key=>$value) {
 				$pathid = end(explode('/',$systems[$key]['webroot']));

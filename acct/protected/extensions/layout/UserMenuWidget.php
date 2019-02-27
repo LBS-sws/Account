@@ -6,7 +6,7 @@ class UserMenuWidget extends CWidget
 		$logoutUrl = array();
 		$logoutUrl[] = Yii::app()->createUrl("site/logout");
 		
-		foreach (Yii::app()->params['systemMapping'] as $id=>$value) {
+		foreach (General::systemMapping() as $id=>$value) {
 			if (Yii::app()->user->validSystem($id)) {
 				$url = $value['webroot'];
 				if (isset($value['external'])) {

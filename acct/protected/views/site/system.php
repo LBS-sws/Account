@@ -1,6 +1,6 @@
 <?php
 	$content = "";
-	foreach (Yii::app()->params['systemMapping'] as $id=>$value) {
+	foreach (General::systemMapping() as $id=>$value) {
 		if (Yii::app()->user->validSystem($id)) {
 			$button = TbHtml::button('<span class="'.$value['icon'].'"></span> '.Yii::t('app',$value['name']), 
 				array(

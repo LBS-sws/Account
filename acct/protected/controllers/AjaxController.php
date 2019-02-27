@@ -69,6 +69,30 @@ class AjaxController extends Controller
 		Yii::app()->end();
 	}
 	
+	public function actionRemoteloginonlib() {
+		$rtn = '';
+		if (!Yii::app()->user->isGuest) {
+			$id = Yii::app()->user->id;
+			if (!empty($id)) {
+				$suffix = Yii::app()->params['envSuffix'];
+				$sql = "select field_value from security$suffix.sec_user_info where username='$id' and 
+						field_id='onlibuser'
+					";
+				$row = Yii::app()->db->createCommand($sql)->queryRow();
+				if ($row !== false && !empty($row['field_value'])) {
+					$temp = array(
+						'id'=>$row['field_value'],
+						'pwd'=>$row['field_value'].'$1688',
+					);
+					$rtn = json_encode($temp);
+				}
+			}
+		}
+		echo $rtn;
+		Yii::app()->end();
+	}
+	
+
 	public function actionChecksession() {
 		$rtn = true;
 		if (!Yii::app()->user->isGuest && Yii::app()->params['sessionIdleTime']!=='') {
