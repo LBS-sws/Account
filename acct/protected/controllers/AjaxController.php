@@ -22,7 +22,7 @@ class AjaxController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('dummy','remotelogin'),
+				'actions'=>array('dummy','remotelogin','remoteloginonlib'),
 				'users'=>array('@'),
 			),
 			array('deny',  // deny all users
