@@ -49,7 +49,9 @@ WHERE workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>'ED' and workflow$
                         'lcd' => date('Y-m-d H:i:s'),
                     ));
                 } elseif ($record['req_dt'] == $firstDay1) {
-                    $sql = "select approver_type, username from acc_approver where city='" . $record['city'] . "' and approver_type='regionDirector'";
+//                    $sql = "select approver_type, username from acc_approver where city='" . $record['city'] . "' and approver_type='regionDirector'";
+// 包括副總監
+                    $sql = "select distinct username from acc_approver where city='" . $record['city'] . "' and approver_type in ('regionDirector', 'regionDirectorA')";
                     $rows = Yii::app()->db->createCommand($sql)->queryAll();
                     $zj = $rows[0]['username'];
                     $sql1 = "SELECT email FROM security$suffix.sec_user WHERE username='$zj'";
