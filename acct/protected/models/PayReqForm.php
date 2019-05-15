@@ -106,6 +106,14 @@ class PayReqForm extends CFormModel
 	public function validateAcctId($attribute, $params) {
 		if ($this->$attribute=='0') {
 			$this->addError($attribute, Yii::t('trans','Paid Account cannot be blank'));
+		} else {
+			$id = $this->$attribute;
+			$date = date("Y-m-d");
+			$city = $this->city;
+			$sql = "select AccountBalance($id,'$city','2010-01-01','$date') as balance";
+			$row = Yii::app()->db->createCommand($sql)->queryRow();
+			if ($row===false || empty($row['balance']) || $row['balance'] < 0)
+				$this->addError($attribute, Yii::t('trans','This paid account cannot be used because balance is less than 0'));
 		}
 	}
 	

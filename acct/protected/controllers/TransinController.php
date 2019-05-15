@@ -2,6 +2,8 @@
 
 class TransinController extends Controller 
 {
+	public $function_id='XE01';
+
 	public function filters()
 	{
 		return array(

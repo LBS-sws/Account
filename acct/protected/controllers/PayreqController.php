@@ -2,6 +2,8 @@
 
 class PayreqController extends Controller 
 {
+	public $function_id='XA04';
+
 	public function filters()
 	{
 		return array(
@@ -155,23 +157,28 @@ class PayreqController extends Controller
 	
 	public function actionNew($index=0)
 	{
-		if ($this->checkCashAudit()) {
-			$model = new PayReqForm('new');
-			if ($index!==0 && $model->retrieveData($index)) {
-				$model->id = 0;
-				$model->ref_no = '';
-				$model->req_dt = date('Y/m/d');
-				$model->wfstatus = '';
-				$model->wfstatusdesc = '';
-				$model->status = 'A';
-				$model->no_of_attm['payreq'] = 0;
-				$model->no_of_attm['tax'] = 0;
-			}
-			$this->render('form',array('model'=>$model,));
-		} else {
+		if (!$this->checkCashAudit()) {
 			Dialog::message(Yii::t('dialog','Information'), Yii::t('trans','Please carry out Cash In Audit Function before apply for new request'));
 			$this->redirect(Yii::app()->createUrl('payreq/index'));
 		}
+
+		if (!$this->checkT3Audit()) {
+			Dialog::message(Yii::t('dialog','Information'), Yii::t('trans','Please carry out T3 Audit Function before apply for new request'));
+			$this->redirect(Yii::app()->createUrl('payreq/index'));
+		}
+		
+		$model = new PayReqForm('new');
+		if ($index!==0 && $model->retrieveData($index)) {
+			$model->id = 0;
+			$model->ref_no = '';
+			$model->req_dt = date('Y/m/d');
+			$model->wfstatus = '';
+			$model->wfstatusdesc = '';
+			$model->status = 'A';
+			$model->no_of_attm['payreq'] = 0;
+			$model->no_of_attm['tax'] = 0;
+		}
+		$this->render('form',array('model'=>$model,));
 	}
 	
 	public function actionEdit($index)
@@ -293,4 +300,29 @@ class PayreqController extends Controller
 		
 		return false;
 	}
+	
+	protected function checkT3Audit() {
+		$city = Yii::app()->user->city();
+		$day = date('d');
+		if ($day > 10) {
+			$end_dt = strtotime("last day of previous month");
+			$year = date('Y',$end_dt);
+			$month = date('m',$end_dt);
+			$sql = "select id from acc_t3_audit_hdr where city='$city' and audit_year=$year and audit_month=$month and audit_dt is not null";
+		} else {
+			$dt1 = strtotime('-1 day',strtotime("first day of previous month"));
+			$dt2 = strtotime("last day of previous month");
+			$year1 = date('Y',$dt1);
+			$month1 = date('m',$dt1);
+			$year2 = date('Y',$dt2);
+			$month2 = date('m',$dt2);
+			$sql = "select id from acc_t3_audit_hdr where city='$city' 
+					and ((audit_year=$year1 and audit_month=$month1) or (audit_year=$year2 and audit_month=$month2)) 
+					and audit_dt is not null limit 1
+				";
+		}
+		$row = Yii::app()->db->createCommand($sql)->queryRow();
+		return ($row!==false);
+	}
+
 }

@@ -2,6 +2,8 @@
 
 class ApproverController extends Controller 
 {
+	public $function_id='XC04';
+
 	public function filters()
 	{
 		return array(

@@ -566,6 +566,16 @@ class General {
 		}
 		return $rtn;
 	}
+	
+	public function getUpdateDate() {
+		$file = Yii::app()->basePath.'/config/lud.php';
+		if (file_exists($file)) {
+			$lud = require($file);
+			return $lud;
+		} else {
+			return '2016/01/01';
+		}
+	}
 }
 
 ?>

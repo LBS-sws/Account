@@ -255,6 +255,22 @@ class Workflow {
 	}
 
 	protected function notification($param) {
+		$argv = array(
+				'system_id'=>$param['system_id'],
+				'note_type'=>$param['note_type'],
+				'subject'=>$param['subject'],
+				'description'=>$param['description'],
+				'message'=>$param['message'],
+				'username'=>$param['username'],
+				'form_id'=>$param['form_id'],
+				'rec_id'=>$param['rec_id'],
+			);
+		$connection = $this->connection;
+		SystemNotice::addNotice($connection, $argv);
+	}
+
+/*
+	protected function notification($param) {
 		$suffix = Yii::app()->params['envSuffix'];
 		$suffix = $suffix=='dev' ? '_w' : $suffix;
 		$sql = "insert into swoper$suffix.swo_notification
@@ -295,6 +311,7 @@ class Workflow {
 			$command->execute();
 		}
 	}
+*/
 	
 	public function getRequestData($code) {
 		$suffix = Yii::app()->params['envSuffix'];

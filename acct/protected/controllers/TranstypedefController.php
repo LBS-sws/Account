@@ -2,6 +2,8 @@
 
 class TranstypedefController extends Controller 
 {
+	public $function_id='XC05';
+
 	public function filters()
 	{
 		return array(

@@ -2,6 +2,8 @@
 
 class ApprreqController extends Controller 
 {
+	public $function_id='XA05';
+
 	public function filters()
 	{
 		return array(

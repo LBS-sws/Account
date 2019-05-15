@@ -2,6 +2,8 @@
 
 class ConfreqController extends Controller 
 {
+	public $function_id='XA08';
+
 	public function filters()
 	{
 		return array(

@@ -3,6 +3,7 @@
 return array(
 	'Payment Request'=>array(
 		'access'=>'XA',
+		'icon'=>'fa-money',
 		'items'=>array(
 			'Payment Request'=>array(
 				'access'=>'XA04',
@@ -28,6 +29,7 @@ return array(
 	),
 	'Transaction'=>array(
 		'access'=>'XE',
+		'icon'=>'fa-exchange',
 		'items'=>array(
 			'Transaction(In)'=>array(
 				'access'=>'XE01',
@@ -45,10 +47,19 @@ return array(
 				'access'=>'XE04',
 				'url'=>'/cashinaudit/index',
 			),
+			'T3 Balance Checking'=>array(
+				'access'=>'XE05',
+				'url'=>'/t3audit/index',
+			),
+//			'Balance Adjustment'=>array(
+//				'access'=>'XE06',
+//				'url'=>'/baladj/index',
+//			),
 		),
 	),
 	'Report'=>array(
 		'access'=>'XB',
+		'icon'=>'fa-file-text-o',
 		'items'=>array(
 			'Reimbursement Form'=>array(
 				'access'=>'XB02',
@@ -72,10 +83,21 @@ return array(
 				'url'=>'#',
 				'hidden'=>true,
 			),
+			'Daily Request Approval Summary'=>array(
+				'access'=>'XB06',
+				'url'=>'#',
+				'hidden'=>true,
+			),
+			'Daily Reimbursement Approval Summary'=>array(
+				'access'=>'XB07',
+				'url'=>'#',
+				'hidden'=>true,
+			),
 		),
 	),
 	'Import'=>array(
 		'access'=>'XF',
+		'icon'=>'fa-bolt',
 		'items'=>array(
 			'Import'=>array(
 				'access'=>'XF02',
@@ -89,6 +111,7 @@ return array(
 	),
 	'System Setting'=>array(
 		'access'=>'XC',
+		'icon'=>'fa-gear',
 		'items'=>array(
 			'Account Type'=>array(
 				'access'=>'XC01',

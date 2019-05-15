@@ -80,6 +80,7 @@ return array(
 'Clear'=>'清除',
 
 'Misc'=>'其他',
+'Status'=>'狀態',
 );
 
 ?>

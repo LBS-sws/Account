@@ -2,6 +2,8 @@
 
 class RealizeController extends Controller 
 {
+	public $function_id='XA06';
+
 	public function filters()
 	{
 		return array(

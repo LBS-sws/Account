@@ -2,6 +2,8 @@
 
 class SearchController extends Controller
 {
+	public $interactive = false;
+	
 	public function filters()
 	{
 		return array(

@@ -6,18 +6,22 @@
 $this->pageTitle=Yii::app()->name . ' - Change Password';
 ?>
 
+<?php 
+	$form=$this->beginWidget('TbActiveForm', array(
+		'id'=>'password-form',
+		'enableClientValidation'=>true,
+		'clientOptions'=>array(
+			'validateOnSubmit'=>true,
+			'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
+		),
+	)); 
+?>
+
+<section class="content">
 <div class="login-box">
 	<div class="login-box-body">
 		<h2 class="page-heading text-center"><?php echo Yii::t('misc','Change Password'); ?></h2>
 
-		<?php $form=$this->beginWidget('TbActiveForm', array(
-			'id'=>'password-form',
-			'enableClientValidation'=>true,
-			'clientOptions'=>array(
-			'validateOnSubmit'=>true,
-			'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
-			),
-		)); ?>
 
 		<div class="form-group has-feedback">
 			<?php echo $form->passwordField($model,'oldPassword',
@@ -54,6 +58,8 @@ $this->pageTitle=Yii::app()->name . ' - Change Password';
 			<!-- /.col -->
 		</div>
 
-		<?php $this->endWidget(); ?>
 	</div><!-- form -->
 </div>
+</section>
+
+<?php $this->endWidget(); ?>

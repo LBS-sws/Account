@@ -21,6 +21,8 @@ return array(
 	'Account'=>'复核',
 	'Cashier'=>'出纳',
 	'Payee'=>'领款人',
+	'Request Date'=>'申请日期',
+	'Status' => '状态',
 	
 	'Item'=>'项目',
 	'Last Balance'=>'上日金额',
@@ -46,9 +48,13 @@ return array(
 	'No Record'=>'没有相关记录',
 	'Account Name'=>'账户名称',
 	'Daily Receipt Overview Report'=>'每天收款总览',
+	'Daily Reimbursement Approval Summary'=>'每日报销审核汇总',
+	'Daily Request Approval Summary'=>'每日费用申请审核汇总',
+	'Summary Report - Reimbursement Not Completed Over 2 Months'=>'超过2个月未完成报销明細汇总',
 	
 	'Transaction List'=>'交易记录',
 	'Consolidated Notification Report'=>'综合通知报表',
+	'Consolidated Notification Report (Special)'=>'综合通知报表(特别版本)',
 	'Subject'=>'主题',
 	'Title'=>'标题',
 	'Content'=>'内容',

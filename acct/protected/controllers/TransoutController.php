@@ -2,6 +2,8 @@
 
 class TransoutController extends Controller 
 {
+	public $function_id='XE03';
+
 	public function filters()
 	{
 		return array(

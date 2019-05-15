@@ -1,6 +1,8 @@
 <?php
 class ImportController extends Controller
 {
+	public $function_id='XF02';
+
 	public function filters()
 	{
 		return array(

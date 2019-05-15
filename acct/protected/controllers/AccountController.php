@@ -2,6 +2,8 @@
 
 class AccountController extends Controller 
 {
+	public $function_id='XC02';
+	
 	public function filters()
 	{
 		return array(

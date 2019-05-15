@@ -1,6 +1,8 @@
 <?php
 class IqueueController extends Controller
 {
+	public $function_id='XF01';
+
 	public function filters()
 	{
 		return array(

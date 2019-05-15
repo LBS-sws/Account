@@ -6,20 +6,24 @@
 $this->pageTitle=Yii::app()->name . ' - Language';
 ?>
 
+<?php 
+	$form=$this->beginWidget('TbActiveForm', array(
+		'id'=>'language-form',
+		'enableClientValidation'=>true,
+		'clientOptions'=>array(
+			'validateOnSubmit'=>true,
+			'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
+		),
+	)); 
+?>
+
+<section class="content">
 <div class="login-box">
 	<div class="login-box-body">
 		<div class="row">
 			<h2 class="page-heading text-center"><?php echo Yii::t('app','Languages'); ?></h2>
 		</div>
 
-		<?php $form=$this->beginWidget('TbActiveForm', array(
-			'id'=>'language-form',
-			'enableClientValidation'=>true,
-			'clientOptions'=>array(
-			'validateOnSubmit'=>true,
-			'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
-			),
-		)); ?>
 
 		<div class="row">
 			<div class="form-group">
@@ -50,6 +54,8 @@ $this->pageTitle=Yii::app()->name . ' - Language';
 			<!-- /.col -->
 		</div>
 
-		<?php $this->endWidget(); ?>
 	</div><!-- form -->
 </div>
+</section>
+
+<?php $this->endWidget(); ?>

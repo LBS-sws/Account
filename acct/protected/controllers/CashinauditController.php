@@ -2,6 +2,8 @@
 
 class CashinauditController extends Controller 
 {
+	public $function_id='XE04';
+
 	public function filters()
 	{
 		return array(

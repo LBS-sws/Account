@@ -8,4 +8,5 @@ return array(
 	'Void Transaction'=>array('access'=>'CN05'),
 	'Void Reimbursement'=>array('access'=>'CN06'),
 	'Batch Approve'=>array('access'=>'CN07'),
+	'T3 Checker Right'=>array('access'=>'CN08',),
 );

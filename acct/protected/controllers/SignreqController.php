@@ -2,6 +2,8 @@
 
 class SignreqController extends Controller 
 {
+	public $function_id='XA07';
+
 	public function filters()
 	{
 		return array(

@@ -2,6 +2,8 @@
 
 class AcctitemController extends Controller 
 {
+	public $function_id='XC06';
+
 	public function filters()
 	{
 		return array(

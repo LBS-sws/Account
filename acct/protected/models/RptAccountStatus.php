@@ -129,7 +129,7 @@ class RptAccountStatus extends CReport {
 		$suffix = Yii::app()->params['envSuffix'];
 		$sql = "select a.username from security$suffix.sec_user_access a, security$suffix.sec_user b
 				where a.a_read_only like '%$right%' or a.a_read_write like '%$right%'
-				and a.username=b.username and b.city in ($citylist)
+				and a.username=b.username and b.city in ($citylist) and b.status='A'
 			";
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
 		if (!empty($rows)) {

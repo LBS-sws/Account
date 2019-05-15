@@ -4,6 +4,11 @@ return array(
 'Daily Report System - UAT'=>'日報表系統 - 測試版',
 'LBS Daily Management'=>'LBS 日常管理',
 'LBS Daily Management - UAT'=>'LBS 日常管理 - 測試版',
+'LBS DMS (UAT)'=>'LBS 日常管理 (測試)',
+'LBS DMS'=>'LBS 日常管理',
+'MAIN NAVIGATION'=>'系統菜單',
+'Region'=>'地區',
+'Last Update Date '=>'更新日期 ',
 
 'System Change'=>'系統切換',
 'Daily Report'=>'日報表系統',
@@ -13,7 +18,7 @@ return array(
 'Sales'=>'銷售系統',
 
 'Quiz'=>'測驗系統',
-'Academic Credit'=>'學分系統',
+    'Academic Credit'=>'學分系統',
 'Online Library'=>'網上文庫',
 
 'Data Entry'=>'數據輸入',
@@ -23,6 +28,7 @@ return array(
 'Import Manager'=>'數據導入管理員',
 
 'Payment Request'=>'付款申請',
+'Request Confirmation'=>'申請確認',
 'Request Approval'=>'申請審核',
 'Reimbursement'=>'報銷單申請',
 'Reimbursement Approval'=>'報銷單簽字',
@@ -36,6 +42,8 @@ return array(
 'Cash In Check'=>'客戶現金對賬',
 'Default Account'=>'默認賬戶',
 'Accounting Item'=>'會計項目',
+'T3 Balance Checking'=>'T3餘額對賬',
+'Balance Adjustment'=>'餘額差異調整表',
 
 'Report'=>'報表',
 'Reimbursement Form'=>'費用報銷單',
@@ -43,6 +51,8 @@ return array(
 'Operation Daily Report'=>'每日營業擇要報告',
 'Report Manager'=>'報表管理員',
 'Daily Receipt Overview Report'=>'每天收款總覽',
+'Daily Reimbursement Approval Summary'=>'每日報銷審核匯總',
+'Daily Request Approval Summary'=>'每日費用申請審核匯總',
 
 'System Setting'=>'系統設置',
 'Security'=>'保安',
@@ -58,6 +68,7 @@ return array(
 'Void Transaction'=>'撤消交易記錄',
 'Void Reimbursement'=>'撤消報銷單',
 'Batch Approve'=>'批量批准',
+'T3 Checker Right'=>'T3對賬權限',
 
 'User'=>'帳戶',
 'Group'=>'群組',
@@ -90,6 +101,7 @@ return array(
 'Transaction Type'=>'交易類別',
 'Account'=>'賬戶',
 'Delegation'=>'授權',
+'Notification Option'=>'通知選項',
 'System Use'=>'系統使用',
 );
 ?>

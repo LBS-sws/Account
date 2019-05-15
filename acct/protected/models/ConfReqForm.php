@@ -144,6 +144,8 @@ class ConfReqForm extends CFormModel
 			$acctitemlist = General::getAcctItemList();
 			if (isset($acctcodelist[$this->acct_code])) $this->acct_code_desc = $acctcodelist[$this->acct_code];
 			if (isset($acctitemlist[$this->item_code])) $this->pitem_desc = $acctitemlist[$this->item_code];
+			
+			SystemNotice::markReadforAllUser('PB', $index);
 		}
 		return (count($rows) > 0);
 	}

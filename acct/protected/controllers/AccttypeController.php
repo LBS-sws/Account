@@ -2,6 +2,8 @@
 
 class AccttypeController extends Controller 
 {
+	public $function_id='XC01';
+
 	public function filters()
 	{
 		return array(

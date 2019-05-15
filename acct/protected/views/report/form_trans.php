@@ -76,7 +76,8 @@ $this->pageTitle=Yii::app()->name . ' - Report';
 				<div class="col-sm-7">
 					<?php 
 						$list0 = array(0=>Yii::t('report','-- All --'));
-						$list1 = General::getAccountList($model->city);
+						$citylist = City::model()->getDescendantList($model->city);
+						$list1 = General::getAccountList($citylist);
 						$list = $list0 + $list1;
 						echo $form->dropDownList($model, 'acct_id', $list); 
 					?>

@@ -31,6 +31,8 @@ class ReportController extends Controller
 	}
 
 	public function actionReimburse() {
+		$this->function_id = 'XB02';
+		Yii::app()->session['active_func'] = $this->function_id;
 		$model = new Report01Form;
 		if (isset($_POST['Report01Form'])) {
 			$model->attributes = $_POST['Report01Form'];
@@ -46,6 +48,8 @@ class ReportController extends Controller
 	}
 
 	public function actionTranslist() {
+		$this->function_id = 'XB03';
+		Yii::app()->session['active_func'] = $this->function_id;
 		$model = new Report02Form;
 		if (isset($_POST['Report02Form'])) {
 			$model->attributes = $_POST['Report02Form'];

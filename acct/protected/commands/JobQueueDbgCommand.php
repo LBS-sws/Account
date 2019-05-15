@@ -1,5 +1,5 @@
 <?php
-class JobQueueCommand extends CConsoleCommand {
+class JobQueueDbgCommand extends CConsoleCommand {
 	protected $webroot;
 	
 	public function run($args) {

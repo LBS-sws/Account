@@ -2,6 +2,8 @@
 
 class TransenqController extends Controller 
 {
+	public $function_id='XE02';
+
 	public function filters()
 	{
 		return array(

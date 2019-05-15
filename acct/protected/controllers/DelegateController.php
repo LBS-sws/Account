@@ -2,6 +2,8 @@
 
 class DelegateController extends Controller 
 {
+	public $function_id='XC07';
+
 	public function filters()
 	{
 		return array(

@@ -240,11 +240,12 @@ class WorkflowPayment extends WorkflowDMS {
 	
 	protected function emailGeneric($params) {
 		$username = array();
+		$state = isset($params['state']) ? $params['state'] : '';
 
 		$toaddr = (isset($params['to_addr'])) ? $params['to_addr'] : $this->getCurrentStateRespEmail();
 		$temp = array();
 		foreach ($toaddr as $key=>$email) {
-			if ($this->canNotify($key)) {
+			if ($this->canNotify($key) && !$this->skipNotify($key,$state)) {
 				if (!in_array($key,$username)) $username[] = $key;
 				if (!in_array($email,$temp)) $temp[] = $email;
 			}
@@ -254,7 +255,7 @@ class WorkflowPayment extends WorkflowDMS {
 		$ccaddr = (isset($params['cc_addr'])) ? $params['cc_addr'] : array();
 		$temp = array();
 		foreach ($ccaddr as $key=>$email) {
-			if ($this->canNotify($key)) {
+			if ($this->canNotify($key) && !$this->skipNotify($key,$state)) {
 				if (!in_array($key,$username)) $username[] = $key;
 				if (!in_array($email,$temp)) $temp[] = $email;
 			}
@@ -290,6 +291,8 @@ class WorkflowPayment extends WorkflowDMS {
 				'message'=>$message,
 				'username'=>json_encode($username),
 				'system_id'=>Yii::app()->user->system(),
+				'form_id'=>$params['state'],
+				'rec_id'=>$params['doc_id'],
 			);
 	}
 
@@ -300,6 +303,8 @@ class WorkflowPayment extends WorkflowDMS {
 		
 		$v = array();
 		
+		$v['doc_id'] = $docId;
+		$v['state'] = 'PA';
 		$v['send'] = 'Y';
 		$v['subjtype'] = 'action';
 		$v['subject'] = Yii::t('workflow','You have 1 new payment request for ').Yii::t('workflow','approval')
@@ -310,6 +315,7 @@ class WorkflowPayment extends WorkflowDMS {
 		$v['message'] = "<p>$msg</p><p>$msg_url</p>";
 		$approver = $this->emailGeneric($v);
 
+		$v['state'] = 'PA';
 		$v['send'] = 'N';
 		$v['to_addr'] = $this->getCurrentStateRespStandbyEmail();
 		$v['subjtype'] = 'notice';
@@ -331,6 +337,8 @@ class WorkflowPayment extends WorkflowDMS {
 		
 		$v = array();
 		
+		$v['doc_id'] = $docId;
+		$v['state'] = 'PB';
 		$v['send'] = 'Y';
 		$v['subjtype'] = 'action';
 		$v['subject'] = Yii::t('workflow','You have 1 new payment request for ').Yii::t('workflow','confirmation')
@@ -351,6 +359,8 @@ class WorkflowPayment extends WorkflowDMS {
 		$url = Yii::app()->createAbsoluteUrl('signreq/edit',array('index'=>$docId));
 		
 		$v = array();
+		$v['doc_id'] = $docId;
+		$v['state'] = 'PS';
 		$v['send'] = 'Y';
 		$v['subjtype'] = 'action';
 		$v['subject'] = Yii::t('workflow','You have 1 new reimbursement for ').Yii::t('workflow','approval')
@@ -384,6 +394,8 @@ class WorkflowPayment extends WorkflowDMS {
 		$rtn = array();
 		
 		$v = array();
+		$v['doc_id'] = $docId;
+		$v['state'] = 'A';
 		$v['send'] = 'Y';
 		$v['to_addr'] = $toaddr;
 //		$v['cc_addr'] = $ccaddr;
@@ -422,6 +434,8 @@ class WorkflowPayment extends WorkflowDMS {
 		$rtn = array();
 		
 		$v = array();
+		$v['doc_id'] = $docId;
+		$v['state'] = 'AB';
 		$v['send'] = 'Y';
 		$v['to_addr'] = $toaddr;
 //		$v['cc_addr'] = $ccaddr;
@@ -460,6 +474,8 @@ class WorkflowPayment extends WorkflowDMS {
 		$rtn = array();
 
 		$v = array();
+		$v['doc_id'] = $docId;
+		$v['state'] = 'D';
 		$v['send'] = 'Y';
 		$v['to_addr'] = $toaddr;
 //		$v['cc_addr'] = $ccaddr;
@@ -498,6 +514,8 @@ class WorkflowPayment extends WorkflowDMS {
 		$rtn = array();
 
 		$v = array();
+		$v['doc_id'] = $docId;
+		$v['state'] = 'DB';
 		$v['send'] = 'Y';
 		$v['to_addr'] = $toaddr;
 //		$v['cc_addr'] = $ccaddr;
@@ -532,6 +550,8 @@ class WorkflowPayment extends WorkflowDMS {
 		}
 		
 		$v = array();
+		$v['doc_id'] = $docId;
+		$v['state'] = 'SI';
 		$v['send'] = 'Y';
 		$v['to_addr'] = $toaddr;
 		$v['subjtype'] = 'notice';
@@ -556,6 +576,8 @@ class WorkflowPayment extends WorkflowDMS {
 		$rtn = array();
 		
 		$v = array();
+		$v['doc_id'] = $docId;
+		$v['state'] = 'C';
 		$v['send'] = 'Y';
 		$v['to_addr'] = $toaddr;
 //		$v['cc_addr'] = $ccaddr;
@@ -582,6 +604,8 @@ class WorkflowPayment extends WorkflowDMS {
 //		$toaddr = $this->getLastStateRespEmail();
 
 		$v = array();
+		$v['doc_id'] = $docId;
+		$v['state'] = 'RC';
 		$v['send'] = 'Y';
 		$v['to_addr'] = $toaddr;
 		$v['subjtype'] = 'notice';
@@ -613,6 +637,8 @@ class WorkflowPayment extends WorkflowDMS {
 		$msg_url = str_replace('{url}',$url, Yii::t('workflow',"Please click <a href=\"{url}\" onClick=\"return popup(this,'Account');\">here</a> to reapply the reimbursement."));
 		
 		$v = array();
+		$v['doc_id'] = $docId;
+		$v['state'] = 'RR';
 		$v['send'] = 'Y';
 		$v['to_addr'] = $toaddr;
 		$v['subjtype'] = 'action';
@@ -878,6 +904,12 @@ class WorkflowPayment extends WorkflowDMS {
 		$sql = "select status from acc_notify_option where username='$userid'";
 		$row = $this->connection->createCommand($sql)->queryRow();
 		return ($row===false || $row['status']=='Y');
+	}
+
+	protected function skipNotify($userid, $state) {
+		$sql = "select exclude_list from acc_email_exclude where username='$userid'";
+		$row = $this->connection->createCommand($sql)->queryRow();
+		return ($row!==false && strpos($row['exclude_list'],'/'.$state.'/')!==false);
 	}
 	
 	protected function saveTransId($transId, $req, $type='') {

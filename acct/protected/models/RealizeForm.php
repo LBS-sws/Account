@@ -191,7 +191,11 @@ class RealizeForm extends CFormModel
 						break;
 					}
 				}
+				SystemNotice::markReadforAllUser('QR', $index);
+			} else {
+				SystemNotice::markReadforAllUser('PR', $index);
 			}
+			
 		}
 
 		return (count($rows) > 0);

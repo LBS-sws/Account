@@ -8,6 +8,35 @@ class ScheduleCommand extends CConsoleCommand {
 	protected $multiuser = false;
 	protected $users = array();
 	
+	public function actionRptReimbReminder($whitelist='', $blacklist='') {
+		$tdate = date("Y/m/d");
+		$this->rptId = 'RptReimbReminder';
+		$this->rptName = Yii::t('report','Summary Report - Reimbursement Not Completed Over 2 Months');
+		$this->reqUser = 'admin';
+		$this->format = 'EMAIL';
+	
+		$cities = General::getCityListWithNoDescendant();
+		foreach ($cities as $city=>$name) {
+			if (!empty($whitelist)) {
+				$flag = (strpos($whitelist,$city)!==false);
+			} else {
+				$flag = (empty($blacklist) || (strpos($blacklist,$city)===false));
+			}
+			
+			if ($flag) {
+				$this->data = array(
+						'RPT_ID'=>$this->rptId,
+						'RPT_NAME'=>$this->rptName,
+						'CITY'=>$city,
+						'TARGET_DT'=>General::toMyDate($tdate),
+						'LANGUAGE'=>'zh_cn',
+						'CITY_NAME'=>$name,
+					);
+				$this->addQueueItem();
+			}
+		}
+	}
+
 	public function actionRptAccountStatus($whitelist='', $blacklist='') {
 		$tdate = date("Y/m/d");
 		$this->rptId = 'RptAccountStatus';
@@ -59,6 +88,54 @@ class ScheduleCommand extends CConsoleCommand {
 		$tdate = date("Y/m/d");
 		$this->rptId = 'RptNotification';
 		$this->rptName = Yii::t('report','Consolidated Notification Report');
+		$this->reqUser = 'admin';
+		$this->format = 'EMAIL';
+	
+		$this->data = array(
+						'RPT_ID'=>$this->rptId,
+						'RPT_NAME'=>$this->rptName,
+						'TARGET_DT'=>General::toMyDate($tdate),
+						'LANGUAGE'=>'zh_cn',
+					);
+		$this->addQueueItem();
+	}
+
+	public function actionRptNotificationSp() {
+		$tdate = date("Y/m/d");
+		$this->rptId = 'RptNotificationSp';
+		$this->rptName = Yii::t('report','Consolidated Notification Report (Special)');
+		$this->reqUser = 'admin';
+		$this->format = 'EMAIL';
+	
+		$this->data = array(
+						'RPT_ID'=>$this->rptId,
+						'RPT_NAME'=>$this->rptName,
+						'TARGET_DT'=>General::toMyDate($tdate),
+						'LANGUAGE'=>'zh_cn',
+					);
+		$this->addQueueItem();
+	}
+	
+	public function actionRptApprovalRequest() {
+		$tdate = date("Y/m/d");
+		$this->rptId = 'RptApprovalRequest';
+		$this->rptName = Yii::t('report','Daily Request Approval Summary');
+		$this->reqUser = 'admin';
+		$this->format = 'EMAIL';
+	
+		$this->data = array(
+						'RPT_ID'=>$this->rptId,
+						'RPT_NAME'=>$this->rptName,
+						'TARGET_DT'=>General::toMyDate($tdate),
+						'LANGUAGE'=>'zh_cn',
+					);
+		$this->addQueueItem();
+	}
+
+	public function actionRptApprovalReimb() {
+		$tdate = date("Y/m/d");
+		$this->rptId = 'RptApprovalReimb';
+		$this->rptName = Yii::t('report','Daily Reimbursement Approval Summary');
 		$this->reqUser = 'admin';
 		$this->format = 'EMAIL';
 	

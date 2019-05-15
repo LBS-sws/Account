@@ -13,5 +13,28 @@ return array(
 	'Feedback'=>'回馈',
 	'Email'=>'电邮',
 	'Unable to download the file. Maybe access right problem or file link expired.'=>'无法下载文件。也许访问权问题或文件链接过期。',
+
+	'You have'=>'你有',
+	'new message(s)'=>'个新信息',
+	'new request(s) for action'=>'个待执行的请求',
+	'new notification(s)'=>'个新通知',
+	'No New Notification'=>'沒有新通知',
+	'View All'=>'查看全部',
+	'Subject'=>'标题',
+	'Date'=>'日期',
+	'Type'=>'类型',
+	'Status'=>'状态',
+	'ID'=>'ID',
+	'Notify'=>'通知',
+	'Action'=>'待执行',
+	'Read'=>'已读',
+	'Unread'=>'未读',
+	'System Notification'=>'系统信息',
+	'Notification List'=>'信息列表',
+	'Notification Form'=>'信息表单',
+	'** Records will be kept in the system for 30 days only.'
+	=>'** 信息将被保存在系统中30天，然后自动删除。',
+	'Description'=>'信息名称',
+	'Message'=>'信息內容',
 );
 ?>
