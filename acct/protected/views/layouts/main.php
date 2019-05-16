@@ -103,5 +103,4 @@ if (!Yii::app()->user->isGuest) {
 	);
 }
 ?>
-</script>
 </html>
