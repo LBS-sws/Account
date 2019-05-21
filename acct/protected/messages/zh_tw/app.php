@@ -18,7 +18,7 @@ return array(
 'Sales'=>'銷售系統',
 
 'Quiz'=>'測驗系統',
-    'Academic Credit'=>'學分系統',
+'Academic Credit'=>'學分系統',
 'Online Library'=>'網上文庫',
 
 'Data Entry'=>'數據輸入',
