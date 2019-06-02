@@ -7,9 +7,12 @@ class SystemNotice
 
 		$userarray = is_array($params['username']) ? $params['username'] : json_decode($params['username']);
 		if (empty($userarray)) return false;
+		$finalusers = array();
+		foreach ($userarray as $user) {
+			if (!in_array($user, $finalusers)) $finalusers[] = $user;
+		}
 
 		$suffix = Yii::app()->params['envSuffix'];
-		$suffix = $suffix=='dev' ? '_w' : $suffix;
 		$sql = "insert into swoper$suffix.swo_notification
 					(system_id, note_type, subject, description, message, lcu, luu)
 				values
@@ -31,7 +34,7 @@ class SystemNotice
 		$command->execute();
 		$note_id = Yii::app()->db->getLastInsertID();
 
-		foreach ($userarray as $user) {
+		foreach ($finalusers as $user) {
 			$sql1 = "insert into swoper$suffix.swo_notification_user
 						(note_id, username, status, lcu, luu)
 					values
@@ -74,7 +77,6 @@ class SystemNotice
 		$user = Yii::app()->user->id;
 		$suffix = Yii::app()->params['envSuffix'];
 		$sysid = Yii::app()->params['systemId'];
-		$suffix = $suffix=='dev' ? '_w' : $suffix;
 		$sql = "update 
 					swoper$suffix.swo_notification_action a, 
 					swoper$suffix.swo_notification_user b,
@@ -102,7 +104,6 @@ class SystemNotice
 		$user = Yii::app()->user->id;
 		$suffix = Yii::app()->params['envSuffix'];
 		$sysid = Yii::app()->params['systemId'];
-		$suffix = $suffix=='dev' ? '_w' : $suffix;
 		$sql = "update 
 					swoper$suffix.swo_notification_action a, 
 					swoper$suffix.swo_notification_user b,
