@@ -56,7 +56,7 @@ class CListPageModel extends CFormModel
 	{
 		if (count($criteria) > 0) {
 			foreach ($criteria as $k=>$v) {
-				if (isset($this->$k)) $this->$k = $v;
+				$this->$k = $v;
 			}
 		}
 	}

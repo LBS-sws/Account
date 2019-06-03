@@ -97,8 +97,11 @@ class NoticeList extends CListPageModel
 			}
 		}
 		$session = Yii::app()->session;
-		$session['criteria_z101'] = $this->getCriteria();
+		$session[$this->criteriaName()] = $this->getCriteria();
 		return true;
 	}
 
+	public function criteriaName() {
+		return Yii::app()->params['systemId'].'_criteria_z101';
+	}
 }

@@ -29,8 +29,8 @@ class NoticeController extends Controller
 			$model->attributes = $_POST['NoticeList'];
 		} else {
 			$session = Yii::app()->session;
-			if (isset($session['criteria_z101']) && !empty($session['criteria_z101'])) {
-				$criteria = $session['criteria_z101'];
+			if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+				$criteria = $session[$model->criteriaName()];
 				$model->setCriteria($criteria);
 			}
 		}
