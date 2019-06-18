@@ -24,6 +24,13 @@ $this->pageTitle=Yii::app()->name . ' - Notification';
 			)); 
 		?>
 	</div>
+	<div class="btn-group pull-right" role="group">
+		<?php 
+			echo TbHtml::button('<span class="fa fa-flag"></span> '.Yii::t('misc','Mark Read'), array(
+				'name'=>'btnMark','id'=>'btnMark','data-toggle'=>'modal','data-target'=>'#markreaddialog',)
+			);
+		?>
+	</div>
 	</div></div>
 	<?php $this->widget('ext.layout.ListPageWidget', array(
 			'title'=>Yii::t('queue','Notification List'),
@@ -45,9 +52,26 @@ $this->pageTitle=Yii::app()->name . ' - Notification';
 	echo $form->hiddenField($model,'orderField');
 	echo $form->hiddenField($model,'orderType');
 ?>
+
+<?php $this->renderPartial('//notice/markreaddialog'); ?>
+
 <?php $this->endWidget(); ?>
 
 <?php
+	$link = Yii::app()->createUrl('notice/markread');
+	$js = <<<EOF
+$('#btnMarkRead').on('click',function() {
+	$('#markreaddialog').modal('hide');
+	markread();
+});
+
+function markread() {
+	var elm=$('#btnMarkRead');
+	jQuery.yii.submitForm(elm,'$link',{});
+}
+EOF;
+	Yii::app()->clientScript->registerScript('noticeMarkRead',$js,CClientScript::POS_READY);
+
 	$js = Script::genTableRowClick();
 	Yii::app()->clientScript->registerScript('rowClick',$js,CClientScript::POS_READY);
 ?>

@@ -104,4 +104,44 @@ class NoticeList extends CListPageModel
 	public function criteriaName() {
 		return Yii::app()->params['systemId'].'_criteria_z101';
 	}
+	
+	public function markRead() {
+		$uid = Yii::app()->user->id;
+		$sysid = Yii::app()->params['systemId'];
+		$suffix = Yii::app()->params['envSuffix'];
+		$suffix = $suffix=='dev' ? '_w' : $suffix;
+		$sql1 = "update swoper$suffix.swo_notification a, swoper$suffix.swo_notification_user b 
+				set b.status='C', b.luu='$uid'
+				where b.username='$uid' and a.system_id='$sysid'
+				and a.id=b.note_id and b.status<>'C'
+			";
+		$clause = "";
+		if (!empty($this->searchField) && !empty($this->searchValue)) {
+			$svalue = str_replace("'","\'",$this->searchValue);
+			switch ($this->searchField) {
+				case 'subject':
+					$clause .= General::getSqlConditionClause('a.subject',$svalue);
+					break;
+				case 'note_type':
+					$field = "(select case a.note_type when 'ACTN' then '".Yii::t('queue','Action')."' 
+							when 'NOTI' then '".Yii::t('queue','Notify')."' 
+						end) ";
+					$clause .= General::getSqlConditionClause($field, $svalue);
+					break;
+				case 'note_dt':
+					$clause .= General::getSqlConditionClause('a.lcd',$svalue);
+					break;
+				case 'status':
+					$field = "(select case b.status when 'N' then '".Yii::t('queue','Unread')."' 
+							when 'S' then '".Yii::t('queue','Unread')."' 
+							when 'C' then '".Yii::t('queue','Read')."' 
+						end) ";
+					$clause .= General::getSqlConditionClause($field, $svalue);
+					break;
+			}
+		}
+		
+		$sql = $sql1.$clause;
+		Yii::app()->db->createCommand($sql)->execute();
+	}
 }

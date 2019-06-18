@@ -57,5 +57,17 @@ class NoticeController extends Controller
 			$this->render('form',array('model'=>$model,));
 		}
 	}
+
+	public function actionMarkread() {
+		$model = new NoticeList;
+		$session = Yii::app()->session;
+		if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+			$criteria = $session[$model->criteriaName()];
+			$model->setCriteria($criteria);
+		}
+		$model->markRead();
+		Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Mark Read Done'));
+		$this->redirect(Yii::app()->createUrl('notice/index'));
+	}
 }
 ?>

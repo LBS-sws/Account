@@ -81,6 +81,7 @@ return array(
 	
 	'Misc'=>'其他',
 	'Status'=>'状态',
+	'Mark Read'=>'标记已读',
 );
 
 ?>

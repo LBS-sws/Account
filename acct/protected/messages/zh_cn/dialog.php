@@ -63,5 +63,7 @@ return array(
 	'Checking and Submission Done'=>'覆核并提交完成',
 	'Reimbursement Returned'=>'报销单申请退回',
 	'Exceeds file upload limit.'=>'超出文件上传限制。',
+	'Mark read for all selected records?'=>'列表上的所有记录标记为已读？',
+	'Mark Read Done'=>'标记已读完成',
 );
 ?>
