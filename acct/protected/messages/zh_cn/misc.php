@@ -82,6 +82,7 @@ return array(
 	'Misc'=>'其他',
 	'Status'=>'状态',
 	'Mark Read'=>'标记已读',
+	'Go Top'=>'往页顶',
 );
 
 ?>
