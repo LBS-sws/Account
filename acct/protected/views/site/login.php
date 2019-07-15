@@ -10,6 +10,7 @@ $this->pageTitle=Yii::app()->name . ' - Login';
 	<div class="login-logo">
 		<p><img src="<?php echo Yii::app()->baseUrl."/images/company.png";?>"></p>
 		<b><?php echo CHtml::encode(Yii::t('app',Yii::app()->name)); ?></b>
+		<p><small>(<?php echo ServerLoc::location(); ?>)</small></p>
 	</div>
 	
 	<!-- /.login-logo -->
@@ -41,7 +42,7 @@ $this->pageTitle=Yii::app()->name . ' - Login';
 				?>
 			</div>
 		</div>
-		
+
 		<div class="row">
 		<p>&nbsp;</p>
 		<p class="text-center">
