@@ -23,6 +23,11 @@ return array(
 
 	'Data Entry'=>'数据输入',
 	'Misc'=>'其他',
+    'Number'=>'总次数',
+    'Surplus'=>'剩余次数',
+	'Sales New Commission'=>'销售新生意额计算',
+    'Sales Edit Commission'=>'销售更改生意额计算',
+    'Sales End Commission'=>'销售终止生意额计算',
 
 	'Import'=>'数据导入',
 	'Import Manager'=>'数据导入管理员',
@@ -32,6 +37,11 @@ return array(
 	'Request Approval'=>'申请审核',
 	'Reimbursement'=>'报销单申请',
 	'Reimbursement Approval'=>'报销单签字',
+
+	'Salary calculation'=>'薪资计算',
+	'Sales Commission'=>'销售提成计算',
+    'Sales Commission history'=>'销售提成查询',
+    'Sales Commission ladder'=>'销售提成阶梯',
 
 	'Transaction'=>'交易记录',
 	'Transaction(In)'=>'收款记录',
@@ -103,6 +113,22 @@ return array(
 	'Delegation'=>'授权',
 	'Notification Option'=>'通知选项',
 	'System Use'=>'系统使用',
+
+    'employee_code'=>'员工编号',
+    'employee_name'=>'员工名字',
+    'city'=>'地区',
+    'user_name'=>'员工职位',
+    'comm_total_amount'=>'提成金额',
+    'sale commission man'=>'销售提成人员列表',
+
+    'first_dt'=>'服务时间',
+    'sign_dt'=>'签约时间',
+    'company_name'=>'客户名称',
+    'type_desc'=>'类别',
+    'service'=>'服务频次',
+    'amt_paid'=>'服务年金额',
+    'amt_install'=>'安装金额',
+	'cust_type'=>'类别',
 
 );
 ?>

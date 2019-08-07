@@ -72,7 +72,21 @@ class General {
 		}
 		return $return;
 	}
-	
+
+    public static function getCustTypeList()
+    {
+        $list = array();
+        $suffix = Yii::app()->params['envSuffix'];
+        $sql = "select id, description from swoper$suffix.swo_customer_type order by description";
+        $rows = Yii::app()->db->createCommand($sql)->queryAll();
+        if (count($rows) > 0) {
+            foreach ($rows as $row) {
+                $list[$row['id']] = $row['description'];
+            }
+        }
+        return $list;
+    }
+
 	public static function getAcctTypeList()
 	{
 		$list = array();
@@ -164,7 +178,33 @@ class General {
 				'O'=>Yii::t('trans','Others')
 			);
 	}
-	
+
+    public static function getName($index) {
+        if($index=='fw'){
+            $index='服务';
+        }
+        if($index=='inv'){
+            $index='INV';
+        }
+        if($index=='zyj'){
+            $index='皂液机';
+        }
+        if($index=='zy'){
+            $index='皂液等其他化学液体';
+        }
+        if($index=='zp'){
+            $index='纸品';
+        }
+        if($index=='xdy'){
+            $index='洗地易';
+        }
+        if($index=='ngd'){
+            $index='尿缸垫';
+        }
+
+        return $index;
+    }
+
 	public static function getJsDefaultAccountList()
 	{
 		$list = "";

@@ -37,6 +37,14 @@ return array(
 	
 	'In'=>'收款',
 	'Out'=>'付款',
+    'City'=>'城市',
+    'Date'=>'日期',
+    'Sale ladder'=>'销售提成阶梯',
+    'Sale ladder list'=>'销售提成阶梯列表',
+
+    'Sales Amount'=>'营业额（年销额）',
+    'Hy Pc Rate'=>'HY/PC',
+    'Inv Rate'=>'INV (除化学剂）',
 	
 	'Approver Form'=>'审核人员表单',
 	'Region Supervisor'=>'地区主管',

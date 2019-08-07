@@ -1,9 +1,9 @@
 <?php
-$this->pageTitle=Yii::app()->name . ' - Account Type';
+$this->pageTitle=Yii::app()->name . ' - commission Report';
 ?>
 
 <?php $form=$this->beginWidget('TbActiveForm', array(
-'id'=>'code-list',
+'id'=>'commission-list',
 'enableClientValidation'=>true,
 'clientOptions'=>array('validateOnSubmit'=>true,),
 'layout'=>TbHtml::FORM_LAYOUT_INLINE,
@@ -11,7 +11,7 @@ $this->pageTitle=Yii::app()->name . ' - Account Type';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('code','Account Type'); ?></strong>
+		<strong><?php echo Yii::t('app','Sales Commission'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
@@ -23,30 +23,24 @@ $this->pageTitle=Yii::app()->name . ' - Account Type';
 </section>
 
 <section class="content">
-	<div class="box"><div class="box-body">
-	<div class="btn-group" role="group">
-		<?php 
-			if (Yii::app()->user->validRWFunction('XC01'))
-				echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('misc','Add Record'), array(
-					'submit'=>Yii::app()->createUrl('accttype/new'), 
-				)); 
-		?>
-	</div>
-	</div></div>
 	<?php
-		$search = array(
-						'acct_type_desc',
-						'rpt_cat'
-					);
-		$this->widget('ext.layout.ListPageWidget', array(
-			'title'=>Yii::t('code','Account Type List'),
+    $search = array(
+        'employee_code',
+        'employee_name',
+        'city',
+        'user_name',
+        'comm_total_amount'
+    );
+    $this->widget('ext.layout.ListPageWidget', array(
+			'title'=>Yii::t('app','sale commission man'),
 			'model'=>$model,
-				'viewhdr'=>'//accttype/_listhdr',
-				'viewdtl'=>'//accttype/_listdtl',
+				'viewhdr'=>'//commission/_listhdr',
+				'viewdtl'=>'//commission/_listdtl',
 				'gridsize'=>'24',
 				'height'=>'600',
 				'search'=>$search,
 		));
+    echo TBhtml::button('dummyButtin',array('style'=>'display:none','disabled'=>true,'submit'=>'#',))
 	?>
 </section>
 <?php
@@ -61,5 +55,4 @@ $this->pageTitle=Yii::app()->name . ' - Account Type';
 	$js = Script::genTableRowClick();
 	Yii::app()->clientScript->registerScript('rowClick',$js,CClientScript::POS_READY);
 ?>
-
 

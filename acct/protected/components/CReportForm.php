@@ -9,6 +9,7 @@ class CReportForm extends CFormModel
 	public $format;
 	public $uid;
 	public $city;
+    public $date;
 	public $target_dt;
 	public $fields;
 	public $email;

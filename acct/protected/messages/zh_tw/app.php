@@ -27,6 +27,11 @@ return array(
 'Import'=>'數據導入',
 'Import Manager'=>'數據導入管理員',
 
+'Salary calculation'=>'薪資計算',
+'Sales Commission'=>'銷售提成計算',
+'Sales Commission history'=>'銷售提成查詢',
+'Sales Commission ladder'=>'銷售提成階梯',
+
 'Payment Request'=>'付款申請',
 'Request Confirmation'=>'申請確認',
 'Request Approval'=>'申請審核',

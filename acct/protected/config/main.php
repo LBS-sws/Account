@@ -106,7 +106,7 @@ return array(
 			'class'=>'CHttpSession',
 			'cookieMode'=>'allow',
 			'cookieParams'=>array(
-				'domain'=>'192.168.0.128',
+				'domain'=>'192.168.3.115',
 			),
 		),
 	),

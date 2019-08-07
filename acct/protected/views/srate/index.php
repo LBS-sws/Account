@@ -1,5 +1,5 @@
 <?php
-$this->pageTitle=Yii::app()->name . ' - Account Type';
+$this->pageTitle=Yii::app()->name . ' - Service Rate';
 ?>
 
 <?php $form=$this->beginWidget('TbActiveForm', array(
@@ -11,40 +11,31 @@ $this->pageTitle=Yii::app()->name . ' - Account Type';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('code','Account Type'); ?></strong>
+		<strong><?php echo Yii::t('service','Service Rate'); ?></strong>
 	</h1>
-<!--
-	<ol class="breadcrumb">
-		<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-		<li><a href="#">Layout</a></li>
-		<li class="active">Top Navigation</li>
-	</ol>
--->
 </section>
 
 <section class="content">
 	<div class="box"><div class="box-body">
 	<div class="btn-group" role="group">
 		<?php 
-			if (Yii::app()->user->validRWFunction('XC01'))
+			if (Yii::app()->user->validRWFunction('XS03'))
 				echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('misc','Add Record'), array(
-					'submit'=>Yii::app()->createUrl('accttype/new'), 
+					'submit'=>Yii::app()->createUrl('srate/new'), 
 				)); 
 		?>
 	</div>
 	</div></div>
-	<?php
+	<?php 
 		$search = array(
-						'acct_type_desc',
-						'rpt_cat'
+						'city_name',
+						'start_dt',
 					);
 		$this->widget('ext.layout.ListPageWidget', array(
-			'title'=>Yii::t('code','Account Type List'),
+			'title'=>Yii::t('service','Service Rate List'),
 			'model'=>$model,
-				'viewhdr'=>'//accttype/_listhdr',
-				'viewdtl'=>'//accttype/_listdtl',
-				'gridsize'=>'24',
-				'height'=>'600',
+				'viewhdr'=>'//srate/_listhdr',
+				'viewdtl'=>'//srate/_listdtl',
 				'search'=>$search,
 		));
 	?>

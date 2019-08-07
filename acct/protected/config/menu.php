@@ -109,6 +109,24 @@ return array(
 			),
 		),
 	),
+    'Salary calculation'=>array(
+        'access'=>'XS',
+        'icon'=>'fa-money',
+        'items'=>array(
+            'Sales Commission'=>array(
+                'access'=>'XS01',
+                'url'=>'/commission/index',
+            ),
+            'Sales Commission history'=>array(
+                'access'=>'XS02',
+                'url'=>'/iqueue/index',
+            ),
+            'Sales Commission ladder'=>array(
+                'access'=>'XS03',
+                'url'=>'/srate/index',
+            ),
+        ),
+    ),
 	'System Setting'=>array(
 		'access'=>'XC',
 		'icon'=>'fa-gear',

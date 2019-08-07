@@ -96,8 +96,12 @@ $('#$fldid').on('change', function(){Loading.show();jQuery.yii.submitForm(this,'
 		if ($this->hasSearchBar) {
 			$droplistid = $modelName.'_searchField';
 			$textid = $modelName.'_searchValue';
-			
-			$param = array('pageNum'=>1);
+
+			if(empty($_GET['index'])){
+                $param = array('pageNum'=>1);
+            }else{
+                $param = array('index'=>$_GET['index'],'pageNum'=>1);
+            }
 			if (!empty($this->searchlinkparam)) $param = array_merge($param, $this->searchlinkparam);
 			$path = Yii::app()->createAbsoluteUrl($link, $param);
 			

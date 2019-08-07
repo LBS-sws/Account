@@ -23,7 +23,9 @@ return array(
 	'Payee'=>'领款人',
 	'Request Date'=>'申请日期',
 	'Status' => '状态',
-	
+'Sales Commission All'=>'销售提成总页',
+
+    'Sales Commission' => '销售提成计算',
 	'Item'=>'项目',
 	'Last Balance'=>'上日金额',
 	'Curr. Paid'=>'今日付款',

@@ -24,6 +24,7 @@ return array(
 'Request Date'=>'申請日期',
 'Status' => '狀態',
 
+'Sales Commission' => '銷售提成計算',
 'Item'=>'項目',
 'Last Balance'=>'上日金額',
 'Curr. Paid'=>'今日付款',
