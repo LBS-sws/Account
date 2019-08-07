@@ -194,7 +194,8 @@ class ReportXS01List extends CListPageModel
         $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper_w.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper_w.swo_customer_type c on a.cust_type=c.id 
-				
+				inner join  acc_service_comm_hdr b on b.id=$index
+				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $sql2 = "select count(a.id)
 				from swoper_w.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
@@ -513,9 +514,9 @@ class ReportXS01List extends CListPageModel
                     $fuwumoney=$money*$records['new_calc'];
 
                 }else{
-                    if(!empty($records['number'])){
-                        $new=$a/$records['number'];
-                        $old=$b/$records['number'];
+                    if(!empty($records['all_number'])){
+                        $new=$a/$records['all_number'];
+                        $old=$b/$records['all_number'];
                     }
                     if(!empty($records['surplus'])){
                         $m=($old-$new)*$records['surplus'];
@@ -572,8 +573,8 @@ class ReportXS01List extends CListPageModel
             }
 
 
-                if(!empty($records['number'])){
-                    $new=$a/$records['number'];
+                if(!empty($records['all_number'])){
+                    $new=$a/$records['all_number'];
 
                 }
                 if(!empty($records['surplus'])){
