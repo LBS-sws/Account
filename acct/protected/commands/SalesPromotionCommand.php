@@ -10,7 +10,7 @@ class SalesPromotionCommand extends CConsoleCommand
         $year = date("Y");
         echo $firstDay=date('Y-m-01', strtotime('-1 month'));
         echo $endDay=date('Y-m-31', strtotime('-1 month'));
-        if($day=='8'){
+        if($day=='08'){
             $sql="select substring_index(salesman,' ', 1) as code,substring_index(salesman,' ', -1) as name,city 
                   from swoper$suffix.swo_service 
                   where status_dt>='$firstDay' and status_dt<='$endDay' and salesman not like '%离职%' 
