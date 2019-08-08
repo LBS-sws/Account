@@ -7,6 +7,7 @@ class SalesPromotionCommand extends CConsoleCommand
         $suffix = Yii::app()->params['envSuffix'];
         $day = date("d");
         $month = date("m");
+        $last_month = date("m")-1;
         $year = date("Y");
         echo $firstDay=date('Y-m-01', strtotime('-1 month'));
         echo $endDay=date('Y-m-31', strtotime('-1 month'));
@@ -22,7 +23,7 @@ class SalesPromotionCommand extends CConsoleCommand
 ";
             $records = Yii::app()->db->createCommand($sql)->queryAll();
             for ($i=0;$i<count($records);$i++){
-                $sql1="insert into account$suffix.acc_service_comm_hdr(year_no,month_no,employee_code,employee_name,city) values ('$year','$month','".$records[$i]['code']."','".$records[$i]['name']."','".$records[$i]['city']."')";
+                $sql1="insert into account$suffix.acc_service_comm_hdr(year_no,month_no,employee_code,employee_name,city) values ('$year','$last_month','".$records[$i]['code']."','".$records[$i]['name']."','".$records[$i]['city']."')";
                 $record = Yii::app()->db->createCommand($sql1)->execute();
             }
         }
