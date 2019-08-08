@@ -11,7 +11,7 @@ class SalesPromotionCommand extends CConsoleCommand
         echo $firstDay=date('Y-m-01', strtotime('-1 month'));
         echo $endDay=date('Y-m-31', strtotime('-1 month'));
         if($day=='5'){
-            $sql="select substring_index(salesman,' ', 1) as code,substring_index(salesman,' ', -1) as name,city from swoper.swo_service where status_dt>='$firstDay' and status_dt<='$endDay' and salesman not like '%离职%' group by salesman
+            $sql="select substring_index(salesman,' ', 1) as code,substring_index(salesman,' ', -1) as name,city from swoper$suffix.swo_service where status_dt>='$firstDay' and status_dt<='$endDay' and salesman not like '%离职%' group by salesman
                   UNION
                   select a.code,a.name,a.city from hr$suffix.hr_employee a
                   inner join hr$suffix.hr_binding b on a.id=b.employee_id

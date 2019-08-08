@@ -145,9 +145,9 @@ $this->pageTitle=Yii::app()->name . ' - Service Form';
                 </div>
             </div>
             <div class="form-group">
-                <?php echo $form->labelEx($model,'number',array('class'=>"col-sm-2 control-label")); ?>
+                <?php echo $form->labelEx($model,'all_number',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-2">
-                    <?php echo $form->numberField($model, 'number',
+                    <?php echo $form->numberField($model, 'all_number',
                         array('size'=>4,'min'=>0,'readonly'=>($model->scenario=='view'))
                     ); ?>
                 </div>
