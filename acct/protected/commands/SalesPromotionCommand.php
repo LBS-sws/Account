@@ -13,12 +13,12 @@ class SalesPromotionCommand extends CConsoleCommand
         if($day=='8'){
             $sql="select substring_index(salesman,' ', 1) as code,substring_index(salesman,' ', -1) as name,city 
                   from swoper$suffix.swo_service 
-                  where status_dt>='$firstDay' and status_dt<='$endDay' and salesman not like '%离职%' group by salesman
+                  where status_dt>='$firstDay' and status_dt<='$endDay' and salesman not like '%离职%' group by code
                   UNION
                   select a.code,a.name,a.city from hr$suffix.hr_employee a
                   inner join hr$suffix.hr_binding b on a.id=b.employee_id
                   inner join sales$suffix.sal_visit c on b.user_id=c.username
-                  where c.visit_dt>='$firstDay' and c.visit_dt<='$endDay'
+                  where c.visit_dt>='$firstDay' and c.visit_dt<='$endDay' group by code
 ";
             $records = Yii::app()->db->createCommand($sql)->queryAll();
             for ($i=0;$i<count($records);$i++){
