@@ -15,16 +15,14 @@ class SRateList extends CListPageModel
 	{
 		$suffix = Yii::app()->params['envSuffix'];
 		$citylist = Yii::app()->user->city_allow();
-		$sql1 = "select a.id, a.city, a.start_dt, b.name as city_name  ,c.name
+		$sql1 = "select a.id, a.city, a.start_dt, b.name as city_name 
 				from acc_service_rate_hdr a
-				left outer join security$suffix.sec_city b on a.city=b.code
-				left outer join acc_service_rate_dtl c on a.id=c.hdr_id
+				left outer join security$suffix.sec_city b on a.city=b.code				
 				where a.city in ($citylist)
 			";
 		$sql2 = "select count(a.id)
 				from acc_service_rate_hdr a
-				left outer join security$suffix.sec_city b on a.city=b.code
-				left outer join acc_service_rate_dtl c on a.id=c.hdr_id
+				left outer join security$suffix.sec_city b on a.city=b.code		  
 				where a.city in ($citylist)
 			";
 		$clause = "";
@@ -37,9 +35,6 @@ class SRateList extends CListPageModel
 				case 'city_name':
 					$clause .= General::getSqlConditionClause('b.name',$svalue);
 					break;
-                case 'name':
-                    $clause .= General::getSqlConditionClause('c.name',$svalue);
-                    break;
 			}
 		}
 		
@@ -71,7 +66,6 @@ class SRateList extends CListPageModel
 					'city_name'=>$record['city_name'],
 					'city'=>$record['city'],
 					'start_dt'=>General::toDate($record['start_dt']),
-                    'name'=>General::getName($record['name']),
 				);
 			}
 		}

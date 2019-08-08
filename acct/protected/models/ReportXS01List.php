@@ -620,12 +620,12 @@ class ReportXS01List extends CListPageModel
          //   if ($row!==false) {
               //  $type = $row['rpt_cat'];
                 $sdate = General::toMyDate($start_dt);
-                $sql = "select id from acc_service_rate_hdr where city='$city' and start_dt<'$sdate'  and name='$cust_type' order by start_dt desc limit 1";
+                $sql = "select id from acc_service_rate_hdr where city='$city' and start_dt<'$sdate'   order by start_dt desc limit 1";
                 $row = Yii::app()->db->createCommand($sql)->queryRow();
                 if ($row!==false) {
                     $id = $row['id'];
                     $sql = "select id, rate from acc_service_rate_dtl
-							where hdr_id='$id' and ((sales_amount>=$sales_amt and operator='LE')
+							where hdr_id='$id' and name='$cust_type' and ((sales_amount>=$sales_amt and operator='LE')
 							or (sales_amount<$sales_amt and operator='GT'))
 							order by sales_amount limit 1
 						";

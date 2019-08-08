@@ -124,14 +124,13 @@ class SRateForm extends CFormModel
 				break;
 			case 'new':
 				$sql = "insert into acc_service_rate_hdr(
-							name,start_dt, city, luu, lcu
+							start_dt, city, luu, lcu
 						) values (
-							:name,:start_dt, :city, :luu, :lcu
+							:start_dt, :city, :luu, :lcu
 						)";
 				break;
 			case 'edit':
-				$sql = "update acc_service_rate_hdr set
-                            name = :name,
+				$sql = "update acc_service_rate_hdr set                       
 							city = :city,
 							start_dt = :start_dt,
 							luu = :luu 
@@ -150,9 +149,6 @@ class SRateForm extends CFormModel
 			$sdate = General::toMyDate($this->start_dt);
 			$command->bindParam(':start_dt',$sdate,PDO::PARAM_STR);
 		}
-        if (strpos($sql,':name')!==false) {
-            $command->bindParam(':name',$name,PDO::PARAM_STR);
-        }
 		if (strpos($sql,':city')!==false)
 			$command->bindParam(':city',$this->city,PDO::PARAM_STR);
 		if (strpos($sql,':luu')!==false)
@@ -218,6 +214,8 @@ class SRateForm extends CFormModel
 			}
 
 			if ($sql != '') {
+//                print_r('<pre>');
+//                print_r($sql);exit();
 				$command=$connection->createCommand($sql);
 				if (strpos($sql,':id')!==false)
 					$command->bindParam(':id',$row['id'],PDO::PARAM_INT);
