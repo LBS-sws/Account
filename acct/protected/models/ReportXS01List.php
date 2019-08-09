@@ -37,7 +37,7 @@ class ReportXS01List extends CListPageModel
 			";
 		$sql2 = "select count(a.id)
 			      from acc_service_comm_hdr a,hr$suffix.hr_binding b    
-					where  a.year_no='$year'  and a.month_no='$month' and a.city='".$city."' and b.employee_name=a.employee_name
+				  where  a.year_no='$year'  and a.month_no='$month' and a.city='".$city."' and b.employee_name=a.employee_name
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
