@@ -12,7 +12,7 @@ class SalesPromotionCommand extends CConsoleCommand
         echo $firstDay=date('Y-m-01', strtotime('-1 month'));
         echo $endDay=date('Y-m-31', strtotime('-1 month'));
 //        if($day=='09'){
-            $sql="select substring_index(salesman,' ', 1) as code,substring_index(salesman,' ', -1) as name,city 
+            $sql="select substring_index(salesman,' ', -1) as code,substring_index(salesman,' ', 1) as name,city 
                   from swoper$suffix.swo_service 
                   where status_dt>='$firstDay' and status_dt<='$endDay' and salesman not like '%离职%' 
                   UNION
@@ -23,7 +23,7 @@ class SalesPromotionCommand extends CConsoleCommand
 ";
             $records = Yii::app()->db->createCommand($sql)->queryAll();
             for ($i=0;$i<count($records);$i++){
-                $sql1="insert into account$suffix.acc_service_comm_hdr(year_no,month_no,employee_code,employee_name,city) values ('$year','$last_month','".$records[$i]['name']."','".$records[$i]['code']."','".$records[$i]['city']."')";
+                $sql1="insert into account$suffix.acc_service_comm_hdr(year_no,month_no,employee_code,employee_name,city) values ('$year','$last_month','".$records[$i]['code']."','".$records[$i]['name']."','".$records[$i]['city']."')";
                 $record = Yii::app()->db->createCommand($sql1)->execute();
             }
 //        }
