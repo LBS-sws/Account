@@ -137,6 +137,10 @@ class ReportXS01Form extends CReportForm
 
     public function saveData($add,$index){
 	    $city=Yii::app()->user->city();
+        $add['amt_paid']=$add['amt_paid']==""?0:$add['amt_paid'];
+        $add['amt_install']=$add['amt_install']==""?0:$add['amt_install'];
+        $add['all_number']=$add['all_number']==""?0:$add['all_number'];
+        $add['surplus']=$add['surplus']==""?0:$add['surplus'];
         $sql = "insert into acc_service_comm_copy(
 					hdr_id, first_dt, sign_dt, cust_type, service, paid_type,amt_paid,amt_install,company_name,city,all_number,surplus
 				) values (
