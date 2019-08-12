@@ -32,12 +32,15 @@ class ReportXS01List extends CListPageModel
 		$city = Yii::app()->user->city();
 		$year=date('Y');
         $month=date('m')-1;
-        $sql1 = "select a.id,a.employee_code,a.employee_name,a.city,b.user_name from acc_service_comm_hdr a,hr$suffix.hr_binding b                 
-				where  a.year_no='$year'  and a.month_no='$month' and a.city='".$city."' and b.employee_name=a.employee_name
+        $sql1 = "select a.id,a.employee_code,a.employee_name,a.city,c.name from acc_service_comm_hdr a
+                 inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
+                 inner join  hr$suffix.hr_dept c on b.position=c.id            
+			     where  a.year_no='$year'  and a.month_no='$month' and a.city='".$city."' and b.city='$city'
 			";
-		$sql2 = "select count(a.id)
-			      from acc_service_comm_hdr a,hr$suffix.hr_binding b    
-				  where  a.year_no='$year'  and a.month_no='$month' and a.city='".$city."' and b.employee_name=a.employee_name
+		$sql2 = "select count(a.id) from acc_service_comm_hdr a
+			       inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
+                 inner join  hr$suffix.hr_dept c on b.position=c.id            
+			     where  a.year_no='$year'  and a.month_no='$month' and a.city='".$city."' and b.city='$city'
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -53,7 +56,7 @@ class ReportXS01List extends CListPageModel
 					$clause .= General::getSqlConditionClause('a.city',$svalue);
 					break;
 				case 'user_name':
-					$clause .= General::getSqlConditionClause('b.user_name',$svalue);
+					$clause .= General::getSqlConditionClause('c.name',$svalue);
 					break;
 
 			}
@@ -82,7 +85,7 @@ class ReportXS01List extends CListPageModel
 					'employee_code'=>$record['employee_code'],
 					'employee_name'=>$record['employee_name'],
 					'city'=>$record['city'],
-					'user_name'=>$record['user_name'],
+					'user_name'=>$record['name'],
 					'comm_total_amount'=>0,
 				);
 			}
@@ -102,13 +105,13 @@ class ReportXS01List extends CListPageModel
         $start=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
         $end=date('Y-m-d', strtotime(date('Y-m-31') . ' -1 month'));
         $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
-				from swoper_w.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
+				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper_w.swo_customer_type c on a.cust_type=c.id 
 			    inner join  acc_service_comm_hdr b on b.id=$index
 				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'	  
 			";
         $sql2 = "select count(a.id)
-				from swoper_w.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
+				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper_w.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
 				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'
@@ -192,13 +195,13 @@ class ReportXS01List extends CListPageModel
         $start=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
         $end=date('Y-m-d', strtotime(date('Y-m-31') . ' -1 month'));
         $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
-				from swoper_w.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
+				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper_w.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
 				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $sql2 = "select count(a.id)
-				from swoper_w.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
+				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper_w.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
 				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
@@ -282,13 +285,13 @@ class ReportXS01List extends CListPageModel
         $start=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
         $end=date('Y-m-d', strtotime(date('Y-m-31') . ' -1 month'));
         $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
-				from swoper_w.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
+				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper_w.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
 				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='N'  and a.first_dt>='$start' and a.first_dt<='$end'
 			";
         $sql2 = "select a.*,  c.description as type_desc, d.name as city_name					
-				from swoper_w.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
+				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper_w.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
 				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='N' and a.first_dt>='$start' and a.first_dt<='$end'
