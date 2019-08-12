@@ -106,13 +106,13 @@ class ReportXS01List extends CListPageModel
         $end=date('Y-m-d', strtotime(date('Y-m-31') . ' -1 month'));
         $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
-				left outer join swoper_w.swo_customer_type c on a.cust_type=c.id 
+				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 			    inner join  acc_service_comm_hdr b on b.id=$index
 				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'	  
 			";
         $sql2 = "select count(a.id)
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
-				left outer join swoper_w.swo_customer_type c on a.cust_type=c.id 
+				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
 				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
@@ -196,13 +196,13 @@ class ReportXS01List extends CListPageModel
         $end=date('Y-m-d', strtotime(date('Y-m-31') . ' -1 month'));
         $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
-				left outer join swoper_w.swo_customer_type c on a.cust_type=c.id 
+				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
 				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $sql2 = "select count(a.id)
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
-				left outer join swoper_w.swo_customer_type c on a.cust_type=c.id 
+				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
 				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
@@ -286,13 +286,13 @@ class ReportXS01List extends CListPageModel
         $end=date('Y-m-d', strtotime(date('Y-m-31') . ' -1 month'));
         $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
-				left outer join swoper_w.swo_customer_type c on a.cust_type=c.id 
+				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
 				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='N'  and a.first_dt>='$start' and a.first_dt<='$end'
 			";
         $sql2 = "select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
-				left outer join swoper_w.swo_customer_type c on a.cust_type=c.id 
+				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
 				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='N' and a.first_dt>='$start' and a.first_dt<='$end'
 			";
@@ -342,7 +342,7 @@ class ReportXS01List extends CListPageModel
         $sqls = "select a.*,  c.description as type_desc, d.name as city_name					
 				from acc_service_comm_copy a 
 				inner join security$suffix.sec_city d on a.city=d.code 			  
-				left outer join swoper_w.swo_customer_type c on a.cust_type=c.id 			 
+				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 			 
 			  where a.hdr_id='$index'   and a.first_dt>='$start' and a.first_dt<='$end'
 			";
         $arr = Yii::app()->db->createCommand($sqls)->queryAll();
@@ -400,14 +400,14 @@ class ReportXS01List extends CListPageModel
         $suffix = Yii::app()->params['envSuffix'];
         $start=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
         $end=date('Y-m-d', strtotime(date('Y-m-31') . ' -1 month'));
-        $sql="select a.id from swoper_w.swo_service a
+        $sql="select a.id from swoper$suffix.swo_service a
               inner join acc_service_comm_copy b on b.company_name=a.company_name
               where a.cust_type=b.cust_type and a.city=b.city and a.status_copy='0' and a.status_dt>='$start' and a.status_dt<='$end'
               ";
         $records = Yii::app()->db->createCommand($sql)->queryAll();
         if(!empty($records)){
             foreach ($records as $record){
-                $sql1="update swoper_w.swo_service set status_copy='1' where id='".$record['id']."'";
+                $sql1="update swoper$suffix.swo_service set status_copy='1' where id='".$record['id']."'";
                 $model = Yii::app()->db->createCommand($sql1)->execute();
             }
         }
@@ -415,6 +415,7 @@ class ReportXS01List extends CListPageModel
 
     public function newSale($id,$index){
         $city = Yii::app()->user->city();
+        $suffix = Yii::app()->params['envSuffix'];
 	    $money=0;
         $money1=0;
         $zhuangji=0;
@@ -438,7 +439,7 @@ class ReportXS01List extends CListPageModel
                 }
                 $zhuangji+=$records['amt_install'];
             }else{
-                $sql="select * from swoper_w.swo_service where id='$a'";
+                $sql="select * from swoper$suffix.swo_service where id='$a'";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
                 if($records['paid_type']=='1'||$records['paid_type']=='Y'){
                     $a=$records['amt_paid'];
@@ -489,12 +490,13 @@ class ReportXS01List extends CListPageModel
 
     public function editSale($id,$index){
         $city = Yii::app()->user->city();
+        $suffix = Yii::app()->params['envSuffix'];
         $money=0;
         $money1=0;
         $zhuangji=0;
         $start_dt=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
         foreach ($id as $a){
-                $sql="select * from swoper_w.swo_service where id='$a'";
+                $sql="select * from swoper$suffix.swo_service where id='$a'";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
                 if($records['paid_type']=='1'||$records['paid_type']=='Y'){
                     $a=$records['amt_paid'];
@@ -524,7 +526,7 @@ class ReportXS01List extends CListPageModel
                     if(!empty($records['surplus'])){
                         $m=($old-$new)*$records['surplus'];
                     }
-                    $sql="select * from  swoper_w.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."'";
+                    $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."'";
                     $records = Yii::app()->db->createCommand($sql)->queryRow();
                     $date=$records['first_dt'];
                     $timestrap=strtotime($date);
@@ -562,12 +564,13 @@ class ReportXS01List extends CListPageModel
 
     public function endSale($id,$index){
         $city = Yii::app()->user->city();
+        $suffix = Yii::app()->params['envSuffix'];
         $money=0;
         $money1=0;
         $zhuangji=0;
         $start_dt=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
         foreach ($id as $a){
-            $sql="select * from swoper_w.swo_service where id='$a'";
+            $sql="select * from swoper$suffix.swo_service where id='$a'";
             $records = Yii::app()->db->createCommand($sql)->queryRow();
             if($records['paid_type']=='1'||$records['paid_type']=='Y'){
                 $a=$records['amt_paid'];
@@ -583,7 +586,7 @@ class ReportXS01List extends CListPageModel
                 if(!empty($records['surplus'])){
                     $m=$new*$records['surplus'];
                 }
-                $sql="select * from  swoper_w.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."'";
+                $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."'";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
                 $date=$records['first_dt'];
                 $timestrap=strtotime($date);
@@ -618,7 +621,7 @@ class ReportXS01List extends CListPageModel
             $suffix = Yii::app()->params['envSuffix'];
             $suffix = '_w';
             //客户类别
-          //  $sql = "select rpt_cat from swoper_w.swo_customer_type where id=$cust_type";
+          //  $sql = "select rpt_cat from swoper$suffix.swo_customer_type where id=$cust_type";
          //   $row = Yii::app()->db->createCommand($sql)->queryRow();
          //   if ($row!==false) {
               //  $type = $row['rpt_cat'];
