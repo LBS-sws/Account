@@ -290,7 +290,7 @@ class ReportXS01List extends CListPageModel
 				inner join  acc_service_comm_hdr b on b.id=$index
 				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='N'  and a.first_dt>='$start' and a.first_dt<='$end'
 			";
-        $sql2 = "select a.*,  c.description as type_desc, d.name as city_name					
+        $sql2 = "select count(a.id)		
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index

@@ -115,13 +115,13 @@ class ReportXS01Form extends CReportForm
 
     public function retrieveData($index){
 	    $sql="select a.*,b.*  from acc_service_comm_hdr a
-              inner join  acc_service_comm_dtl b on  b.hdr_id=a.id
+              left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
               where a.id='$index'
 ";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(!empty($records)){
             $this->city=$records['city'];
-            $this->employee_name=$records['employee_code'].$records['employee_name'];
+            $this->employee_name=$records['employee_name'];
             $this->year=$records['year_no']."/".$records['month_no'];
             $this->new_amount=$records['new_amount'];
             $this->edit_amount=$records['edit_amount'];

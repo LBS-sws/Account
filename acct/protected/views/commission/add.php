@@ -103,9 +103,10 @@ $this->pageTitle=Yii::app()->name . ' - Service Form';
             </div>
             <div class="form-group">
                 <?php echo $form->labelEx($model, 'service',array('class'=>"col-sm-2 control-label")); ?>
+
                 <div class="col-sm-7">
                     <?php
-               //     echo $form->hiddenField($model, 'product_id');
+                    echo $form->hiddenField($model, 'product_id');
                     echo $form->textField($model, 'service',
                         array('size'=>60,'maxlength'=>1000,'readonly'=>($model->scenario=='view'),
                             'append'=>TbHtml::button('<span class="fa fa-search"></span> '.Yii::t('service','Service'),array('name'=>'btnService','id'=>'btnService','disabled'=>($model->scenario=='view'))),

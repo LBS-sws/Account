@@ -213,7 +213,27 @@ class LookupController extends Controller
 		$data = TbHtml::listData($result, 'code', 'value');
 		return TbHtml::listBox('lstlookup', '', $data, array('size'=>'15',));
 	}
-	
+
+    public function actionProductEx($search)
+    {
+        $city = '99999';	//Yii::app()->user->city();
+        $suffix = Yii::app()->params['envSuffix'];
+        $result = array();
+        $searchx = str_replace("'","\'",$search);
+        $sql = "select id, concat(left(concat(code,space(8)),8),description) as value from swoper$suffix.swo_product
+				where (code like '%".$searchx."%' or description like '%".$searchx."%') and city='".$city."'";
+        $records = Yii::app()->db->createCommand($sql)->queryAll();
+        if (count($records) > 0) {
+            foreach ($records as $k=>$record) {
+                $result[] = array(
+                    'id'=>$record['id'],
+                    'value'=>$record['value'],
+                );
+            }
+        }
+        print json_encode($result);
+    }
+
 	public function actionAccountItemInEx($search, $acctid=0) {
 		$type = 'ZZZ';
 		if ($acctid != 0) {
