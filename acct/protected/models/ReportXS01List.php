@@ -32,14 +32,16 @@ class ReportXS01List extends CListPageModel
 		$city = Yii::app()->user->city();
 		$year=date('Y');
         $month=date('m')-1;
-        $sql1 = "select a.id,a.employee_code,a.employee_name,a.city,c.name from acc_service_comm_hdr a
+        $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount from acc_service_comm_hdr a
                  inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
-                 inner join  hr$suffix.hr_dept c on b.position=c.id            
+                 inner join  hr$suffix.hr_dept c on b.position=c.id        
+                 left outer join  acc_service_comm_dtl d on a.id=d.hdr_id            
 			     where  a.year_no='$year'  and a.month_no='$month' and a.city='".$city."' and b.city='$city'
 			";
 		$sql2 = "select count(a.id) from acc_service_comm_hdr a
-			       inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
-                 inner join  hr$suffix.hr_dept c on b.position=c.id            
+			      inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
+                 inner join  hr$suffix.hr_dept c on b.position=c.id    
+                  left outer join  acc_service_comm_dtl d on a.id=d.hdr_id          
 			     where  a.year_no='$year'  and a.month_no='$month' and a.city='".$city."' and b.city='$city'
 			";
 		$clause = "";
@@ -82,13 +84,15 @@ class ReportXS01List extends CListPageModel
 			foreach ($records as $k=>$record) {
                 $str=str_replace('(','',$record['employee_code']);
                 $str=str_replace(')','',$str);
+                $arr=$record['new_amount']+$record['edit_amount']-$record['end_amount'];
 				$this->attr[] = array(
 					'id'=>$record['id'],
 					'employee_code'=>$str,
 					'employee_name'=>$record['employee_name'],
 					'city'=>$record['city'],
+                    'time'=>$record['year_no']."/".$record['month_no'],
 					'user_name'=>$record['name'],
-					'comm_total_amount'=>0,
+					'comm_total_amount'=>$arr,
 				);
 			}
 		}
@@ -547,7 +551,7 @@ class ReportXS01List extends CListPageModel
                     $timestrap=strtotime($date);
                     $year=date('Y',$timestrap);
                     $month=date('m',$timestrap);
-                    $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws('',employee_code,employee_name)= '".$records['salesman']."' ";
+                    $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
@@ -592,41 +596,41 @@ class ReportXS01List extends CListPageModel
             }else{
                 $a=$records['amt_paid']*12;
             }
+            if(!empty($records['all_number'])){
+                $new=$a/$records['all_number'];
+            }
+            if(!empty($records['surplus'])){
+                $m=$new*$records['surplus'];
+            }
 
-
-                if(!empty($records['all_number'])){
-                    $new=$a/$records['all_number'];
-
+            $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."'";
+            $records = Yii::app()->db->createCommand($sql)->queryRow();
+            $date=$records['first_dt'];
+            $timestrap=strtotime($date);
+            $year=date('Y',$timestrap);
+            $month=date('m',$timestrap);
+            $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
+            $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
+            $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
+            $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+            if(!empty($m)){
+                $m=$m*$records2['new_calc'];
+                if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
+                    $money+=$m;
                 }
-                if(!empty($records['surplus'])){
-                    $m=$new*$records['surplus'];
-                }
-                $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."'";
-                $records = Yii::app()->db->createCommand($sql)->queryRow();
-                $date=$records['first_dt'];
-                $timestrap=strtotime($date);
-                $year=date('Y',$timestrap);
-                $month=date('m',$timestrap);
-                $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws('',employee_code,employee_name)= '".$records['salesman']."' ";
-                $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
-                $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
-                $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
-                if(!empty($m)){
-                    $m=$m*$records2['new_calc'];
-                    if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
-                        $money+=$m;
-                    }
 
             }
+
+
         }
         if(empty($money)){
             $money=0;
         }
         $sql1="update acc_service_comm_dtl set end_amount='$money' where hdr_id='".$index."'";
         $model = Yii::app()->db->createCommand($sql1)->execute();
+//        print_r('<pre>');
+//        print_r($sql1);  exit();
 
-//                print_r('<pre>');
-//                print_r($zhuangji);
     }
 
     public  function getAmount($city, $cust_type, $start_dt, $sales_amt) {

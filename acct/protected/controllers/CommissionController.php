@@ -195,7 +195,7 @@ class CommissionController extends Controller
     public function actionEndSave($index)
     {
         $model = new ReportXS01List;
-         print_r($_POST['ReportXS01List']['id']);
+         //print_r($_POST['ReportXS01List']['id']);
         if (isset($_POST['ReportXS01List']['id'])) {
             $model->endSale($_POST['ReportXS01List']['id'],$index);
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );

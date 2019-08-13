@@ -3,6 +3,6 @@
     <td><?php echo $this->record['employee_name']; ?></td>
     <td><?php echo $this->record['city']; ?></td>
     <td><?php echo $this->record['user_name']; ?></td>
-    <td><?php echo date('Y/m'); ?></td>
+    <td><?php echo $this->record['time']; ?></td>
     <td><?php echo $this->record['comm_total_amount']; ?></td>
 </tr>
