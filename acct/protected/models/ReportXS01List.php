@@ -290,7 +290,7 @@ class ReportXS01List extends CListPageModel
 				inner join  acc_service_comm_hdr b on b.id=$index
 				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='N'  and a.first_dt>='$start' and a.first_dt<='$end'
 			";
-        $sql2 = "select count(a.id)		
+        $sql2 = "select count(a.id)			
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
@@ -468,19 +468,26 @@ class ReportXS01List extends CListPageModel
       }else{
           $invmoney=0;
       }
-        if(!empty($zhuangji)){
+        if(!empty($zhuangji)&&!empty($inv)){
             $zhuangjimoney=$zhuangji*$inv;
         }else{
             $zhuangjimoney=0;
         }
 
       $salemoney=$fuwumoney+$invmoney+$zhuangjimoney;
-        $sql = "insert into acc_service_comm_dtl(
+        $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
+        $records = Yii::app()->db->createCommand($sql)->queryRow();
+        if(empty($records)){
+            $sql1 = "insert into acc_service_comm_dtl(
 					hdr_id, new_calc, new_amount
 				) values (
 					'".$index."','".$fuwu."','".$salemoney."'
 				)";
-        $record = Yii::app()->db->createCommand($sql)->execute();
+        }else{
+            $sql1="update acc_service_comm_dtl set new_calc='$fuwu' , new_amount='".$salemoney."' where hdr_id='$index'";
+        }
+
+        $record = Yii::app()->db->createCommand($sql1)->execute();
 
 
 //                print_r('<pre>');
