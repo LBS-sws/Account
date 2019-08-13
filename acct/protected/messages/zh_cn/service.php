@@ -3,7 +3,7 @@ return array(
 	'Start Date'=>'生效日期',
 	'Sign'=>'符號',
 	'Sales Amount'=>'年銷額',
-	'Rate'=>'提成%',
+	'Rate'=>'提成比例（例：0.05）',
 	'Name'=>'名称',
 	'Service Rate'=>'销售提成阶梯',
 	'Service Rate List'=>'销售提成阶梯列表',

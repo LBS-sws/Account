@@ -108,13 +108,13 @@ class ReportXS01List extends CListPageModel
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 			    inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'	  
+				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_name,b.employee_code) and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'	  
 			";
         $sql2 = "select count(a.id)
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_name,b.employee_code) and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -198,13 +198,13 @@ class ReportXS01List extends CListPageModel
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_name,b.employee_code) and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $sql2 = "select count(a.id)
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_name,b.employee_code) and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -288,13 +288,13 @@ class ReportXS01List extends CListPageModel
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='N'  and a.first_dt>='$start' and a.first_dt<='$end'
+				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_name,b.employee_code) and a.status='N'  and a.first_dt>='$start' and a.first_dt<='$end'
 			";
         $sql2 = "select count(a.id)			
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_code,b.employee_name) and a.status='N' and a.first_dt>='$start' and a.first_dt<='$end'
+				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_name,b.employee_code) and a.status='N' and a.first_dt>='$start' and a.first_dt<='$end'
 			";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
