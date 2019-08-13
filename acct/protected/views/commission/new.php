@@ -68,7 +68,7 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
                     'amt_install'
                 );
                 $this->widget('ext.layout.ListPageWidget', array(
-                    'title'=>Yii::t('app','sale commission man'),
+                    'title'=>Yii::t('app','sale commission'),
                     'model'=>$model,
                     'viewhdr'=>'//commission/s_listhdr',
                     'viewdtl'=>'//commission/s_listdtl',

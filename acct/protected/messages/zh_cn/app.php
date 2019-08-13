@@ -120,7 +120,7 @@ return array(
     'user_name'=>'员工职位',
     'comm_total_amount'=>'提成金额',
     'sale commission man'=>'销售提成人员列表',
-
+    'sale commission'=>'销售提成列表',
     'first_dt'=>'服务时间',
     'sign_dt'=>'签约时间',
     'company_name'=>'客户名称',

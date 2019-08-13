@@ -80,9 +80,11 @@ class ReportXS01List extends CListPageModel
 		$this->attr = array();
 		if (count($records) > 0) {
 			foreach ($records as $k=>$record) {
+                $str=str_replace('(','',$record['employee_code']);
+                $str=str_replace(')','',$str);
 				$this->attr[] = array(
 					'id'=>$record['id'],
-					'employee_code'=>$record['employee_code'],
+					'employee_code'=>$str,
 					'employee_name'=>$record['employee_name'],
 					'city'=>$record['city'],
 					'user_name'=>$record['name'],
@@ -102,19 +104,21 @@ class ReportXS01List extends CListPageModel
     {
         $suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city_allow();
+        $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
+        $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $start=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
         $end=date('Y-m-d', strtotime(date('Y-m-31') . ' -1 month'));
         $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 			    inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_name,b.employee_code) and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'	  
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'	  
 			";
         $sql2 = "select count(a.id)
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_name,b.employee_code) and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -192,19 +196,21 @@ class ReportXS01List extends CListPageModel
     {
         $suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city_allow();
+        $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
+        $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $start=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
         $end=date('Y-m-d', strtotime(date('Y-m-31') . ' -1 month'));
         $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_name,b.employee_code) and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $sql2 = "select count(a.id)
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_name,b.employee_code) and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -282,19 +288,21 @@ class ReportXS01List extends CListPageModel
     {
         $suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city_allow();
+        $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
+        $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $start=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
         $end=date('Y-m-d', strtotime(date('Y-m-31') . ' -1 month'));
         $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_name,b.employee_code) and a.status='N'  and a.first_dt>='$start' and a.first_dt<='$end'
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='N'  and a.first_dt>='$start' and a.first_dt<='$end'
 			";
         $sql2 = "select count(a.id)			
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city in ($city)  and  a.salesman = concat_ws('',b.employee_name,b.employee_code) and a.status='N' and a.first_dt>='$start' and a.first_dt<='$end'
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='N' and a.first_dt>='$start' and a.first_dt<='$end'
 			";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -392,7 +400,7 @@ class ReportXS01List extends CListPageModel
         $session = Yii::app()->session;
         $session['criteria_XS01'] = $this->getCriteria();
 //        print_r('<pre>');
-//        print_r($arr);
+//        print_r($sql);
         return true;
     }
 

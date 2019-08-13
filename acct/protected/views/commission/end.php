@@ -63,7 +63,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     'amt_install'
                 );
                 $this->widget('ext.layout.ListPageWidget', array(
-                    'title'=>Yii::t('app','sale commission man'),
+                    'title'=>Yii::t('app','sale commission'),
                     'model'=>$model,
                     'viewhdr'=>'//commission/t_listhdr',
                     'viewdtl'=>'//commission/t_listdtl',
