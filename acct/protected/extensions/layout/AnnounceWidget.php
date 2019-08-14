@@ -67,7 +67,7 @@ EOF;
 				$out .= CHtml::image($img,'image',array('width'=>900,'height'=>500));
 				if (!empty($row['image_caption'])) {
 					$out .= '<div class="carousel-caption">';
-					$out .= $row['image_caption'];
+					$out .= '<h3>'.$row['image_caption'].'</h3>';
 					$out .= '</div>';
 				}
 				if (!empty($row['content'])) {
@@ -101,14 +101,14 @@ EOF;
 
 	protected function hasItem() {
         $suffix = Yii::app()->params['envSuffix'];
-		$sql = "select count(id) from announcement$suffix.ann_announce where start_dt<=now() and end_dt>=now()";
+		$sql = "select count(id) from announcement$suffix.ann_announce where start_dt<=now() and date_add(end_dt, interval 1 day)>=now()";
 		$rtn = Yii::app()->db->createCommand($sql)->queryScalar();
 		return ($rtn > 0);
 	}
 
 	protected function getItems() {
         $suffix = Yii::app()->params['envSuffix'];
-		$sql = "select * from announcement$suffix.ann_announce where start_dt<=now() and end_dt>=now() order by priority desc";
+		$sql = "select * from announcement$suffix.ann_announce where start_dt<=now() and date_add(end_dt, interval 1 day)>=now() order by priority desc";
 		$rtn = Yii::app()->db->createCommand($sql)->queryAll();
 		return $rtn;
 	}
