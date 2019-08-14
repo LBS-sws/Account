@@ -530,12 +530,12 @@ class ReportXS01List extends CListPageModel
                 $zhuangji+=$records['amt_install'];
                 $c=$a-$b;
                 if($c>0){
-                    if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
-                        $money+=$c;
-                    }
                     $sql="select new_calc from  acc_service_comm_dtl where hdr_id='$index'";
                     $records = Yii::app()->db->createCommand($sql)->queryRow();
-                    $fuwumoney=$money*$records['new_calc'];
+                    $fuwumoney=$c*$records['new_calc'];
+                    if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
+                        $money+=$fuwumoney;
+                    }
                 }else{
                     if(!empty($records['all_number'])){
                         $new=$a/$records['all_number'];
@@ -562,8 +562,8 @@ class ReportXS01List extends CListPageModel
                    }
                 }
             }
-            if(empty($fuwumoney)){
-                $fuwumoney=0;
+            if(empty($money1)){
+                $money1=0;
             }
             if(empty($money)){
                 $money=0;
@@ -571,7 +571,7 @@ class ReportXS01List extends CListPageModel
             if(empty($zhuangji)){
                 $zhuangji=0;
             }
-        $fuwumoney=$fuwumoney+$money1+$zhuangji;
+        $fuwumoney=$money+$money1+$zhuangji;
         $sql1="update acc_service_comm_dtl set edit_amount='$fuwumoney' where hdr_id='".$index."'";
         $model = Yii::app()->db->createCommand($sql1)->execute();
     }
