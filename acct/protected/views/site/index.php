@@ -14,3 +14,9 @@ if (isset($url) && !empty($url)) {
 	}
 }
 ?>
+
+<?php
+if (!isset($url) || empty($url)) {
+	$this->widget('ext.layout.AnnounceWidget');
+}
+?>

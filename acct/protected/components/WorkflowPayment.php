@@ -16,7 +16,8 @@ class WorkflowPayment extends WorkflowDMS {
 	public function routeToManagerOrApprover() {
 		$amount = $this->getRequestData('AMOUNT');
 		if ($amount > 1000) {
-			$this->routeToManager();
+			$this->routeToConfirmor();
+//			$this->routeToManager();
 		} else {
 			$this->routeToApprover();
 		}
@@ -94,6 +95,43 @@ class WorkflowPayment extends WorkflowDMS {
 		$this->assignDelegatedUser($listappr);
 	}
 	
+	public function routeToConfirmor() {
+		$listappr = array();
+/*
+		$approver = $this->getApprover('regionHead'); //$this->seekBoss('CN');
+		if ($this->hasRight($approver,'XA08') && !in_array($approver, $listappr)) {
+			$listappr[$approver] = 'A';
+			$this->assignRespUser($approver);
+		}
+		$approver = $this->getApprover('regionDirector');
+		if ($this->hasRight($approver,'XA08') && !in_array($approver, $listappr)) {
+			$listappr[$approver] = 'A';
+			$this->assignRespUser($approver);
+		}
+		$approver = $this->getApprover('regionDirectorA');
+		if ($this->hasRight($approver,'XA08') && !in_array($approver, $listappr)) {
+			$listappr[$approver] = 'A';
+			$this->assignRespUser($approver);
+		}
+*/
+		$approver = $this->getApprover('regionMgr');
+		if (!empty($approver) && $this->hasRight($approver,'XA08') && !in_array($approver, $listappr)) {
+			$listappr[$approver] = 'A';
+			$this->assignRespUser($approver);
+		}
+		$approver = $this->getApprover('regionMgrA');
+		if (!empty($approver) && $this->hasRight($approver,'XA08') && !in_array($approver, $listappr)) {
+			$listappr[$approver] = 'A';
+			$this->assignRespUser($approver);
+		}
+		$approver = $this->getApprover('regionSuper');
+		if (!empty($approver) && $this->hasRight($approver,'XA08') && !in_array($approver, $listappr)) {
+			$listappr[$approver] = 'A';
+			$this->assignRespUser($approver);
+		}
+		$this->assignDelegatedUser($listappr);
+	}
+
 	public function routeToSigner() {
 		$listappr = array();
 		$signer = $this->getRequestData('APPROVER');
@@ -939,6 +977,19 @@ class WorkflowPayment extends WorkflowDMS {
 		$command->execute();
 
 		return true;
+	}
+
+	protected function hasRight($username, $right) {
+		$city = Yii::app()->user->city();
+		$sysid = Yii::app()->user->system();
+		$suffix = Yii::app()->params['envSuffix'];
+		$sql = "select a.username
+				from security$suffix.sec_user a, security$suffix.sec_user_access b
+				where a.username=b.username and a.city='$city' and a.username='$username'
+				and (b.a_read_write like '%$right%') and a.status='A' and b.system_id='$sysid' limit 1
+			";
+		$row = $this->connection->createCommand($sql)->queryRow();
+		return ($row!==false);
 	}
 }
 ?>

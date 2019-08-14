@@ -83,6 +83,7 @@ return array(
 	'Status'=>'状态',
 	'Mark Read'=>'标记已读',
 	'Go Top'=>'往页顶',
+	'Announcement'=>'公告',
 );
 
 ?>
