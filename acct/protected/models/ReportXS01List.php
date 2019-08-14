@@ -598,7 +598,7 @@ class ReportXS01List extends CListPageModel
                 $m=$new*$records['surplus'];
             }
 
-            $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."'";
+            $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N'";
             $records = Yii::app()->db->createCommand($sql)->queryRow();
             $date=$records['first_dt'];
             $timestrap=strtotime($date);
