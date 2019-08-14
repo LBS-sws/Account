@@ -536,16 +536,15 @@ class ReportXS01List extends CListPageModel
                     $sql="select new_calc from  acc_service_comm_dtl where hdr_id='$index'";
                     $records = Yii::app()->db->createCommand($sql)->queryRow();
                     $fuwumoney=$money*$records['new_calc'];
-
                 }else{
                     if(!empty($records['all_number'])){
                         $new=$a/$records['all_number'];
                         $old=$b/$records['all_number'];
                     }
                     if(!empty($records['surplus'])){
-                        $m=($old-$new)*$records['surplus'];
+                        $m=($new-$old)*$records['surplus'];
                     }
-                    $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."'";
+                    $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N'";
                     $records = Yii::app()->db->createCommand($sql)->queryRow();
                     $date=$records['first_dt'];
                     $timestrap=strtotime($date);
@@ -558,10 +557,9 @@ class ReportXS01List extends CListPageModel
                    if(!empty($m)){
                        $m=$m*$records2['new_calc'];
                        if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
-                           $money+=$m;
+                           $money1+=$m;
                        }
                    }
-
                 }
             }
             if(empty($fuwumoney)){
@@ -573,12 +571,9 @@ class ReportXS01List extends CListPageModel
             if(empty($zhuangji)){
                 $zhuangji=0;
             }
-        $fuwumoney=$fuwumoney-$money+$zhuangji;
+        $fuwumoney=$fuwumoney+$money1+$zhuangji;
         $sql1="update acc_service_comm_dtl set edit_amount='$fuwumoney' where hdr_id='".$index."'";
         $model = Yii::app()->db->createCommand($sql1)->execute();
-
-//                print_r('<pre>');
-//                print_r($zhuangji);
     }
 
     public function endSale($id,$index){
