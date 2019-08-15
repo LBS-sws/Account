@@ -531,11 +531,12 @@ class ReportXS01List extends CListPageModel
                 $c=$a-$b;
                 if($c>0){
                     $sql="select new_calc from  acc_service_comm_dtl where hdr_id='$index'";
-                    $records = Yii::app()->db->createCommand($sql)->queryRow();
-                    $fuwumoney=$c*$records['new_calc'];
+                    $record = Yii::app()->db->createCommand($sql)->queryRow();
+                    $fuwumoney=$c*$record['new_calc'];
                     if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                         $money+=$fuwumoney;
                     }
+
                 }else{
                     if(!empty($records['all_number'])){
                         $new=$a/$records['all_number'];
@@ -545,8 +546,8 @@ class ReportXS01List extends CListPageModel
                         $m=($new-$old)*$records['surplus'];
                     }
                     $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N'";
-                    $records = Yii::app()->db->createCommand($sql)->queryRow();
-                    $date=$records['first_dt'];
+                    $recordss = Yii::app()->db->createCommand($sql)->queryRow();
+                    $date=$recordss['first_dt'];
                     $timestrap=strtotime($date);
                     $year=date('Y',$timestrap);
                     $month=date('m',$timestrap);
@@ -615,9 +616,9 @@ class ReportXS01List extends CListPageModel
                 }
 
             }
-
-
         }
+//        $money=220;
+        $money=-$money;
         if(empty($money)){
             $money=0;
         }

@@ -126,7 +126,7 @@ class ReportXS01Form extends CReportForm
             $this->new_amount=$records['new_amount'];
             $this->edit_amount=$records['edit_amount'];
             $this->end_amount=$records['end_amount'];
-            $this->all_amount=$records['new_amount']+$records['edit_amount']-$records['end_amount'];
+            $this->all_amount=$records['new_amount']+$records['edit_amount']+$records['end_amount'];
 
         }
 
