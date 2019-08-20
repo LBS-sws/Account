@@ -36,20 +36,22 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
     <div id="yw0" class="tabbable">
         <ul class="nav nav-tabs" role="menu">
             <li class="active">
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/view',array('index'=>$index));?>" >总页</a>
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/view',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >总页</a>
             </li>
             <li  >
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/new',array('index'=>$index));?>">新生意额</a>
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >新生意额</a>
             </li>
             <li  class="">
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/edit',array('index'=>$index));?>" >更改生意额</a>
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/edit',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >更改生意额</a>
             </li>
             <li  class="">
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/end',array('index'=>$index));?>" >终止生意额</a>
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/end',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >终止生意额</a>
             </li>
         </ul>
         <div class="box-info" style="height: 1000px;" >
             <div class="box-body" style="width: 400px;position: absolute;">
+                			<?php echo $form->hiddenField($model, 'year'); ?>
+                			<?php echo $form->hiddenField($model, 'month'); ?>
                 <div class="form-group" style="width: 400px;">
                     <label class="col-sm-2 control-label" style="width: 100px;">城市</label>
                     <div class="col-sm-7" >
@@ -69,7 +71,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                 <div class="form-group" style="width: 400px;">
                     <label class="col-sm-2 control-label" style="width: 100px;">提成月份</label>
                     <div class="col-sm-7">
-                        <?php echo $form->textField($model, 'year',
+                        <?php echo $form->textField($model, 'saleyear',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
                         ); ?>
                     </div>

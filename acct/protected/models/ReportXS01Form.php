@@ -23,6 +23,7 @@ class ReportXS01Form extends CReportForm
     public $edit_amount;
     public $end_amount;
     public $all_amount;
+    public $saleyear;
 	
 	protected function labelsEx() {
 		return array(
@@ -67,16 +68,8 @@ class ReportXS01Form extends CReportForm
         $this->sign_dt = date("Y/m/d");
         $this->staffs = '';
         $this->date="";
-        if( date("m")-1==0){
-            $this->month=12;
-        }else{
-            $this->month=date("m")-1;
-        }
-        if( $this->month==0){
-            $this->year=date("Y")-1;
-        }else{
-            $this->year=date("Y");
-        }
+        $this->month=date("m");
+        $this->year=date("Y");
 		$this->staffs_desc = Yii::t('misc','All');
 	}
 
@@ -122,12 +115,13 @@ class ReportXS01Form extends CReportForm
         if(!empty($records)){
             $this->city=$records['city'];
             $this->employee_name=$records['employee_name'];
-            $this->year=$records['year_no']."/".$records['month_no'];
+            $this->saleyear=$records['year_no']."/".$records['month_no'];
             $this->new_amount=$records['new_amount'];
             $this->edit_amount=$records['edit_amount'];
             $this->end_amount=$records['end_amount'];
             $this->all_amount=$records['new_amount']+$records['edit_amount']+$records['end_amount'];
-
+            $this->year=$records['year_no'];
+            $this->month=$records['month_no']+1;
         }
 
 //        print_r('<pre>');

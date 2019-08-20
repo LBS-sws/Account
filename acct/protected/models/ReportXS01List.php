@@ -26,12 +26,13 @@ class ReportXS01List extends CListPageModel
 		);
 	}
 	
-	public function retrieveDataByPage($pageNum=1)
+	public function retrieveDataByPage($pageNum=1,$year,$month)
 	{
+//        print_r('<pre>');
+//        print_r($month);
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city();
-		$year=date('Y');
-        $month=date('m')-1;
+        $month=$month-1;
         $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount from acc_service_comm_hdr a
                  inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
                  inner join  hr$suffix.hr_dept c on b.position=c.id        
@@ -93,25 +94,28 @@ class ReportXS01List extends CListPageModel
                     'time'=>$record['year_no']."/".$record['month_no'],
 					'user_name'=>$record['name'],
 					'comm_total_amount'=>$arr,
+                    'year'=>$year,
+                    'month'=>$month,
+
 				);
 			}
 		}
 //        print_r('<pre>');
-//        print_r($records);
+//        print_r($sql1);
 		$session = Yii::app()->session;
 		$session['criteria_XS01'] = $this->getCriteria();
 		return true;
 	}
 
 
-    public function editDataByPage($pageNum=1,$index)
+    public function editDataByPage($pageNum=1,$year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city_allow();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
-        $start=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
-        $end=date('Y-m-d', strtotime(date('Y-m-31') . ' -1 month'));
+        $start=$year."-".$month."-01";
+        $end=$year."-".$month."-31";
         $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
@@ -196,14 +200,14 @@ class ReportXS01List extends CListPageModel
         return true;
     }
 
-    public function endDataByPage($pageNum=1,$index)
+    public function endDataByPage($pageNum=1,$year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city_allow();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
-        $start=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
-        $end=date('Y-m-d', strtotime(date('Y-m-31') . ' -1 month'));
+        $start=$year."-".$month."-01";
+        $end=$year."-".$month."-31";
         $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
@@ -288,14 +292,14 @@ class ReportXS01List extends CListPageModel
         return true;
     }
 
-    public function newDataByPage($pageNum=1,$index)
+    public function newDataByPage($pageNum=1,$year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city_allow();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
-        $start=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
-        $end=date('Y-m-d', strtotime(date('Y-m-31') . ' -1 month'));
+        $start=$year."-".$month."-01";
+        $end=$year."-".$month."-31";
         $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
@@ -404,7 +408,7 @@ class ReportXS01List extends CListPageModel
         $session = Yii::app()->session;
         $session['criteria_XS01'] = $this->getCriteria();
 //        print_r('<pre>');
-//        print_r($sql);
+//        print_r($this);
         return true;
     }
 
@@ -425,13 +429,13 @@ class ReportXS01List extends CListPageModel
         }
     }
 
-    public function newSale($id,$index){
+    public function newSale($id,$year,$month,$index){
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
 	    $money=0;
         $money1=0;
         $zhuangji=0;
-        $start_dt=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
+        $start_dt=$year."-".$month."-01";
         foreach ($id as $a){
             if(strstr($a,'+')){
                 $a=rtrim($a,'+');
@@ -513,7 +517,6 @@ class ReportXS01List extends CListPageModel
         $money=0;
         $money1=0;
         $zhuangji=0;
-        $start_dt=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
         foreach ($id as $a){
                 $sql="select * from swoper$suffix.swo_service where id='$a'";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
@@ -583,7 +586,6 @@ class ReportXS01List extends CListPageModel
         $money=0;
         $money1=0;
         $zhuangji=0;
-        $start_dt=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
         foreach ($id as $a){
             $sql="select * from swoper$suffix.swo_service where id='$a'";
             $records = Yii::app()->db->createCommand($sql)->queryRow();

@@ -27,11 +27,11 @@ $this->pageTitle=Yii::app()->name . ' - Service Form';
 	<div class="btn-group" role="group">
 
 	<?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
-		'submit'=>Yii::app()->createUrl('commission/new',array('index'=>$index)))
+		'submit'=>Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)))
 	); ?>
 
 	<?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save'), array(
-		'submit'=>Yii::app()->createUrl('commission/save',array('index'=>$index)))
+		'submit'=>Yii::app()->createUrl('commission/save',array('year'=>$year,'month'=>$month,'index'=>$index)))
 	); ?>
 
 <?php //if ($model->scenario=='edit'): ?>

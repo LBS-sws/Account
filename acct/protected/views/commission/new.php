@@ -24,16 +24,16 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
 <div class="box"><div class="box-body">
         <div class="btn-group" role="group">
 
-            <?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
-                'submit'=>Yii::app()->createUrl('commission/index_s')));
-            ?>
+<!--            --><?php //echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
+//                'submit'=>Yii::app()->createUrl('commission/index_s')));
+//            ?>
             <?php
                 echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('misc','Add Record'), array(
-                    'submit'=>Yii::app()->createUrl('commission/add',array('index'=>$index)),
+                    'submit'=>Yii::app()->createUrl('commission/add',array('year'=>$year,'month'=>$month,'index'=>$index)),
                 ));
             ?>
             <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save'), array(
-                    'submit'=>Yii::app()->createUrl('commission/newsave',array('index'=>$index)))
+                    'submit'=>Yii::app()->createUrl('commission/newsave',array('year'=>$year,'month'=>$month,'index'=>$index)))
             ); ?>
         </div>
     </div>
@@ -42,17 +42,17 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
     <div class="box">
     <div id="yw0" class="tabbable">
         <ul class="nav nav-tabs" role="menu">
-            <li>
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/view',array('index'=>$index));?>" >总页</a>
+            <li >
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/view',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >总页</a>
             </li>
             <li class="active">
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/new',array('index'=>$index));?>">新生意额</a>
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >新生意额</a>
             </li>
             <li  class="">
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/edit',array('index'=>$index));?>" >更改生意额</a>
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/edit',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >更改生意额</a>
             </li>
             <li  class="">
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/end',array('index'=>$index));?>" >终止生意额</a>
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/end',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >终止生意额</a>
             </li>
         </ul>
         <div class="box-info" style="height: 1000px;" >
@@ -93,7 +93,21 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
 <?php $this->endWidget(); ?>
 
 <?php
-	$js = Script::genTableRowClick();
-	Yii::app()->clientScript->registerScript('rowClick',$js,CClientScript::POS_READY);
+$js = <<<EOF
+
+$(document).ready(function(){ 
+       $("#chkboxAll").on('click',function() {     
+       
+              $("input[name='ReportXS01From[id][]']").prop("checked", this.checked);  
+        });          
+        $("input[name='ReportXS01From[id][]']").on('click',function() {  
+              var subs = $("input[name='ReportXS01From[id][]']");  
+              $("#chkboxAll").prop("checked" ,subs.length == subs.filter(":checked").length ? true :false);  
+        });
+});
+EOF;
+Yii::app()->clientScript->registerScript('starClick',$js,CClientScript::POS_HEAD);
+$js = Script::genTableRowClick();
+Yii::app()->clientScript->registerScript('rowClick',$js,CClientScript::POS_READY);
 ?>
 

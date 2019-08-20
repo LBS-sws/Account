@@ -52,7 +52,7 @@ $this->pageTitle=Yii::app()->name . ' - Report';
                 <?php echo $form->labelEx($model,'year',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-3">
                     <?php echo $form->textField($model, 'year',
-                        array('readonly'=>true,	));
+                        array());
                     ?>
                 </div>
             </div>
@@ -60,7 +60,7 @@ $this->pageTitle=Yii::app()->name . ' - Report';
                 <?php echo $form->labelEx($model,'month',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-3">
                     <?php echo $form->textField($model, 'month',
-                        array('readonly'=>true,	));
+                        array());
                     ?>
                 </div>
             </div>
