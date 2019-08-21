@@ -115,17 +115,17 @@ class WorkflowPayment extends WorkflowDMS {
 		}
 */
 		$approver = $this->getApprover('regionMgr');
-		if (!empty($approver) && $this->hasRight($approver,'XA08') && !in_array($approver, $listappr)) {
+		if (!empty($approver) && $this->hasRight($approver,'XA08') && !array_key_exists($approver, $listappr)) {
 			$listappr[$approver] = 'A';
 			$this->assignRespUser($approver);
 		}
 		$approver = $this->getApprover('regionMgrA');
-		if (!empty($approver) && $this->hasRight($approver,'XA08') && !in_array($approver, $listappr)) {
+		if (!empty($approver) && $this->hasRight($approver,'XA08') && !array_key_exists($approver, $listappr)) {
 			$listappr[$approver] = 'A';
 			$this->assignRespUser($approver);
 		}
 		$approver = $this->getApprover('regionSuper');
-		if (!empty($approver) && $this->hasRight($approver,'XA08') && !in_array($approver, $listappr)) {
+		if (!empty($approver) && $this->hasRight($approver,'XA08') && !array_key_exists($approver, $listappr)) {
 			$listappr[$approver] = 'A';
 			$this->assignRespUser($approver);
 		}
@@ -985,7 +985,7 @@ class WorkflowPayment extends WorkflowDMS {
 		$suffix = Yii::app()->params['envSuffix'];
 		$sql = "select a.username
 				from security$suffix.sec_user a, security$suffix.sec_user_access b
-				where a.username=b.username and a.city='$city' and a.username='$username'
+				where a.username=b.username and a.username='$username'
 				and (b.a_read_write like '%$right%') and a.status='A' and b.system_id='$sysid' limit 1
 			";
 		$row = $this->connection->createCommand($sql)->queryRow();
