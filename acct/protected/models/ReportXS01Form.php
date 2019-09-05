@@ -24,6 +24,7 @@ class ReportXS01Form extends CReportForm
     public $end_amount;
     public $all_amount;
     public $saleyear;
+    public $othersalesman;
 	
 	protected function labelsEx() {
 		return array(
@@ -39,7 +40,7 @@ class ReportXS01Form extends CReportForm
             'cust_type'=>Yii::t('app','cust_type'),
             'all_number'=>Yii::t('app','Number'),
             'surplus'=>Yii::t('app','Surplus'),
-
+            'othersalesman'=>Yii::t('app','Othersalesman'),
 			);
 	}
 	
@@ -136,9 +137,9 @@ class ReportXS01Form extends CReportForm
         $add['all_number']=$add['all_number']==""?0:$add['all_number'];
         $add['surplus']=$add['surplus']==""?0:$add['surplus'];
         $sql = "insert into acc_service_comm_copy(
-					hdr_id, first_dt, sign_dt, cust_type, service, paid_type,amt_paid,amt_install,company_name,city,all_number,surplus
+					hdr_id, first_dt, sign_dt, cust_type, service, paid_type,amt_paid,amt_install,company_name,city,all_number,surplus,othersalesman
 				) values (
-					'".$index."','".$add['first_dt']."','".$add['sign_dt']."','".$add['cust_type']."','".$add['service']."','".$add['paid_type']."','".$add['amt_paid']."','".$add['amt_install']."','".$add['company_name']."','".$city."','".$add['all_number']."','".$add['surplus']."'
+					'".$index."','".$add['first_dt']."','".$add['sign_dt']."','".$add['cust_type']."','".$add['service']."','".$add['paid_type']."','".$add['amt_paid']."','".$add['amt_install']."','".$add['company_name']."','".$city."','".$add['all_number']."','".$add['surplus']."','".$add['othersalesman']."'
 				)";
         $record = Yii::app()->db->createCommand($sql)->execute();
     }

@@ -20,6 +20,11 @@
 			;
 		?>
 	</th>
+    <th>
+        <?php echo TbHtml::link($this->getLabelName('跨区业务员'))
+        ;
+        ?>
+    </th>
 	<th>
 		<?php echo TbHtml::link($this->getLabelName('type_desc').$this->drawOrderArrow('type_desc'),'#',$this->createOrderLink('tc-list','type_desc'))
 			;

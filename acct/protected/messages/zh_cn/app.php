@@ -129,6 +129,6 @@ return array(
     'amt_paid'=>'服务年金额',
     'amt_install'=>'安装金额',
 	'cust_type'=>'类别',
-
+    'Othersalesman'=>'跨区业务员',
 );
 ?>

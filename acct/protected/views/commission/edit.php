@@ -49,6 +49,9 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
             <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/end',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >终止生意额</a>
             </li>
+            <li  class="">
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >跨区生意额</a>
+            </li>
         </ul>
         <div class="box-info" >
             <div class="box-body" >

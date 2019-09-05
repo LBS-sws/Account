@@ -24,7 +24,7 @@ class CommissionController extends Controller
     {
         return array(
             array('allow',
-                'actions'=>array('save','new','add','newsave','editsave','endsave'),
+                'actions'=>array('save','new','add','newsave','performance','editsave','endsave','performancesave'),
                 'expression'=>array('CommissionController','allowReadWrite'),
             ),
             array('allow',
@@ -145,6 +145,23 @@ class CommissionController extends Controller
         $this->render('end',array('model'=>$model,'index'=>$index,'year'=>$year,'month'=>$month,));
     }
 
+    public function actionPerformance($pageNum=0,$year,$month,$index)
+    {
+        $model = new ReportXS01List;
+        if (isset($_POST['ReportXS01List'])) {
+            $model->attributes = $_POST['ReportXS01List'];
+        } else {
+            $session = Yii::app()->session;
+            if (isset($session['criteria_xs01']) && !empty($session['criteria_xs01'])) {
+                $criteria = $session['criteria_xs01'];
+                $model->setCriteria($criteria);
+            }
+        }
+        $model->determinePageNum($pageNum);
+        $model->performanceDataByPage($model->pageNum,$year,$month,$index);
+        $this->render('performance',array('model'=>$model,'index'=>$index,'year'=>$year,'month'=>$month,));
+    }
+
     public function actionAdd($year,$month,$index)
     {
         $model = new ReportXS01Form('add');
@@ -212,6 +229,20 @@ class CommissionController extends Controller
         }else{
             Dialog::message(Yii::t('dialog','Validation Message'),'请勾选列表');
             $this->redirect(Yii::app()->createUrl('commission/end',array('year'=>$year,'month'=>$month,'index'=>$index)));
+        }
+    }
+
+    public function actionPerformanceSave($year,$month,$index)
+    {
+        $model = new ReportXS01List;
+        //print_r($_POST['ReportXS01List']['id']);
+        if (isset($_POST['ReportXS01List']['id'])) {
+            $model->performanceSale($_POST['ReportXS01List']['id'],$index);
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
+            $this->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
+        }else{
+            Dialog::message(Yii::t('dialog','Validation Message'),'请勾选列表');
+            $this->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }
     }
 

@@ -24,11 +24,10 @@ $this->pageTitle=Yii::app()->name . ' - Service Rate Form';
 		<?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save'), array(
 				'submit'=>Yii::app()->createUrl('srate/save'))); 
 		?>
-		<?php echo TbHtml::button('<span class="fa fa-remove"></span> '.Yii::t('misc','Delete'), array(
-				'name'=>'btnDelete','id'=>'btnDelete','data-toggle'=>'modal','data-target'=>'#removedialog',)
-				);
-		?>
 <?php endif ?>
+        <?php echo TbHtml::button('<span class="fa fa-remove"></span> '.Yii::t('misc','Delete'), array(
+            		'submit'=>Yii::app()->createUrl('srate/delete')));
+        ?>
 	</div>
 	</div></div>
 

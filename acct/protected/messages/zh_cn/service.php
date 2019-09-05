@@ -14,5 +14,6 @@ return array(
     'Monthly'=>'月金额',
     'Yearly'=>'年金额',
     'One time'=>'一次性',
+    'Salesman'=>'业务员',
 );
 ?>

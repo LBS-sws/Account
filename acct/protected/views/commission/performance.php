@@ -28,7 +28,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
 //                'submit'=>Yii::app()->createUrl('commission/index_s')));
 //            ?>
             <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save'), array(
-                    'submit'=>Yii::app()->createUrl('commission/endsave',array('year'=>$year,'month'=>$month,'index'=>$index)))
+                    'submit'=>Yii::app()->createUrl('commission/performancesave',array('year'=>$year,'month'=>$month,'index'=>$index)))
             ); ?>
         </div>
     </div>
@@ -46,10 +46,10 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
             <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/edit',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >更改生意额</a>
             </li>
-            <li  class="active">
+            <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/end',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >终止生意额</a>
             </li>
-            <li  class="">
+            <li  class="active">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >跨区生意额</a>
             </li>
         </ul>

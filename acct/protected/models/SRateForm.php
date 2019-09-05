@@ -128,6 +128,7 @@ class SRateForm extends CFormModel
 						) values (
 						:name,:start_dt, :city, :luu, :lcu
 						)";
+                $name=$_POST['SRateForm']['detail'][0]['name'];
 				break;
 			case 'edit':
 				$sql = "update acc_service_rate_hdr set  
@@ -137,12 +138,12 @@ class SRateForm extends CFormModel
 							luu = :luu 
 						where id = :id
 						";
+                $name=$_POST['SRateForm']['detail'][0]['name'];
 				break;
 		}
 
 //		$city = Yii::app()->user->city();
 		$uid = Yii::app()->user->id;
-        $name=$_POST['SRateForm']['detail'][0]['name'];
 		$command=$connection->createCommand($sql);
 		if (strpos($sql,':id')!==false)
 			$command->bindParam(':id',$this->id,PDO::PARAM_INT);
