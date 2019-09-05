@@ -359,6 +359,35 @@ class ReportXS01List extends CListPageModel
 
         $list = array();
         $this->attr = array();
+        $sqls = "select a.*,  c.description as type_desc, d.name as city_name					
+				from acc_service_comm_copy a 
+				inner join security$suffix.sec_city d on a.city=d.code 			  
+				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 			 
+			  where a.othersalesman='".$name['name']."'   and a.first_dt>='$start' and a.first_dt<='$end'
+			";
+        $arr = Yii::app()->db->createCommand($sqls)->queryAll();
+        if (count($arr) > 0) {
+            foreach ($arr as $k=>$arrs) {
+                if($arrs['paid_type']=='1'||$arrs['paid_type']=='Y'){
+                    $a=$arrs['amt_paid'];
+                }else{
+                    $a=$arrs['amt_paid']*12;
+                }
+                $this->attr[] = array(
+                    'id'=>$arrs['id'].'+',
+                    'company_name'=>$arrs['company_name'],        //客户名称
+                    'city_name'=>$arrs['city_name'],               //城市
+                    'type_desc'=>$arrs['type_desc'],               //类别
+                    'service'=>$arrs['service'],                    //服务频率
+                    'sign_dt'=>General::toDate($arrs['sign_dt']),   //签约时间
+                    'first_dt'=>General::toDate($arrs['first_dt']), //服务时间
+                    'amt_paid'=>$a,                                     //服务年金额金额
+                    'amt_install'=>$arrs['amt_install'],           //安装金额
+                    'status_copy'=>0,           //是否计算
+                    'othersalesman'=>$arrs['othersalesman'],           //跨区业务员
+                );
+            }
+        }
         if (count($records) > 0) {
             foreach ($records as $k=>$record) {
                 if($record['paid_type']=='1'||$record['paid_type']=='Y'){
