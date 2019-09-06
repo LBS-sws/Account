@@ -19,6 +19,7 @@ class ReportXS01Form extends CReportForm
     public $all_number;
     public $surplus;
     public $employee_name;
+    public $new_calc;
     public $new_amount;
     public $edit_amount;
     public $end_amount;
@@ -109,15 +110,19 @@ class ReportXS01Form extends CReportForm
 //    }
 
     public function retrieveData($index){
-	    $sql="select a.*,b.*  from acc_service_comm_hdr a
+        $suffix = Yii::app()->params['envSuffix'];
+	    $sql="select a.*,b.*,c.name as city_name  from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
+              left outer join security$suffix.sec_city c on  a.city=c.code 
               where a.id='$index'
 ";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(!empty($records)){
-            $this->city=$records['city'];
+            $this->city=$records['city_name'];
             $this->employee_name=$records['employee_name'];
             $this->saleyear=$records['year_no']."/".$records['month_no'];
+            $new_calc=$records['new_calc']*100;
+            $this->new_calc=$new_calc."%";
             $this->new_amount=$records['new_amount'];
             $this->edit_amount=$records['edit_amount'];
             $this->end_amount=$records['end_amount'];
