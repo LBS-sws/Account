@@ -366,6 +366,31 @@ class ReportXS01List extends CListPageModel
 			  where a.othersalesman='".$name['name']."'   and a.first_dt>='$start' and a.first_dt<='$end'
 			";
         $arr = Yii::app()->db->createCommand($sqls)->queryAll();
+        //判断是否计算
+        $citys = Yii::app()->user->city();
+        $sql3="select sum from sales$suffix.sal_performance where city='$citys' and year='$year'  and month='$month'";
+        $sum = Yii::app()->db->createCommand($sql3)->queryRow();
+        $sqlss= "select a.*,  c.description as type_desc, d.name as city_name					
+				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
+				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
+				inner join  acc_service_comm_hdr b on b.id=$index
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='N'  and a.first_dt>='$start' and a.first_dt<='$end'
+			";
+        $arr1 = Yii::app()->db->createCommand($sqlss)->queryAll();
+        $sqlss1 = "select a.*,  c.description as type_desc, d.name as city_name					
+				from acc_service_comm_copy a 
+				inner join security$suffix.sec_city d on a.city=d.code 			  
+				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 			 
+			  where a.hdr_id='$index'   and a.first_dt>='$start' and a.first_dt<='$end'
+			";
+        $arr2 = Yii::app()->db->createCommand($sqlss1)->queryAll();
+        $all=count($arr1)+count($arr2);
+        if($sum['sum']<=$all){
+            $color=1; //计算
+        }else{
+            $color=2;//不计算
+        }
+
         if (count($arr) > 0) {
             foreach ($arr as $k=>$arrs) {
                 if($arrs['paid_type']=='1'||$arrs['paid_type']=='Y'){
@@ -385,6 +410,7 @@ class ReportXS01List extends CListPageModel
                     'amt_install'=>$arrs['amt_install'],           //安装金额
                     'status_copy'=>0,           //是否计算
                     'othersalesman'=>$arrs['othersalesman'],           //跨区业务员
+                    'color'=>$color,
                 );
             }
         }
@@ -406,6 +432,7 @@ class ReportXS01List extends CListPageModel
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$record['amt_install'],           //安装金额
                     'othersalesman'=>$record['othersalesman'],           //跨区业务员
+                    'color'=>$color,
                 );
             }
         }

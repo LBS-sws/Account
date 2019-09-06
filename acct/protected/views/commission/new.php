@@ -32,7 +32,7 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
                     'submit'=>Yii::app()->createUrl('commission/add',array('year'=>$year,'month'=>$month,'index'=>$index)),
                 ));
             ?>
-            <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save'), array(
+            <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save1'), array(
                     'submit'=>Yii::app()->createUrl('commission/newsave',array('year'=>$year,'month'=>$month,'index'=>$index)))
             ); ?>
         </div>

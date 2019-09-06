@@ -26,6 +26,7 @@ return array(
 	'Login' => '登录',
 	'Logout' => '退出',
 	'Save' => '保存',
+    'Save1' => '计算',
 	'Active' => '启用',
 	'Inactive' => '停用',
 	'On'=>'开启',
