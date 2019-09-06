@@ -707,6 +707,8 @@ class ReportXS01List extends CListPageModel
                 $zhuangji=0;
             }
         $fuwumoney=$money+$money1+$zhuangji;
+        $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
+        $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(empty($records)){
             $sql1 = "insert into acc_service_comm_dtl(
 					hdr_id, edit_amount
@@ -763,6 +765,8 @@ class ReportXS01List extends CListPageModel
         if(empty($money)){
             $money=0;
         }
+        $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
+        $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(empty($records)){
             $sql1 = "insert into acc_service_comm_dtl(
 					hdr_id, end_amount
@@ -794,7 +798,7 @@ class ReportXS01List extends CListPageModel
                 }else{
                     $a=$records['amt_paid']*12;
                 }
-            $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
+            $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
             $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
             $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
             $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
@@ -811,6 +815,8 @@ class ReportXS01List extends CListPageModel
         if(empty($money)){
             $money=0;
         }
+        $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
+        $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(empty($records)){
             $sql1 = "insert into acc_service_comm_dtl(
 					hdr_id, performance_amount
