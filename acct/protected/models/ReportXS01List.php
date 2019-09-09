@@ -661,12 +661,12 @@ class ReportXS01List extends CListPageModel
         $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(empty($records)){
             $sql1 = "insert into acc_service_comm_dtl(
-					hdr_id, new_calc, new_amount
+					hdr_id, new_calc, new_amount,new_money
 				) values (
-					'".$index."','".$fuwu."','".$salemoney."'
+					'".$index."','".$fuwu."','".$salemoney."','".$money."'
 				)";
         }else{
-            $sql1="update acc_service_comm_dtl set new_calc='$fuwu' , new_amount='".$salemoney."' where hdr_id='$index'";
+            $sql1="update acc_service_comm_dtl set new_calc='$fuwu' , new_amount='".$salemoney."',new_money='".$money."' where hdr_id='$index'";
         }
 
         $record = Yii::app()->db->createCommand($sql1)->execute();
@@ -746,12 +746,12 @@ class ReportXS01List extends CListPageModel
         $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(empty($records)){
             $sql1 = "insert into acc_service_comm_dtl(
-					hdr_id, edit_amount
+					hdr_id, edit_amount,edit_money
 				) values (
-					'".$index."','".$fuwumoney."'
+					'".$index."','".$fuwumoney."' ,'".$money."'
 				)";
         }else{
-            $sql1="update acc_service_comm_dtl set edit_amount='$fuwumoney'  where hdr_id='$index'";
+            $sql1="update acc_service_comm_dtl set edit_amount='$fuwumoney' ,edit_money='$money' where hdr_id='$index'";
         }
         $model = Yii::app()->db->createCommand($sql1)->execute();
     }
@@ -840,6 +840,7 @@ class ReportXS01List extends CListPageModel
                 $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                 $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                 if(!empty($a)){
+                    $moneys+=$a*0.5;
                     $a=$a*$records2['new_calc'];
                     if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                         $money+=$a*0.5;
@@ -860,6 +861,7 @@ class ReportXS01List extends CListPageModel
                 $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                 $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                 if(!empty($a)){
+                    $moneys+=$a*0.5;
                     $a=$a*$records2['new_calc'];
                     if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                         $money+=$a*0.5;
@@ -873,16 +875,19 @@ class ReportXS01List extends CListPageModel
         if(empty($money)){
             $money=0;
         }
+        if(empty($moneys)){
+            $moneys=0;
+        }
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(empty($records)){
             $sql1 = "insert into acc_service_comm_dtl(
-					hdr_id, performance_amount
+					hdr_id, performance_amount,out_money
 				) values (
-					'".$index."','".$money."'
+					'".$index."','".$money."','".$moneys."'
 				)";
         }else{
-            $sql1="update acc_service_comm_dtl set performance_amount='$money'  where hdr_id='$index'";
+            $sql1="update acc_service_comm_dtl set performance_amount='$money' ,out_money='$moneys'  where hdr_id='$index'";
         }
         $model = Yii::app()->db->createCommand($sql1)->execute();
 

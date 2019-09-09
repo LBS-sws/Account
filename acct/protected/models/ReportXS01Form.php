@@ -27,6 +27,9 @@ class ReportXS01Form extends CReportForm
     public $saleyear;
     public $othersalesman;
     public $performance_amount;
+    public $new_money;
+    public $edit_money;
+    public $out_money;
 	
 	protected function labelsEx() {
 		return array(
@@ -130,6 +133,9 @@ class ReportXS01Form extends CReportForm
             $this->performance_amount=$records['performance_amount'];
             $this->year=$records['year_no'];
             $this->month=$records['month_no']+1;
+            $this->new_money=$records['new_money'];
+            $this->edit_money=$records['edit_money'];
+            $this->out_money=$records['out_money'];
         }
 
 //        print_r('<pre>');
