@@ -12,14 +12,17 @@ class SalesPromotionCommand extends CConsoleCommand
         echo $firstDay=date('Y-m-01', strtotime('-1 month'));
         echo $endDay=date('Y-m-31', strtotime('-1 month'));
 //        if($day=='09'){
-            $sql="select substring_index(salesman,' ', -1) as code,substring_index(salesman,' ', 1) as name,city 
-                  from swoper$suffix.swo_service 
-                  where status_dt>='$firstDay' and status_dt<='$endDay' and salesman not like '%离职%' 
+        $sql="select substring_index(a.salesman,' ', -1) as code,substring_index(a.salesman,' ', 1) as name,a.city 
+                  from swoper$suffix.swo_service  a
+                  inner join hr$suffix.hr_employee b on code=b.code
+                  inner join hr$suffix.hr_dept c on b.position=c.id
+                  where a.status_dt>='$firstDay' and a.status_dt<='$endDay' and a.salesman not like '%离职%' and c.dept_class not like '%Technician%' 
                   UNION
                   select a.code,a.name,a.city from hr$suffix.hr_employee a
                   inner join hr$suffix.hr_binding b on a.id=b.employee_id
                   inner join sales$suffix.sal_visit c on b.user_id=c.username
-                  where c.visit_dt>='$firstDay' and c.visit_dt<='$endDay' 
+                  inner join hr$suffix.hr_dept d on a.position=d.id
+                  where c.visit_dt>='$firstDay' and c.visit_dt<='$endDay'  and d.dept_class not like '%Technician%' 
 ";
             $records = Yii::app()->db->createCommand($sql)->queryAll();
             for ($i=0;$i<count($records);$i++){
