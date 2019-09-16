@@ -33,15 +33,17 @@ class ReportXS01List extends CListPageModel
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city();
         $month=$month-1;
-        $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount from acc_service_comm_hdr a
+        $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,e.name as cityname from acc_service_comm_hdr a
                  inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
-                 inner join  hr$suffix.hr_dept c on b.position=c.id        
+                 inner join  hr$suffix.hr_dept c on b.position=c.id      
+                 inner join security$suffix.sec_city e on a.city=e.code 		  
                  left outer join  acc_service_comm_dtl d on a.id=d.hdr_id            
 			     where  a.year_no='$year'  and a.month_no='$month' and a.city='".$city."' and b.city='$city'
 			";
 		$sql2 = "select count(a.id) from acc_service_comm_hdr a
 			      inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
-                 inner join  hr$suffix.hr_dept c on b.position=c.id    
+                 inner join  hr$suffix.hr_dept c on b.position=c.id   
+                  inner join security$suffix.sec_city e on a.city=e.code 		   
                   left outer join  acc_service_comm_dtl d on a.id=d.hdr_id          
 			     where  a.year_no='$year'  and a.month_no='$month' and a.city='".$city."' and b.city='$city'
 			";
@@ -90,7 +92,7 @@ class ReportXS01List extends CListPageModel
 					'id'=>$record['id'],
 					'employee_code'=>$str,
 					'employee_name'=>$record['employee_name'],
-					'city'=>$record['city'],
+					'city'=>$record['cityname'],
                     'time'=>$record['year_no']."/".$record['month_no'],
 					'user_name'=>$record['name'],
 					'comm_total_amount'=>$arr,
