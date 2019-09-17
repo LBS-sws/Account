@@ -2,6 +2,7 @@
 
 class ReportXS01List extends CListPageModel
 {
+    public $noOfItem=0;
 	/**
 	 * Declares customized attribute labels.
 	 * If not declared here, an attribute would have a label that is
