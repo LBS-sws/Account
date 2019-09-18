@@ -30,6 +30,9 @@ class ReportXS01Form extends CReportForm
     public $new_money;
     public $edit_money;
     public $out_money;
+    public $performanceedit_amount;
+    public $performanceend_amount;
+    public $performanceedit_money;
 	
 	protected function labelsEx() {
 		return array(
@@ -129,13 +132,15 @@ class ReportXS01Form extends CReportForm
             $this->new_amount=$records['new_amount'];
             $this->edit_amount=$records['edit_amount'];
             $this->end_amount=$records['end_amount'];
-            $this->all_amount=$records['new_amount']+$records['edit_amount']+$records['end_amount']+$records['performance_amount'];
+            $this->all_amount=$records['new_amount']+$records['edit_amount']+$records['end_amount']+$records['performance_amount']+$records['out_money']+$records['performanceedit_amount']+$records['performanceend_amount'];
             $this->performance_amount=$records['performance_amount'];
             $this->year=$records['year_no'];
             $this->month=$records['month_no']+1;
             $this->new_money=$records['new_money'];
             $this->edit_money=$records['edit_money'];
             $this->out_money=$records['out_money'];
+            $this->performanceedit_amount=$records['performanceedit_amount'];
+            $this->performanceend_amount=$records['performanceend_amount'];
         }
 
 //        print_r('<pre>');

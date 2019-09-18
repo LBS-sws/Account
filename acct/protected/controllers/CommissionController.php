@@ -24,7 +24,7 @@ class CommissionController extends Controller
     {
         return array(
             array('allow',
-                'actions'=>array('save','new','add','newsave','performance','editsave','endsave','performancesave'),
+                'actions'=>array('save','new','add','newsave','performance','performanceedit','performanceend','editsave','endsave','performancesave','performanceeditsave','performanceendsave'),
                 'expression'=>array('CommissionController','allowReadWrite'),
             ),
             array('allow',
@@ -162,6 +162,40 @@ class CommissionController extends Controller
         $this->render('performance',array('model'=>$model,'index'=>$index,'year'=>$year,'month'=>$month,));
     }
 
+    public function actionPerformanceEdit($pageNum=0,$year,$month,$index)
+    {
+        $model = new ReportXS01List;
+        if (isset($_POST['ReportXS01List'])) {
+            $model->attributes = $_POST['ReportXS01List'];
+        } else {
+            $session = Yii::app()->session;
+            if (isset($session['criteria_xs01']) && !empty($session['criteria_xs01'])) {
+                $criteria = $session['criteria_xs01'];
+                $model->setCriteria($criteria);
+            }
+        }
+        $model->determinePageNum($pageNum);
+        $model->performanceeditDataByPage($model->pageNum,$year,$month,$index);
+        $this->render('performanceedit',array('model'=>$model,'index'=>$index,'year'=>$year,'month'=>$month,));
+    }
+
+    public function actionPerformanceEnd($pageNum=0,$year,$month,$index)
+    {
+        $model = new ReportXS01List;
+        if (isset($_POST['ReportXS01List'])) {
+            $model->attributes = $_POST['ReportXS01List'];
+        } else {
+            $session = Yii::app()->session;
+            if (isset($session['criteria_xs01']) && !empty($session['criteria_xs01'])) {
+                $criteria = $session['criteria_xs01'];
+                $model->setCriteria($criteria);
+            }
+        }
+        $model->determinePageNum($pageNum);
+        $model->performanceendDataByPage($model->pageNum,$year,$month,$index);
+        $this->render('performanceend',array('model'=>$model,'index'=>$index,'year'=>$year,'month'=>$month,));
+    }
+
     public function actionAdd($year,$month,$index)
     {
         $model = new ReportXS01Form('add');
@@ -233,11 +267,39 @@ class CommissionController extends Controller
     }
 
     public function actionPerformanceSave($year,$month,$index)
+{
+    $model = new ReportXS01List;
+    //print_r($_POST['ReportXS01List']['id']);
+    if (isset($_POST['ReportXS01List']['id'])) {
+        $model->performanceSale($_POST['ReportXS01List']['id'],$year,$month,$index);
+        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
+        $this->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
+    }else{
+        Dialog::message(Yii::t('dialog','Validation Message'),'请勾选列表');
+        $this->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
+    }
+}
+
+    public function actionPerformanceEditSave($year,$month,$index)
     {
         $model = new ReportXS01List;
         //print_r($_POST['ReportXS01List']['id']);
         if (isset($_POST['ReportXS01List']['id'])) {
-            $model->performanceSale($_POST['ReportXS01List']['id'],$year,$month,$index);
+            $model->performanceeditSale($_POST['ReportXS01List']['id'],$year,$month,$index);
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
+            $this->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
+        }else{
+            Dialog::message(Yii::t('dialog','Validation Message'),'请勾选列表');
+            $this->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
+        }
+    }
+
+    public function actionPerformanceEndSave($year,$month,$index)
+    {
+        $model = new ReportXS01List;
+        //print_r($_POST['ReportXS01List']['id']);
+        if (isset($_POST['ReportXS01List']['id'])) {
+            $model->performanceendSale($_POST['ReportXS01List']['id'],$year,$month,$index);
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
             $this->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }else{
