@@ -1079,7 +1079,7 @@ class ReportXS01List extends CListPageModel
 //                print_r($zhuangji);
     }
 
-    public function performanceeditSale($id,$index){
+    public function performanceeditSale($id,$year,$month,$index){
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
         $money=0;
@@ -1105,9 +1105,11 @@ class ReportXS01List extends CListPageModel
                 $sql3="select performance from acc_service_comm_hdr where  id='$index'";
                 $color = Yii::app()->db->createCommand($sql3)->queryRow();
                 if($color['performance']==1){
-                    $sql="select new_calc from  acc_service_comm_dtl where hdr_id='$index'";
-                    $record = Yii::app()->db->createCommand($sql)->queryRow();
-                    $fuwumoney=$c*$record['new_calc'];
+                    $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
+                    $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
+                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
+                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                    $fuwumoney=$c*$records2['new_calc'];
                     if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                         $money+=$fuwumoney*0.5;
                         $moneys+=$c*0.5;
@@ -1127,7 +1129,7 @@ class ReportXS01List extends CListPageModel
                 $timestrap=strtotime($date);
                 $year=date('Y',$timestrap);
                 $month=date('m',$timestrap);
-                $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
+                $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
                 if($records1['performance']==1){
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
@@ -1195,7 +1197,7 @@ class ReportXS01List extends CListPageModel
             $timestrap=strtotime($date);
             $year=date('Y',$timestrap);
             $month=date('m',$timestrap);
-            $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
+            $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
             $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
             if($records1['performance']==1){
                 $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
