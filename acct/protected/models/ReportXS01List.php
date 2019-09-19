@@ -821,7 +821,7 @@ class ReportXS01List extends CListPageModel
         }
         //判断是否计算
         $citys = Yii::app()->user->city();
-        $sql3="select sum from sales$suffix.sal_performance where city='$citys' and year='$year'  and month='$month'";
+        $sql3="select * from sales$suffix.sal_performance where city='$citys' and year='$year'  and month='$month'";
         $sum = Yii::app()->db->createCommand($sql3)->queryRow();
 
         if(empty($sum)){$sum=0;}

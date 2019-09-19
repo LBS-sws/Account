@@ -93,6 +93,14 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                         ); ?>
                     </div>
                 </div>
+                <div class="form-group" style="width: 400px;">
+                    <label class="col-sm-2 control-label" style="width: 130px;">新增提成比例</label>
+                    <div class="col-sm-7">
+                        <?php echo $form->textField($model, 'performance',
+                            array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
+                        ); ?>
+                    </div>
+                </div>
             </div>
             <div class="box-body" style="width: 800px;position: absolute;margin-left:500px;">
                 <div class="form-group" style="width: 800px;">

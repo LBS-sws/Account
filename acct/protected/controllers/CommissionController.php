@@ -287,10 +287,10 @@ class CommissionController extends Controller
         if (isset($_POST['ReportXS01List']['id'])) {
             $model->performanceeditSale($_POST['ReportXS01List']['id'],$year,$month,$index);
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
-            $this->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
+            $this->redirect(Yii::app()->createUrl('commission/performanceedit',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }else{
             Dialog::message(Yii::t('dialog','Validation Message'),'请勾选列表');
-            $this->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
+            $this->redirect(Yii::app()->createUrl('commission/performanceedit',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }
     }
 
@@ -301,10 +301,10 @@ class CommissionController extends Controller
         if (isset($_POST['ReportXS01List']['id'])) {
             $model->performanceendSale($_POST['ReportXS01List']['id'],$year,$month,$index);
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
-            $this->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
+            $this->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }else{
             Dialog::message(Yii::t('dialog','Validation Message'),'请勾选列表');
-            $this->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
+            $this->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }
     }
 

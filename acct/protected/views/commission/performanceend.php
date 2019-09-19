@@ -28,7 +28,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
 //                'submit'=>Yii::app()->createUrl('commission/index_s')));
 //            ?>
             <?php  echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save1'), array(
-                    'submit'=>Yii::app()->createUrl('commission/performancesave',array('year'=>$year,'month'=>$month,'index'=>$index)))
+                    'submit'=>Yii::app()->createUrl('commission/performanceendsave',array('year'=>$year,'month'=>$month,'index'=>$index)))
             ); ?>
 
         </div>
