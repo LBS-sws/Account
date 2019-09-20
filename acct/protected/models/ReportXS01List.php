@@ -1127,10 +1127,11 @@ class ReportXS01List extends CListPageModel
                 $recordss = Yii::app()->db->createCommand($sql)->queryRow();
                 $date=$recordss['first_dt'];
                 $timestrap=strtotime($date);
-                $year=date('Y',$timestrap);
-                $month=date('m',$timestrap);
-                $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
+                $years=date('Y',$timestrap);
+                $months=date('m',$timestrap);
+                $sql1="select * from acc_service_comm_hdr where year_no='".$years."' and month_no='".$months."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
+
                 if($records1['performance']==1){
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
@@ -1144,6 +1145,7 @@ class ReportXS01List extends CListPageModel
 
             }
         }
+
         if(empty($money1)){
             $money1=0;
         }
