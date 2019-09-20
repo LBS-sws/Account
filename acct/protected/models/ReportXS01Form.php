@@ -142,6 +142,7 @@ class ReportXS01Form extends CReportForm
             $this->out_money=$records['out_money'];
             $this->performanceedit_amount=$records['performanceedit_amount'];
             $this->performanceend_amount=$records['performanceend_amount'];
+            $this->performanceedit_money=$records['performanceedit_money'];
             if($records['performance']==1){
                 $a='是';
             }else{
