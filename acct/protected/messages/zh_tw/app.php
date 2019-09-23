@@ -23,6 +23,11 @@ return array(
 
 'Data Entry'=>'數據輸入',
 'Misc'=>'其他',
+'Number'=>'總次數',
+'Surplus'=>'剩餘次數',
+'Sales New Commission'=>'銷售新生意額計算',
+'Sales Edit Commission'=>'銷售更改生意額計算',
+'Sales End Commission'=>'銷售終止生意額計算',
 
 'Import'=>'數據導入',
 'Import Manager'=>'數據導入管理員',
@@ -108,5 +113,22 @@ return array(
 'Delegation'=>'授權',
 'Notification Option'=>'通知選項',
 'System Use'=>'系統使用',
+
+'employee_code'=>'員工編號',
+'employee_name'=>'員工名字',
+'city'=>'地區',
+'user_name'=>'員工職位',
+'comm_total_amount'=>'提成金額',
+'sale commission man'=>'銷售提成人員列表',
+'sale commission'=>'銷售提成列表',
+'first_dt'=>'服務時間',
+'sign_dt'=>'簽約時間',
+'company_name'=>'客戶名稱',
+'type_desc'=>'類別',
+'service'=>'服務頻次',
+'amt_paid'=>'服務年金額',
+'amt_install'=>'安裝金額',
+'cust_type'=>'類別',
+'Othersalesman'=>'跨區業務員',
 );
 ?>
