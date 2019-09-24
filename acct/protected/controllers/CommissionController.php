@@ -243,7 +243,7 @@ class CommissionController extends Controller
         $model = new ReportXS01List;
        // print_r($_POST['ReportXS01List']['id']);
         if (isset($_POST['ReportXS01List']['id'])) {
-            $model->editSale($_POST['ReportXS01List']['id'],$index);
+            $model->editSale($_POST['ReportXS01List']['id'],$index,$_POST['ReportXS01List']['royalty']);
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
             $this->redirect(Yii::app()->createUrl('commission/edit',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }else{
@@ -257,7 +257,7 @@ class CommissionController extends Controller
         $model = new ReportXS01List;
          //print_r($_POST['ReportXS01List']['id']);
         if (isset($_POST['ReportXS01List']['id'])) {
-            $model->endSale($_POST['ReportXS01List']['id'],$index);
+            $model->endSale($_POST['ReportXS01List']['id'],$index,$_POST['ReportXS01List']['royalty']);
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
             $this->redirect(Yii::app()->createUrl('commission/end',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }else{
@@ -285,7 +285,7 @@ class CommissionController extends Controller
         $model = new ReportXS01List;
         //print_r($_POST['ReportXS01List']['id']);
         if (isset($_POST['ReportXS01List']['id'])) {
-            $model->performanceeditSale($_POST['ReportXS01List']['id'],$year,$month,$index);
+            $model->performanceeditSale($_POST['ReportXS01List']['id'],$year,$month,$index,$_POST['ReportXS01List']['royalty']);
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
             $this->redirect(Yii::app()->createUrl('commission/performanceedit',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }else{
@@ -299,7 +299,7 @@ class CommissionController extends Controller
         $model = new ReportXS01List;
         //print_r($_POST['ReportXS01List']['id']);
         if (isset($_POST['ReportXS01List']['id'])) {
-            $model->performanceendSale($_POST['ReportXS01List']['id'],$index);
+            $model->performanceendSale($_POST['ReportXS01List']['id'],$index,$_POST['ReportXS01List']['royalty']);
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
             $this->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }else{

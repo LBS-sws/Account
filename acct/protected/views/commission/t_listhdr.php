@@ -45,4 +45,9 @@
 			;
 		?>
 	</th>
+    <th>
+        <?php echo TbHtml::link($this->getLabelName('历史提成比例'))
+        ;
+        ?>
+    </th>
 </tr>

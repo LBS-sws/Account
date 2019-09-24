@@ -9,4 +9,5 @@
     <td><?php echo $this->record['service']; ?></td>
     <td><?php echo $this->record['amt_paid']; ?></td>
     <td><?php echo $this->record['amt_install']; ?></td>
+    <td><input type="text" name="ReportXS01List[royalty][<?php echo $this->record['id']; ?>]" value="<?php echo $this->record['royalty']; ?>"></td>
 </tr>
