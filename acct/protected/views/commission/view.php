@@ -180,6 +180,12 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                         ); ?>
                     </div>
                 </div>
+                <div class="form-group" style="width: 400px;height: 35px;">
+                    <label class="col-sm-2 control-label" style="width: 130px;"></label>
+                    <div class="col-sm-3">
+
+                    </div>
+                </div>
                 <div class="form-group" style="width: 400px;">
                     <label class="col-sm-2 control-label" style="width: 130px;">跨区业绩</label>
                     <div class="col-sm-3">
