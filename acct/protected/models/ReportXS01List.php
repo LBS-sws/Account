@@ -414,6 +414,7 @@ class ReportXS01List extends CListPageModel
                     'first_dt'=>General::toDate($record['first_dt']), //服务时间
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$record['amt_install'],           //安装金额
+                    'status_copy'=>$record['status_copy'],           //是否计算
                     'othersalesman'=>$record['othersalesman'],           //跨区业务员
                     'color'=>$color['performance'],
                 );
@@ -1153,7 +1154,6 @@ class ReportXS01List extends CListPageModel
                 $months=date('m',$timestrap);
                 $sql1="select * from acc_service_comm_hdr where year_no='".$years."' and month_no='".$months."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
-
                 if($records1['performance']==1){
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
