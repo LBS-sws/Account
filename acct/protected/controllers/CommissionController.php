@@ -270,8 +270,8 @@ class CommissionController extends Controller
 {
     $model = new ReportXS01List;
     //print_r($_POST['ReportXS01List']['id']);
-    if (isset($_POST['ReportXS01List']['id'])) {
-        $model->performanceSale($_POST['ReportXS01List']['id'],$year,$month,$index);
+    if (isset($_POST['ReportXS01From']['id'])) {
+        $model->performanceSale($_POST['ReportXS01From']['id'],$year,$month,$index);
         Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
         $this->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
     }else{
