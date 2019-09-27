@@ -510,7 +510,7 @@ class ReportXS01List extends CListPageModel
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$record['amt_install'],           //安装金额
                     'othersalesman'=>$record['othersalesman'],           //跨区业务员
-                    'royalty'=>$record['royalty'],           //提成比例
+                    'royalty'=>$record['royaltys'],           //提成比例
                 );
             }
         }
@@ -604,7 +604,7 @@ class ReportXS01List extends CListPageModel
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$record['amt_install'],           //安装金额
                     'othersalesman'=>$record['othersalesman'],           //跨区业务员
-                    'royalty'=>$record['royalty'],           //提成比例
+                    'royalty'=>$record['royaltys'],           //提成比例
                 );
             }
         }
@@ -1262,7 +1262,7 @@ class ReportXS01List extends CListPageModel
                                 }
                                 $money1+=$m*$otherspanning['otherspanning'];
                             }
-                            $sqlct="update swoper$suffix.swo_service set royalty='".$royalty[$ai]."'  where id='$ai'";
+                            $sqlct="update swoper$suffix.swo_service set royaltys='".$royalty[$ai]."'  where id='$ai'";
                             $model = Yii::app()->db->createCommand($sqlct)->execute();
                         }
                     }
@@ -1350,7 +1350,7 @@ class ReportXS01List extends CListPageModel
                             }
                             $money+=$m*$otherspanning['otherspanning'];
                         }
-                        $sqlct="update swoper$suffix.swo_service set royalty='".$royalty[$ai]."'  where id='$ai'";
+                        $sqlct="update swoper$suffix.swo_service set royaltys='".$royalty[$ai]."'  where id='$ai'";
                         $model = Yii::app()->db->createCommand($sqlct)->execute();
                     }
                 }

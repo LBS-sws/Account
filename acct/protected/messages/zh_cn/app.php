@@ -28,6 +28,9 @@ return array(
 	'Sales New Commission'=>'销售新生意额计算',
     'Sales Edit Commission'=>'销售更改生意额计算',
     'Sales End Commission'=>'销售终止生意额计算',
+    'Spanning Sales New Commission'=>'跨区新生意额计算',
+    'Spanning Sales Edit Commission'=>'跨区更改生意额计算',
+    'Spanning Sales End Commission'=>'跨区终止生意额计算',
 
 	'Import'=>'数据导入',
 	'Import Manager'=>'数据导入管理员',
