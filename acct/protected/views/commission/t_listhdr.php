@@ -46,7 +46,7 @@
 		?>
 	</th>
     <th>
-        <?php echo TbHtml::link($this->getLabelName('历史提成比例'))
+        <?php echo TbHtml::link($this->getLabelName('历史提成比例(例1%：0.01)'))
         ;
         ?>
     </th>

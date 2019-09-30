@@ -57,7 +57,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >跨区终止生意额</a>
             </li>
         </ul>
-        <div class="box-info" style="height: 1000px;" >
+        <div class="box-info" style="height: 1000px;position: relative;" >
             <div class="box-body" style="width: 400px;position: absolute;">
                 			<?php echo $form->hiddenField($model, 'year'); ?>
                 			<?php echo $form->hiddenField($model, 'month'); ?>
@@ -102,7 +102,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
             </div>
-            <div class="box-body" style="width: 800px;position: absolute;margin-left:500px;">
+            <div class="box-body" style="width: 800px;position: absolute;left:30%;">
                 <div class="form-group" style="width: 800px;">
                     <label class="col-sm-2 control-label" style="width: 130px;">新增生意提成</label>
                     <div class="col-sm-3">
@@ -161,7 +161,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
             </div>
-            <div class="box-body" style="width: 400px;position: absolute;margin-left:900px;">
+            <div class="box-body" style="width: 400px;position: absolute;left:60%;">
                 <?php echo $form->hiddenField($model, 'year'); ?>
                 <?php echo $form->hiddenField($model, 'month'); ?>
                 <div class="form-group" style="width: 400px;">
