@@ -943,6 +943,8 @@ class ReportXS01List extends CListPageModel
                                }else{
                                    $money1+=$m;
                                }
+                               $sqlct="update swoper$suffix.swo_service set royalty='".$records2['new_calc']."'  where id='$ai'";
+                               $model = Yii::app()->db->createCommand($sqlct)->execute();
                            }
                        }else{
                            $m=$m*$royalty[$ai];
@@ -1034,6 +1036,8 @@ class ReportXS01List extends CListPageModel
                         }else{
                             $money+=$m;
                         }
+                        $sqlct="update swoper$suffix.swo_service set royalty='".$records2['new_calc']."'  where id='$ai'";
+                        $model = Yii::app()->db->createCommand($sqlct)->execute();
                     }
                 }else{
                     $m=$m*$royalty[$ai];
@@ -1254,6 +1258,8 @@ class ReportXS01List extends CListPageModel
                                 }
                                 $money1+=$m*$otherspanning['otherspanning'];
                             }
+                            $sqlct="update swoper$suffix.swo_service set royaltys='".$records2['new_calc']."'  where id='$ai'";
+                            $model = Yii::app()->db->createCommand($sqlct)->execute();
                         }else{
                             $m=$m*$royalty[$ai];
                             if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
@@ -1342,6 +1348,8 @@ class ReportXS01List extends CListPageModel
                             }
                             $money+=$m*$otherspanning['otherspanning'];
                         }
+                        $sqlct="update swoper$suffix.swo_service set royaltys='".$records2['new_calc']."'  where id='$ai'";
+                        $model = Yii::app()->db->createCommand($sqlct)->execute();
                     }else{
                         $m=$m*$royalty[$ai];
                         if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
