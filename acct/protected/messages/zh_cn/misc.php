@@ -79,7 +79,8 @@ return array(
 	'<< Advanced >>'=>'<< 进阶搜寻 >>',
 	'Advanced'=>'进阶',
 	'Clear'=>'清除',
-	
+    'Down'=>'下载报表',
+
 	'Misc'=>'其他',
 	'Status'=>'状态',
 	'Mark Read'=>'标记已读',

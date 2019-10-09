@@ -79,6 +79,7 @@ return array(
 '<< Advanced >>'=>'<< 進階搜尋 >>',
 'Advanced'=>'進階',
 'Clear'=>'清除',
+'Down'=>'下載報表',
 
 'Misc'=>'其他',
 'Status'=>'狀態',

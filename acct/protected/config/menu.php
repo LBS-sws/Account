@@ -119,7 +119,7 @@ return array(
             ),
             'Sales Commission history'=>array(
                 'access'=>'XS02',
-                'url'=>'/iqueue/index',
+                'url'=>'/query/index',
             ),
             'Sales Commission ladder'=>array(
                 'access'=>'XS03',
