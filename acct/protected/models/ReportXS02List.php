@@ -52,19 +52,19 @@ class ReportXS02List extends CListPageModel
 			";
         }else{
             $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,e.name as cityname from acc_service_comm_hdr a
-                 inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
-                 inner join  hr$suffix.hr_dept c on b.position=c.id      
-                 inner join security$suffix.sec_city e on a.city=e.code 		  
-                 left outer join  acc_service_comm_dtl d on a.id=d.hdr_id     
-                 left outer join  hr$suffix.hr_binding e on b.name=e.employee_name        
+                 inner join  hr$suffix.hr_employee b  on b.name=a.employee_name
+                 inner join  hr$suffix.hr_dept c on b.position=c.id
+                 inner join security$suffix.sec_city e on a.city=e.code
+                 left outer join  acc_service_comm_dtl d on a.id=d.hdr_id
+                 left outer join  hr$suffix.hr_binding e on b.name=e.employee_name
 			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)  and e.user_id='$user'
 			";
             $sql2 = "select count(a.id) from acc_service_comm_hdr a
-			      inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
-                  inner join  hr$suffix.hr_dept c on b.position=c.id   
-                  inner join security$suffix.sec_city e on a.city=e.code 		   
-                  left outer join  acc_service_comm_dtl d on a.id=d.hdr_id   
-                  left outer join  hr$suffix.hr_binding e on b.name=e.employee_name          
+			      inner join  hr$suffix.hr_employee b  on b.name=a.employee_name
+                  inner join  hr$suffix.hr_dept c on b.position=c.id
+                  inner join security$suffix.sec_city e on a.city=e.code
+                  left outer join  acc_service_comm_dtl d on a.id=d.hdr_id
+                  left outer join  hr$suffix.hr_binding e on b.name=e.employee_name
 			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)  and e.user_id='$user'
 			";
         }
@@ -210,8 +210,8 @@ class ReportXS02List extends CListPageModel
                     'city_name'=>$record['city_name'],               //城市
                     'type_desc'=>$record['type_desc'],               //类别
                     'service'=>$record['service'],                    //服务频率
-                    'sign_dt'=>General::toDate($record['sign_dt']),   //签约时间
-                    'first_dt'=>General::toDate($record['first_dt']), //服务时间
+                    'sign_dt'=>date_format(date_create($record['sign_dt']),"Y/m/d"),    //签约时间
+                    'first_dt'=>date_format(date_create($record['first_dt']),"Y/m/d"),  //服务时间
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$record['amt_install'],           //安装金额
                     'othersalesman'=>$record['othersalesman'],           //跨区业务员
@@ -304,8 +304,8 @@ class ReportXS02List extends CListPageModel
                     'city_name'=>$record['city_name'],               //城市
                     'type_desc'=>$record['type_desc'],               //类别
                     'service'=>$record['service'],                    //服务频率
-                    'sign_dt'=>General::toDate($record['sign_dt']),   //签约时间
-                    'first_dt'=>General::toDate($record['first_dt']), //服务时间
+                    'sign_dt'=>date_format(date_create($record['sign_dt']),"Y/m/d"),    //签约时间
+                    'first_dt'=>date_format(date_create($record['first_dt']),"Y/m/d"),  //服务时间
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$record['amt_install'],           //安装金额
                     'othersalesman'=>$record['othersalesman'],           //跨区业务员
@@ -526,8 +526,8 @@ class ReportXS02List extends CListPageModel
                     'city_name'=>$record['city_name'],               //城市
                     'type_desc'=>$record['type_desc'],               //类别
                     'service'=>$record['service'],                    //服务频率
-                    'sign_dt'=>General::toDate($record['sign_dt']),   //签约时间
-                    'first_dt'=>General::toDate($record['first_dt']), //服务时间
+                    'sign_dt'=>date_format(date_create($record['sign_dt']),"Y/m/d"),    //签约时间
+                    'first_dt'=>date_format(date_create($record['first_dt']),"Y/m/d"), //服务时间
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$record['amt_install'],           //安装金额
                     'othersalesman'=>$record['othersalesman'],           //跨区业务员
@@ -719,8 +719,8 @@ class ReportXS02List extends CListPageModel
                     'city_name'=>$arrs['city_name'],               //城市
                     'type_desc'=>$arrs['type_desc'],               //类别
                     'service'=>$arrs['service'],                    //服务频率
-                    'sign_dt'=>General::toDate($arrs['sign_dt']),   //签约时间
-                    'first_dt'=>General::toDate($arrs['first_dt']), //服务时间
+                    'sign_dt'=>date_format(date_create($arrs['sign_dt']),"Y/m/d"),  //签约时间
+                    'first_dt'=>date_format(date_create($arrs['first_dt']),"Y/m/d"), //服务时间
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$arrs['amt_install'],           //安装金额
                     'status_copy'=>0,           //是否计算
@@ -741,8 +741,8 @@ class ReportXS02List extends CListPageModel
                     'city_name'=>$record['city_name'],               //城市
                     'type_desc'=>$record['type_desc'],               //类别
                     'service'=>$record['service'],                    //服务频率
-                    'sign_dt'=>General::toDate($record['sign_dt']),   //签约时间
-                    'first_dt'=>General::toDate($record['first_dt']), //服务时间
+                    'sign_dt'=>date_format(date_create($record['sign_dt']),"Y/m/d"),    //签约时间
+                    'first_dt'=>date_format(date_create($record['first_dt']),"Y/m/d"),  //服务时间
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$record['amt_install'],           //安装金额
                     'status_copy'=>$record['status_copy'],           //是否计算
