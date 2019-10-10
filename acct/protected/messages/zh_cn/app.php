@@ -16,6 +16,7 @@ return array(
 	'Operation'=>'营运系统',
 	'Personnel'=>'人事系统',
 	'Sales'=>'销售系统',
+	'Sale Query'=>'销售查询区域显示',
 
 	'Quiz'=>'测验系统',
     'Academic Credit'=>'学分系统',

@@ -32,22 +32,43 @@ class ReportXS02List extends CListPageModel
 //        print_r('<pre>');
 //        print_r($month);
 		$suffix = Yii::app()->params['envSuffix'];
-		$city = Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         $month=$month-1;
-        $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,e.name as cityname from acc_service_comm_hdr a
+        $user=Yii::app()->user->id;
+        if(Yii::app()->user->validFunction('CN09')){
+            $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,e.name as cityname from acc_service_comm_hdr a
                  inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
                  inner join  hr$suffix.hr_dept c on b.position=c.id      
                  inner join security$suffix.sec_city e on a.city=e.code 		  
                  left outer join  acc_service_comm_dtl d on a.id=d.hdr_id            
-			     where  a.year_no='$year'  and a.month_no='$month' and a.city='".$city."' and b.city='$city'
+			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)
 			";
-		$sql2 = "select count(a.id) from acc_service_comm_hdr a
+            $sql2 = "select count(a.id) from acc_service_comm_hdr a
 			      inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
                  inner join  hr$suffix.hr_dept c on b.position=c.id   
                   inner join security$suffix.sec_city e on a.city=e.code 		   
                   left outer join  acc_service_comm_dtl d on a.id=d.hdr_id          
-			     where  a.year_no='$year'  and a.month_no='$month' and a.city='".$city."' and b.city='$city'
+			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)
 			";
+        }else{
+            $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,e.name as cityname from acc_service_comm_hdr a
+                 inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
+                 inner join  hr$suffix.hr_dept c on b.position=c.id      
+                 inner join security$suffix.sec_city e on a.city=e.code 		  
+                 left outer join  acc_service_comm_dtl d on a.id=d.hdr_id     
+                 left outer join  hr$suffix.hr_binding e on b.name=e.employee_name        
+			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)  and e.user_id='$user'
+			";
+            $sql2 = "select count(a.id) from acc_service_comm_hdr a
+			      inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
+                  inner join  hr$suffix.hr_dept c on b.position=c.id   
+                  inner join security$suffix.sec_city e on a.city=e.code 		   
+                  left outer join  acc_service_comm_dtl d on a.id=d.hdr_id   
+                  left outer join  hr$suffix.hr_binding e on b.name=e.employee_name          
+			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)  and e.user_id='$user'
+			";
+        }
+
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
 			$svalue = str_replace("'","\'",$this->searchValue);
@@ -757,7 +778,7 @@ class ReportXS02List extends CListPageModel
         $pageNum=1;
         Yii::$enableIncludePath = false;
         $phpExcelPath = Yii::getPathOfAlias('ext.phpexcel');
-        //spl_autoload_unregister(array('YiiBase','autoload'));
+        spl_autoload_unregister(array('YiiBase','autoload'));
         include($phpExcelPath . DIRECTORY_SEPARATOR . 'PHPExcel.php');
         $objPHPExcel = new PHPExcel;
         $objReader  = PHPExcel_IOFactory::createReader('Excel2007');
@@ -779,92 +800,92 @@ class ReportXS02List extends CListPageModel
         $this->newDataByPage($pageNum,$year,$month,$index);
         $objPHPExcel->getActiveSheet()->setCellValue('A11','类别 : 新生意额') ;
         $i=12;
-        for($o=1;$o<count($this['attr']);$o++){
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'服务时间 : '.$this['attr'][0]['first_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,'签约时间 : '.$this['attr'][0]['sign_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,'客户编号及名称 : '.$this['attr'][0]['company_name']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,'跨区业务员 : '.$this['attr'][0]['othersalesman']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,'类别 : '.$this['attr'][0]['type_desc']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,'服务频次 : '.$this['attr'][0]['service']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,'服务年金额 : '.$this['attr'][0]['amt_paid']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,'安装金额 : '.$this['attr'][0]['amt_install']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,'是否计算提成 : '.$this['attr'][0]['status_copy']) ;
+        for($o=0;$o<count($this['attr']);$o++){
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'服务时间 : '.$this['attr'][$o]['first_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,'签约时间 : '.$this['attr'][$o]['sign_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,'客户编号及名称 : '.$this['attr'][$o]['company_name']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,'跨区业务员 : '.$this['attr'][$o]['othersalesman']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,'类别 : '.$this['attr'][$o]['type_desc']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,'服务频次 : '.$this['attr'][$o]['service']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,'服务年金额 : '.$this['attr'][$o]['amt_paid']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,'安装金额 : '.$this['attr'][$o]['amt_install']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,'是否计算提成 : '.$this['attr'][$o]['status_copy']) ;
             $i=$i+1;
         }
 
         $this->editDataByPage($pageNum,$year,$month,$index);
         $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'类别 : 更改生意额') ;
         $i=$i+1;
-        for($o=1;$o<count($this['attr']);$o++){
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'服务时间 : '.$this['attr'][0]['first_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,'签约时间 : '.$this['attr'][0]['sign_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,'客户编号及名称 : '.$this['attr'][0]['company_name']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,'跨区业务员 : '.$this['attr'][0]['othersalesman']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,'类别 : '.$this['attr'][0]['type_desc']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,'服务频次 : '.$this['attr'][0]['service']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,'服务年金额 : '.$this['attr'][0]['amt_paid']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,'安装金额 : '.$this['attr'][0]['amt_install']) ;
+        for($o=0;$o<count($this['attr']);$o++){
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'服务时间 : '.$this['attr'][$o]['first_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,'签约时间 : '.$this['attr'][$o]['sign_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,'客户编号及名称 : '.$this['attr'][$o]['company_name']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,'跨区业务员 : '.$this['attr'][$o]['othersalesman']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,'类别 : '.$this['attr'][$o]['type_desc']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,'服务频次 : '.$this['attr'][$o]['service']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,'服务年金额 : '.$this['attr'][$o]['amt_paid']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,'安装金额 : '.$this['attr'][$o]['amt_install']) ;
           //  $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,'是否计算提成 : '.$this['attr'][0]['status_copy']) ;
             $i=$i+1;
         }
         $this->endDataByPage($pageNum,$year,$month,$index);
         $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'类别 : 终止生意额') ;
         $i=$i+1;
-        for($o=1;$o<count($this['attr']);$o++){
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'服务时间 : '.$this['attr'][0]['first_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,'签约时间 : '.$this['attr'][0]['sign_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,'客户编号及名称 : '.$this['attr'][0]['company_name']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,'跨区业务员 : '.$this['attr'][0]['othersalesman']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,'类别 : '.$this['attr'][0]['type_desc']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,'服务频次 : '.$this['attr'][0]['service']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,'服务年金额 : '.$this['attr'][0]['amt_paid']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,'安装金额 : '.$this['attr'][0]['amt_install']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,'是否计算提成 : '.$this['attr'][0]['status_copy']) ;
+        for($o=0;$o<count($this['attr']);$o++){
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'服务时间 : '.$this['attr'][$o]['first_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,'签约时间 : '.$this['attr'][$o]['sign_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,'客户编号及名称 : '.$this['attr'][$o]['company_name']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,'跨区业务员 : '.$this['attr'][$o]['othersalesman']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,'类别 : '.$this['attr'][$o]['type_desc']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,'服务频次 : '.$this['attr'][$o]['service']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,'服务年金额 : '.$this['attr'][$o]['amt_paid']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,'安装金额 : '.$this['attr'][$o]['amt_install']) ;
+          //  $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,'是否计算提成 : '.$this['attr'][$o]['status_copy']) ;
             $i=$i+1;
         }
         $this->performanceDataByPage($pageNum,$year,$month,$index);
         $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'类别 : 跨区新增生意额') ;
         $i=$i+1;
-        for($o=1;$o<count($this['attr']);$o++){
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'服务时间 : '.$this['attr'][0]['first_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,'签约时间 : '.$this['attr'][0]['sign_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,'客户编号及名称 : '.$this['attr'][0]['company_name']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,'跨区业务员 : '.$this['attr'][0]['othersalesman']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,'类别 : '.$this['attr'][0]['type_desc']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,'服务频次 : '.$this['attr'][0]['service']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,'服务年金额 : '.$this['attr'][0]['amt_paid']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,'安装金额 : '.$this['attr'][0]['amt_install']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,'是否计算提成 : '.$this['attr'][0]['status_copy']) ;
+        for($o=0;$o<count($this['attr']);$o++){
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'服务时间 : '.$this['attr'][$o]['first_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,'签约时间 : '.$this['attr'][$o]['sign_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,'客户编号及名称 : '.$this['attr'][$o]['company_name']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,'跨区业务员 : '.$this['attr'][$o]['othersalesman']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,'类别 : '.$this['attr'][$o]['type_desc']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,'服务频次 : '.$this['attr'][$o]['service']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,'服务年金额 : '.$this['attr'][$o]['amt_paid']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,'安装金额 : '.$this['attr'][$o]['amt_install']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,'是否计算提成 : '.$this['attr'][$o]['status_copy']) ;
             $i=$i+1;
         }
         $this->performanceeditDataByPage($pageNum,$year,$month,$index);
         $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'类别 : 跨区更改生意额') ;
         $i=$i+1;
-        for($o=1;$o<count($this['attr']);$o++){
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'服务时间 : '.$this['attr'][0]['first_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,'签约时间 : '.$this['attr'][0]['sign_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,'客户编号及名称 : '.$this['attr'][0]['company_name']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,'跨区业务员 : '.$this['attr'][0]['othersalesman']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,'类别 : '.$this['attr'][0]['type_desc']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,'服务频次 : '.$this['attr'][0]['service']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,'服务年金额 : '.$this['attr'][0]['amt_paid']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,'安装金额 : '.$this['attr'][0]['amt_install']) ;
+        for($o=0;$o<count($this['attr']);$o++){
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'服务时间 : '.$this['attr'][$o]['first_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,'签约时间 : '.$this['attr'][$o]['sign_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,'客户编号及名称 : '.$this['attr'][$o]['company_name']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,'跨区业务员 : '.$this['attr'][$o]['othersalesman']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,'类别 : '.$this['attr'][$o]['type_desc']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,'服务频次 : '.$this['attr'][$o]['service']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,'服务年金额 : '.$this['attr'][$o]['amt_paid']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,'安装金额 : '.$this['attr'][$o]['amt_install']) ;
          //   $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,'是否计算提成 : '.$this['attr'][0]['status_copy']) ;
             $i=$i+1;
         }
         $this->performanceendDataByPage($pageNum,$year,$month,$index);
         $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'类别 : 跨区终止生意额') ;
         $i=$i+1;
-        for($o=1;$o<count($this['attr']);$o++){
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'服务时间 : '.$this['attr'][0]['first_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,'签约时间 : '.$this['attr'][0]['sign_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,'客户编号及名称 : '.$this['attr'][0]['company_name']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,'跨区业务员 : '.$this['attr'][0]['othersalesman']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,'类别 : '.$this['attr'][0]['type_desc']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,'服务频次 : '.$this['attr'][0]['service']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,'服务年金额 : '.$this['attr'][0]['amt_paid']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,'安装金额 : '.$this['attr'][0]['amt_install']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,'是否计算提成 : '.$this['attr'][0]['status_copy']) ;
+        for($o=0;$o<count($this['attr']);$o++){
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'服务时间 : '.$this['attr'][$o]['first_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,'签约时间 : '.$this['attr'][$o]['sign_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,'客户编号及名称 : '.$this['attr'][$o]['company_name']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,'跨区业务员 : '.$this['attr'][$o]['othersalesman']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,'类别 : '.$this['attr'][$o]['type_desc']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,'服务频次 : '.$this['attr'][$o]['service']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,'服务年金额 : '.$this['attr'][$o]['amt_paid']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,'安装金额 : '.$this['attr'][$o]['amt_install']) ;
+         //   $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,'是否计算提成 : '.$this['attr'][$o]['status_copy']) ;
             $i=$i+1;
         }
 
@@ -885,6 +906,7 @@ class ReportXS02List extends CListPageModel
         header('Content-Disposition:attachment;filename="'.$str.'"');
         header("Content-Transfer-Encoding:binary");
         echo $output;
+
     }
 
 }

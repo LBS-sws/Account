@@ -9,4 +9,5 @@ return array(
 	'Void Reimbursement'=>array('access'=>'CN06'),
 	'Batch Approve'=>array('access'=>'CN07'),
 	'T3 Checker Right'=>array('access'=>'CN08',),
+    'Sale Query'=>array('access'=>'CN09',),
 );

@@ -16,6 +16,7 @@ return array(
 'Operation'=>'營運系統',
 'Personnel'=>'人事系統',
 'Sales'=>'銷售系統',
+'Sale Query'=>'銷售查詢區域顯示',
 
 'Quiz'=>'測驗系統',
 'Academic Credit'=>'學分系統',
