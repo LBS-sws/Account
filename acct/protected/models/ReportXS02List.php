@@ -889,23 +889,18 @@ class ReportXS02List extends CListPageModel
             $i=$i+1;
         }
 
-        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-        ob_start();
-        $objWriter->save('php://output');
-        $output = ob_get_clean();
-        spl_autoload_register(array('YiiBase','autoload'));
         $time=time();
-        $str="templates/salecommsion_".$time.".xlsx";
-        header("Pragma: public");
-        header("Expires: 0");
-        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
-        header("Content-Type:application/force-download");
-        header("Content-Type:application/vnd.ms-execl");
-        header("Content-Type:application/octet-stream");
-        header("Content-Type:application/download");;
+        $str="salecommsion_".$time.".xlsx";
+        header("Content-Type:application/vnd.ms-excel");
         header('Content-Disposition:attachment;filename="'.$str.'"');
-        header("Content-Transfer-Encoding:binary");
-        echo $output;
+       header("Pragma: no-cache");
+        header("Expires: 0");
+
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+ob_end_clean();
+        $objWriter->save('php://output');
+
+        spl_autoload_register(array('YiiBase','autoload'));
 
     }
 
