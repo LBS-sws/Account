@@ -136,10 +136,12 @@ return array(
 	'Batch Approve'=>'批量批准',
 	'Batch Submit'=>'批量提交',
 	'Batch Confirm'=>'批量确认',
+	'Batch Sign'=>'批量签字',
 	'Return'=>'退回',
 	'Return Reason'=>'退回原因',
 	'Paid Account cannot be blank'=>'付款账户不能为无',
 	'and T3 balance are not the same'=>'和T3余額不相同',
+	'Sign'=>'签字',
 	
 	'Req. Attachment'=>'申请附件',
 	'Reimburse. Attm.'=>'报销单附件',
@@ -174,5 +176,8 @@ return array(
 	'LBS Items: Remarks cannot be empty'=>'LBS项目: 备注不能空白',
 	'T3 Items: Amount value is incorrect'=>'T3项目: 金额不正确',
 	'LBS Items: Amount value is incorrect'=>'LBS项目: 金额不正确',
+	'No Tax Slip'=>'沒有上传税票',
+	'Show w/Tax Slip'=>'仅显示含税票',
+	'Show All'=>'显示所有',
 );
 ?>

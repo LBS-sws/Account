@@ -65,6 +65,7 @@ class ExcelTool {
 		$loc = $col.$row;
 		return $this->objPHPExcel->getActiveSheet()->getCell($loc)->getValue();
 	}
+	
 	public function setReportDefaultFormat() {
 		$this->objPHPExcel->getDefaultStyle()->getFont()
 			->setSize(10);

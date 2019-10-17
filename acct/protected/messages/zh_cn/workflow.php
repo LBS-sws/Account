@@ -19,6 +19,7 @@ return array(
 	'Request Cancelled'=>'取消申请',
 	'Request Confirmed'=>'申请已确认',
 	'Request Confirmation Denied'=>'申请确认已被拒绝',
+	'Request Approved and Signed'=>'批准申请及签字完成',
 	'Reimbursement Approved'=>'报销单申请完成',
 	'Reimbursement Cancelled'=>'取消报销单申请',
 	'Approver'=>'审核人',
@@ -27,5 +28,6 @@ return array(
 	'Submit (Start)'=>'提交 (开始)',
 	'[Action]'=>'[待执行]',
 	'[Notice]'=>'[通知]',
+	'Payment request has been approved and signed'=>'付款申请已批准並签字',
 );
 ?>

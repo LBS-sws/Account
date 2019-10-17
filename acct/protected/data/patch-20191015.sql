@@ -1,0 +1,10 @@
+call addaction(4, 'APPRNSIGN', '申请批准並签字');
+call addstate(4, 'S', '已批准申请並签字');
+call addtask(4, 'Status=Approved and Signed', 'transit', 'S');
+call addactiontask(4, 'APPRNSIGN', 1, 'Status=Approved and Signed');
+call addactiontask(4, 'APPRNSIGN', 2, 'Send Email');
+call addactiontask(4, 'APPRNSIGN', 3, 'Generate Transaction');
+call addactiontask(4, 'APPRNSIGN', 4, 'Status=End');
+call addactiontask(4, 'APPRNSIGN', 5, 'Clear All Pending');
+call addtransition(4, 'PA', 'S');
+call addtransition(4, 'S', 'ED');

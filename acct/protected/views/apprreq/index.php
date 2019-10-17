@@ -32,6 +32,18 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Approval';
 				'id'=>'btnBatchAppr', 
 			)); 
 		?>
+		<?php 
+			if (Yii::app()->user->validRWFunction('XA07')) {
+				echo TbHtml::button('<span class="fa fa-check"></span> '.Yii::t('trans','Batch Sign'), array(
+					'id'=>'btnBatchSign', 
+				)); 
+				
+				$label = !$model->showtaxonly ? Yii::t('trans','Show w/Tax Slip') : Yii::t('trans','Show All');
+				echo TbHtml::button('<span class="fa fa-eye"></span> '.$label, array(
+					'id'=>'btnShow', 
+				)); 
+			}
+		?>
 <?php 
 // Dummy Button for include jQuery.yii.submitForm
 echo TbHtml::button('dummyButton', array('style'=>'display:none','disabled'=>true,'submit'=>'#',));
@@ -43,12 +55,12 @@ echo TbHtml::button('dummyButton', array('style'=>'display:none','disabled'=>tru
 	<div id="yw0" class="tabbable">
 		<?php  ?>
 		<ul class="nav nav-tabs" role="menu">
-			<li <?php echo (($type=='P') ? 'class="active"' : ''); ?> role="menuitem">
+			<li <?php echo (($model->type=='P') ? 'class="active"' : ''); ?> role="menuitem">
 				<a tabindex="-1" href="<?php echo Yii::app()->createUrl('apprreq/index', array('type'=>'P'));?>">
 					<?php echo Yii::t('trans','Pending (Direct)'); ?>
 				</a>
 			</li>
-			<li <?php echo (($type=='Q') ? 'class="active"' : ''); ?> role="menuitem">
+			<li <?php echo (($model->type=='Q') ? 'class="active"' : ''); ?> role="menuitem">
 				<a tabindex="-1" href="<?php echo Yii::app()->createUrl('apprreq/index', array('type'=>'Q'));?>">
 					<?php echo Yii::t('trans','Pending (Related)'); ?>
 				</a>
@@ -78,8 +90,8 @@ echo TbHtml::button('dummyButton', array('style'=>'display:none','disabled'=>tru
 	</div>
 </section>
 <?php
-	$model->type = (!isset($type)||empty($type)?'P':$type);
 	echo $form->hiddenField($model,'type');
+	echo $form->hiddenField($model,'showtaxonly');
 	echo $form->hiddenField($model,'pageNum');
 	echo $form->hiddenField($model,'totalRow');
 	echo $form->hiddenField($model,'orderField');
@@ -162,6 +174,34 @@ $('#btnBatchAppr').on('click', function(){
 });
 ";
 Yii::app()->clientScript->registerScript('batchApprove',$js,CClientScript::POS_READY);
+
+$url = Yii::app()->createUrl('apprreq/batchsign');
+$js = "
+$('#btnBatchSign').on('click', function(){
+	$('input[type=checkbox][name*=\"select\"]').each(function() {
+		var val = $(this).prop('checked');
+		if (val) {
+			Loading.show();
+			jQuery.yii.submitForm(this,'$url',{});
+			return false;
+		}
+	});
+	return false;
+});
+";
+Yii::app()->clientScript->registerScript('batchSign',$js,CClientScript::POS_READY);
+
+$url = Yii::app()->createUrl('apprreq/index',array('type'=>$model->type));
+$js = "
+$('#btnShow').on('click', function(){
+	var val = $('#ApprReqList_showtaxonly').val();
+	var arg = val ? '&tax=N' : '&tax=Y';
+	Loading.show();
+	jQuery.yii.submitForm(this,'$url'+arg,{});
+	return false;
+});
+";
+Yii::app()->clientScript->registerScript('batchShow',$js,CClientScript::POS_READY);
 
 $js = "
 $('body').on('click','#chkboxAll',function() {

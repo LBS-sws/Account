@@ -84,8 +84,16 @@ class ApprReqForm extends CFormModel
 			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, item_code, pitem_desc, amount','safe'),
 			array('id, item_desc, payee_id, status, status_desc, ref_no, acct_code, type, remarks, reason, int_fee','safe'), 
 			array('files, removeFileId, docMasterId, no_of_attm','safe'), 
+			array ('no_of_attm','validateTaxSlip'),
 				
 		);
+	}
+
+	public function validateTaxSlip($attribute, $params) {
+		$count = $this->no_of_attm['tax'];
+		if ($this->scenario=='sign' && (empty($count) || $count==0)) {
+			$this->addError($attribute, Yii::t('trans','No Tax Slip'));
+		}
 	}
 
 	public function retrieveData($index, $type='P')
@@ -188,6 +196,22 @@ class ApprReqForm extends CFormModel
 		}
 	}
 
+	public function sign() {
+		$wf = new WorkflowPayment;
+		$connection = $wf->openConnection();
+		try {
+			$this->saveTransDate($connection);
+			if ($wf->startProcess('PAYMENT',$this->id,$this->req_dt)) {
+				$wf->takeAction('APPRNSIGN');
+			}
+			$wf->transaction->commit();
+		}
+		catch(Exception $e) {
+			$wf->transaction->rollback();
+			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
+		}
+	}
+
 	protected function saveInfo(&$connection) {
 		$sql = "insert into acc_request_info(
 					req_id, field_id, field_value, luu, lcu) values (
@@ -219,6 +243,33 @@ class ApprReqForm extends CFormModel
 		return true;
 	}
 	
+	protected function saveTransDate(&$connection) {
+		$sql = "insert into acc_request_info(
+					req_id, field_id, field_value, luu, lcu) values (
+					:id, 'trans_dt', :field_value, :luu, :lcu)
+					on duplicate key update
+					field_value = :field_value
+				";
+
+		$city = Yii::app()->user->city();
+		$uid = Yii::app()->user->id;
+
+		$command=$connection->createCommand($sql);
+		if (strpos($sql,':id')!==false)
+			$command->bindParam(':id',$this->id,PDO::PARAM_INT);
+		if (strpos($sql,':field_value')!==false) {
+			$value = General::toMyDate($this->req_dt);
+			$command->bindParam(':field_value',$value,PDO::PARAM_STR);
+		}
+		if (strpos($sql,':lcu')!==false)
+			$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
+		if (strpos($sql,':luu')!==false)
+			$command->bindParam(':luu',$uid,PDO::PARAM_STR);
+		$command->execute();
+
+		return true;
+	}
+
 	public function isReadOnly() {
 		return true;
 	}

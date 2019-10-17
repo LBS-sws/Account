@@ -433,7 +433,7 @@ class WorkflowPayment extends WorkflowDMS {
 		
 		$v = array();
 		$v['doc_id'] = $docId;
-		$v['state'] = 'A';
+		$v['state'] = 'S';
 		$v['send'] = 'Y';
 		$v['to_addr'] = $toaddr;
 //		$v['cc_addr'] = $ccaddr;
@@ -441,6 +441,46 @@ class WorkflowPayment extends WorkflowDMS {
 		$v['subject'] = Yii::t('workflow','Payment request has been approved').' ('.Yii::t('trans','Ref. No.').' '.$refno.') ';
 		$v['desc'] = Yii::t('trans','Request Approval');
 		$msg1 = Yii::t('workflow','Request Approved');
+		$msg2 = $this->requestDetail($docId);
+		$msg2 .= Yii::t('workflow','Approver').': '.$apprname.'<br>';
+		$v['message'] = "<p>$msg1</p><p>$msg2</p>";
+		$rtn[] = $this->emailGeneric($v);
+
+		$v['send'] = 'N';
+		$v['to_addr'] = $ccaddr;
+		$rtn[] = $this->emailGeneric($v);
+		
+		return $rtn;
+	}
+
+	public function emailS() {
+		$docId = $this->getDocId();
+		$refno = $this->getRequestData('REF_NO');
+		$user = $this->getRequestData('REQ_USER');
+		$toaddr[$user] = $this->getEmail($user);
+		$ccaddr = $this->getLastStateRespEmail();
+		$cc = $this->getLastStateRespStandbyEmail();
+		if (!empty($cc)) $ccaddr = array_merge($ccaddr, $cc);
+		$approver = $this->getLastStateActionRespUser('APPRNSIGN');
+		$apprname = "";
+		if (!empty($approver)) {
+			foreach ($approver as $user) {
+				$apprname .= (($apprname=="") ? "" : ", ").$this->getDisplayName($user);
+			}
+		}
+
+		$rtn = array();
+		
+		$v = array();
+		$v['doc_id'] = $docId;
+		$v['state'] = 'A';
+		$v['send'] = 'Y';
+		$v['to_addr'] = $toaddr;
+//		$v['cc_addr'] = $ccaddr;
+		$v['subjtype'] = 'notice';
+		$v['subject'] = Yii::t('workflow','Payment request has been approved and signed').' ('.Yii::t('trans','Ref. No.').' '.$refno.') ';
+		$v['desc'] = Yii::t('trans','Request Approval');
+		$msg1 = Yii::t('workflow','Request Approved and Signed');
 		$msg2 = $this->requestDetail($docId);
 		$msg2 .= Yii::t('workflow','Approver').': '.$apprname.'<br>';
 		$v['message'] = "<p>$msg1</p><p>$msg2</p>";

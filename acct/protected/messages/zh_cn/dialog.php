@@ -65,5 +65,7 @@ return array(
 	'Exceeds file upload limit.'=>'超出文件上传限制。',
 	'Mark read for all selected records?'=>'列表上的所有记录标记为已读？',
 	'Mark Read Done'=>'标记已读完成',
+	'Request Approved and Signed'=>'批准申请及签字完成',
+	'Request Confirmed'=>'确认申请完成',
 );
 ?>

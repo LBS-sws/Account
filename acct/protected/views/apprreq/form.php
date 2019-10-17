@@ -33,6 +33,12 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Approval Form';
 		<?php echo TbHtml::button('<span class="fa fa-remove"></span> '.Yii::t('misc','Deny'), array(
 			'id'=>'btnDeny', 'name'=>'btnDeny'));
 		?>
+		<?php 
+			if (Yii::app()->user->validRWFunction('XA07')) {
+				echo TbHtml::button('<span class="fa fa-check"></span> '.Yii::t('trans','Sign'), array(
+					'submit'=>Yii::app()->createUrl('apprreq/sign'))); 
+			}
+		?>
 	</div>
 	<div class="btn-group pull-right" role="group">
 	<?php 

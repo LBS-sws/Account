@@ -26,18 +26,25 @@ class RptReimbursement extends CReport {
 		
 		if (empty($ref_no)) {
 			$sql = "select a.*, 
-						workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'SI') as sts_dt,
+						workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'SI') as sts_dt1,
+						workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'S') as sts_dt2,
 						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PC') as acctstaff,
-						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PS') as approver
+						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PS') as approver1,
+						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PA') as approver2
 					from acc_request a
 					where a.city='$city' and a.status<>'V'
-					and workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'SI')>='".General::toDate($start_dt)." 00:00:00' 
-					and workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'SI')<='".General::toDate($end_dt)." 23:59:59'
+					and ((workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'SI')>='".General::toDate($start_dt)." 00:00:00' 
+					and workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'SI')<='".General::toDate($end_dt)." 23:59:59')
+					or (workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'S')>='".General::toDate($start_dt)." 00:00:00' 
+					and workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'S')<='".General::toDate($end_dt)." 23:59:59'))
 				";
 		} else {
-			$sql = "select a.*, workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'SI') as sts_dt,
+			$sql = "select a.*, 
+						workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'SI') as sts_dt1,
+						workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'S') as sts_dt2,
 						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PC') as acctstaff,
-						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PS') as approver
+						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PS') as approver1,
+						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PA') as approver2
 					from acc_request a 
 					inner join acc_request_info b on a.id=b.req_id and b.field_id='REF_NO' 
 					where a.city='$city' and a.status<>'V' 
@@ -52,11 +59,13 @@ class RptReimbursement extends CReport {
 			$acctcodelist = General::getAcctCodeList();
 			$acctlist = General::getAccountList($city);
 			foreach ($rows as $row) {
+				$flag = empty($row['sts_dt1']) ? 2 : 1;
+				
 				$req_id = $row['id'];
 
 				$temp = array();
 				$temp['req_id'] = $req_id;
-				$temp['sts_dt'] = General::toDate($row['sts_dt']);
+				$temp['sts_dt'] = $flag==1 ? General::toDate($row['sts_dt1']) : General::toDate($row['sts_dt2']);
 				$temp['item_desc'] = $row['item_desc'];
 				$temp['amount'] = $row['amount'];
 				$temp['trans_type'] = $transtypelist[$row['trans_type_code']];
@@ -104,7 +113,8 @@ class RptReimbursement extends CReport {
 					$temp['account_img_type'] = '';
 				}
 
-				$muser = User::model()->find('LOWER(username)=?',array($row['approver']));
+				$approver = $flag==1 ? $row['approver1'] : $row['approver2'];
+				$muser = User::model()->find('LOWER(username)=?',array($approver));
 				$temp['manager_img'] = $muser->getUserInfoImage('signature');
 				$type = $muser->getUserInfoImage('signature_file_type');
 				$temp['manager_img_type'] = $this->getImageType($type);

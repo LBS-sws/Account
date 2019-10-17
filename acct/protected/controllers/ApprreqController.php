@@ -24,7 +24,7 @@ class ApprreqController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('edit','approve','deny','batchapprove'),
+				'actions'=>array('edit','approve','deny','batchapprove','batchsign','sign'),
 				'expression'=>array('ApprreqController','allowReadWrite'),
 			),
 			array('allow', 
@@ -37,7 +37,7 @@ class ApprreqController extends Controller
 		);
 	}
 
-	public function actionIndex($pageNum=0, $type='P') 
+	public function actionIndex($pageNum=0, $type='', $tax='') 
 	{
 		$session = Yii::app()->session;
 
@@ -46,10 +46,12 @@ class ApprreqController extends Controller
 			$criteria = $session['criteria_xa05'];
 			$model->setCriteria($criteria);
 		}
+		$model->type = empty($type) ? (empty($model->type) ? 'P' : $model->type) : $type;
+		$model->showtaxonly = empty($tax) ? $model->showtaxonly : $tax=='Y';
 		$model->determinePageNum($pageNum);
-		$model->retrieveDataByPage($model->pageNum,$type);
+		$model->retrieveDataByPage($model->pageNum,$model->type,$model->showtaxonly);
 
-		$this->render('index',array('model'=>$model,'type'=>$type));
+		$this->render('index',array('model'=>$model));
 	}
 
 	public function actionEdit($index, $type='P')
@@ -66,15 +68,25 @@ class ApprreqController extends Controller
 		$model = new ApprReqList;
 		if (isset($_POST['ApprReqList'])) {
 			$model->attributes = $_POST['ApprReqList'];
-//			if ($model->validate()) {
-				$model->batchApprove();
-				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Request Approved'));
+			$model->batchApprove();
+			Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Request Approved'));
+			$this->redirect(Yii::app()->createUrl('apprreq/index',array('type'=>$model->type,)));
+		}
+	}
+	
+	public function actionBatchsign() {
+		$model = new ApprReqList;
+		if (isset($_POST['ApprReqList'])) {
+			$model->attributes = $_POST['ApprReqList'];
+			if ($model->validate()) {
+				$model->batchSign();
+				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Request Approved and Signed'));
 				$this->redirect(Yii::app()->createUrl('apprreq/index',array('type'=>$model->type,)));
-//			} else {
-//				$message = CHtml::errorSummary($model);
-//				Dialog::message(Yii::t('dialog','Validation Message'), $message);
-//				$this->render('form',array('model'=>$model,));
-//			}
+			} else {
+				$message = CHtml::errorSummary($model);
+				Dialog::message(Yii::t('dialog','Validation Message'), $message);
+				$this->render('index',array('model'=>$model));
+			}
 		}
 	}
 	
@@ -101,6 +113,24 @@ class ApprreqController extends Controller
 			$model->deny();
 			Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Request Denied'));
 			$this->redirect(Yii::app()->createUrl('apprreq/index',array('type'=>$model->type,)));
+		}
+	}
+
+	public function actionSign()
+	{
+		if (isset($_POST['ApprReqForm'])) {
+			$model = new ApprReqForm($_POST['ApprReqForm']['scenario']);
+			$model->attributes = $_POST['ApprReqForm'];
+			$model->scenario = 'sign';
+			if ($model->validate()) {
+				$model->sign();
+				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Request Signed'));
+				$this->redirect(Yii::app()->createUrl('apprreq/index',array('type'=>$model->type,)));
+			} else {
+				$message = CHtml::errorSummary($model);
+				Dialog::message(Yii::t('dialog','Validation Message'), $message);
+				$this->render('form',array('model'=>$model,));
+			}
 		}
 	}
 

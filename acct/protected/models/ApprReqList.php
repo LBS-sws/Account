@@ -3,10 +3,19 @@
 class ApprReqList extends CListPageModel
 {
 	public $type;
+	public $showtaxonly = false;
 	
 	public function rules() {
 		$rtn = parent::rules();
-		$rtn[] = array('type','safe');
+		$rtn[] = array('type, showtaxonly','safe');
+		$rtn[] = array('attr','validateForBatchSign');
+		return $rtn;
+	}
+	
+	public function getCriteria() {
+		$rtn = parent::getCriteria();
+		$rtn['type'] = $this->type;
+		$rtn['showtaxonly'] = $this->showtaxonly;
 		return $rtn;
 	}
 	
@@ -30,11 +39,13 @@ class ApprReqList extends CListPageModel
 		);
 	}
 	
-	public function retrieveDataByPage($pageNum=1, $type='P')
+	public function retrieveDataByPage($pageNum=1, $type='P', $showtax=false)
 	{
+		$this->type = $type;
+		$this->showtaxonly = $showtax;
 		$wf = new WorkflowPayment;
 		$wf->connection = Yii::app()->db;
-		$list = ($type=='P')
+		$list = ($this->type=='P')
 				? $wf->getPendingRequestIdList('PAYMENT', 'PA', Yii::app()->user->id)
 				: $wf->getPendingStandbyRequestIdList('PAYMENT', 'PA', Yii::app()->user->id);
 		if (empty($list)) $list = '0';
@@ -73,6 +84,10 @@ class ApprReqList extends CListPageModel
 				and a.id in ($list)
 				and e.trans_cat='OUT' 
 			";
+		if ($this->showtaxonly) {
+			$sql1 .= " and docman$suffix.countdoc('tax',a.id) > 0 ";
+			$sql2 .= " and docman$suffix.countdoc('tax',a.id) > 0 ";
+		}
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
 			$svalue = str_replace("'","\'",$this->searchValue);
@@ -160,6 +175,18 @@ class ApprReqList extends CListPageModel
 		return true;
 	}
 
+	public function validateForBatchSign($attribute, $params) {
+		foreach ($this->attr as $record) {
+			if (isset($record['select']) && $record['select']=='Y') {
+				$count = $record['taxcountdoc'];
+				if (empty($count) || $count==0) {
+					$refno = $record['ref_no'];
+					$this->addError($attribute, Yii::t('trans','No Tax Slip').' ('.Yii::t('trans','Ref. No.').': '.$refno.')');
+				}
+			}
+		}
+	}
+
 	public function batchApprove()
 	{
 		$wf = new WorkflowPayment;
@@ -179,5 +206,52 @@ class ApprReqList extends CListPageModel
 			$wf->transaction->rollback();
 			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
 		}
+	}
+
+	public function batchSign() {
+		$wf = new WorkflowPayment;
+		$connection = $wf->openConnection();
+		try {
+			foreach ($this->attr as $record) {
+				if (isset($record['select']) && $record['select']=='Y') {
+					$this->saveInfo($connection,$record);
+					if ($wf->startProcess('PAYMENT',$record['id'],$record['req_dt'])) {
+						$wf->takeAction('APPRNSIGN');
+					}
+				}
+			}
+			$wf->transaction->commit();
+		}
+		catch(Exception $e) {
+			$wf->transaction->rollback();
+			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
+		}
+	}
+
+	protected function saveInfo(&$connection,$data) {
+		$sql = "insert into acc_request_info(
+					req_id, field_id, field_value, luu, lcu) values (
+					:id, 'trans_dt', :field_value, :luu, :lcu)
+					on duplicate key update
+					field_value = :field_value
+				";
+
+		$city = Yii::app()->user->city();
+		$uid = Yii::app()->user->id;
+
+		$command=$connection->createCommand($sql);
+		if (strpos($sql,':id')!==false)
+			$command->bindParam(':id',$data['id'],PDO::PARAM_INT);
+		if (strpos($sql,':field_value')!==false) {
+			$value = General::toMyDate($data['req_dt']);
+			$command->bindParam(':field_value',$value,PDO::PARAM_STR);
+		}
+		if (strpos($sql,':lcu')!==false)
+			$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
+		if (strpos($sql,':luu')!==false)
+			$command->bindParam(':luu',$uid,PDO::PARAM_STR);
+		$command->execute();
+
+		return true;
 	}
 }
