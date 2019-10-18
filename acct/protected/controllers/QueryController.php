@@ -37,7 +37,7 @@ class QueryController extends Controller
 		);
 	}
 
-	public function actionIndex($pageNum=0) 
+	public function actionIndex()
 	{
         $model = new ReportXS02Form;
         $this->render('index',array('model'=>$model));

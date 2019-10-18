@@ -142,5 +142,12 @@ return array(
     'amt_install'=>'安装金额',
 	'cust_type'=>'类别',
     'Othersalesman'=>'跨区业务员',
+
+	'Bonus'=>'奖金库',
+    'Bonus List'=>'奖金库列表',
+    'City'=>'城市',
+    'Year'=>'年',
+    'Month'=>'月',
+    'Money'=>'总金额',
 );
 ?>
