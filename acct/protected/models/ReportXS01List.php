@@ -34,7 +34,7 @@ class ReportXS01List extends CListPageModel
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city();
         $month=$month-1;
-        $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,e.name as cityname from acc_service_comm_hdr a
+        $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,d.performance_amount,d.performanceedit_amount,d.performanceend_amount,e.name as cityname from acc_service_comm_hdr a
                  inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
                  inner join  hr$suffix.hr_dept c on b.position=c.id      
                  inner join security$suffix.sec_city e on a.city=e.code 		  
@@ -81,14 +81,13 @@ class ReportXS01List extends CListPageModel
 
 		$sql = $this->sqlWithPageCriteria($sql, $this->pageNum);
 		$records = Yii::app()->db->createCommand($sql)->queryAll();
-		
 		$list = array();
 		$this->attr = array();
 		if (count($records) > 0) {
 			foreach ($records as $k=>$record) {
                 $str=str_replace('(','',$record['employee_code']);
                 $str=str_replace(')','',$str);
-                $arr=$record['new_amount']+$record['edit_amount']+$record['end_amount']+$records['performance_amount']+$records['performanceedit_amount']+$records['performanceend_amount'];
+                $arr=$record['new_amount']+$record['edit_amount']+$record['end_amount']+$record['performance_amount']+$record['performanceedit_amount']+$record['performanceend_amount'];
 				$this->attr[] = array(
 					'id'=>$record['id'],
 					'employee_code'=>$str,
