@@ -58,20 +58,21 @@ class CommissionController extends Controller
                 $model->setCriteria($criteria);
             }
         }
-//                print_r('<pre>');
-//        print_r($_POST['ReportXS01Form']);
-        if(empty($_POST['ReportXS01Form'])){
+        if(!empty($_POST['ReportXS01List']['year'])){
             $year=$_POST['ReportXS01List']['year'];
             $month=$_POST['ReportXS01List']['month'];
         }
-        if(empty($_POST['ReportXS01List'])){
+        if(!empty($_POST['ReportXS01Form']['year'])){
             $year=$_POST['ReportXS01Form']['year'];
             $month=$_POST['ReportXS01Form']['month'];
         }
+        if(empty($year)&&empty($month)){
+            $year=$_POST['year'];
+            $month=$_POST['month'];
+        }
         $model->determinePageNum($pageNum);
         $model->retrieveDataByPage($model->pageNum,$year,$month);
-
-        $this->render('index_s',array('model'=>$model));
+        $this->render('index_s',array('model'=>$model,'year'=>$year,'month'=>$month));
     }
 
 

@@ -133,7 +133,8 @@ class ReportXS02Form extends CReportForm
             $this->new_amount=$records['new_amount'];
             $this->edit_amount=$records['edit_amount'];
             $this->end_amount=$records['end_amount'];
-            $this->all_amount=$records['new_amount']+$records['edit_amount']+$records['end_amount']+$records['performance_amount']+$records['performanceedit_amount']+$records['performanceend_amount'];
+            $num=$records['new_amount']+$records['edit_amount']+$records['end_amount']+$records['performance_amount']+$records['performanceedit_amount']+$records['performanceend_amount'];
+            $this->all_amount=number_format($num,2);
             $this->performance_amount=$records['performance_amount'];
             $this->year=$records['year_no'];
             $this->month=$records['month_no']+1;

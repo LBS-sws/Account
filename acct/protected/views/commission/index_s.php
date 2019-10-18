@@ -23,6 +23,8 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
 </section>
 
 <section class="content">
+    <input type="hidden" name="year" value="<?php echo $year;?>">
+    <input type="hidden" name="month" value="<?php echo $month;?>">
 	<?php
     $search = array(
         'employee_code',

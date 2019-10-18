@@ -11,7 +11,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
 
 <section class="content-header">
 	<h1>
-        <strong><?php echo Yii::t('app','Spanning Sales End Commission'); ?></strong>
+        <strong><?php echo Yii::t('app','Spanning Sales End Query'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">

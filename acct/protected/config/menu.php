@@ -125,6 +125,10 @@ return array(
                 'access'=>'XS03',
                 'url'=>'/srate/index',
             ),
+            'Prize Vault'=>array(
+                'access'=>'XS04',
+                'url'=>'/bonus/index',
+            ),
         ),
     ),
 	'System Setting'=>array(

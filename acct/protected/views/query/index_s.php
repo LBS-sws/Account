@@ -11,7 +11,7 @@ $this->pageTitle=Yii::app()->name . ' - query Report';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('app','Sales Commission'); ?></strong>
+		<strong><?php echo Yii::t('app','Sales Commission history'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
@@ -23,6 +23,8 @@ $this->pageTitle=Yii::app()->name . ' - query Report';
 </section>
 
 <section class="content">
+    <input type="hidden" name="year" value="<?php echo $year;?>">
+    <input type="hidden" name="month" value="<?php echo $month;?>">
 	<?php
     $search = array(
         'employee_code',

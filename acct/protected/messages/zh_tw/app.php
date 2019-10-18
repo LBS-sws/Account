@@ -32,6 +32,12 @@ return array(
     'Spanning Sales New Commission'=>'跨區新生意额計算',
     'Spanning Sales Edit Commission'=>'跨區更改生意额計算',
     'Spanning Sales End Commission'=>'跨區终止生意额計算',
+    'Sales New Query'=>'銷售新生意額查詢',
+    'Sales Edit Query'=>'銷售更改生意額查詢',
+    'Sales End Query'=>'銷售終止生意額查詢',
+    'Spanning Sales New Query'=>'跨區新生意额查詢',
+    'Spanning Sales Edit Query'=>'跨區更改生意额查詢',
+    'Spanning Sales End Query'=>'跨區终止生意额查詢',
 
 'Import'=>'數據導入',
 'Import Manager'=>'數據導入管理員',
@@ -40,6 +46,7 @@ return array(
 'Sales Commission'=>'銷售提成計算',
 'Sales Commission history'=>'銷售提成查詢',
 'Sales Commission ladder'=>'銷售提成階梯',
+'Prize Vault'=>'獎金庫',
 
 'Payment Request'=>'付款申請',
 'Request Confirmation'=>'申請確認',

@@ -12,7 +12,7 @@ $this->pageTitle=Yii::app()->name . ' - Report';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('report','Sales Commission'); ?></strong>
+		<strong><?php echo Yii::t('report','Sales Query'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">

@@ -11,7 +11,7 @@ $this->pageTitle=Yii::app()->name . ' - query Report';
 
 <section class="content-header">
 	<h1>
-        <strong><?php echo Yii::t('app','Sales New Commission'); ?></strong>
+        <strong><?php echo Yii::t('app','Sales New Query'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">

@@ -57,19 +57,23 @@ class QueryController extends Controller
             }
         }
 //                print_r('<pre>');
-//        print_r($_POST['ReportXS02Form']);exit();
-        if(empty($_POST['ReportXS02Form'])){
+//        print_r($_POST);exit();
+        if(!empty($_POST['ReportXS02List']['year'])){
             $year=$_POST['ReportXS02List']['year'];
             $month=$_POST['ReportXS02List']['month'];
         }
-        if(empty($_POST['ReportXS02List'])){
+        if(!empty($_POST['ReportXS02Form']['year'])){
             $year=$_POST['ReportXS02Form']['year'];
             $month=$_POST['ReportXS02Form']['month'];
+        }
+        if(empty($year)&&empty($month)){
+            $year=$_POST['year'];
+            $month=$_POST['month'];
         }
         $model->determinePageNum($pageNum);
         $model->retrieveDataByPage($model->pageNum,$year,$month);
 
-        $this->render('index_s',array('model'=>$model));
+        $this->render('index_s',array('model'=>$model,'year'=>$year,'month'=>$month,));
     }
 
     public function actionView($year,$month,$index)

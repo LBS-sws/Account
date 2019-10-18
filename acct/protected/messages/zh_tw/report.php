@@ -25,6 +25,7 @@ return array(
 'Status' => '狀態',
 'Sales Commission All'=>'銷售提成總頁',
 'Sales Commission' => '銷售提成計算',
+    'Sales Query' => '銷售提成查詢',
 'Item'=>'項目',
 'Last Balance'=>'上日金額',
 'Curr. Paid'=>'今日付款',
