@@ -909,7 +909,6 @@ class ReportXS01List extends CListPageModel
                             $money+=$fuwumoney;
                         }
                     }
-
                 }else{
                     if(!empty($records['all_number'])){
                         $new=$a/$records['all_number'];
@@ -1120,7 +1119,7 @@ class ReportXS01List extends CListPageModel
                     }else{
                         $money+=$m;
                     }
-                    $sqlct="update swoper$suffix.swo_service set royalty='".$royaltys[0]."'  where id='$ai'";
+                    $sqlct="update swoper$suffix.swo_service set royalty='".$royaltyes."'  where id='$ai'";
                     $model = Yii::app()->db->createCommand($sqlct)->execute();
                 }
             }
@@ -1187,7 +1186,6 @@ class ReportXS01List extends CListPageModel
                             }
                             $money += $a * $otherspanning['otherspanning'];
                         }
-
                     }
                     $zhuangji += $records['amt_install'];
                 }else{
@@ -1502,7 +1500,7 @@ class ReportXS01List extends CListPageModel
                     }else{
                         $money+=$m;
                     }
-                    $sqlct="update swoper$suffix.swo_service set royalty='".$royaltys[0]."'  where id='$ai'";
+                    $sqlct="update swoper$suffix.swo_service set royalty='".$royaltyes."'  where id='$ai'";
                     $model = Yii::app()->db->createCommand($sqlct)->execute();
                 }
             }
