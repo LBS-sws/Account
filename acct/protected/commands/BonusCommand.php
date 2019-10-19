@@ -9,7 +9,7 @@ class BonusCommand extends CConsoleCommand
         $start=$years."-".$months."-01";
         $end=$years."-".$months."-31";
         $money=0;
-        if($day=='18'){
+//        if($day=='18'){
             $suffix = Yii::app()->params['envSuffix'];
             $sql="select a.code
 				from security$suffix.sec_city a left outer join security$suffix.sec_city b on a.code=b.region 
@@ -86,6 +86,6 @@ class BonusCommand extends CConsoleCommand
                     $command=Yii::app()->db->createCommand($sql)->execute();
                 }
             }
-        }
+//        }
     }
 }

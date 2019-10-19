@@ -772,11 +772,12 @@ class ReportXS01List extends CListPageModel
                 }
                 $span="select * from sales$suffix.sal_performance where city='$city' and year='$year' and month='$month'";
                 $spanning = Yii::app()->db->createCommand($span)->queryRow();
+
                 if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                     $money+=$a;
                     $cust_type='fw';
                     if(!empty($records['othersalesman'])){
-                        if(empty($spanninge['spanning'])){
+                        if(empty($spanning['spanning'])){
                             $spanning['spanning']=0.5;
                         }
                         $moneys+=$a*$spanning['spanning'];
@@ -802,7 +803,7 @@ class ReportXS01List extends CListPageModel
                     $money+=$a;
                     $cust_type='fw';
                     if(!empty($records['othersalesman'])){
-                        if(empty($spanninge['spanning'])){
+                        if(empty($spanning['spanning'])){
                             $spanning['spanning']=0.5;
                         }
                         $moneys+=$a*$spanning['spanning'];
@@ -900,7 +901,7 @@ class ReportXS01List extends CListPageModel
                     if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                         $moneys+=$c;
                         if(!empty($records['othersalesman'])){
-                            if(empty($spanninge['spanning'])){
+                            if(empty($spanning['spanning'])){
                                 $spanning['spanning']=0.5;
                             }
                             $money+=$fuwumoney*$spanning['spanning'];
@@ -935,7 +936,7 @@ class ReportXS01List extends CListPageModel
                            $m=$m*$records2['new_calc'];
                            if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                if(!empty($records['othersalesman'])){
-                                   if(empty($spanninge['spanning'])){
+                                   if(empty($spanning['spanning'])){
                                        $spanning['spanning']=0.5;
                                    }
                                    $money1+=$m*$spanning['spanning'];
@@ -949,7 +950,7 @@ class ReportXS01List extends CListPageModel
                            $m=$m*$royalty[$ai];
                            if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                if(!empty($records['othersalesman'])){
-                                   if(empty($spanninge['spanning'])){
+                                   if(empty($spanning['spanning'])){
                                        $spanning['spanning']=0.5;
                                    }
                                    $money1+=$m*$spanning['spanning'];
@@ -1029,7 +1030,7 @@ class ReportXS01List extends CListPageModel
                         $m=$m*$records2['new_calc'];
                         if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                             if(!empty($records['othersalesman'])){
-                                if(empty($spanninge['spanning'])){
+                                if(empty($spanning['spanning'])){
                                     $spanning['spanning']=0.5;
                                 }
                                 $money+=$m*$spanning['spanning'];
@@ -1107,12 +1108,12 @@ class ReportXS01List extends CListPageModel
                 }
                 $royaltys=sort($royaltys);
                 if($royaltys[0]==0){
-                    $royaltys[0]=$royalty[$ai];
+                    $royaltyes=$royalty[$ai];
                 }
-                $m=$m*$royaltys[0];
+                $m=$m*$royaltyes;
                 if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                     if(!empty($records['othersalesman'])){
-                        if(empty($spanninge['spanning'])){
+                        if(empty($spanning['spanning'])){
                             $spanning['spanning']=0.5;
                         }
                         $money+=$m*$spanning['spanning'];
@@ -1489,15 +1490,15 @@ class ReportXS01List extends CListPageModel
                 }
                 $royaltys=sort($royaltys);
                 if($royaltys[0]==0){
-                    $royaltys[0]=$royalty[$ai];
+                    $royaltyes=$royalty[$ai];
                 }
-                $m=$m*$royaltys[0];
+                $m=$m*$royaltyes;
                 if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                     if(!empty($records['othersalesman'])){
-                        if(empty($spanninge['spanning'])){
-                            $spanning['spanning']=0.5;
+                        if(empty($spanning['otherspanning'])){
+                            $spanning['otherspanning']=0.5;
                         }
-                        $money+=$m*$spanning['spanning'];
+                        $money+=$m*$spanning['otherspanning'];
                     }else{
                         $money+=$m;
                     }

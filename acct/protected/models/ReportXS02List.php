@@ -109,7 +109,7 @@ class ReportXS02List extends CListPageModel
 			foreach ($records as $k=>$record) {
                 $str=str_replace('(','',$record['employee_code']);
                 $str=str_replace(')','',$str);
-                $arr=$record['new_amount']+$record['edit_amount']-$record['end_amount'];
+                $arr=$record['new_amount']+$record['edit_amount']+$record['end_amount']+$record['performance_amount']+$record['performanceedit_amount']+$record['performanceend_amount'];
 				$this->attr[] = array(
 					'id'=>$record['id'],
 					'employee_code'=>$str,
