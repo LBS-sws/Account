@@ -796,99 +796,128 @@ class ReportXS02List extends CListPageModel
         $objPHPExcel->getActiveSheet()->setCellValue('B6','跨区更改提成 : '.$view['performanceedit_amount']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('B7','跨区终止提成 : '.$view['performanceend_amount']) ;
 
+        $objPHPExcel->getActiveSheet()->getStyle('A10:H10')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+        $objPHPExcel->getActiveSheet()->getStyle('A10:H10')->getFill()->getStartColor()->setARGB('99FFFF');
+
         $new=$this->Newdown($year,$month,$index);
-        $objPHPExcel->getActiveSheet()->setCellValue('A11','类别 : 新生意额') ;
-        $i=12;
+        $objPHPExcel->getActiveSheet()->setCellValue('A12','类别 : 新生意额') ;
+        $objPHPExcel->getActiveSheet()->mergeCells('A12:H12');
+        $objPHPExcel->getActiveSheet()->getStyle('A12')->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('A12')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+        $objPHPExcel->getActiveSheet()->getStyle('A12')->getFill()->getStartColor()->setARGB('99FFFF');
+
+        $i=13;
         for($o=0;$o<count($new);$o++){
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$new['attr'][$o]['first_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$new['attr'][$o]['sign_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,$new['attr'][$o]['company_name']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,$new['attr'][$o]['othersalesman']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,$new['attr'][$o]['type_desc']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,$new['attr'][$o]['service']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,$new['attr'][$o]['amt_paid']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,$new['attr'][$o]['amt_install']) ;
-//            $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,$this['attr'][$o]['status_copy']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$new[$o]['first_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$new[$o]['sign_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,$new[$o]['company_name']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,$new[$o]['othersalesman']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,$new[$o]['type_desc']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,$new[$o]['service']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,$new[$o]['amt_paid']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,$new[$o]['amt_install']) ;
+//            $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,$this[$o]['status_copy']) ;
             $i=$i+1;
         }
         $i=$i+1;
         $Edit=$this->Editdown($year,$month,$index);
         $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'类别 : 更改生意额') ;
+        $objPHPExcel->getActiveSheet()->mergeCells('A'.$i.':H'.$i);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFill()->getStartColor()->setARGB('99FFFF');
+
         $i=$i+1;
         for($o=0;$o<count($Edit);$o++){
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$Edit['attr'][$o]['first_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$Edit['attr'][$o]['sign_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,$Edit['attr'][$o]['company_name']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,$Edit['attr'][$o]['othersalesman']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,$Edit['attr'][$o]['type_desc']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,$Edit['attr'][$o]['service']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,$Edit['attr'][$o]['amt_paid']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,$Edit['attr'][$o]['amt_install']) ;
-          //  $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,$this['attr'][0]['status_copy']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$Edit[$o]['first_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$Edit[$o]['sign_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,$Edit[$o]['company_name']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,$Edit[$o]['othersalesman']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,$Edit[$o]['type_desc']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,$Edit[$o]['service']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,$Edit[$o]['amt_paid']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,$Edit[$o]['amt_install']) ;
+          //  $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,$this[0]['status_copy']) ;
             $i=$i+1;
         }
         $i=$i+1;
         $End=$this->Enddown($year,$month,$index);
         $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'类别 : 终止生意额') ;
+        $objPHPExcel->getActiveSheet()->mergeCells('A'.$i.':H'.$i);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFill()->getStartColor()->setARGB('99FFFF');
         $i=$i+1;
         for($o=0;$o<count($End);$o++){
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$End['attr'][$o]['first_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$End['attr'][$o]['sign_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,$End['attr'][$o]['company_name']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,$End['attr'][$o]['othersalesman']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,$End['attr'][$o]['type_desc']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,$End['attr'][$o]['service']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,$End['attr'][$o]['amt_paid']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,$End['attr'][$o]['amt_install']) ;
-          //  $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,$this['attr'][$o]['status_copy']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$End[$o]['first_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$End[$o]['sign_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,$End[$o]['company_name']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,$End[$o]['othersalesman']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,$End[$o]['type_desc']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,$End[$o]['service']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,$End[$o]['amt_paid']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,$End[$o]['amt_install']) ;
+          //  $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,$this[$o]['status_copy']) ;
             $i=$i+1;
         }
         $i=$i+1;
         $new=$this->NewPerdown($year,$month,$index);
         $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'类别 : 跨区新增生意额') ;
+        $objPHPExcel->getActiveSheet()->mergeCells('A'.$i.':H'.$i);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFill()->getStartColor()->setARGB('99FFFF');
         $i=$i+1;
         for($o=0;$o<count($new);$o++){
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$new['attr'][$o]['first_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$new['attr'][$o]['sign_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,$new['attr'][$o]['company_name']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,$new['attr'][$o]['othersalesman']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,$new['attr'][$o]['type_desc']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,$new['attr'][$o]['service']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,$new['attr'][$o]['amt_paid']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,$new['attr'][$o]['amt_install']) ;
-//            $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,$this['attr'][$o]['status_copy']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$new[$o]['first_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$new[$o]['sign_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,$new[$o]['company_name']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,$new[$o]['othersalesman']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,$new[$o]['type_desc']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,$new[$o]['service']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,$new[$o]['amt_paid']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,$new[$o]['amt_install']) ;
+//            $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,$this[$o]['status_copy']) ;
             $i=$i+1;
         }
         $i=$i+1;
         $eidt=$this->EditPerdown($year,$month,$index);
         $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'类别 : 跨区更改生意额') ;
+        $objPHPExcel->getActiveSheet()->mergeCells('A'.$i.':H'.$i);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFill()->getStartColor()->setARGB('99FFFF');
         $i=$i+1;
         for($o=0;$o<count($eidt);$o++){
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$eidt['attr'][$o]['first_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$eidt['attr'][$o]['sign_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,$eidt['attr'][$o]['company_name']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,$eidt['attr'][$o]['othersalesman']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,$eidt['attr'][$o]['type_desc']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,$eidt['attr'][$o]['service']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,$eidt['attr'][$o]['amt_paid']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,$eidt['attr'][$o]['amt_install']) ;
-         //   $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,$this['attr'][0]['status_copy']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$eidt[$o]['first_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$eidt[$o]['sign_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,$eidt[$o]['company_name']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,$eidt[$o]['othersalesman']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,$eidt[$o]['type_desc']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,$eidt[$o]['service']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,$eidt[$o]['amt_paid']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,$eidt[$o]['amt_install']) ;
+         //   $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,$this[0]['status_copy']) ;
             $i=$i+1;
         }
         $i=$i+1;
         $end=$this->EndPerdown($year,$month,$index);
         $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'类别 : 跨区终止生意额') ;
+        $objPHPExcel->getActiveSheet()->mergeCells('A'.$i.':H'.$i);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFill()->getStartColor()->setARGB('99FFFF');
         $i=$i+1;
         for($o=0;$o<count($end);$o++){
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$end['attr'][$o]['first_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$end['attr'][$o]['sign_dt']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,$end['attr'][$o]['company_name']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,$end['attr'][$o]['othersalesman']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,$end['attr'][$o]['type_desc']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,$end['attr'][$o]['service']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,$end['attr'][$o]['amt_paid']) ;
-            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,$end['attr'][$o]['amt_install']) ;
-         //   $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,$this['attr'][$o]['status_copy']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$end[$o]['first_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$end[$o]['sign_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,$end[$o]['company_name']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,$end[$o]['othersalesman']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,$end[$o]['type_desc']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,$end[$o]['service']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,$end[$o]['amt_paid']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,$end[$o]['amt_install']) ;
+         //   $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,$this[$o]['status_copy']) ;
             $i=$i+1;
         }
 
@@ -910,6 +939,7 @@ ob_end_clean();
     public function Newdown($year,$month,$index){
         $suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city_allow();
+        $new=array();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $start=$year."-".$month."-01";
@@ -941,8 +971,8 @@ ob_end_clean();
                     'city_name'=>$arrs['city_name'],               //城市
                     'type_desc'=>$arrs['type_desc'],               //类别
                     'service'=>$arrs['service'],                    //服务频率
-                    'sign_dt'=>General::toDate($arrs['sign_dt']),   //签约时间
-                    'first_dt'=>General::toDate($arrs['first_dt']), //服务时间
+                    'sign_dt'=>date_format(date_create($arrs['sign_dt']),"Y/m/d"),    //签约时间
+                    'first_dt'=>date_format(date_create($arrs['first_dt']),"Y/m/d"),  //服务时间
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$arrs['amt_install'],           //安装金额
                     'status_copy'=>0,           //是否计算
@@ -963,8 +993,8 @@ ob_end_clean();
                     'city_name'=>$record['city_name'],               //城市
                     'type_desc'=>$record['type_desc'],               //类别
                     'service'=>$record['service'],                    //服务频率
-                    'sign_dt'=>General::toDate($record['sign_dt']),   //签约时间
-                    'first_dt'=>General::toDate($record['first_dt']), //服务时间
+                    'sign_dt'=>date_format(date_create($record['sign_dt']),"Y/m/d"),    //签约时间
+                    'first_dt'=>date_format(date_create($record['first_dt']),"Y/m/d"),  //服务时间
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$record['amt_install'],           //安装金额
                     'status_copy'=>$record['status_copy'],           //是否计算
@@ -979,6 +1009,7 @@ ob_end_clean();
     {
         $suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city_allow();
+        $new=array();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $start=$year."-".$month."-01";
@@ -997,14 +1028,14 @@ ob_end_clean();
                 }else{
                     $a=$record['amt_paid']*12;
                 }
-                $edit[] = array(
+                $new[] = array(
                     'id'=>$record['id'],
                     'company_name'=>$record['company_name'],        //客户名称
                     'city_name'=>$record['city_name'],               //城市
                     'type_desc'=>$record['type_desc'],               //类别
                     'service'=>$record['service'],                    //服务频率
-                    'sign_dt'=>General::toDate($record['sign_dt']),   //签约时间
-                    'first_dt'=>General::toDate($record['first_dt']), //服务时间
+                    'sign_dt'=>date_format(date_create($record['sign_dt']),"Y/m/d"),    //签约时间
+                    'first_dt'=>date_format(date_create($record['first_dt']),"Y/m/d"),  //服务时间
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$record['amt_install'],           //安装金额
                     'othersalesman'=>$record['othersalesman'],           //跨区业务员
@@ -1012,12 +1043,13 @@ ob_end_clean();
                 );
             }
         }
-        return $edit;
+        return $new;
     }
 
     public function Enddown($year,$month,$index){
         $suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city_allow();
+        $new=array();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $start=$year."-".$month."-01";
@@ -1036,14 +1068,14 @@ ob_end_clean();
                 }else{
                     $a=$record['amt_paid']*12;
                 }
-                $end[] = array(
+                $new[] = array(
                     'id'=>$record['id'],
                     'company_name'=>$record['company_name'],        //客户名称
                     'city_name'=>$record['city_name'],               //城市
                     'type_desc'=>$record['type_desc'],               //类别
                     'service'=>$record['service'],                    //服务频率
-                    'sign_dt'=>General::toDate($record['sign_dt']),   //签约时间
-                    'first_dt'=>General::toDate($record['first_dt']), //服务时间
+                    'sign_dt'=>date_format(date_create($record['sign_dt']),"Y/m/d"),    //签约时间
+                    'first_dt'=>date_format(date_create($record['first_dt']),"Y/m/d"),  //服务时间
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$record['amt_install'],           //安装金额
                     'othersalesman'=>$record['othersalesman'],           //跨区业务员
@@ -1051,13 +1083,14 @@ ob_end_clean();
                 );
             }
         }
-        return $end;
+        return $new;
     }
 
     public function NewPerdown($year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city_allow();
+        $newper=array();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $start=$year."-".$month."-01";
@@ -1089,8 +1122,8 @@ ob_end_clean();
                     'city_name'=>$arrs['city_name'],               //城市
                     'type_desc'=>$arrs['type_desc'],               //类别
                     'service'=>$arrs['service'],                    //服务频率
-                    'sign_dt'=>General::toDate($arrs['sign_dt']),   //签约时间
-                    'first_dt'=>General::toDate($arrs['first_dt']), //服务时间
+                    'sign_dt'=>date_format(date_create($arrs['sign_dt']),"Y/m/d"),    //签约时间
+                    'first_dt'=>date_format(date_create($arrs['first_dt']),"Y/m/d"),  //服务时间
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$arrs['amt_install'],           //安装金额
                     'status_copy'=>0,           //是否计算
@@ -1111,8 +1144,8 @@ ob_end_clean();
                     'city_name'=>$record['city_name'],               //城市
                     'type_desc'=>$record['type_desc'],               //类别
                     'service'=>$record['service'],                    //服务频率
-                    'sign_dt'=>General::toDate($record['sign_dt']),   //签约时间
-                    'first_dt'=>General::toDate($record['first_dt']), //服务时间
+                    'sign_dt'=>date_format(date_create($record['sign_dt']),"Y/m/d"),    //签约时间
+                    'first_dt'=>date_format(date_create($record['first_dt']),"Y/m/d"),  //服务时间
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$record['amt_install'],           //安装金额
                     'status_copy'=>$record['status_copy'],           //是否计算
@@ -1127,6 +1160,7 @@ ob_end_clean();
     public function EditPerdown($year,$month,$index){
         $suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city_allow();
+        $editper=array();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $start=$year."-".$month."-01";
@@ -1151,8 +1185,8 @@ ob_end_clean();
                     'city_name'=>$record['city_name'],               //城市
                     'type_desc'=>$record['type_desc'],               //类别
                     'service'=>$record['service'],                    //服务频率
-                    'sign_dt'=>General::toDate($record['sign_dt']),   //签约时间
-                    'first_dt'=>General::toDate($record['first_dt']), //服务时间
+                    'sign_dt'=>date_format(date_create($record['sign_dt']),"Y/m/d"),    //签约时间
+                    'first_dt'=>date_format(date_create($record['first_dt']),"Y/m/d"),  //服务时间
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$record['amt_install'],           //安装金额
                     'othersalesman'=>$record['othersalesman'],           //跨区业务员
@@ -1166,6 +1200,7 @@ ob_end_clean();
     public function EndPerdown($year,$month,$index){
         $suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city_allow();
+        $endper=array();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $start=$year."-".$month."-01";
@@ -1190,8 +1225,8 @@ ob_end_clean();
                     'city_name'=>$record['city_name'],               //城市
                     'type_desc'=>$record['type_desc'],               //类别
                     'service'=>$record['service'],                    //服务频率
-                    'sign_dt'=>General::toDate($record['sign_dt']),   //签约时间
-                    'first_dt'=>General::toDate($record['first_dt']), //服务时间
+                    'sign_dt'=>date_format(date_create($record['sign_dt']),"Y/m/d"),    //签约时间
+                    'first_dt'=>date_format(date_create($record['first_dt']),"Y/m/d"),  //服务时间
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$record['amt_install'],           //安装金额
                     'othersalesman'=>$record['othersalesman'],           //跨区业务员
