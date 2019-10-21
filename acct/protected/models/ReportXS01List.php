@@ -1321,7 +1321,7 @@ class ReportXS01List extends CListPageModel
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     if(!empty($m)){
-                        if($records2['new_calc']!=0){
+                        if($records2['new_calc']!=0||empty(!$records2['new_calc'])){
                             $m=$m*$records2['new_calc'];
                             if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                 if(empty($otherspanning['otherspanning'])){
@@ -1410,7 +1410,7 @@ class ReportXS01List extends CListPageModel
                     $span="select * from sales$suffix.sal_performance where city='$city' and year='$year' and month='$month'";
                     $otherspanning = Yii::app()->db->createCommand($span)->queryRow();
                     if(!empty($m)){
-                        if($records2['new_calc']!=0){
+                        if($records2['new_calc']!=0||empty(!$records2['new_calc'])){
                             $m=$m*$records2['new_calc'];
                             if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                 if(empty($otherspanning['otherspanning'])){
