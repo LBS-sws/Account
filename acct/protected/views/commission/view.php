@@ -36,7 +36,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
         <div class="box-body">
             <div class="btn-group text-info" role="group">
                 <p><b>注：</b></p>
-                <p style="text-indent: 15px;">1.每个生意额页面里都有一个“计算”按键，每计算一次提成都需要点击一次“计算”。除跨区新增页面，销售当月达到业绩目标才会有“计算”按键。</p>
+                <p style="text-indent: 15px;">1.每个生意额页面里都有一个“计算”按键，每计算一次提成都需要点击一次“计算”。</p>
                 <p style="text-indent: 15px;">2.最好按顺序进行计算提成，首先需要计算新生意额。</p>
             </div>
         </div>

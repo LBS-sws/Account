@@ -1312,8 +1312,6 @@ class ReportXS01List extends CListPageModel
                     $model = Yii::app()->db->createCommand($target)->execute();
                 }
             }else{
-                print_r($c);
-                exit();
                 if(!empty($records['all_number'])){
                     $new=$a/$records['all_number'];
                     $old=$b/$records['all_number'];
