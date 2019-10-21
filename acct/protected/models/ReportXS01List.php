@@ -1061,6 +1061,7 @@ class ReportXS01List extends CListPageModel
                 $mon=0;
                 $money=0;
                 $moneys=0;
+
                 for ($i=0;$i<count($record);$i++){
                     $sqlct="select royalty from swoper$suffix.swo_service  where id='".$record[$i]['id']."'";
                     $model = Yii::app()->db->createCommand($sqlct)->queryRow();
@@ -1121,16 +1122,16 @@ class ReportXS01List extends CListPageModel
                             }
                         }
                         $mons=$money+$moneys;
-                        $mon+=$mons;
                     }
                 }
+
                 sort($royaltys);
                 if($royaltys[0]==0){
                     $royaltyes=$royalty[$ai];
                 }else{
                     $royaltyes=$royaltys[0];
                 }
-                $money=$mon*$royaltyes;
+                $money=$mons*$royaltyes;
                 $sqlct="update swoper$suffix.swo_service set royalty='".$royaltyes."'  where id='$ai'";
                 $model = Yii::app()->db->createCommand($sqlct)->execute();
             }
@@ -1311,6 +1312,8 @@ class ReportXS01List extends CListPageModel
                     $model = Yii::app()->db->createCommand($target)->execute();
                 }
             }else{
+                print_r($c);
+                exit();
                 if(!empty($records['all_number'])){
                     $new=$a/$records['all_number'];
                     $old=$b/$records['all_number'];
@@ -1513,7 +1516,6 @@ class ReportXS01List extends CListPageModel
                                 }
                             }
                             $mons=$money+$moneys;
-                            $mon+=$mons;
                         }
                     }
                 }
@@ -1523,7 +1525,7 @@ class ReportXS01List extends CListPageModel
                 }else{
                     $royaltyes=$royaltys[0];
                 }
-                $m=$m*$royaltyes;
+                $money=$mons*$royaltyes;
                 $sqlct="update swoper$suffix.swo_service set royalty='".$royaltyes."'  where id='$ai'";
                 $model = Yii::app()->db->createCommand($sqlct)->execute();
             }
