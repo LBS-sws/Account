@@ -36,7 +36,7 @@ class ReportXS02List extends CListPageModel
         $month=$month-1;
         $user=Yii::app()->user->id;
         if(Yii::app()->user->validFunction('CN09')){
-            $sql1 = "select a.*,c.name,d.*,e.name as cityname from acc_service_comm_hdr a
+            $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,d.performance_amount,d.performanceedit_amount,d.performanceend_amount,e.name as cityname from acc_service_comm_hdr a
                  inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
                  inner join  hr$suffix.hr_dept c on b.position=c.id      
                  inner join security$suffix.sec_city e on a.city=e.code 		  
@@ -51,7 +51,7 @@ class ReportXS02List extends CListPageModel
 			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)
 			";
         }else{
-            $sql1 = "select a.*,c.name,d.*,e.name as cityname from acc_service_comm_hdr a
+            $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,d.performance_amount,d.performanceedit_amount,d.performanceend_amount,e.name as cityname from acc_service_comm_hdr a
                  inner join  hr$suffix.hr_employee b  on b.name=a.employee_name
                  inner join  hr$suffix.hr_dept c on b.position=c.id
                  inner join security$suffix.sec_city e on a.city=e.code

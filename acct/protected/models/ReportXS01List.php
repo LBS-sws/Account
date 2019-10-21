@@ -1168,7 +1168,7 @@ class ReportXS01List extends CListPageModel
                 $sql3="select performance from acc_service_comm_hdr where  id='$index'";
                 $color = Yii::app()->db->createCommand($sql3)->queryRow();
                 if($color['performance']==1) {
-                    $sql1 = "select * from acc_service_comm_hdr where year_no='" . $year . "' and month_no='" . $month . "' and city='" . $records['city'] . "' and  concat_ws(' ',employee_name,employee_code)= '" . $records['othersalesman'] . "' ";
+                    $sql1 = "select * from acc_service_comm_hdr where year_no='" . $year . "' and month_no='" . $month . "' and city='" . $records['city'] . "' and  concat_ws(' ',employee_name,employee_code)= '" . $records['othersalesman'] . "'";
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
                     $sql2 = "select new_calc from  acc_service_comm_dtl where hdr_id='" . $records1['id'] . "'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
@@ -1321,7 +1321,7 @@ class ReportXS01List extends CListPageModel
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     if(!empty($m)){
-                        if(!empty($records2)){
+                        if($records2['new_calc']!=0){
                             $m=$m*$records2['new_calc'];
                             if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                 if(empty($otherspanning['otherspanning'])){
@@ -1342,6 +1342,7 @@ class ReportXS01List extends CListPageModel
                             $sqlct="update swoper$suffix.swo_service set royaltys='".$royalty[$ai]."'  where id='$ai'";
                             $model = Yii::app()->db->createCommand($sqlct)->execute();
                         }
+
                     }
                 }
             }
@@ -1409,7 +1410,7 @@ class ReportXS01List extends CListPageModel
                     $span="select * from sales$suffix.sal_performance where city='$city' and year='$year' and month='$month'";
                     $otherspanning = Yii::app()->db->createCommand($span)->queryRow();
                     if(!empty($m)){
-                        if(!empty($records2)){
+                        if($records2['new_calc']!=0){
                             $m=$m*$records2['new_calc'];
                             if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                 if(empty($otherspanning['otherspanning'])){
