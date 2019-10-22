@@ -1481,7 +1481,7 @@ class ReportXS01List extends CListPageModel
                         if(!empty($records['surplus'])){
                             $m=$new*$records['surplus']; //新单价*新次
                         }
-                        $sqls="select * from  swoper$suffix.swo_service where company_name='".$record['company_name']."' and cust_type='".$record['cust_type']."' and status='N'";
+                        $sqls="select * from  swoper$suffix.swo_service where company_name='".$record[$i]['company_name']."' and cust_type='".$record[$i]['cust_type']."' and status='N'";
                         $arr = Yii::app()->db->createCommand($sqls)->queryRow();
                         $date=$arr['first_dt'];
                         $timestrap=strtotime($date);
