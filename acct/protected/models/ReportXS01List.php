@@ -1481,7 +1481,15 @@ class ReportXS01List extends CListPageModel
                         if(!empty($records['surplus'])){
                             $m=$new*$records['surplus']; //新单价*新次
                         }
-                        if($i!=0){
+                        $sqls="select * from  swoper$suffix.swo_service where company_name='".$record['company_name']."' and cust_type='".$record['cust_type']."' and status='N'";
+                        $arr = Yii::app()->db->createCommand($sqls)->queryRow();
+                        $date=$arr['first_dt'];
+                        $timestrap=strtotime($date);
+                        $year=date('Y',$timestrap);
+                        $month=date('m',$timestrap);
+                        $sqlss="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
+                        $records1 = Yii::app()->db->createCommand($sqlss)->queryRow();
+                        if($i!=0||$records1['performance']!=1){
                             $m=0;
                         }
                         if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
