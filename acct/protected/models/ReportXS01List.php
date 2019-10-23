@@ -1458,7 +1458,7 @@ class ReportXS01List extends CListPageModel
                         $model['royalty']=0;
                     }
                     $royaltys[$i]=$model['royalty'];
-                    $date=$record[$i]['first_dt'];
+                    $date=$record[$i]['status_dt'];
                     $timestrap=strtotime($date);
                     $year=date('Y',$timestrap);
                     $month=date('m',$timestrap);
@@ -1525,6 +1525,9 @@ class ReportXS01List extends CListPageModel
                         }
                     }
                 }
+                if(empty($mons)){
+                    $mons=0;
+                }
                 sort($royaltys);
                 if($royaltys[0]==0){
                     $royaltyes=$royalty[$ai];
@@ -1535,7 +1538,6 @@ class ReportXS01List extends CListPageModel
                 $sqlct="update swoper$suffix.swo_service set royalty='".$royaltyes."'  where id='$ai'";
                 $model = Yii::app()->db->createCommand($sqlct)->execute();
             }
-
         }
 //        $money=220;
         $money=-$money;
