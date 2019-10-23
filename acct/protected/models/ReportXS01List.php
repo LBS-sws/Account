@@ -1452,7 +1452,7 @@ class ReportXS01List extends CListPageModel
                 $money=0;
                 $moneys=0;
                 for ($i=0;$i<count($record);$i++){
-                    $sqlct="select royalty from swoper$suffix.swo_service  where id='".$record[$i]['id']."'";
+                    $sqlct="select royaltys from swoper$suffix.swo_service  where id='".$record[$i]['id']."'";
                     $model_royaltys = Yii::app()->db->createCommand($sqlct)->queryRow();
                     $date=$record[$i]['status_dt'];
                     $timestrap=strtotime($date);
@@ -1486,7 +1486,7 @@ class ReportXS01List extends CListPageModel
                         $sqlss="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
                         $records1 = Yii::app()->db->createCommand($sqlss)->queryRow();
                         if($records1['performance']==1){
-                            $royaltys[]=$arr['royalty'];
+                            $royaltys[]=$arr['royaltys'];
                         }
                         if($i!=0||$records1['performance']!=1){
                             $m=0;
@@ -1508,9 +1508,9 @@ class ReportXS01List extends CListPageModel
                         $surplus='surplus_edit'.$i;
                     if($records_edit['performance']==1){
                         if(empty($model_royaltys)){
-                            $model_royaltys['royalty']=0;
+                            $model_royaltys['royaltys']=0;
                         }
-                        $royaltys[$i]=$model_royaltys['royalty'];
+                        $royaltys[]=$model_royaltys['royaltys'];
                         if($b>0){
                             if(!empty($records[$all_number])){
                                 $news=$b/$records[$all_number];
@@ -1532,14 +1532,19 @@ class ReportXS01List extends CListPageModel
                 if(empty($mons)){
                     $mons=0;
                 }
-                sort($royaltys);
-                if($royaltys[0]==0){
-                    $royaltyes=$royalty[$ai];
+                if(!empty($royaltys)){
+                    sort($royaltys);
+                    if($royaltys[0]==0){
+                        $royaltyes=$royalty[$ai];
+                    }else{
+                        $royaltyes=$royaltys[0];
+                    }
                 }else{
-                    $royaltyes=$royaltys[0];
+                    $royaltyes=0;
                 }
+
 //                print_r('<pre>');
-//                print_r($royaltys);
+//                print_r($arr['royalty']);
 //                exit();
                 $money=$mons*$royaltyes;
                 $sqlct="update swoper$suffix.swo_service set royaltys='".$royaltyes."'  where id='$ai'";
