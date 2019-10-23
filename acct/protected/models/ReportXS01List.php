@@ -1453,11 +1453,7 @@ class ReportXS01List extends CListPageModel
                 $moneys=0;
                 for ($i=0;$i<count($record);$i++){
                     $sqlct="select royalty from swoper$suffix.swo_service  where id='".$record[$i]['id']."'";
-                    $model = Yii::app()->db->createCommand($sqlct)->queryRow();
-                    if(empty($model)){
-                        $model['royalty']=0;
-                    }
-                    $royaltys[$i]=$model['royalty'];
+                    $model_royaltys = Yii::app()->db->createCommand($sqlct)->queryRow();
                     $date=$record[$i]['status_dt'];
                     $timestrap=strtotime($date);
                     $year=date('Y',$timestrap);
@@ -1482,6 +1478,7 @@ class ReportXS01List extends CListPageModel
                         }
                         $sqls="select * from  swoper$suffix.swo_service where company_name='".$record[$i]['company_name']."' and cust_type='".$record[$i]['cust_type']."' and status='N'";
                         $arr = Yii::app()->db->createCommand($sqls)->queryRow();
+                        $royaltys[]=$arr['royalty'];
                         $date=$arr['first_dt'];
                         $timestrap=strtotime($date);
                         $year=date('Y',$timestrap);
@@ -1507,6 +1504,10 @@ class ReportXS01List extends CListPageModel
                         $all_number='all_number_edit'.$i;
                         $surplus='surplus_edit'.$i;
                     if($records_edit['performance']==1){
+                        if(empty($model_royaltys)){
+                            $model_royaltys['royalty']=0;
+                        }
+                        $royaltys[$i]=$model_royaltys['royalty'];
                         if($b>0){
                             if(!empty($records[$all_number])){
                                 $news=$b/$records[$all_number];
@@ -1534,8 +1535,11 @@ class ReportXS01List extends CListPageModel
                 }else{
                     $royaltyes=$royaltys[0];
                 }
+//                print_r('<pre>');
+//                print_r($royaltys);
+//                exit();
                 $money=$mons*$royaltyes;
-                $sqlct="update swoper$suffix.swo_service set royalty='".$royaltyes."'  where id='$ai'";
+                $sqlct="update swoper$suffix.swo_service set royaltys='".$royaltyes."'  where id='$ai'";
                 $model = Yii::app()->db->createCommand($sqlct)->execute();
             }
         }
