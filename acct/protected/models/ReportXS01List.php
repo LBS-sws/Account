@@ -1478,13 +1478,16 @@ class ReportXS01List extends CListPageModel
                         }
                         $sqls="select * from  swoper$suffix.swo_service where company_name='".$record[$i]['company_name']."' and cust_type='".$record[$i]['cust_type']."' and status='N'";
                         $arr = Yii::app()->db->createCommand($sqls)->queryRow();
-                        $royaltys[]=$arr['royalty'];
+
                         $date=$arr['first_dt'];
                         $timestrap=strtotime($date);
                         $year=date('Y',$timestrap);
                         $month=date('m',$timestrap);
                         $sqlss="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
                         $records1 = Yii::app()->db->createCommand($sqlss)->queryRow();
+                        if($records1['performance']==1){
+                            $royaltys[]=$arr['royalty'];
+                        }
                         if($i!=0||$records1['performance']!=1){
                             $m=0;
                         }
