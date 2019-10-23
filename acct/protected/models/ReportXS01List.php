@@ -1468,8 +1468,7 @@ class ReportXS01List extends CListPageModel
                         $spanning['otherspanning']=0.5;
                     }
                     $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
-                    $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
-                    if($records1['performance']==1){
+                    $records_edit = Yii::app()->db->createCommand($sql1)->queryRow();
                         if($record[$i]['b4_paid_type']=='1'||$record[$i]['b4_paid_type']=='Y'){
                             $a=$record[$i]['b4_amt_paid'];
                         }else{
@@ -1507,6 +1506,7 @@ class ReportXS01List extends CListPageModel
                         $b=$b-$a;
                         $all_number='all_number_edit'.$i;
                         $surplus='surplus_edit'.$i;
+                    if($records_edit['performance']==1){
                         if($b>0){
                             if(!empty($records[$all_number])){
                                 $news=$b/$records[$all_number];
@@ -1521,10 +1521,10 @@ class ReportXS01List extends CListPageModel
                                     $moneys+=$g;
                                 }
                             }
-                            $mons=$money+$moneys;
                         }
                     }
                 }
+                $mons=$money+$moneys;
                 if(empty($mons)){
                     $mons=0;
                 }
