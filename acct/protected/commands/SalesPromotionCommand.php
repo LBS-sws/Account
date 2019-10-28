@@ -11,7 +11,6 @@ class SalesPromotionCommand extends CConsoleCommand
         $year = date("Y");
         echo $firstDay=date('Y-m-01', strtotime('-1 month'));
         echo $endDay=date('Y-m-31', strtotime('-1 month'));
-        if($day=='01'){
         $sql="select substring_index(a.salesman,' ', -1) as code,substring_index(a.salesman,' ', 1) as name,a.city 
                   from swoper$suffix.swo_service  a
                   inner join hr$suffix.hr_employee b on code=b.code
@@ -29,7 +28,7 @@ class SalesPromotionCommand extends CConsoleCommand
                 $sql1="insert into account$suffix.acc_service_comm_hdr(year_no,month_no,employee_code,employee_name,city) values ('$year','$last_month','".$records[$i]['code']."','".$records[$i]['name']."','".$records[$i]['city']."')";
                 $record = Yii::app()->db->createCommand($sql1)->execute();
             }
-        }
+
     }
 }
 
