@@ -433,7 +433,7 @@ class WorkflowPayment extends WorkflowDMS {
 		
 		$v = array();
 		$v['doc_id'] = $docId;
-		$v['state'] = 'S';
+		$v['state'] = 'A';
 		$v['send'] = 'Y';
 		$v['to_addr'] = $toaddr;
 //		$v['cc_addr'] = $ccaddr;
@@ -473,7 +473,7 @@ class WorkflowPayment extends WorkflowDMS {
 		
 		$v = array();
 		$v['doc_id'] = $docId;
-		$v['state'] = 'A';
+		$v['state'] = 'S';
 		$v['send'] = 'Y';
 		$v['to_addr'] = $toaddr;
 //		$v['cc_addr'] = $ccaddr;
