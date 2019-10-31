@@ -25,9 +25,7 @@ $this->pageTitle=Yii::app()->name . ' - Bonus Report';
 <!--    <div class="box-body">-->
 <!--        <div class="btn-group" role="group">-->
 
-<!--            --><?php //echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
-//                'submit'=>Yii::app()->createUrl('query/index_s')));
-//            ?>
+
 <!--            --><?php //echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save1'), array(
 //                    'submit'=>Yii::app()->createUrl('query/editsave',array('year'=>$year,'month'=>$month,'index'=>$index)))
 //            ); ?>
@@ -41,6 +39,11 @@ $this->pageTitle=Yii::app()->name . ' - Bonus Report';
 <!--                    <p><b>备注：</b></p>-->
                     <p style="text-indent: 15px;font-size: 25px;">奖金：<?php echo $money['money']; ?></p>
 <!--                    <p style="text-indent: 15px;">2.最好按顺序进行计算提成，首先需要计算新生意额。</p>-->
+                </div>
+                <div class="btn-group pull-right" role="group">
+                    <?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
+                        'submit'=>Yii::app()->createUrl('bonus/index')));
+                    ?>
                 </div>
             </div>
         </div>

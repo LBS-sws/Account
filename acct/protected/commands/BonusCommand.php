@@ -22,8 +22,8 @@ class BonusCommand extends CConsoleCommand
                     $month=$months-1;
                     $year=$years;
                     if($month==0){
-                        $month=12;
                         $year=$years-1;
+                        $month=12;
                     }
                     $start=$year."-".$month."-01";
                     $end=$year."-".$month."-31";
