@@ -54,24 +54,24 @@ class BonusController extends Controller
 		$this->render('index',array('model'=>$model));
 	}
 
-//
-//	public function actionSave()
-//	{
-//		if (isset($_POST['PerformanceForm'])) {
-//			$model = new PerformanceForm($_POST['PerformanceForm']['scenario']);
-//			$model->attributes = $_POST['PerformanceForm'];
-//			if ($model->validate()) {
-//				$model->saveData();
-//				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-//				$this->redirect(Yii::app()->createUrl('performance/edit',array('index'=>$model->id)));
-//			} else {
-//				$message = CHtml::errorSummary($model);
-//				Dialog::message(Yii::t('dialog','Validation Message'), $message);
-//				$this->render('form',array('model'=>$model,));
-//			}
-//		}
-//	}
-//
+
+	public function actionSave($index)
+	{
+        $model = new BonusForm('save');
+        $money=$this->money($index);
+			if ($model->validate()) {
+				$model->saveData($index);
+				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+				$this->redirect(Yii::app()->createUrl('bonus/view',array('index'=>$index)));
+			} else {
+				$message = CHtml::errorSummary($model);
+				Dialog::message(Yii::t('dialog','Validation Message'), $message);
+                $this->render('form',array('model'=>$model,'money'=>$money,'index'=>$index,));
+			}
+
+	}
+
+
 	public function actionView($index,$pageNum=0)
 	{
         $model = new BonusList;
@@ -87,13 +87,12 @@ class BonusController extends Controller
         $model->determinePageNum($pageNum);
         $model->retrieveDataByPages($index,$model->pageNum);
         $money=$this->money($index);
-
-        $this->render('form',array('model'=>$model,'money'=>$money));
+        $this->render('form',array('model'=>$model,'money'=>$money,'index'=>$index,));
 	}
 	
 	public function actionNew()
 	{
-		$model = new PerformanceForm('new');
+		$model = new BonusForm('new');
 		$this->render('form',array('model'=>$model,));
 	}
 
@@ -105,11 +104,12 @@ class BonusController extends Controller
 
 //	public function actionEdit($index)
 //	{
-//		$model = new PerformanceForm('edit');
+//		$model = new BonusForm('edit');
 //		if (!$model->retrieveData($index)) {
 //			throw new CHttpException(404,'The requested page does not exist.');
 //		} else {
-//			$this->render('form',array('model'=>$model,));
+//            $money=$this->money($index);
+//            $this->render('form',array('model'=>$model,'money'=>$money,'index'=>$index,));
 //		}
 //	}
 	

@@ -65,89 +65,68 @@ class BonusForm extends CFormModel
 		return true;
 	}
 	
-	public function saveData()
-	{
-		$connection = Yii::app()->db;
-		$transaction=$connection->beginTransaction();
-		try {
-			$this->save($connection);
-			$transaction->commit();
-		}
-		catch(Exception $e) {
-			$transaction->rollback();
-			throw new CHttpException(404,'Cannot update.');
-		}
-	}
-
-	protected function save(&$connection)
-	{
-		$sql = '';
-		switch ($this->scenario) {
-			case 'delete':
-				$sql = "delete from sal_performance where id = :id";
-				break;
-			case 'new':
-				$sql = "insert into sal_performance(
-						name, rpt_type, type_group, city, lcu, luu) values (
-						:name, :rpt_type, :type_group, :city, :lcu, :luu)";
-				break;
-			case 'edit':
-				$sql = "update sal_performance set 
-					sum = :sum, 	
-					sums = :sums, 	
-					spanning = :spanning,
-					otherspanning = :otherspanning,		  
-					luu = :luu
-					where id = :id";
-				break;
-		}
-
-		$uid = Yii::app()->user->id;
-        $sum=$_POST['PerformanceForm']['sum'];
-		$command=$connection->createCommand($sql);
-		if (strpos($sql,':id')!==false)
-			$command->bindParam(':id',$this->id,PDO::PARAM_INT);
-		if (strpos($sql,':sum')!==false)
-			$command->bindParam(':sum',$sum,PDO::PARAM_STR);
-        if (strpos($sql,':sums')!==false)
-            $command->bindParam(':sums',$this->sums,PDO::PARAM_STR);
-        if (strpos($sql,':spanning')!==false)
-            $command->bindParam(':spanning',$this->spanning,PDO::PARAM_STR);
-        if (strpos($sql,':otherspanning')!==false)
-            $command->bindParam(':otherspanning',$this->otherspanning,PDO::PARAM_STR);
-		if (strpos($sql,':type_group')!==false)
-			$command->bindParam(':type_group',$this->type_group,PDO::PARAM_INT);
-		if (strpos($sql,':rpt_type')!==false)
-			$command->bindParam(':rpt_type',$this->rpt_type,PDO::PARAM_STR);
-		if (strpos($sql,':city')!==false)
-			$command->bindParam(':city',$this->city,PDO::PARAM_STR);
-		if (strpos($sql,':luu')!==false)
-			$command->bindParam(':luu',$uid,PDO::PARAM_STR);
-		if (strpos($sql,':lcu')!==false)
-			$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
-		$command->execute();
-
-		if ($this->scenario=='new')
-			$this->id = Yii::app()->db->getLastInsertID();
-		return true;
-	}
-
-	public function getCityList() {
-		$suffix = Yii::app()->params['envSuffix'];
-		$sql = "select code, name from security$suffix.sec_city order by name";
-		$rows = Yii::app()->db->createCommand($sql)->queryAll();
-		$rtn = array('99999'=>Yii::t('sales','All'));
-		foreach ($rows as $row) {
-			$rtn[$row['code']] = $row['name'];
-		}
-		return $rtn;
-	}
-
-	public function isOccupied($index) {
-		$rtn = false;
-		$sql = "select a.id from sal_visit a where a.cust_type=".$index." limit 1";
-		$row = Yii::app()->db->createCommand($sql)->queryRow();
-		$rtn = ($row !== false);
-		return $rtn;
-	}
+	public function saveData($index)
+    {
+        $money=0;
+        $suffix = Yii::app()->params['envSuffix'];
+        $sql = "select * from acc_bonus where id='$index'";
+        $records = Yii::app()->db->createCommand($sql)->queryRow();
+        $start=$records['year']."-".$records['month']."-01";
+        $end=$records['year']."-".$records['month']."-31";
+        $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
+				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
+				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 			
+				where a.city='".$records['city']."'  and a.status='A'  and a.first_dt>='$start' and a.first_dt<='$end'  and a.target='1'
+			";
+        $rows= Yii::app()->db->createCommand($sql1)->queryAll();
+        foreach ($rows as $records){
+            if($records['paid_type']=='1'||$records['paid_type']=='Y'){
+                $a=$records['amt_paid'];
+            }else{
+                $a=$records['amt_paid']*12;
+            }
+            if($records['b4_paid_type']=='1'||$records['b4_paid_type']=='Y'){
+                $b=$records['b4_amt_paid'];
+            }else{
+                $b=$records['b4_amt_paid']*12;
+            }
+            $c=$a-$b;
+            if($c>0){
+                $span="select * from sales$suffix.sal_performance where city='".$records['city']."' and year='".$records['year']."' and month='".$records['month']."'";
+                $spanning = Yii::app()->db->createCommand($span)->queryRow();
+                if(empty($spanning['otherspanning'])){
+                    $spanning['otherspanning']=0.5;
+                }
+                $c+=$c* $spanning['otherspanning'];
+                $money+=$c*0.04;
+            }
+        }
+        $sql2 = "select a.*,  c.description as type_desc, d.name as city_name					
+				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
+				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 			
+				where a.city='".$records['city']."'  and a.status='N'  and a.first_dt>='$start' and a.first_dt<='$end'  and a.target='1'
+			";
+        $rows= Yii::app()->db->createCommand($sql2)->queryAll();
+        foreach ($rows as $records){
+            if($records['paid_type']=='1'||$records['paid_type']=='Y'){
+                $a=$records['amt_paid'];
+            }else{
+                $a=$records['amt_paid']*12;
+            }
+            $span="select * from sales$suffix.sal_performance where city='".$records['city']."' and year='".$records['year']."' and month='".$records['month']."'";
+            $spanning = Yii::app()->db->createCommand($span)->queryRow();
+            if(empty($spanning['otherspanning'])){
+                $spanning['otherspanning']=0.5;
+            }
+            $a+=$a* $spanning['otherspanning'];
+            $money+=$a*0.04;
+        }
+        if(empty($money)){
+            $money=0;
+        }
+        $sql = "update account$suffix.acc_bonus set money='$money' where id='$index'
+			";
+        $command=Yii::app()->db->createCommand($sql)->execute();
+        return true;
+    }
 }
