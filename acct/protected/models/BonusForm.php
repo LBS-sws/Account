@@ -104,8 +104,7 @@ class BonusForm extends CFormModel
                 if(empty($spanning['otherspanning'])){
                     $spanning['otherspanning']=0.5;
                 }
-                $c+=$c* $spanning['otherspanning'];
-                $money+=$c*0.04;
+                $money+=$c* $spanning['otherspanning']*0.04;
             }
         }
         $sql2 = "select a.*,  c.description as type_desc, d.name as city_name					
@@ -120,19 +119,21 @@ class BonusForm extends CFormModel
             }else{
                 $a=$records['amt_paid']*12;
             }
+
             $span="select * from sales$suffix.sal_performance where city='".$records['city']."' and year='".$year."' and month='".$month."'";
 
             $spanning = Yii::app()->db->createCommand($span)->queryRow();
             if(empty($spanning['otherspanning'])){
                 $spanning['otherspanning']=0.5;
             }
-            $a+=$a* $spanning['otherspanning'];
-            $money+=$a*0.04;
+
+            $money+=$a*$spanning['otherspanning']*0.04;
+
         }
         if(empty($money)){
             $money=0;
         }
-        $sql = "update account$suffix.acc_bonus set money='$money' where id='$index'
+        $sql = "update acc_bonus set money='$money' where id='$index'
 			";
         $command=Yii::app()->db->createCommand($sql)->execute();
         return true;
