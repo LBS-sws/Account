@@ -51,7 +51,7 @@ class BonusCommand extends CConsoleCommand
                     $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 			
-				where a.city='$city'  and a.status='A'  and a.first_dt>='$start' and a.first_dt<='$end'  and target='1'
+				where a.city='$city'  and a.status='A'  and a.status_dt>='$start' and a.status_dt<='$end'  and target='1'
 			";
                     $rows = Yii::app()->db->createCommand($sql1)->queryAll();
                     foreach ($rows as $records){

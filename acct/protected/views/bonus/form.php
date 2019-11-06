@@ -37,7 +37,7 @@ $this->pageTitle=Yii::app()->name . ' - Bonus Report';
             <div class="box-body">
                 <div class="btn-group text-info" role="group">
 <!--                    <p><b>备注：</b></p>-->
-                    <p style="text-indent: 15px;font-size: 25px;">奖金：<?php echo $money['money']; ?></p>
+                    <p style="text-indent: 15px;font-size: 25px;"><?php echo $money['month']; ?>月奖金：<?php echo $money['money']; ?></p>
 <!--                    <p style="text-indent: 15px;">2.最好按顺序进行计算提成，首先需要计算新生意额。</p>-->
                 </div>
                 <div class="btn-group pull-right" role="group">
