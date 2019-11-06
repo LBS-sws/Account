@@ -71,8 +71,15 @@ class BonusForm extends CFormModel
         $suffix = Yii::app()->params['envSuffix'];
         $sql = "select * from acc_bonus where id='$index'";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
-        $start=$records['year']."-".$records['month']."-01";
-        $end=$records['year']."-".$records['month']."-31";
+        $month=$records['month']-1;
+        $year=$records['year'];
+        if($month==0){
+            $year=$records['year']-1;
+            $month=12;
+        }
+        $start=$year."-".$month."-01";
+        $end=$year."-".$month."-31";
+
         $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 			
@@ -92,7 +99,7 @@ class BonusForm extends CFormModel
             }
             $c=$a-$b;
             if($c>0){
-                $span="select * from sales$suffix.sal_performance where city='".$records['city']."' and year='".$records['year']."' and month='".$records['month']."'";
+                $span="select * from sales$suffix.sal_performance where city='".$records['city']."' and year='".$year."' and month='".$month."'";
                 $spanning = Yii::app()->db->createCommand($span)->queryRow();
                 if(empty($spanning['otherspanning'])){
                     $spanning['otherspanning']=0.5;
@@ -113,7 +120,8 @@ class BonusForm extends CFormModel
             }else{
                 $a=$records['amt_paid']*12;
             }
-            $span="select * from sales$suffix.sal_performance where city='".$records['city']."' and year='".$records['year']."' and month='".$records['month']."'";
+            $span="select * from sales$suffix.sal_performance where city='".$records['city']."' and year='".$year."' and month='".$month."'";
+
             $spanning = Yii::app()->db->createCommand($span)->queryRow();
             if(empty($spanning['otherspanning'])){
                 $spanning['otherspanning']=0.5;
