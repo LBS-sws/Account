@@ -113,8 +113,14 @@ class BonusList extends CListPageModel
         $suffix = Yii::app()->params['envSuffix'];
         $sql = "select * from acc_bonus where id='$index'";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
-        $start=$records['year']."-".$records['month']."-01";
-        $end=$records['year']."-".$records['month']."-31";
+        $month=$records['month']-1;
+        $year=$records['year'];
+        if($month==0){
+            $year=$records['year']-1;
+            $month=12;
+        }
+        $start=$year."-".$month."-01";
+        $end=$year."-".$month."-31";
         $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 			
