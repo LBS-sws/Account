@@ -124,7 +124,7 @@ class BonusList extends CListPageModel
         $sql1 = "select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 			
-				where a.city='".$records['city']."'  and a.status='A'  and a.first_dt>='$start' and a.first_dt<='$end'  and a.target='1'
+				where a.city='".$records['city']."'  and a.status='A'  and a.status_dt>='$start' and a.status_dt<='$end'  and a.target='1'
 			";
         $record1= Yii::app()->db->createCommand($sql1)->queryAll();
         $sql2 = "select a.*,  c.description as type_desc, d.name as city_name					
