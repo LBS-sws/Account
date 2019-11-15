@@ -4,7 +4,7 @@
 		."'";
 ?>
 <tr>
-	<td><?php echo TbHtml::checkBox($this->getFieldName('select'),(isset($this->record['select']) && $this->record['select']!='N'),array('value'=>'Y')); ?></td>
+	<td><?php echo TbHtml::checkBox($this->getFieldName('select'),(isset($this->record['select']) && $this->record['select']=='Y'),array('value'=>'Y')); ?></td>
 <?php if (!Yii::app()->user->isSingleCity()) : ?>
 	<td <?php echo $cls_str;?>>
 		<?php echo $this->record['city_name']; ?>

@@ -5,7 +5,7 @@
 ?>
 <tr>
 <?php if (Yii::app()->user->validFunction('CN07')) : ?>
-	<td><?php echo TbHtml::checkBox($this->getFieldName('select'),(!isset($this->record['select']) || $this->record['select']!='N'),array('value'=>'Y')); ?></td>
+	<td><?php echo TbHtml::checkBox($this->getFieldName('select'),(isset($this->record['select']) && $this->record['select']=='Y'),array('value'=>'Y')); ?></td>
 <?php endif ?>
 <?php if (!Yii::app()->user->isSingleCity()) : ?>
 	<td <?php echo $cls_str;?>>
