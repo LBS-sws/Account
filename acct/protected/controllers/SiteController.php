@@ -59,6 +59,9 @@ class SiteController extends Controller
 			$uname = Yii::app()->user->name; 
 			Yii::app()->session['system'] = Yii::app()->params['systemId'];
 			Yii::app()->user->saveUserOption($uname, 'system', Yii::app()->params['systemId']);
+			$obj = new SysBlock();
+			$blkmsg = $obj->getBlockMessage(Yii::app()->params['systemId']);
+			if ($blkmsg!==false) Dialog::message(Yii::t('dialog','Warning'), $blkmsg);
 			$this->render('index');
 		}
 	}
