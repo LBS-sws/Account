@@ -2,15 +2,16 @@
 class SalesPromotionCommand extends CConsoleCommand
 {
 
-    public function run()
+    public function run($args)
     {
+	$date = empty($args) ? date("Y-m-d") : $args[0];
         $suffix = Yii::app()->params['envSuffix'];
-        $day = date("d");
-        $month = date("m");
-        $last_month = date("m")-1;
-        $year = date("Y");
-        echo $firstDay=date('Y-m-01', strtotime('-1 month'));
-        echo $endDay=date('Y-m-31', strtotime('-1 month'));
+        $day = date("d", strtotime($date));
+        $month = date("m", strtotime($date));
+        $last_month = date("m", strtotime($date))-1;
+        $year = date("Y",strtotime($date));
+        echo $firstDay=date('Y-m-d', strtotime($date.' first day of previous month'));
+        echo $endDay=date('Y-m-d', strtotime($date.' last day of previous month'));
         $sql="select substring_index(a.salesman,' ', -1) as code,substring_index(a.salesman,' ', 1) as name,a.city 
                   from swoper$suffix.swo_service  a
                   inner join hr$suffix.hr_employee b on code=b.code

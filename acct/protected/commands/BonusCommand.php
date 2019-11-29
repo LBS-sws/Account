@@ -1,13 +1,18 @@
 <?php
 class BonusCommand extends CConsoleCommand
 {
-    public function run()
+    public function run($args)
     {
-        $months=date('m');
-        $years=date('Y');
-        $day=date('d');
-        $start=$years."-".$months."-01";
-        $end=$years."-".$months."-31";
+        $date = empty($args) ? date("Y-m-d") : $args[0];
+        $day = date("d", strtotime($date));
+        $months = date("m", strtotime($date));
+        $last_month = date("m", strtotime($date))-1;
+        $years = date("Y",strtotime($date));
+        echo $start=date('Y-m-01', strtotime($date));
+        echo $end=date('Y-m-t', strtotime($date));
+
+//        $start=$years."-".$months."-01";
+//        $end=$years."-".$months."-31";
         $money=0;
             $suffix = Yii::app()->params['envSuffix'];
             $sql="select a.code
