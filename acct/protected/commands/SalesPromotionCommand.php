@@ -26,15 +26,14 @@ class SalesPromotionCommand extends CConsoleCommand
 ";
             $records = Yii::app()->db->createCommand($sql)->queryAll();
             $item=array();
-        foreach($records as $k=>$f) {
-            foreach($records as $p=>$t) if($k != $p && $f == $t) unset($records[$k]);
+        foreach($records as $k=>$v){
+            if(!isset($item[$v['code']])) $item[$v['code']]=$v;
         }
-        array_multisort($records);
+        array_multisort($item);
             for ($i=0;$i<count($records);$i++){
-                $sql1="insert into account$suffix.acc_service_comm_hdr(year_no,month_no,employee_code,employee_name,city) values ('$year','$last_month','".$records[$i]['code']."','".$records[$i]['name']."','".$records[$i]['city']."')";
+                $sql1="insert into account$suffix.acc_service_comm_hdr(year_no,month_no,employee_code,employee_name,city) values ('$year','$last_month','".$item[$i]['code']."','".$item[$i]['name']."','".$item[$i]['city']."')";
                 $record = Yii::app()->db->createCommand($sql1)->execute();
             }
-
     }
 }
 
