@@ -16,7 +16,7 @@ class SalesPromotionCommand extends CConsoleCommand
                   inner join hr$suffix.hr_employee b on code=b.code
                   inner join hr$suffix.hr_dept c on b.position=c.id
                   where a.status_dt>='$firstDay' and a.status_dt<='$endDay' and a.salesman not like '%离职%' and c.dept_class not like '%Technician%' 
-                  UNION
+                  intersect
                   select a.code,a.name,a.city from hr$suffix.hr_employee a
                   inner join hr$suffix.hr_binding b on a.id=b.employee_id
                   inner join sales$suffix.sal_visit c on b.user_id=c.username
