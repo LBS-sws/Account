@@ -6,11 +6,11 @@
 		case '4QR': $textcolor = empty($this->record['trans_id']) ? "text-yellow" : "text-teal"; break;
 		case '5PR': $textcolor = empty($this->record['trans_id']) ? "text-yellow" : "text-teal"; break;
 		case '6PS': $textcolor = "text-aqua"; break;
-		case '7ED': $textcolor = strpos($this->record['wfstatusdesc'],'Signed')!==false 
-							|| strpos($this->record['wfstatusdesc'],'签字')!==false 
-							|| strpos($this->record['wfstatusdesc'],'簽字')!==false 
-							? "text-green" : "text-maroon"; 
-					break;
+        case '7ED': $textcolor = strpos($this->record['wfstatusdesc'],'Signed')!==false
+        || strpos($this->record['wfstatusdesc'],'签字')!==false
+        || strpos($this->record['wfstatusdesc'],'簽字')!==false
+            ? "text-green" : "text-maroon";
+            break;
 		default: $textcolor = "";
 	}
 	$strikeB = $this->record['statusx']=='V' ? '<strike>' : '';

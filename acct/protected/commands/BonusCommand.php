@@ -1,7 +1,7 @@
 <?php
 class BonusCommand extends CConsoleCommand
 {
-    public function run($args)
+    public function run()
     {
         $date = empty($args) ? date("Y-m-d") : $args[0];
         $day = date("d", strtotime($date));

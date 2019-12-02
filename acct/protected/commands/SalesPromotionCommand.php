@@ -4,7 +4,7 @@ class SalesPromotionCommand extends CConsoleCommand
 
     public function run($args)
     {
-	$date = empty($args) ? date("Y-m-d") : $args[0];
+        $date = empty($args) ? date("Y-m-d") : $args[0];
         $suffix = Yii::app()->params['envSuffix'];
         $day = date("d", strtotime($date));
         $month = date("m", strtotime($date));
