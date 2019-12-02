@@ -17,7 +17,7 @@ class SalesPromotionCommand extends CConsoleCommand
                   inner join hr$suffix.hr_employee b on code=b.code
                   inner join hr$suffix.hr_dept c on b.position=c.id
                   where a.status_dt>='$firstDay' and a.status_dt<='$endDay' and a.salesman not like '%离职%' and c.dept_class not like '%Technician%' 
-                  intersect
+                  union
                   select a.code,a.name,a.city from hr$suffix.hr_employee a
                   inner join hr$suffix.hr_binding b on a.id=b.employee_id
                   inner join sales$suffix.sal_visit c on b.user_id=c.username
@@ -25,8 +25,12 @@ class SalesPromotionCommand extends CConsoleCommand
                   where c.visit_dt>='$firstDay' and c.visit_dt<='$endDay'  and d.dept_class not like '%Technician%' 
 ";
             $records = Yii::app()->db->createCommand($sql)->queryAll();
+            $item=array();
+            foreach($records as $k=>$v){
+                if(!isset($item[$v['code']])) $item[$v['code']]=$v;
+            }
             for ($i=0;$i<count($records);$i++){
-                $sql1="insert into account$suffix.acc_service_comm_hdr(year_no,month_no,employee_code,employee_name,city) values ('$year','$last_month','".$records[$i]['code']."','".$records[$i]['name']."','".$records[$i]['city']."')";
+                $sql1="insert into account$suffix.acc_service_comm_hdr(year_no,month_no,employee_code,employee_name,city) values ('$year','$last_month','".$item[$i]['code']."','".$item[$i]['name']."','".$item[$i]['city']."')";
                 $record = Yii::app()->db->createCommand($sql1)->execute();
             }
 
