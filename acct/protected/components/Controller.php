@@ -35,6 +35,15 @@ class Controller extends CController
 			Yii::app()->language = $session['lang'];
 	}
 	
+	public function beforeAction($action) {
+		if (!Yii::app()->user->isGuest) {
+			$obj = new SysBlock();
+			$url = $obj->blockNRoute($this->id, $this->function_id);
+			if ($url!==false) $this->redirect($url);
+		}
+		return true;
+	}
+	
 	public function filterEnforceRegisteredStation($filterChain) {
 		$rtn = true;
 		if (Yii::app()->params['checkStation']) {
