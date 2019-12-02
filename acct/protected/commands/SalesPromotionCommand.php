@@ -29,7 +29,7 @@ class SalesPromotionCommand extends CConsoleCommand
         foreach($records as $k=>$v){
             if(!isset($item[$v['code']])) $item[$v['code']]=$v;
         }
-        array_multisort($item);
+        sort($item);
             for ($i=0;$i<count($records);$i++){
                 $sql1="insert into account$suffix.acc_service_comm_hdr(year_no,month_no,employee_code,employee_name,city) values ('$year','$last_month','".$item[$i]['code']."','".$item[$i]['name']."','".$item[$i]['city']."')";
                 $record = Yii::app()->db->createCommand($sql1)->execute();
