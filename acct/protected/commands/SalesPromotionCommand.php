@@ -29,6 +29,8 @@ class SalesPromotionCommand extends CConsoleCommand
         $code= array();
         foreach($records as $key=> $val)
         {
+            $val['code']=str_replace('(','',$val['code']);
+            $val['code']=str_replace(')','',$val['code']);
             if(in_array($val['code'],$code))
             {
                 unset($records[$key]);
