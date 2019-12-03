@@ -25,13 +25,21 @@ class SalesPromotionCommand extends CConsoleCommand
                   where c.visit_dt>='$firstDay' and c.visit_dt<='$endDay'  and d.dept_class not like '%Technician%' 
 ";
             $records = Yii::app()->db->createCommand($sql)->queryAll();
-            $item=array();
-        foreach($records as $k=>$v){
-            if(!isset($item[$v['code']])) $item[$v['code']]=$v;
+
+        $code= array();
+        foreach($records as $key=> $val)
+        {
+            if(in_array($val['code'],$code))
+            {
+                unset($records[$key]);
+            }else
+            {
+                $code[]=$val['code'];
+            }
         }
-        sort($item);
+        sort($records);
             for ($i=0;$i<count($records);$i++){
-                $sql1="insert into account$suffix.acc_service_comm_hdr(year_no,month_no,employee_code,employee_name,city) values ('$year','$last_month','".$item[$i]['code']."','".$item[$i]['name']."','".$item[$i]['city']."')";
+                $sql1="insert into account$suffix.acc_service_comm_hdr(year_no,month_no,employee_code,employee_name,city) values ('$year','$last_month','".$records[$i]['code']."','".$records[$i]['name']."','".$records[$i]['city']."')";
                 $record = Yii::app()->db->createCommand($sql1)->execute();
             }
     }
