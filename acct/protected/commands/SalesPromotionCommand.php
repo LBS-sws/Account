@@ -39,7 +39,9 @@ class SalesPromotionCommand extends CConsoleCommand
         }
         sort($records);
             for ($i=0;$i<count($records);$i++){
-                $sql1="insert into account$suffix.acc_service_comm_hdr(year_no,month_no,employee_code,employee_name,city) values ('$year','$last_month','".$records[$i]['code']."','".$records[$i]['name']."','".$records[$i]['city']."')";
+                $str=str_replace('(','',$records['code']);
+                $str=str_replace(')','',$str);
+                $sql1="insert into account$suffix.acc_service_comm_hdr(year_no,month_no,employee_code,employee_name,city) values ('$year','$last_month','".$str."','".$records[$i]['name']."','".$records[$i]['city']."')";
                 $record = Yii::app()->db->createCommand($sql1)->execute();
             }
     }
