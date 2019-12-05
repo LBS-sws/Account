@@ -182,7 +182,7 @@ class ReportXS01List extends CListPageModel
                 if($record['paid_type']=='1'||$record['paid_type']=='Y'){
                     $a=$record['amt_paid'];
                 }else{
-                    $a=$record['amt_paid']*12;
+                    $a=$record['amt_paid']*$record['$ctrt_period'];
                 }
                 $this->attr[] = array(
                     'id'=>$record['id'],
@@ -278,7 +278,7 @@ class ReportXS01List extends CListPageModel
                 if($record['paid_type']=='1'||$record['paid_type']=='Y'){
                     $a=$record['amt_paid'];
                 }else{
-                    $a=$record['amt_paid']*12;
+                    $a=$record['amt_paid']*$record['$ctrt_period'];
                 }
                 $this->attr[] = array(
                     'id'=>$record['id'],
@@ -407,7 +407,7 @@ class ReportXS01List extends CListPageModel
                 if($record['paid_type']=='1'||$record['paid_type']=='Y'){
                     $a=$record['amt_paid'];
                 }else{
-                    $a=$record['amt_paid']*12;
+                    $a=$record['amt_paid']*$record['$ctrt_period'];
                 }
                 $this->attr[] = array(
                     'id'=>$record['id'],
@@ -504,7 +504,7 @@ class ReportXS01List extends CListPageModel
                 if($record['paid_type']=='1'||$record['paid_type']=='Y'){
                     $a=$record['amt_paid'];
                 }else{
-                    $a=$record['amt_paid']*12;
+                    $a=$record['amt_paid']*$record['$ctrt_period'];
                 }
                 $this->attr[] = array(
                     'id'=>$record['id'],
@@ -600,7 +600,7 @@ class ReportXS01List extends CListPageModel
                 if($record['paid_type']=='1'||$record['paid_type']=='Y'){
                     $a=$record['amt_paid'];
                 }else{
-                    $a=$record['amt_paid']*12;
+                    $a=$record['amt_paid']*$record['$ctrt_period'];
                 }
                 $this->attr[] = array(
                     'id'=>$record['id'],
@@ -723,7 +723,7 @@ class ReportXS01List extends CListPageModel
                 if($record['paid_type']=='1'||$record['paid_type']=='Y'){
                     $a=$record['amt_paid'];
                 }else{
-                    $a=$record['amt_paid']*12;
+                    $a=$record['amt_paid']*$record['$ctrt_period'];
                 }
                 $this->attr[] = array(
                     'id'=>$record['id'],
@@ -780,7 +780,7 @@ class ReportXS01List extends CListPageModel
                 if($records['paid_type']=='1'||$records['paid_type']=='Y'){
                     $a=$records['amt_paid'];
                 }else{
-                    $a=$records['amt_paid']*12;
+                    $a=$records['amt_paid']*$records['$ctrt_period'];
                 }
                 $span="select * from sales$suffix.sal_performance where city='$city' and year='$year' and month='$month'";
                 $spanning = Yii::app()->db->createCommand($span)->queryRow();
@@ -807,7 +807,7 @@ class ReportXS01List extends CListPageModel
                 if($records['paid_type']=='1'||$records['paid_type']=='Y'){
                     $a=$records['amt_paid'];
                 }else{
-                    $a=$records['amt_paid']*12;
+                    $a=$records['amt_paid']*$records['$ctrt_period'];
                 }
                 $span="select * from sales$suffix.sal_performance where city='$city' and year='$year' and month='$month'";
                 $spanning = Yii::app()->db->createCommand($span)->queryRow();
@@ -895,12 +895,12 @@ class ReportXS01List extends CListPageModel
                 if($records['paid_type']=='1'||$records['paid_type']=='Y'){
                     $a=$records['amt_paid'];
                 }else{
-                    $a=$records['amt_paid']*12;
+                    $a=$records['amt_paid']*$records['$ctrt_period'];
                 }
                 if($records['b4_paid_type']=='1'||$records['b4_paid_type']=='Y'){
                     $b=$records['b4_amt_paid'];
                 }else{
-                    $b=$records['b4_amt_paid']*12;
+                    $b=$records['b4_amt_paid']*$records['$ctrt_period'];
                 }
                 $zhuangji+=$records['amt_install'];
                 $c=$a-$b;
@@ -1015,7 +1015,7 @@ class ReportXS01List extends CListPageModel
                 if($records['paid_type']=='1'||$records['paid_type']=='Y'){
                     $a=$records['amt_paid'];
                 }else{
-                    $a=$records['amt_paid']*12;
+                    $a=$records['amt_paid']*$records['$ctrt_period'];
                 }
                 if(!empty($records['all_number'])){
                     $new=$a/$records['all_number'];
@@ -1093,7 +1093,7 @@ class ReportXS01List extends CListPageModel
                     if($record[$i]['b4_paid_type']=='1'||$record[$i]['b4_paid_type']=='Y'){
                         $a=$record[$i]['b4_amt_paid'];
                     }else{
-                        $a=$record[$i]['b4_amt_paid']*12;
+                        $a=$record[$i]['b4_amt_paid']*$record['$ctrt_period'];
                     }
                     if(!empty($records['all_number'])){
                         $new=$a/$records['all_number'];
@@ -1114,7 +1114,7 @@ class ReportXS01List extends CListPageModel
                     if($record[$i]['paid_type']=='1'||$record[$i]['paid_type']=='Y'){
                         $b=$record[$i]['amt_paid'];
                     }else{
-                        $b=$record[$i]['amt_paid']*12;
+                        $b=$record[$i]['amt_paid']*$record['$ctrt_period'];
                     }
                         $b=$b-$a;
                         $all_number='all_number_edit'.$i;
@@ -1187,7 +1187,7 @@ class ReportXS01List extends CListPageModel
                 if($records['paid_type']=='1'||$records['paid_type']=='Y'){
                     $a=$records['amt_paid'];
                 }else{
-                    $a=$records['amt_paid']*12;
+                    $a=$records['amt_paid']*$records['$ctrt_period'];
                 }
                 $sql3="select performance from acc_service_comm_hdr where  id='$index'";
                 $color = Yii::app()->db->createCommand($sql3)->queryRow();
@@ -1222,7 +1222,7 @@ class ReportXS01List extends CListPageModel
                 if($records['paid_type']=='1'||$records['paid_type']=='Y'){
                     $a=$records['amt_paid'];
                 }else{
-                    $a=$records['amt_paid']*12;
+                    $a=$records['amt_paid']*$records['$ctrt_period'];
                 }
                 $sql3="select performance from acc_service_comm_hdr where  id='$index'";
                 $color = Yii::app()->db->createCommand($sql3)->queryRow();
@@ -1292,12 +1292,12 @@ class ReportXS01List extends CListPageModel
             if($records['paid_type']=='1'||$records['paid_type']=='Y'){
                 $a=$records['amt_paid'];
             }else{
-                $a=$records['amt_paid']*12;
+                $a=$records['amt_paid']*$records['$ctrt_period'];
             }
             if($records['b4_paid_type']=='1'||$records['b4_paid_type']=='Y'){
                 $b=$records['b4_amt_paid'];
             }else{
-                $b=$records['b4_amt_paid']*12;
+                $b=$records['b4_amt_paid']*$records['$ctrt_period'];
             }
             $zhuangji+=$records['amt_install'];
             $c=$a-$b;
@@ -1412,7 +1412,7 @@ class ReportXS01List extends CListPageModel
                 if($records['paid_type']=='1'||$records['paid_type']=='Y'){
                     $a=$records['amt_paid'];
                 }else{
-                    $a=$records['amt_paid']*12;
+                    $a=$records['amt_paid']*$records['$ctrt_period'];
                 }
                 if(!empty($records['all_number'])){
                     $new=$a/$records['all_number'];
@@ -1480,7 +1480,7 @@ class ReportXS01List extends CListPageModel
                         if($record[$i]['b4_paid_type']=='1'||$record[$i]['b4_paid_type']=='Y'){
                             $a=$record[$i]['b4_amt_paid'];
                         }else{
-                            $a=$record[$i]['b4_amt_paid']*12;
+                            $a=$record[$i]['b4_amt_paid']*$record['$ctrt_period'];
                         }
                         if(!empty($records['all_number'])){
                             $new=$a/$records['all_number'];
@@ -1513,7 +1513,7 @@ class ReportXS01List extends CListPageModel
                         if($record[$i]['paid_type']=='1'||$record[$i]['paid_type']=='Y'){
                             $b=$record[$i]['amt_paid'];
                         }else{
-                            $b=$record[$i]['amt_paid']*12;
+                            $b=$record[$i]['amt_paid']*$record['$ctrt_period'];
                         }
                         $b=$b-$a;
                         $all_number='all_number_edit'.$i;
