@@ -1237,7 +1237,7 @@ class ReportXS01List extends CListPageModel
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     $span="select * from sales$suffix.sal_performance where city='$city' and year='$year' and month='$month'";
                     $otherspanning = Yii::app()->db->createCommand($span)->queryRow();
-                  
+
                     if (!empty($a)) {
                         if(empty($otherspanning['otherspanning'])){
                             $otherspanning['otherspanning']=0.5;
@@ -1344,6 +1344,7 @@ class ReportXS01List extends CListPageModel
                 $timestrap=strtotime($date);
                 $years=date('Y',$timestrap);
                 $months=date('m',$timestrap);
+
                 $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                 $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                 $sql1="select * from acc_service_comm_hdr where year_no='".$years."' and month_no='".$months."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
@@ -1486,6 +1487,7 @@ class ReportXS01List extends CListPageModel
                     if(empty($spanning['otherspanning'])){
                         $spanning['otherspanning']=0.5;
                     }
+
                     $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                     $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                     $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
@@ -1493,8 +1495,9 @@ class ReportXS01List extends CListPageModel
                         if($record[$i]['b4_paid_type']=='1'||$record[$i]['b4_paid_type']=='Y'){
                             $a=$record[$i]['b4_amt_paid'];
                         }else{
-                            $a=$record[$i]['b4_amt_paid']*$record['ctrt_period'];
+                            $a=$record[$i]['b4_amt_paid']*$record[$i]['ctrt_period'];
                         }
+
                         if(!empty($records['all_number'])){
                             $new=$a/$records['all_number'];
                         }
@@ -1503,7 +1506,6 @@ class ReportXS01List extends CListPageModel
                         }
                         $sqls="select * from  swoper$suffix.swo_service where company_name='".$record[$i]['company_name']."' and cust_type='".$record[$i]['cust_type']."' and status='N'";
                         $arr = Yii::app()->db->createCommand($sqls)->queryRow();
-
                         $date=$arr['first_dt'];
                         $timestrap=strtotime($date);
                         $year=date('Y',$timestrap);
@@ -1528,11 +1530,12 @@ class ReportXS01List extends CListPageModel
                         if($record[$i]['paid_type']=='1'||$record[$i]['paid_type']=='Y'){
                             $b=$record[$i]['amt_paid'];
                         }else{
-                            $b=$record[$i]['amt_paid']*$record['ctrt_period'];
+                            $b=$record[$i]['amt_paid']*$record[$i]['ctrt_period'];
                         }
                         $b=$b-$a;
                         $all_number='all_number_edit'.$i;
                         $surplus='surplus_edit'.$i;
+
                     if($records_edit['performance']==1){
                         if(empty($model_royaltys)){
                             $model_royaltys['royaltys']=0;
@@ -1561,6 +1564,7 @@ class ReportXS01List extends CListPageModel
                 }
                 if(!empty($royaltys)){
                     sort($royaltys);
+
                     if($royaltys[0]==0){
                         $royaltyes=$royalty[$ai];
                     }else{
@@ -1569,7 +1573,6 @@ class ReportXS01List extends CListPageModel
                 }else{
                     $royaltyes=0;
                 }
-
 //                print_r('<pre>');
 //                print_r($arr['royalty']);
 //                exit();
