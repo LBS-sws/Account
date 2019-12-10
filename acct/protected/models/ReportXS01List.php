@@ -1121,10 +1121,10 @@ class ReportXS01List extends CListPageModel
                         $all_number='all_number_edit'.$i;
                         $surplus='surplus_edit'.$i;
                     if($b>0){
-                        if(!empty($records[$all_number])){
+                        if($records[$all_number]!=NULL){
                             $news=$b/$records[$all_number];
                         }
-                        if(!empty($records[$surplus])){
+                        if($records[$surplus]!=NULL){
                             $g=$news*$records[$surplus]; //更改新增单价*更改新增次
                         }
                         if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
@@ -1543,10 +1543,10 @@ class ReportXS01List extends CListPageModel
                         }
                         $royaltys[]=$model_royaltys['royaltys'];
                         if($b>0){
-                            if(!empty($records[$all_number])){
+                            if($records[$all_number]!=NULL){
                                 $news=$b/$records[$all_number];
                             }
-                            if(!empty($records[$surplus])){
+                            if($records[$surplus]!=NULL){
                                 $g=$news*$records[$surplus]; //更改新增单价*更改新增次
                             }
                             if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
