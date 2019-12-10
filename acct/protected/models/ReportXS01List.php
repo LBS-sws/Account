@@ -1093,7 +1093,7 @@ class ReportXS01List extends CListPageModel
                     if($record[$i]['b4_paid_type']=='1'||$record[$i]['b4_paid_type']=='Y'){
                         $a=$record[$i]['b4_amt_paid'];
                     }else{
-                        $a=$record[$i]['b4_amt_paid']*$record['ctrt_period'];
+                        $a=$record[$i]['b4_amt_paid']*$record[$i]['ctrt_period'];
                     }
                     if(!empty($records['all_number'])){
                         $new=$a/$records['all_number'];
@@ -1114,7 +1114,7 @@ class ReportXS01List extends CListPageModel
                     if($record[$i]['paid_type']=='1'||$record[$i]['paid_type']=='Y'){
                         $b=$record[$i]['amt_paid'];
                     }else{
-                        $b=$record[$i]['amt_paid']*$record['ctrt_period'];
+                        $b=$record[$i]['amt_paid']*$record[$i]['ctrt_period'];
                     }
                         $b=$b-$a;
                         $all_number='all_number_edit'.$i;
@@ -1441,7 +1441,7 @@ class ReportXS01List extends CListPageModel
                 $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
                 if($records1['performance']==1){
-                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
+                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";//当初提成比例
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     $span="select * from sales$suffix.sal_performance where city='$city' and year='$year' and month='$month'";
                     $otherspanning = Yii::app()->db->createCommand($span)->queryRow();
@@ -1477,7 +1477,7 @@ class ReportXS01List extends CListPageModel
                 $moneys=0;
                 for ($i=0;$i<count($record);$i++){
                     $sqlct="select royaltys from swoper$suffix.swo_service  where id='".$record[$i]['id']."'";
-                    $model_royaltys = Yii::app()->db->createCommand($sqlct)->queryRow();
+                    $model_royaltys = Yii::app()->db->createCommand($sqlct)->queryRow(); //更改时输入的提成比例
                     $date=$record[$i]['status_dt'];
                     $timestrap=strtotime($date);
                     $year=date('Y',$timestrap);
