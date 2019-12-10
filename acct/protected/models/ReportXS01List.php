@@ -922,11 +922,11 @@ class ReportXS01List extends CListPageModel
                         }
                     }
                 }else{
-                    if(!empty($records['all_number'])){
+                    if($records['all_number']!=NULL){
                         $new=$a/$records['all_number'];
                         $old=$b/$records['all_number'];
                     }
-                    if(!empty($records['surplus'])){
+                    if($records['surplus']!=NULL){
                         $m=($new-$old)*$records['surplus'];
                     }
                     //当初提成比例
@@ -1017,10 +1017,10 @@ class ReportXS01List extends CListPageModel
                 }else{
                     $a=$records['amt_paid']*$records['ctrt_period'];
                 }
-                if(!empty($records['all_number'])){
+                if($records['all_number']!=NULL){
                     $new=$a/$records['all_number'];
                 }
-                if(!empty($records['surplus'])){
+                if($records['surplus']!=NULL){
                     $m=$new*$records['surplus'];
                 }
 
@@ -1095,11 +1095,12 @@ class ReportXS01List extends CListPageModel
                     }else{
                         $a=$record[$i]['b4_amt_paid']*$record[$i]['ctrt_period'];
                     }
-                    if(!empty($records['all_number'])){
+                    if($records['all_number']!=NULL){
                         $new=$a/$records['all_number'];
                     }
-                    if(!empty($records['surplus'])){
+                    if($records['surplus']!=NULL){
                         $m=$new*$records['surplus']; //新单价*新次
+
                     }
                     if($i!=0){
                         $m=0;
@@ -1331,11 +1332,11 @@ class ReportXS01List extends CListPageModel
                     $model = Yii::app()->db->createCommand($target)->execute();
                 }
             }else{
-                if(!empty($records['all_number'])){
+                if($records['all_number']!=NULL){
                     $new=$a/$records['all_number'];
                     $old=$b/$records['all_number'];
                 }
-                if(!empty($records['surplus'])){
+                if($records['surplus']!=NULL){
                     $m=($new-$old)*$records['surplus'];
                 }
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N'";
@@ -1424,10 +1425,10 @@ class ReportXS01List extends CListPageModel
                 }else{
                     $a=$records['amt_paid']*$records['ctrt_period'];
                 }
-                if(!empty($records['all_number'])){
+                if($records['all_number']!=NULL){
                     $new=$a/$records['all_number'];
                 }
-                if(!empty($records['surplus'])){
+                if($records['surplus']!=NULL){
                     $m=$new*$records['surplus'];
                 }
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N'";
@@ -1498,10 +1499,10 @@ class ReportXS01List extends CListPageModel
                             $a=$record[$i]['b4_amt_paid']*$record[$i]['ctrt_period'];
                         }
 
-                        if(!empty($records['all_number'])){
+                    if($records['all_number']!=NULL){
                             $new=$a/$records['all_number'];
                         }
-                        if(!empty($records['surplus'])){
+                    if($records['surplus']!=NULL){
                             $m=$new*$records['surplus']; //新单价*新次
                         }
                         $sqls="select * from  swoper$suffix.swo_service where company_name='".$record[$i]['company_name']."' and cust_type='".$record[$i]['cust_type']."' and status='N'";
