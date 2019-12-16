@@ -31,7 +31,6 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
         'employee_name',
         'city',
         'user_name',
-        'comm_total_amount'
     );
     $this->widget('ext.layout.ListPageWidget', array(
 			'title'=>Yii::t('app','sale commission man'),

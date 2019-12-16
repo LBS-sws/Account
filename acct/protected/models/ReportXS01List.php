@@ -59,7 +59,7 @@ class ReportXS01List extends CListPageModel
 					$clause .= General::getSqlConditionClause('a.employee_name',$svalue);
 					break;
 				case 'city':
-					$clause .= General::getSqlConditionClause('a.city',$svalue);
+					$clause .= General::getSqlConditionClause('e.name',$svalue);
 					break;
 				case 'user_name':
 					$clause .= General::getSqlConditionClause('c.name',$svalue);
