@@ -41,14 +41,14 @@ class ReportXS02List extends CListPageModel
                  inner join  hr$suffix.hr_dept c on b.position=c.id      
                  inner join security$suffix.sec_city e on a.city=e.code 		  
                  left outer join  acc_service_comm_dtl d on a.id=d.hdr_id            
-			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)
+			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)  and b.staff_status = 0
 			";
             $sql2 = "select count(a.id) from acc_service_comm_hdr a
 			      inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
                  inner join  hr$suffix.hr_dept c on b.position=c.id   
                   inner join security$suffix.sec_city e on a.city=e.code 		   
                   left outer join  acc_service_comm_dtl d on a.id=d.hdr_id          
-			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)
+			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)  and b.staff_status = 0
 			";
         }else{
             $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,d.performance_amount,d.performanceedit_amount,d.performanceend_amount,e.name as cityname from acc_service_comm_hdr a
@@ -57,7 +57,7 @@ class ReportXS02List extends CListPageModel
                  inner join security$suffix.sec_city e on a.city=e.code
                  left outer join  acc_service_comm_dtl d on a.id=d.hdr_id
                  left outer join  hr$suffix.hr_binding e on b.name=e.employee_name
-			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)  and e.user_id='$user'
+			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)  and e.user_id='$user'  and b.staff_status = 0
 			";
             $sql2 = "select count(a.id) from acc_service_comm_hdr a
 			      inner join  hr$suffix.hr_employee b  on b.name=a.employee_name
@@ -65,7 +65,7 @@ class ReportXS02List extends CListPageModel
                   inner join security$suffix.sec_city e on a.city=e.code
                   left outer join  acc_service_comm_dtl d on a.id=d.hdr_id
                   left outer join  hr$suffix.hr_binding e on b.name=e.employee_name
-			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)  and e.user_id='$user'
+			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)  and e.user_id='$user'  and b.staff_status = 0
 			";
         }
 
@@ -80,7 +80,7 @@ class ReportXS02List extends CListPageModel
 					$clause .= General::getSqlConditionClause('a.employee_name',$svalue);
 					break;
 				case 'city':
-					$clause .= General::getSqlConditionClause('a.city',$svalue);
+					$clause .= General::getSqlConditionClause('e.name',$svalue);
 					break;
 				case 'user_name':
 					$clause .= General::getSqlConditionClause('c.name',$svalue);
