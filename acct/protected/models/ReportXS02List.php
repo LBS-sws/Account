@@ -37,14 +37,14 @@ class ReportXS02List extends CListPageModel
         $user=Yii::app()->user->id;
         if(Yii::app()->user->validFunction('CN09')){
             $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,d.performance_amount,d.performanceedit_amount,d.performanceend_amount,e.name as cityname from acc_service_comm_hdr a
-                 inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
+                 inner join  hr$suffix.hr_employee b  on b.code=a.employee_code   
                  inner join  hr$suffix.hr_dept c on b.position=c.id      
                  inner join security$suffix.sec_city e on a.city=e.code 		  
                  left outer join  acc_service_comm_dtl d on a.id=d.hdr_id            
 			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)  and b.staff_status = 0
 			";
             $sql2 = "select count(a.id) from acc_service_comm_hdr a
-			      inner join  hr$suffix.hr_employee b  on b.name=a.employee_name   
+			      inner join  hr$suffix.hr_employee b  on b.code=a.employee_code   
                  inner join  hr$suffix.hr_dept c on b.position=c.id   
                   inner join security$suffix.sec_city e on a.city=e.code 		   
                   left outer join  acc_service_comm_dtl d on a.id=d.hdr_id          
@@ -52,7 +52,7 @@ class ReportXS02List extends CListPageModel
 			";
         }else{
             $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,d.performance_amount,d.performanceedit_amount,d.performanceend_amount,e.name as cityname from acc_service_comm_hdr a
-                 inner join  hr$suffix.hr_employee b  on b.name=a.employee_name
+                 inner join  hr$suffix.hr_employee b  on b.code=a.employee_code
                  inner join  hr$suffix.hr_dept c on b.position=c.id
                  inner join security$suffix.sec_city e on a.city=e.code
                  left outer join  acc_service_comm_dtl d on a.id=d.hdr_id
@@ -60,7 +60,7 @@ class ReportXS02List extends CListPageModel
 			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)  and e.user_id='$user'  and b.staff_status = 0
 			";
             $sql2 = "select count(a.id) from acc_service_comm_hdr a
-			      inner join  hr$suffix.hr_employee b  on b.name=a.employee_name
+			      inner join  hr$suffix.hr_employee b  on b.code=a.employee_code
                   inner join  hr$suffix.hr_dept c on b.position=c.id
                   inner join security$suffix.sec_city e on a.city=e.code
                   left outer join  acc_service_comm_dtl d on a.id=d.hdr_id
