@@ -1007,6 +1007,7 @@ class ReportXS01List extends CListPageModel
         $suffix = Yii::app()->params['envSuffix'];
         $money=0;
         $money1=0;
+        $mons=0;
       //  $zhuangji=0;
         foreach ($id as $ai){
             $sql="select * from swoper$suffix.swo_service where id='$ai'";
@@ -1134,7 +1135,7 @@ class ReportXS01List extends CListPageModel
                                 $moneys+=$g;
                             }
                         }
-                        $mons=$money+$moneys;
+                        $mons+=$money+$moneys;
                     }
                 }
 
@@ -1144,7 +1145,7 @@ class ReportXS01List extends CListPageModel
                 }else{
                     $royaltyes=$royaltys[0];
                 }
-                $money=$mons*$royaltyes;
+                $money+=$mons*$royaltyes;
                 $sqlct="update swoper$suffix.swo_service set royalty='".$royaltyes."'  where id='$ai'";
                 $model = Yii::app()->db->createCommand($sqlct)->execute();
             }
@@ -1415,6 +1416,7 @@ class ReportXS01List extends CListPageModel
         $suffix = Yii::app()->params['envSuffix'];
         $money=0;
         $money1=0;
+        $mons=0;
      //   $zhuangji=0;
         foreach ($id as $ai){
             $sql="select * from swoper$suffix.swo_service where id='$ai'";
@@ -1559,7 +1561,7 @@ class ReportXS01List extends CListPageModel
                         }
                     }
                 }
-                $mons=$money+$moneys;
+                $mons+=$money+$moneys;
                 if(empty($mons)){
                     $mons=0;
                 }
@@ -1577,7 +1579,7 @@ class ReportXS01List extends CListPageModel
 //                print_r('<pre>');
 //                print_r($arr['royalty']);
 //                exit();
-                $money=$mons*$royaltyes;
+                $money+=$mons*$royaltyes;
                 $sqlct="update swoper$suffix.swo_service set royaltys='".$royaltyes."'  where id='$ai'";
                 $model = Yii::app()->db->createCommand($sqlct)->execute();
             }
