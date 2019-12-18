@@ -1108,9 +1108,9 @@ class ReportXS01List extends CListPageModel
                     }
                     if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                         if(!empty($records['othersalesman'])){
-                            $money+=$m*$spanning['spanning'];
+                            $mon+=$m*$spanning['spanning'];
                         }else{
-                            $money+=$m;
+                            $mon+=$m;
                         }
                     }
                     if($record[$i]['paid_type']=='1'||$record[$i]['paid_type']=='Y'){
@@ -1135,7 +1135,7 @@ class ReportXS01List extends CListPageModel
                                 $moneys+=$g;
                             }
                         }
-                        $mons+=$money+$moneys;
+                        $mons+=$mon+$moneys;
                     }
                 }
 
@@ -1525,9 +1525,9 @@ class ReportXS01List extends CListPageModel
                         }
                         if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                             if(!empty($records['othersalesman'])){
-                                $money+=$m*$spanning['otherspanning'];
+                                $mon+=$m*$spanning['otherspanning'];
                             }else{
-                                $money+=$m;
+                                $mon+=$m;
                             }
                         }
                         if($record[$i]['paid_type']=='1'||$record[$i]['paid_type']=='Y'){
@@ -1561,7 +1561,7 @@ class ReportXS01List extends CListPageModel
                         }
                     }
                 }
-                $mons+=$money+$moneys;
+                $mons+=$mon+$moneys;
                 if(empty($mons)){
                     $mons=0;
                 }
