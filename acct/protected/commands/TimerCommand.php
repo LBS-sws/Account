@@ -32,7 +32,13 @@ WHERE workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>'ED' and workflow$
                     $rs = Yii::app()->db->createCommand($sql1)->queryAll();
 
                     $from_addr = "it@lbsgroup.com.hk";
-                    $to_addr = "[" . $recordes[0]['email'] . "," . $recordss[0]['email'] . "," . $rs[0]['email'] . "]";
+//                    $to_addr = "[" . $recordes[0]['email'] . "," . $recordss[0]['email'] . "," . $rs[0]['email'] . "]";
+// 以上格式不能發送 , 不是正確 JSON
+					$tmp = array();
+					if (!empty($recordes[0]['email'])) $tmp[] = $recordes[0]['email'];
+					if (!empty($recordss[0]['email'])) $tmp[] = $recordss[0]['email'];
+					if (!empty($rs[0]['email'])) $tmp[] = $rs[0]['email'];
+					$to_addr = json_encode($tmp);
                     $subject = "付款申请报销提醒-" . $record['field_value'];
                     $description = "付款申请报销提醒-" . $record['field_value'];
                     $message = "单号：" . $record['field_value'] . ",申请日期为：" . $record['req_dt'] . "金额为：" . $record['amount'] . "的申请已过一个月，报销仍未完成";
