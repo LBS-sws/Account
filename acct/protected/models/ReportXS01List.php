@@ -928,6 +928,8 @@ class ReportXS01List extends CListPageModel
                     }
                     if($records['surplus']!=NULL){
                         $m=($new-$old)*$records['surplus'];
+                    }else{
+                        $m=0;
                     }
                     //当初提成比例
                     $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N'";
@@ -1023,6 +1025,8 @@ class ReportXS01List extends CListPageModel
                 }
                 if($records['surplus']!=NULL){
                     $m=$new*$records['surplus'];
+                }else{
+                    $m=0;
                 }
 
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N'";
@@ -1102,6 +1106,8 @@ class ReportXS01List extends CListPageModel
                     if($records['surplus']!=NULL){
                         $m=$new*$records['surplus']; //新单价*新次
 
+                    }else{
+                        $m=0;
                     }
                     if($i!=0){
                         $m=0;
@@ -1127,6 +1133,8 @@ class ReportXS01List extends CListPageModel
                         }
                         if($records[$surplus]!=NULL){
                             $g=$news*$records[$surplus]; //更改新增单价*更改新增次
+                        }else{
+                            $g=0;
                         }
                         if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                             if(!empty($records['othersalesman'])){
@@ -1339,6 +1347,8 @@ class ReportXS01List extends CListPageModel
                 }
                 if($records['surplus']!=NULL){
                     $m=($new-$old)*$records['surplus'];
+                }else{
+                    $m=0;
                 }
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N'";
                 $recordss = Yii::app()->db->createCommand($sql)->queryRow();
@@ -1432,6 +1442,8 @@ class ReportXS01List extends CListPageModel
                 }
                 if($records['surplus']!=NULL){
                     $m=$new*$records['surplus'];
+                }else{
+                    $m=0;
                 }
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N'";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
@@ -1506,7 +1518,9 @@ class ReportXS01List extends CListPageModel
                         }
                     if($records['surplus']!=NULL){
                             $m=$new*$records['surplus']; //新单价*新次
-                        }
+                        }else{
+                        $m=0;
+                    }
                         $sqls="select * from  swoper$suffix.swo_service where company_name='".$record[$i]['company_name']."' and cust_type='".$record[$i]['cust_type']."' and status='N'";
                         $arr = Yii::app()->db->createCommand($sqls)->queryRow();
                         $date=$arr['first_dt'];
@@ -1550,6 +1564,8 @@ class ReportXS01List extends CListPageModel
                             }
                             if($records[$surplus]!=NULL){
                                 $g=$news*$records[$surplus]; //更改新增单价*更改新增次
+                            }else{
+                                $g=0;
                             }
                             if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                 if(!empty($records['othersalesman'])){

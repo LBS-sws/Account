@@ -51,8 +51,8 @@ class QueryController extends Controller
             $model->attributes = $_POST['ReportXS02List'];
         } else {
             $session = Yii::app()->session;
-            if (isset($session['criteria_xs01']) && !empty($session['criteria_xs01'])) {
-                $criteria = $session['criteria_xs01'];
+            if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+                $criteria = $session[$model->criteriaName()];
                 $model->setCriteria($criteria);
             }
         }
@@ -95,8 +95,8 @@ class QueryController extends Controller
             $model->attributes = $_POST['ReportXS02List'];
         } else {
             $session = Yii::app()->session;
-            if (isset($session['criteria_xs01']) && !empty($session['criteria_xs01'])) {
-                $criteria = $session['criteria_xs01'];
+            if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+                $criteria = $session[$model->criteriaName()];
                 $model->setCriteria($criteria);
             }
         }
@@ -115,8 +115,8 @@ class QueryController extends Controller
             $model->attributes = $_POST['ReportXS02List'];
         } else {
             $session = Yii::app()->session;
-            if (isset($session['criteria_xs01']) && !empty($session['criteria_xs01'])) {
-                $criteria = $session['criteria_xs01'];
+            if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+                $criteria = $session[$model->criteriaName()];
                 $model->setCriteria($criteria);
             }
         }
@@ -135,8 +135,8 @@ class QueryController extends Controller
             $model->attributes = $_POST['ReportXS02List'];
         } else {
             $session = Yii::app()->session;
-            if (isset($session['criteria_xs01']) && !empty($session['criteria_xs01'])) {
-                $criteria = $session['criteria_xs01'];
+            if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+                $criteria = $session[$model->criteriaName()];
                 $model->setCriteria($criteria);
             }
         }
@@ -152,8 +152,8 @@ class QueryController extends Controller
             $model->attributes = $_POST['ReportXS02List'];
         } else {
             $session = Yii::app()->session;
-            if (isset($session['criteria_xs01']) && !empty($session['criteria_xs01'])) {
-                $criteria = $session['criteria_xs01'];
+            if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+                $criteria = $session[$model->criteriaName()];
                 $model->setCriteria($criteria);
             }
         }
@@ -169,8 +169,8 @@ class QueryController extends Controller
             $model->attributes = $_POST['ReportXS02List'];
         } else {
             $session = Yii::app()->session;
-            if (isset($session['criteria_xs01']) && !empty($session['criteria_xs01'])) {
-                $criteria = $session['criteria_xs01'];
+            if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+                $criteria = $session[$model->criteriaName()];
                 $model->setCriteria($criteria);
             }
         }
@@ -186,8 +186,8 @@ class QueryController extends Controller
             $model->attributes = $_POST['ReportXS02List'];
         } else {
             $session = Yii::app()->session;
-            if (isset($session['criteria_xs01']) && !empty($session['criteria_xs01'])) {
-                $criteria = $session['criteria_xs01'];
+            if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+                $criteria = $session[$model->criteriaName()];
                 $model->setCriteria($criteria);
             }
         }
