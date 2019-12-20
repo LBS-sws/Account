@@ -1114,9 +1114,9 @@ class ReportXS01List extends CListPageModel
                     }
                     if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                         if(!empty($records['othersalesman'])){
-                            $mon+=$m*$spanning['spanning'];
+                            $mon=$m*$spanning['spanning'];
                         }else{
-                            $mon+=$m;
+                            $mon=$m;
                         }
                     }
                     if($record[$i]['paid_type']=='1'||$record[$i]['paid_type']=='Y'){
@@ -1138,9 +1138,9 @@ class ReportXS01List extends CListPageModel
                         }
                         if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                             if(!empty($records['othersalesman'])){
-                                $moneys+=$g*$spanning['spanning'];
+                                $moneys=$g*$spanning['spanning'];
                             }else{
-                                $moneys+=$g;
+                                $moneys=$g;
                             }
                         }
                         $mons+=$mon+$moneys;
@@ -1539,9 +1539,9 @@ class ReportXS01List extends CListPageModel
                         }
                         if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                             if(!empty($records['othersalesman'])){
-                                $mon+=$m*$spanning['otherspanning'];
+                                $mon=$m*$spanning['otherspanning'];
                             }else{
-                                $mon+=$m;
+                                $mon=$m;
                             }
                         }
                         if($record[$i]['paid_type']=='1'||$record[$i]['paid_type']=='Y'){
@@ -1569,9 +1569,9 @@ class ReportXS01List extends CListPageModel
                             }
                             if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                 if(!empty($records['othersalesman'])){
-                                    $moneys+=$g*$spanning['otherspanning'];
+                                    $moneys=$g*$spanning['otherspanning'];
                                 }else{
-                                    $moneys+=$g;
+                                    $moneys=$g;
                                 }
                             }
                         }
