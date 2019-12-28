@@ -1007,9 +1007,8 @@ class ReportXS01List extends CListPageModel
     public function endSale($id,$index,$royalty){
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
-        $money=0;
-        $money1=0;
-        $mons=0;
+        $money=array();
+        $mons=array();
       //  $zhuangji=0;
         foreach ($id as $ai){
             $sql="select * from swoper$suffix.swo_service where id='$ai'";
@@ -1049,9 +1048,9 @@ class ReportXS01List extends CListPageModel
                                 if(empty($spanning['spanning'])){
                                     $spanning['spanning']=0.5;
                                 }
-                                $money+=$m*$spanning['spanning'];
+                                $money[]=$m*$spanning['spanning'];
                             }else{
-                                $money+=$m;
+                                $money[]=$m;
                             }
                             $sqlct="update swoper$suffix.swo_service set royalty='".$records2['new_calc']."'  where id='$ai'";
                             $model = Yii::app()->db->createCommand($sqlct)->execute();
@@ -1063,9 +1062,9 @@ class ReportXS01List extends CListPageModel
                                 if(empty($spanning['spanning'])){
                                     $spanning['spanning']=0.5;
                                 }
-                                $money+=$m*$spanning['spanning'];
+                                $money[]=$m*$spanning['spanning'];
                             }else{
-                                $money+=$m;
+                                $money[]=$m;
                             }
                         }
                         $sqlct="update swoper$suffix.swo_service set royalty='".$royalty[$ai]."'  where id='$ai'";
@@ -1075,10 +1074,6 @@ class ReportXS01List extends CListPageModel
             }else{
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='A' order by status_dt ";//更改
                 $record = Yii::app()->db->createCommand($sql)->queryAll();
-                $mon=0;
-                $money=0;
-                $moneys=0;
-
                 for ($i=0;$i<count($record);$i++){
                     $sqlct="select royalty from swoper$suffix.swo_service  where id='".$record[$i]['id']."'";
                     $model = Yii::app()->db->createCommand($sqlct)->queryRow();
@@ -1143,7 +1138,7 @@ class ReportXS01List extends CListPageModel
                                 $moneys=$g;
                             }
                         }
-                        $mons+=$mon+$moneys;
+                        $mons[]=$mon+$moneys;
                     }
                 }
 
@@ -1153,13 +1148,14 @@ class ReportXS01List extends CListPageModel
                 }else{
                     $royaltyes=$royaltys[0];
                 }
-                $money+=$mons*$royaltyes;
+                $mons_sun=array_sum($mons);
+                $money[]=$mons_sun*$royaltyes;
                 $sqlct="update swoper$suffix.swo_service set royalty='".$royaltyes."'  where id='$ai'";
                 $model = Yii::app()->db->createCommand($sqlct)->execute();
             }
         }
 
-//        $money=220;
+        $money=array_sum($money);
         $money=-$money;
         if(empty($money)){
             $money=0;
@@ -1424,9 +1420,8 @@ class ReportXS01List extends CListPageModel
     public function performanceendSale($id,$index,$royalty){
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
-        $money=0;
-        $money1=0;
-        $mons=0;
+        $money=array();
+        $mons=array();
      //   $zhuangji=0;
         foreach ($id as $ai){
             $sql="select * from swoper$suffix.swo_service where id='$ai'";
@@ -1467,7 +1462,7 @@ class ReportXS01List extends CListPageModel
                                 if(empty($otherspanning['otherspanning'])){
                                     $otherspanning['otherspanning']=0.5;
                                 }
-                                $money+=$m*$otherspanning['otherspanning'];
+                                $money[]=$m*$otherspanning['otherspanning'];
                             }
                             $sqlct="update swoper$suffix.swo_service set royaltys='".$records2['new_calc']."'  where id='$ai'";
                             $model = Yii::app()->db->createCommand($sqlct)->execute();
@@ -1477,7 +1472,7 @@ class ReportXS01List extends CListPageModel
                                 if(empty($otherspanning['otherspanning'])){
                                     $otherspanning['otherspanning']=0.5;
                                 }
-                                $money+=$m*$otherspanning['otherspanning'];
+                                $money[]=$m*$otherspanning['otherspanning'];
                             }
                             $sqlct="update swoper$suffix.swo_service set royaltys='".$royalty[$ai]."'  where id='$ai'";
                             $model = Yii::app()->db->createCommand($sqlct)->execute();
@@ -1487,9 +1482,6 @@ class ReportXS01List extends CListPageModel
             }else{
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='A' order by status_dt ";//更改
                 $record = Yii::app()->db->createCommand($sql)->queryAll();
-                $mon=0;
-                $money=0;
-                $moneys=0;
                 for ($i=0;$i<count($record);$i++){
                     $sqlct="select royaltys from swoper$suffix.swo_service  where id='".$record[$i]['id']."'";
                     $model_royaltys = Yii::app()->db->createCommand($sqlct)->queryRow(); //更改时输入的提成比例
@@ -1577,9 +1569,11 @@ class ReportXS01List extends CListPageModel
                         }
                     }
                 }
-                $mons+=$mon+$moneys;
+                $mons[]=$mon+$moneys;
                 if(empty($mons)){
-                    $mons=0;
+                    $mons_sum=0;
+                }else{
+                    $mons_sum=array_sum($mons);
                 }
                 if(!empty($royaltys)){
                     sort($royaltys);
@@ -1595,12 +1589,12 @@ class ReportXS01List extends CListPageModel
 //                print_r('<pre>');
 //                print_r($arr['royalty']);
 //                exit();
-                $money+=$mons*$royaltyes;
+                $money[]=$mons_sum*$royaltyes;
                 $sqlct="update swoper$suffix.swo_service set royaltys='".$royaltyes."'  where id='$ai'";
                 $model = Yii::app()->db->createCommand($sqlct)->execute();
             }
         }
-//        $money=220;
+        $money=array_sum($money);
         $money=-$money;
         if(empty($money)){
             $money=0;

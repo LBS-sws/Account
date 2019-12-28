@@ -79,7 +79,7 @@ class BonusList extends CListPageModel
 			}
 			if ($this->orderType=='D') $order .= "desc ";
 		} else {
-			$order .= " order by year desc";
+			$order .= " order by year desc,month desc";
 		}
 
 		$sql = $sql2.$clause;
