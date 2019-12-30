@@ -1154,7 +1154,8 @@ class ReportXS01List extends CListPageModel
                 $model = Yii::app()->db->createCommand($sqlct)->execute();
             }
         }
-
+        print_r($money);
+        exit();
         $money=array_sum($money);
         $money=-$money;
         if(empty($money)){
