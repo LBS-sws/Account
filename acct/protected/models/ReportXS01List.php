@@ -1008,9 +1008,9 @@ class ReportXS01List extends CListPageModel
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
         $money=array();
-        $mons=array();
       //  $zhuangji=0;
         foreach ($id as $ai){
+            $mons=array();
             $sql="select * from swoper$suffix.swo_service where id='$ai'";
             $records = Yii::app()->db->createCommand($sql)->queryRow();
             if($records['all_number_edit0']==0&&$records['surplus_edit0']==0){
@@ -1154,8 +1154,7 @@ class ReportXS01List extends CListPageModel
                 $model = Yii::app()->db->createCommand($sqlct)->execute();
             }
         }
-        print_r($money);
-        exit();
+
         $money=array_sum($money);
         $money=-$money;
         if(empty($money)){
@@ -1422,9 +1421,9 @@ class ReportXS01List extends CListPageModel
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
         $money=array();
-        $mons=array();
      //   $zhuangji=0;
         foreach ($id as $ai){
+            $mons=array();
             $sql="select * from swoper$suffix.swo_service where id='$ai'";
             $records = Yii::app()->db->createCommand($sql)->queryRow();
             if($records['all_number_edit0']==0&&$records['surplus_edit0']==0){
