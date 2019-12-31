@@ -87,7 +87,7 @@ class SysBlock {
 		$uid = Yii::app()->user->id;
 		$city = Yii::app()->user->city();
 		$suffix = Yii::app()->params['envSuffix'];
-		$lastdate = date('d')<10 ? date('Y-m-d',strtotime('-2 months')) : date('Y-m-d',strtotime('-1 months'));
+		$lastdate = date('d')<10 ? date('Y-m-d',strtotime('-2 months')) : date('Y-m-d',strtotime('last day of previous month'));
 		$year = date("Y", strtotime($lastdate));
 		$month = date("m", strtotime($lastdate));
 		
@@ -115,7 +115,7 @@ class SysBlock {
 		$uid = Yii::app()->user->id;
 		$city = Yii::app()->user->city();
 		$suffix = Yii::app()->params['envSuffix'];
-		$lastdate = date('d')<10 ? date('Y-m-d',strtotime('-2 months')) : date('Y-m-d',strtotime('-1 months'));
+		$lastdate = date('d')<10 ? date('Y-m-d',strtotime('-2 months')) : date('Y-m-d',strtotime('last day of previous month'));
 		$year = date("Y", strtotime($lastdate));
 		$month = date("m", strtotime($lastdate));
 		
@@ -137,6 +137,62 @@ class SysBlock {
 		$sql = "select a.id
 				from operation$suffix.opr_monthly_hdr a 
 				where a.id in ($list) and a.year_no=$year and a.month_no=$month and a.status='Y' 
+				limit 1
+			";
+		$row = Yii::app()->db->createCommand($sql)->queryRow();
+		return ($row===false);
+	}
+
+	/** 
+		每年12月30日, 驗證 用户有学分确认权限的未及时处理完, false: 未处理
+	**/
+	public function isCreditConfirmed() {
+		$uid = Yii::app()->user->id;
+		$city = Yii::app()->user->city();
+        $city_allow = Yii::app()->user->city_allow();
+		$suffix = Yii::app()->params['envSuffix'];
+		$lastdate = date('m-d')=='12-31' ? date('Y-m-d') : date('Y-m-d',strtotime('last year December 31st'));
+		$year = date("Y", strtotime($lastdate));
+		$month = date("m", strtotime($lastdate));
+
+		$sql = "select a_control from security$suffix.sec_user_access 
+				where username='$uid' and system_id='sp' and a_read_write like '%GA04%'
+			";
+		$row = Yii::app()->db->createCommand($sql)->queryRow();
+		if ($row===false) return true;
+
+		$sql = "select a.id from spoint$suffix.gr_credit_request a
+                LEFT JOIN spoint$suffix.gr_credit_type b ON a.credit_type = b.id
+                LEFT JOIN hr$suffix.hr_employee d ON a.employee_id = d.id
+                where d.city='$city' AND a.state = 1 and a.apply_date <= '$lastdate'
+				limit 1
+			";
+		$row = Yii::app()->db->createCommand($sql)->queryRow();
+		return ($row===false);
+	}
+
+	/** 
+		每年12月30日, 驗證 用户有学分审核权限的未及时处理完, false: 未处理
+	**/
+	public function isCreditApproved() {
+		$uid = Yii::app()->user->id;
+		$city = Yii::app()->user->city();
+        $city_allow = Yii::app()->user->city_allow();
+		$suffix = Yii::app()->params['envSuffix'];
+		$lastdate = date('m-d')=='12-31' ? date('Y-m-d') : date('Y-m-d',strtotime('last year December 31st'));
+		$year = date("Y", strtotime($lastdate));
+		$month = date("m", strtotime($lastdate));
+
+		$sql = "select a_control from security$suffix.sec_user_access 
+				where username='$uid' and system_id='sp' and a_read_write like '%GA01%'
+			";
+		$row = Yii::app()->db->createCommand($sql)->queryRow();
+		if ($row===false) return true;
+
+		$sql = "select a.id from spoint$suffix.gr_credit_request a
+                LEFT JOIN spoint$suffix.gr_credit_type b ON a.credit_type = b.id
+                LEFT JOIN hr$suffix.hr_employee d ON a.employee_id = d.id
+                where d.city='$city' AND a.state = 4 and a.apply_date <= '$lastdate'
 				limit 1
 			";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
