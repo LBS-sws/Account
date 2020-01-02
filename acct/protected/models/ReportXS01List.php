@@ -34,6 +34,9 @@ class ReportXS01List extends CListPageModel
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city();
         $month=$month-1;
+        if($month==0){
+            $month=12;
+        }
         $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,d.performance_amount,d.performanceedit_amount,d.performanceend_amount,e.name as cityname from acc_service_comm_hdr a
                  inner join  hr$suffix.hr_employee b  on b.code=a.employee_code
                  inner join  hr$suffix.hr_dept c on b.position=c.id      

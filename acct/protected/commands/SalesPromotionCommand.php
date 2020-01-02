@@ -9,6 +9,9 @@ class SalesPromotionCommand extends CConsoleCommand
         $day = date("d", strtotime($date));
         $month = date("m", strtotime($date));
         $last_month = date("m", strtotime($date))-1;
+        if($last_month==0){
+            $last_month=12;
+        }
         $year = date("Y",strtotime($date));
         echo $firstDay=date('Y-m-d', strtotime($date.' first day of previous month'));
         echo $endDay=date('Y-m-d', strtotime($date.' last day of previous month'));
