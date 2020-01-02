@@ -60,14 +60,15 @@ class RptReceiptOverview extends CReport {
 		
 		return $users;
 	}
-		public function retrieveData() {
+	
+	public function retrieveData() {
 		$start_dt = $this->criteria['TARGET_DT'].' 00:00:00';
 		$end_dt = $this->criteria['TARGET_DT'].' 23:59:59';
 		$month_start_dt = date("Y", strtotime($start_dt)).'/'.date("m", strtotime($start_dt)).'/01 00:00:00';
 		$year_start_dt = date("Y", strtotime($start_dt)).'/01/01 00:00:00';
-		$wkno = date("W", strtotime($start_dt));
-		$mthno = date("n", strtotime($start_dt));
-		$wk = (($wkno=='01' && $mthno==12) ? date("Y", strtotime($start_dt.' +1 years')) : date("Y", strtotime($start_dt)))."W".$wkno;
+        $wkno = date("W", strtotime($start_dt));
+        $mthno = date("n", strtotime($start_dt));
+        $wk = (($wkno=='01' && $mthno==12) ? date("Y", strtotime($start_dt.' +1 years')) : date("Y", strtotime($start_dt)))."W".$wkno;
 		$week_start_dt = date("Y-m-d",strtotime($wk)).' 00:00:00';
 		$this->day_no = date("d", strtotime($start_dt));
 
@@ -114,7 +115,8 @@ class RptReceiptOverview extends CReport {
 			}
 		}
 		
-		return true;	}
+		return true;
+	}
 
 	public function getReportName() {
 		$city_name = isset($this->criteria) ? ' - '.General::getCityName($this->criteria['CITY']) : '';
