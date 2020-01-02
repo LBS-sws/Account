@@ -9,10 +9,11 @@ class SalesPromotionCommand extends CConsoleCommand
         $day = date("d", strtotime($date));
         $month = date("m", strtotime($date));
         $last_month = date("m", strtotime($date))-1;
+        $year = date("Y",strtotime($date));
         if($last_month==0){
             $last_month=12;
+            $year=$year-1;
         }
-        $year = date("Y",strtotime($date));
         echo $firstDay=date('Y-m-d', strtotime($date.' first day of previous month'));
         echo $endDay=date('Y-m-d', strtotime($date.' last day of previous month'));
         $sql="select substring_index(a.salesman,' ', -1) as code,substring_index(a.salesman,' ', 1) as name,a.city 
