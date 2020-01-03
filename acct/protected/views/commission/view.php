@@ -87,6 +87,14 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
+                    <label class="col-sm-2 control-label" style="width: 130px;">组别</label>
+                    <div class="col-sm-7">
+                        <?php echo $form->textField($model, 'group_type',
+                            array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
+                        ); ?>
+                    </div>
+                </div>
+                <div class="form-group" style="width: 400px;">
                     <label class="col-sm-2 control-label" style="width: 130px;">提成月份</label>
                     <div class="col-sm-7">
                         <?php echo $form->textField($model, 'saleyear',

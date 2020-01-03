@@ -86,6 +86,10 @@ return array(
 'Mark Read'=>'標記已讀',
 'Go Top'=>'往頁頂',
 'Announcement'=>'公告',
+
+'none'=>'無',
+'group business'=>'商業組',
+'group repast'=>'餐飲組',
 );
 
 ?>
