@@ -35,6 +35,7 @@ class ReportXS01Form extends CReportForm
     public $performanceend_amount;
     public $performanceedit_money;
     public $group_type;
+    public $ctrt_period;
 	
 	protected function labelsEx() {
 		return array(
@@ -51,6 +52,7 @@ class ReportXS01Form extends CReportForm
             'all_number'=>Yii::t('app','Number'),
             'surplus'=>Yii::t('app','Surplus'),
             'othersalesman'=>Yii::t('app','Othersalesman'),
+            'ctrt_period'=>Yii::t('app','Ctrt_period'),
 			);
 	}
 	
@@ -166,10 +168,11 @@ class ReportXS01Form extends CReportForm
         $add['amt_install']=$add['amt_install']==""?0:$add['amt_install'];
         $add['all_number']=$add['all_number']==""?0:$add['all_number'];
         $add['surplus']=$add['surplus']==""?0:$add['surplus'];
+        $add['ctrt_period']=$add['ctrt_period']==""?12:$add['ctrt_period'];
         $sql = "insert into acc_service_comm_copy(
-					hdr_id, first_dt, sign_dt, cust_type, service, paid_type,amt_paid,amt_install,company_name,city,all_number,surplus,othersalesman
+					hdr_id, first_dt, sign_dt, cust_type, service, paid_type,amt_paid,amt_install,company_name,city,all_number,surplus,othersalesman,ctrt_period
 				) values (
-					'".$index."','".$add['first_dt']."','".$add['sign_dt']."','".$add['cust_type']."','".$add['service']."','".$add['paid_type']."','".$add['amt_paid']."','".$add['amt_install']."','".$add['company_name']."','".$city."','".$add['all_number']."','".$add['surplus']."','".$add['othersalesman']."'
+					'".$index."','".$add['first_dt']."','".$add['sign_dt']."','".$add['cust_type']."','".$add['service']."','".$add['paid_type']."','".$add['amt_paid']."','".$add['amt_install']."','".$add['company_name']."','".$city."','".$add['all_number']."','".$add['surplus']."','".$add['othersalesman']."','".$add['ctrt_period']."'
 				)";
         $record = Yii::app()->db->createCommand($sql)->execute();
     }

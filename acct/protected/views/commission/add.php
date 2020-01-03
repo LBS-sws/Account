@@ -169,6 +169,14 @@ $this->pageTitle=Yii::app()->name . ' - Service Form';
                         ); ?>
                     </div>
             </div>
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'ctrt_period',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-2">
+                    <?php echo $form->numberField($model, 'ctrt_period',
+                        array('size'=>4,'min'=>0,'readonly'=>($model->scenario=='view'))
+                    ); ?>
+                </div>
+            </div>
 
 
 </section>
