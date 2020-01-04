@@ -388,7 +388,7 @@ class ReportXS01List extends CListPageModel
                 if($arrs['paid_type']=='1'||$arrs['paid_type']=='Y'){
                     $a=$arrs['amt_paid'];
                 }else{
-                    $a=$arrs['amt_paid']*12;
+                    $a=$arrs['amt_paid']*$arrs['ctrt_period'];
                 }
                 $this->attr[] = array(
                     'id'=>$arrs['id'].'+',
@@ -705,7 +705,7 @@ class ReportXS01List extends CListPageModel
                 if($arrs['paid_type']=='1'||$arrs['paid_type']=='Y'){
                     $a=$arrs['amt_paid'];
                 }else{
-                    $a=$arrs['amt_paid']*12;
+                    $a=$arrs['amt_paid']*$arrs['ctrt_period'];
                 }
                 $this->attr[] = array(
                     'id'=>$arrs['id'].'+',
