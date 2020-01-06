@@ -141,6 +141,6 @@ return array(
 'amt_install'=>'安裝金額',
 'cust_type'=>'類別',
 'Othersalesman'=>'跨區業務員',
-'Ctrt_period'=>'合同年限',
+'Ctrt_period'=>'合同年限(月)',
 );
 ?>

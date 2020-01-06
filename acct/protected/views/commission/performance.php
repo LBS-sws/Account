@@ -106,10 +106,10 @@ $js = <<<EOF
 $(document).ready(function(){ 
        $("#chkboxAll").on('click',function() {     
        
-              $("input[name='ReportXS01List[id][]']").prop("checked", this.checked);  
+              $("input[name='ReportXS01From[id][]']").prop("checked", this.checked);  
         });          
-        $("input[name='ReportXS01List[id][]']").on('click',function() {  
-              var subs = $("input[name='ReportXS01List[id][]']");  
+        $("input[name='ReportXS01From[id][]']").on('click',function() {  
+              var subs = $("input[name='ReportXS01From[id][]']");  
               $("#chkboxAll").prop("checked" ,subs.length == subs.filter(":checked").length ? true :false);  
         });
 });

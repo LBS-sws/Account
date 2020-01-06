@@ -21,8 +21,14 @@ $this->pageTitle=Yii::app()->name . ' - query Report';
 	</ol>
 -->
 </section>
-
 <section class="content">
+    <div class="box"><div class="box-body">
+            <div class="btn-group" role="group">
+                            <?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
+                                'submit'=>Yii::app()->createUrl('query/index')));
+                            ?>
+            </div>
+        </div></div>
     <input type="hidden" name="year" value="<?php echo $year;?>">
     <input type="hidden" name="month" value="<?php echo $month;?>">
 	<?php
