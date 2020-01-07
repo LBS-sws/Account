@@ -114,6 +114,17 @@ $this->pageTitle=Yii::app()->name . ' - Service Form';
                 </div>
             </div>
             <div class="form-group">
+                <?php echo $form->labelEx($model,'salesman',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-7">
+                    <?php
+                    echo $form->textField($model, 'salesman',
+                        array('size'=>60,'maxlength'=>1000,'readonly'=>true,
+                            'append'=>TbHtml::button('<span class="fa fa-search"></span> '.Yii::t('service','Salesman'),array('name'=>'btnSalesman','id'=>'btnSalesman','disabled'=>($model->scenario=='view'))),
+                        ));
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
                 <?php echo $form->labelEx($model,'othersalesman',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-7">
                     <?php
@@ -261,6 +272,9 @@ Yii::app()->clientScript->registerScript('lookupServiceB4',$js,CClientScript::PO
 
 $js = Script::genLookupButtonEx('btnService', 'product', 'product_id', 'service');
 Yii::app()->clientScript->registerScript('lookupService',$js,CClientScript::POS_READY);
+
+$js = Script::genLookupButtonEx('btnSalesman', 'staff', '', 'salesman');
+Yii::app()->clientScript->registerScript('lookupSalesman',$js,CClientScript::POS_READY);
 
 $js = Script::genLookupButtonEx('btnOtherSalesman', 'staff', '', 'othersalesman');
 Yii::app()->clientScript->registerScript('lookupOtherSalesman',$js,CClientScript::POS_READY);

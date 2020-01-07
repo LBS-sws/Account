@@ -1221,8 +1221,6 @@ class ReportXS01List extends CListPageModel
                             $money += $a * $otherspanning;
                         }
                     }
-                    print_r($records2); print_r('---'); print_r($moneys); print_r('---'.$sql2);
-                    exit();
                   //  $zhuangji += $records['amt_install'];
                 }else{
                     $target="update  swoper$suffix.swo_service set target='1' where id='$ai'";
