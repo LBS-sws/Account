@@ -1221,7 +1221,7 @@ class ReportXS01List extends CListPageModel
                             $money += $a * $otherspanning;
                         }
                     }
-                    print_r($a); print_r('---'); print_r($otherspanning); print_r('---'.$records2['new_calc']);
+                    print_r($sql1); print_r('---'); print_r($records1); print_r('---'.$records2['new_calc']);
                     exit();
                   //  $zhuangji += $records['amt_install'];
                 }else{
