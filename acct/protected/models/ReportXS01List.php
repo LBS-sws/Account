@@ -1221,6 +1221,8 @@ class ReportXS01List extends CListPageModel
                             $money += $a * $otherspanning;
                         }
                     }
+                    print_r($a); print_r('---'); print_r($otherspanning); print_r('---'.$records2['new_calc']);
+                    exit();
                   //  $zhuangji += $records['amt_install'];
                 }else{
                     $target="update  swoper$suffix.swo_service set target='1' where id='$ai'";
@@ -1605,13 +1607,15 @@ class ReportXS01List extends CListPageModel
             }else{
                 $proportion=$spanning['spanning'];
             }
-        }elseif($records==1){
+        }
+        if($records==1){
             if(empty($spanning['business_spanning'])){
                 $proportion=0.5;
             }else{
                 $proportion=$spanning['business_spanning'];
             }
-        }elseif($records==2){
+        }
+        if($records==2){
             if(empty($spanning['restaurant_spanning'])){
                 $proportion=0.5;
             }else{
@@ -1646,13 +1650,15 @@ class ReportXS01List extends CListPageModel
             }else{
                 $proportion=$spanning['otherspanning'];
             }
-        }elseif($records==1){
+        }
+        if($records==1){
             if(empty($spanning['business_otherspanning'])){
                 $proportion=0.5;
             }else{
                 $proportion=$spanning['business_otherspanning'];
             }
-        }elseif($records==2){
+        }
+        if($records==2){
             if(empty($spanning['restaurant_otherspanning'])){
                 $proportion=0.5;
             }else{
