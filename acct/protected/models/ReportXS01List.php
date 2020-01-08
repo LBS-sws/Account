@@ -1507,9 +1507,9 @@ class ReportXS01List extends CListPageModel
                                 }
                             }
                         }
+                        $mons[]=$mon+$moneys;
                     }
                 }
-                $mons[]=$mon+$moneys;
                 if(empty($mons)){
                     $mons_sum=0;
                 }else{
@@ -1517,7 +1517,6 @@ class ReportXS01List extends CListPageModel
                 }
                 if(!empty($royaltys)){
                     sort($royaltys);
-
                     if($royaltys[0]==0){
                         $royaltyes=$royalty[$ai];
                     }else{
