@@ -800,6 +800,7 @@ class ReportXS02List extends CListPageModel
         $objReader  = PHPExcel_IOFactory::createReader('Excel2007');
         $path = Yii::app()->basePath.'/commands/template/salecommsion.xlsx';
         $objPHPExcel = $objReader->load($path);
+        $objPHPExcel->setActiveSheetIndex(0)->setTitle('提成明细报表-'.$view['city']);
         $objPHPExcel->getActiveSheet()->setCellValue('A1','提成明细报表 - '.$view['employee_name']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('A2','提成月份 : '.$view['saleyear']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('A4','新增提成比例 : '.$view['new_calc']) ;
