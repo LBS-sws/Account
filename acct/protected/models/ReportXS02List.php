@@ -803,27 +803,28 @@ class ReportXS02List extends CListPageModel
         $objPHPExcel->setActiveSheetIndex(0)->setTitle('提成明细报表-'.$view['city']);
         $objPHPExcel->getActiveSheet()->setCellValue('A1','提成明细报表 - '.$view['employee_name']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('A2','提成月份 : '.$view['saleyear']) ;
-        $objPHPExcel->getActiveSheet()->setCellValue('A4','新增提成比例 : '.$view['new_calc']) ;
-        $objPHPExcel->getActiveSheet()->setCellValue('A5','新增生意提成 : '.$view['new_amount']) ;
-        $objPHPExcel->getActiveSheet()->setCellValue('A6','更改生意提成 : '.$view['edit_amount']) ;
-        $objPHPExcel->getActiveSheet()->setCellValue('A7','终止生意提成 : '.$view['end_amount']) ;
-        $objPHPExcel->getActiveSheet()->setCellValue('A8','总额 : '.$view['all_amount']) ;
-        $objPHPExcel->getActiveSheet()->setCellValue('B4','跨区提成是否计算 : '.$view['performance']) ;
-        $objPHPExcel->getActiveSheet()->setCellValue('B5','跨区新增提成 : '.$view['performance_amount']) ;
-        $objPHPExcel->getActiveSheet()->setCellValue('B6','跨区更改提成 : '.$view['performanceedit_amount']) ;
-        $objPHPExcel->getActiveSheet()->setCellValue('B7','跨区终止提成 : '.$view['performanceend_amount']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('A4','组别 : '.$view['group_type']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('A5','新增提成比例 : '.$view['new_calc']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('A6','新增生意提成 : '.$view['new_amount']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('A7','更改生意提成 : '.$view['edit_amount']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('A8','终止生意提成 : '.$view['end_amount']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('A9','总额 : '.$view['all_amount']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('B5','跨区提成是否计算 : '.$view['performance']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('B6','跨区新增提成 : '.$view['performance_amount']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('B7','跨区更改提成 : '.$view['performanceedit_amount']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('B8','跨区终止提成 : '.$view['performanceend_amount']) ;
 
-        $objPHPExcel->getActiveSheet()->getStyle('A10:H10')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-        $objPHPExcel->getActiveSheet()->getStyle('A10:H10')->getFill()->getStartColor()->setARGB('99FFFF');
+        $objPHPExcel->getActiveSheet()->getStyle('A11:H11')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+        $objPHPExcel->getActiveSheet()->getStyle('A11:H11')->getFill()->getStartColor()->setARGB('99FFFF');
 
         $new=$this->Newdown($year,$month,$index);
-        $objPHPExcel->getActiveSheet()->setCellValue('A12','类别 : 新生意额') ;
-        $objPHPExcel->getActiveSheet()->mergeCells('A12:H12');
-        $objPHPExcel->getActiveSheet()->getStyle('A12')->getFont()->setBold(true);
-        $objPHPExcel->getActiveSheet()->getStyle('A12')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-        $objPHPExcel->getActiveSheet()->getStyle('A12')->getFill()->getStartColor()->setARGB('99FFFF');
+        $objPHPExcel->getActiveSheet()->setCellValue('A13','类别 : 新生意额') ;
+        $objPHPExcel->getActiveSheet()->mergeCells('A13:H13');
+        $objPHPExcel->getActiveSheet()->getStyle('A13')->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('A13')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+        $objPHPExcel->getActiveSheet()->getStyle('A13')->getFill()->getStartColor()->setARGB('99FFFF');
 
-        $i=13;
+        $i=14;
         for($o=0;$o<count($new);$o++){
             $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$new[$o]['first_dt']) ;
             $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$new[$o]['sign_dt']) ;

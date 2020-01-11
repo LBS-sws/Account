@@ -6,6 +6,7 @@ class ReportXS02Form extends CReportForm
 	public $staffs;
     public $status_dt;
     public $company_name;
+    public $group_type;
     public $status;
     public $cust_type;
     public $service;
@@ -118,9 +119,10 @@ class ReportXS02Form extends CReportForm
 
     public function retrieveData($index){
         $suffix = Yii::app()->params['envSuffix'];
-	    $sql="select a.*,b.*,c.name as city_name  from acc_service_comm_hdr a
+	    $sql="select a.*,b.*,c.name as city_name,d.group_type  from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
               left outer join security$suffix.sec_city c on  a.city=c.code 
+                 left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
               where a.id='$index'
 ";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
@@ -144,6 +146,7 @@ class ReportXS02Form extends CReportForm
             $this->performanceedit_amount=$records['performanceedit_amount'];
             $this->performanceend_amount=$records['performanceend_amount'];
             $this->performanceedit_money=$records['performanceedit_money'];
+            $this->group_type=$this->getGroupType($records['group_type']);
             if($records['performance']==1){
                 $a='是';
             }else{
@@ -169,6 +172,17 @@ class ReportXS02Form extends CReportForm
 					'".$index."','".$add['first_dt']."','".$add['sign_dt']."','".$add['cust_type']."','".$add['service']."','".$add['paid_type']."','".$add['amt_paid']."','".$add['amt_install']."','".$add['company_name']."','".$city."','".$add['all_number']."','".$add['surplus']."','".$add['othersalesman']."'
 				)";
         $record = Yii::app()->db->createCommand($sql)->execute();
+    }
+
+    public function getGroupType($type){
+        if($type==0) {
+            $model=Yii::t("misc","none");//無
+        }elseif($type==1){
+            $model=Yii::t("misc","group business");//商業組
+        }elseif($type==2) {
+            $model=Yii::t("misc","group repast");//餐飲組
+        }
+        return $model;
     }
 
 }
