@@ -1424,6 +1424,9 @@ class ReportXS01List extends CListPageModel
                         }
                     }
                 }
+                print_r('<pre>');
+                print_r($records);print_r($records1);print_r($sqlct);print_r($model);
+                exit();
             }else{
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='A' order by status_dt ";//更改
                 $record = Yii::app()->db->createCommand($sql)->queryAll();
