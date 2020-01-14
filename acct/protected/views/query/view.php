@@ -71,10 +71,10 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
         </ul>
         <div class="box-info" style="height: 1000px;position: relative;" >
             <div class="box-body" style="width: 400px;position: absolute;">
-                			<?php echo $form->hiddenField($model, 'year'); ?>
-                			<?php echo $form->hiddenField($model, 'month'); ?>
+                <?php echo $form->hiddenField($model, 'year'); ?>
+                <?php echo $form->hiddenField($model, 'month'); ?>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;">城市</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;">城市</label>
                     <div class="col-sm-7" >
                         <?php echo $form->textField($model, 'city',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -82,7 +82,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;">销售员</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;">销售员</label>
                     <div class="col-sm-7">
                         <?php echo $form->textField($model, 'employee_name',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -98,7 +98,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;">提成月份</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;">提成月份</label>
                     <div class="col-sm-7">
                         <?php echo $form->textField($model, 'saleyear',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -106,7 +106,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;">新增提成比例</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;">新增提成比例</label>
                     <div class="col-sm-7">
                         <?php echo $form->textField($model, 'new_calc',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -114,7 +114,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;">跨区提成是否计算</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;">跨区提成是否计算</label>
                     <div class="col-sm-7">
                         <?php echo $form->textField($model, 'performance',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -185,7 +185,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                 <?php echo $form->hiddenField($model, 'year'); ?>
                 <?php echo $form->hiddenField($model, 'month'); ?>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;">新增业绩</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;">新增业绩</label>
                     <div class="col-sm-3">
                         <?php echo $form->textField($model, 'new_money',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -193,21 +193,21 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;">更改新增业绩</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;">更改新增业绩</label>
                     <div class="col-sm-3">
                         <?php echo $form->textField($model, 'edit_money',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
                         ); ?>
                     </div>
                 </div>
-                <div class="form-group" style="width: 400px;height: 35px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;"></label>
+                <div class="form-group" style="width: 400px;">
+                    <label class="col-sm-2 control-label" style="width: 150px;">&nbsp;</label>
                     <div class="col-sm-3">
-
+                        <div style="height: 34px;width: 196px"></div>
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;">跨区业绩</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;">跨区业绩</label>
                     <div class="col-sm-3">
                         <?php echo $form->textField($model, 'out_money',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -215,22 +215,34 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;">跨区更改新增业绩</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;">跨区更改新增业绩</label>
                     <div class="col-sm-3">
                         <?php echo $form->textField($model, 'performanceedit_money',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
                         ); ?>
                     </div>
                 </div>
+                <div class="form-group" style="width: 400px;">
+                    <label class="col-sm-2 control-label" style="width: 150px;">&nbsp;</label>
+                    <div class="col-sm-3">
+                        <div style="height: 34px;width: 196px"></div>
+                    </div>
+                </div>
+                <div class="form-group" style="width: 400px;">
+                    <label class="col-sm-2 control-label" style="width: 150px;">&nbsp;</label>
+                    <div class="col-sm-3">
+                        <div style="height: 34px;width: 196px"></div>
+                    </div>
+                </div>
 
-<!--                <div class="form-group" style="width: 400px;">-->
-<!--                    <label class="col-sm-2 control-label" style="width: 130px;">xxxxx</label>-->
-<!--                    <div class="col-sm-7">-->
-<!--                        --><?php //echo $form->textField($model, 'new_calc',
-//                            array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
-//                        ); ?>
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="form-group" style="width: 400px;">-->
+                <!--                    <label class="col-sm-2 control-label" style="width: 130px;">xxxxx</label>-->
+                <!--                    <div class="col-sm-7">-->
+                <!--                        --><?php //echo $form->textField($model, 'new_calc',
+                //                            array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
+                //                        ); ?>
+                <!--                    </div>-->
+                <!--                </div>-->
             </div>
         </div>
 
