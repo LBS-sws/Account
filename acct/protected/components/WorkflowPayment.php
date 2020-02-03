@@ -24,6 +24,9 @@ class WorkflowPayment extends WorkflowDMS {
 	}
 	
 	public function routeToApprover() {
+// Check Payee User ID 
+		$payee = $this->getRequestData('PAYEE_USER');
+// --
 		$value = $this->getRequestData('AMOUNT');
 		$amount = (empty($value)||!is_numeric($value)) ? 0 : $value;
 		$listappr = array();
@@ -32,22 +35,32 @@ class WorkflowPayment extends WorkflowDMS {
 			$listappr[$approver] = 'A';
 			$this->assignRespUser($approver);
 		} elseif ($amount > 3000) {
-			$approver = $this->getApprover('regionHead'); //$this->seekBoss('CN');
-			$listappr[$approver] = 'S';
-			$this->assignRespStandbyUser($approver);
-			$approver = $this->getApprover('regionDirector');
-			$listappr[$approver] = 'A';
-			$this->assignRespUser($approver);
+			$approver0 = $this->getApprover('regionHead'); //$this->seekBoss('CN');
+			$approver1 = $this->getApprover('regionDirector');
+			if (empty($payee) || $approver1!=$payee) {
+				$listappr[$approver0] = 'S';
+				$this->assignRespStandbyUser($approver0);
+				$listappr[$approver1] = 'A';
+				$this->assignRespUser($approver1);
+			} else {
+				$listappr[$approver0] = 'A';
+				$this->assignRespUser($approver0);
+			}
 		} elseif ($amount > 1000) {
 			$approver = $this->getApprover('regionHead'); //$this->seekBoss('CN');
 			$listappr[$approver] = 'S';
 			$this->assignRespStandbyUser($approver);
-			$approver = $this->getApprover('regionDirector');
-			$listappr[$approver] = 'S';
-			$this->assignRespStandbyUser($approver);
-			$approver = $this->getApprover('regionDirectorA');
-			$listappr[$approver] = 'A';
-			$this->assignRespUser($approver);
+			$approver0 = $this->getApprover('regionDirector');
+			$approver1 = $this->getApprover('regionDirectorA');
+			if (empty($payee) || $approver1!=$payee) {
+				$listappr[$approver0] = 'S';
+				$this->assignRespStandbyUser($approver0);
+				$listappr[$approver1] = 'A';
+				$this->assignRespUser($approver1);
+			} else {
+				$listappr[$approver0] = 'A';
+				$this->assignRespUser($approver0);
+			}
 		} elseif ($amount > 500) {
 			$approver = $this->getApprover('regionHead'); //$this->seekBoss('CN');
 			$listappr[$approver] = 'S';
@@ -55,32 +68,54 @@ class WorkflowPayment extends WorkflowDMS {
 			$approver = $this->getApprover('regionDirector');
 			$listappr[$approver] = 'S';
 			$this->assignRespStandbyUser($approver);
-			$approver = $this->getApprover('regionDirectorA');
-			$listappr[$approver] = 'S';
-			$this->assignRespStandbyUser($approver);
-			$approver = $this->getApprover('regionMgr');
-			$listappr[$approver] = 'A';
-			$this->assignRespUser($approver);
+			$approver0 = $this->getApprover('regionDirectorA');
+			$approver1 = $this->getApprover('regionMgr');
+			if (empty($payee) || $approver1!=$payee) {
+				$listappr[$approver0] = 'S';
+				$this->assignRespStandbyUser($approver0);
+				$listappr[$approver1] = 'A';
+				$this->assignRespUser($approver1);
+			} else {
+				$listappr[$approver0] = 'A';
+				$this->assignRespUser($approver0);
+			}
 		} else {
 			$approver = $this->getApprover('regionHead'); //$this->seekBoss('CN');
 			$listappr[$approver] = 'S';
 			$this->assignRespStandbyUser($approver);
+			
 			$approver = $this->getApprover('regionDirector');
 			$listappr[$approver] = 'S';
 			$this->assignRespStandbyUser($approver);
+			
 			$approver = $this->getApprover('regionDirectorA');
 			$listappr[$approver] = 'S';
 			$this->assignRespStandbyUser($approver);
-			$approver = $this->getApprover('regionMgr');
-			$listappr[$approver] = 'S';
-			$this->assignRespStandbyUser($approver);
+			
+			$approver0 = $this->getApprover('regionMgr');
 			$approver1 = $this->getApprover('regionMgrA');
 			$approver2 = $this->getApprover('regionSuper');
-			$listappr[$approver1] = 'A';
-			$this->assignRespUser($approver1);
 			if ($approver1!=$approver2 && !empty($approver2)) {
-				$listappr[$approver2] = 'A';
-				$this->assignRespUser($approver2);
+				$listappr[$approver0] = 'S';
+				$this->assignRespStandbyUser($approver0);
+				if (empty($payee) || $approver1!=$payee) {
+					$listappr[$approver1] = 'A';
+					$this->assignRespUser($approver1);
+				}
+				if (empty($payee) || $approver2!=$payee) {
+					$listappr[$approver2] = 'A';
+					$this->assignRespUser($approver2);
+				}
+			} else {
+				if (empty($payee) || $approver1!=$payee) {
+					$listappr[$approver0] = 'S';
+					$this->assignRespStandbyUser($approver0);
+					$listappr[$approver1] = 'A';
+					$this->assignRespUser($approver1);
+				} else {
+					$listappr[$approver0] = 'A';
+					$this->assignRespStandbyUser($approver0);
+				}
 			}
 		}
 //		var_dump($listappr);
