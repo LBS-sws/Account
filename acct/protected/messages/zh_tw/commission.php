@@ -1,0 +1,31 @@
+<?php
+return array(
+    'Zhu1'=>'1.每個生意額頁面里都有一個“計算”按鍵，沒計算一次提成都需要點擊一次“計算”。',
+    'Zhu2'=>'2.最好按順序進行計算提成，首先需要計算新生意額。',
+    'ALL'=>'總頁',
+    'New'=>'新生意额',
+    'Edit'=>'更改生意额',
+    'END'=>'終止生意额',
+    'Performance'=>'跨區新增生意额',
+    'PerformanceEdit'=>'跨區更改生意额',
+    'PerformanceEnd'=>'跨區終止生意额',
+    'city'=>'城市',
+    'employee_name'=>'銷售員',
+    'group_type'=>'組別',
+    'saleyear'=>'提成月份',
+    'new_calc'=>'新增提成比例',
+    'performance'=>'跨區提成是否計算',
+    'new_amount'=>'新增生意提成',
+    'edit_amount'=>'更改生意提成',
+    'end_amount'=>'終止生意提成',
+    'performance_amount'=>'跨區新增提成',
+    'performanceedit_amount'=>'跨區更改提成',
+    'performanceend_amount'=>'跨區終止提成',
+    'all_amount'=>'總额',
+    'new_money'=>'新增業績',
+    'edit_money'=>'更改新增業績',
+    'out_money'=>'跨區業績',
+    'performanceedit_money'=>'跨區更改新增業績',
+
+);
+?>

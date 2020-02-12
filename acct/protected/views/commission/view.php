@@ -36,8 +36,8 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
         <div class="box-body">
             <div class="btn-group text-info" role="group">
                 <p><b>注：</b></p>
-                <p style="text-indent: 15px;">1.每个生意额页面里都有一个“计算”按键，每计算一次提成都需要点击一次“计算”。</p>
-                <p style="text-indent: 15px;">2.最好按顺序进行计算提成，首先需要计算新生意额。</p>
+                <p style="text-indent: 15px;"><?php echo Yii::t('commission','Zhu1'); ?></p>
+                <p style="text-indent: 15px;"><?php echo Yii::t('commission','Zhu2'); ?></p>
             </div>
         </div>
     </div>
@@ -45,25 +45,25 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
     <div id="yw0" class="tabbable">
         <ul class="nav nav-tabs" role="menu">
             <li class="active">
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/view',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >总页</a>
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/view',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','ALL'); ?></a>
             </li>
             <li  >
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >新生意额</a>
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','New'); ?></a>
             </li>
             <li  class="">
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/edit',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >更改生意额</a>
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/edit',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','Edit'); ?></a>
             </li>
             <li  class="">
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/end',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >终止生意额</a>
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/end',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','END'); ?></a>
             </li>
             <li  class="">
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >跨区新增生意额</a>
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','Performance'); ?></a>
             </li>
             <li  class="">
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/performanceedit',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >跨区更改生意额</a>
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/performanceedit',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','PerformanceEdit'); ?></a>
             </li>
             <li  class="">
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index));?>" >跨区终止生意额</a>
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','PerformanceEnd'); ?></a>
             </li>
         </ul>
         <div class="box-info" style="height: 1000px;position: relative;" >
@@ -71,7 +71,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                 			<?php echo $form->hiddenField($model, 'year'); ?>
                 			<?php echo $form->hiddenField($model, 'month'); ?>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 150px;">城市</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('commission','city'); ?></label>
                     <div class="col-sm-7" >
                         <?php echo $form->textField($model, 'city',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -79,7 +79,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 150px;">销售员</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('commission','employee_name'); ?></label>
                     <div class="col-sm-7">
                         <?php echo $form->textField($model, 'employee_name',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -87,7 +87,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 150px;">组别</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('commission','group_type'); ?></label>
                     <div class="col-sm-7">
                         <?php echo $form->textField($model, 'group_type',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -95,7 +95,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 150px;">提成月份</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('commission','saleyear'); ?></label>
                     <div class="col-sm-7">
                         <?php echo $form->textField($model, 'saleyear',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -103,7 +103,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 150px;">新增提成比例</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('commission','new_calc'); ?></label>
                     <div class="col-sm-7">
                         <?php echo $form->textField($model, 'new_calc',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -111,7 +111,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 150px;">跨区提成是否计算</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('commission','performance'); ?></label>
                     <div class="col-sm-7">
                         <?php echo $form->textField($model, 'performance',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -121,7 +121,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
             </div>
             <div class="box-body" style="width: 800px;position: absolute;left:30%;">
                 <div class="form-group" style="width: 800px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;">新增生意提成</label>
+                    <label class="col-sm-2 control-label" style="width: 130px;"><?php echo Yii::t('commission','new_amount'); ?></label>
                     <div class="col-sm-3">
                         <?php echo $form->textField($model, 'new_amount',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -129,7 +129,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 800px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;">更改生意提成</label>
+                    <label class="col-sm-2 control-label" style="width: 130px;"><?php echo Yii::t('commission','edit_amount'); ?></label>
 
                     <div class="col-sm-3">
                         <?php echo $form->textField($model, 'edit_amount',
@@ -138,7 +138,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 800px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;">终止生意提成</label>
+                    <label class="col-sm-2 control-label" style="width: 130px;"><?php echo Yii::t('commission','end_amount'); ?></label>
                     <div class="col-sm-7">
                         <?php echo $form->textField($model, 'end_amount',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -146,7 +146,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 800px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;">跨区新增提成</label>
+                    <label class="col-sm-2 control-label" style="width: 130px;"><?php echo Yii::t('commission','performance_amount'); ?></label>
                     <div class="col-sm-3">
                         <?php echo $form->textField($model, 'performance_amount',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -154,7 +154,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 800px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;">跨区更改提成</label>
+                    <label class="col-sm-2 control-label" style="width: 130px;"><?php echo Yii::t('commission','performanceedit_amount'); ?></label>
                     <div class="col-sm-3">
                         <?php echo $form->textField($model, 'performanceedit_amount',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -162,7 +162,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 800px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;">跨区终止提成</label>
+                    <label class="col-sm-2 control-label" style="width: 130px;"><?php echo Yii::t('commission','performanceend_amount'); ?></label>
                     <div class="col-sm-3">
                         <?php echo $form->textField($model, 'performanceend_amount',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -170,7 +170,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 800px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;">总额</label>
+                    <label class="col-sm-2 control-label" style="width: 130px;"><?php echo Yii::t('commission','all_amount'); ?></label>
                     <div class="col-sm-7">
                         <?php echo $form->textField($model, 'all_amount',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -182,7 +182,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                 <?php echo $form->hiddenField($model, 'year'); ?>
                 <?php echo $form->hiddenField($model, 'month'); ?>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 150px;">新增业绩</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('commission','new_money'); ?></label>
                     <div class="col-sm-3">
                         <?php echo $form->textField($model, 'new_money',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -190,7 +190,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 150px;">更改新增业绩</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('commission','edit_money'); ?></label>
                     <div class="col-sm-3">
                         <?php echo $form->textField($model, 'edit_money',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -204,7 +204,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 150px;">跨区业绩</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('commission','out_money'); ?></label>
                     <div class="col-sm-3">
                         <?php echo $form->textField($model, 'out_money',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -212,7 +212,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 150px;">跨区更改新增业绩</label>
+                    <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('commission','performanceedit_money'); ?></label>
                     <div class="col-sm-3">
                         <?php echo $form->textField($model, 'performanceedit_money',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))

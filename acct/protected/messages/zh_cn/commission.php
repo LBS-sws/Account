@@ -1,0 +1,31 @@
+<?php
+return array(
+	'Zhu1'=>'1.每个生意额页面里都有一个“计算”按键，每计算一次提成都需要点击一次“计算”。',
+    'Zhu2'=>'2.最好按顺序进行计算提成，首先需要计算新生意额。',
+    'ALL'=>'总页',
+    'New'=>'新生意额',
+    'Edit'=>'更改生意额',
+    'END'=>'终止生意额',
+    'Performance'=>'跨区新增生意额',
+    'PerformanceEdit'=>'跨区更改生意额',
+    'PerformanceEnd'=>'跨区终止生意额',
+    'city'=>'城市',
+    'employee_name'=>'销售员',
+    'group_type'=>'组别',
+    'saleyear'=>'提成月份',
+    'new_calc'=>'新增提成比例',
+    'performance'=>'跨区提成是否计算',
+    'new_amount'=>'新增生意提成',
+    'edit_amount'=>'更改生意提成',
+    'end_amount'=>'终止生意提成',
+    'performance_amount'=>'跨区新增提成',
+    'performanceedit_amount'=>'跨区更改提成',
+    'performanceend_amount'=>'跨区终止提成',
+    'all_amount'=>'总额',
+    'new_money'=>'新增业绩',
+    'edit_money'=>'更改新增业绩',
+    'out_money'=>'跨区业绩',
+    'performanceedit_money'=>'跨区更改新增业绩',
+
+);
+?>
