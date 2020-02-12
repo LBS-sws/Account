@@ -473,7 +473,7 @@ class PayReqForm extends CFormModel
 		if ($this->payee_type=='F') {
 			$suffix = Yii::app()->params['envSuffix'];
 			$sql = "select user_id from hr$suffix.hr_binding where employee_id=".$this->payee_id;
-			$user = $this->connection->createCommand($sql)->queryRow();
+			$user = Yii::app()->db->createCommand($sql)->queryRow();
 			if ($user!==false) $rtn = $user['user_id'];
 		}
 		return $rtn;
