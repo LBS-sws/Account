@@ -8,7 +8,7 @@ return array(
 'LBS DMS'=>'LBS 日常管理',
 'MAIN NAVIGATION'=>'系統菜單',
 'Region'=>'地區',
-'Last Update Date '=>'更新日期 ',
+'Last Update Date'=>'更新日期',
 
 'System Change'=>'系統切換',
 'Daily Report'=>'日報表系統',
@@ -78,10 +78,10 @@ return array(
 
 'System Setting'=>'系統設置',
 'Security'=>'保安',
-'Tools' => '工具',
+'Tools' =>'工具',
 
-'Change Password' => '更改密碼',
-'Languages' => '語言',
+'Change Password' =>'更改密碼',
+'Languages' =>'語言',
 
 'Checker Right'=>'會計對賬權限',
 'Transaction Adjustment'=>'交易調整權限',
@@ -104,8 +104,8 @@ return array(
 'Terminate'=>'終止',
 '(Resign)'=>'（離職）',
 
-'Active' => '啟用',
-'Inactive' => '停用',
+'Active' =>'啟用',
+'Inactive' =>'停用',
 'already used'=>'已被取用',
 'Void'=>'撤消',
 'Normal'=>'正常',
