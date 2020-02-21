@@ -67,9 +67,13 @@ class CommissionController extends Controller
             $year=$_POST['ReportXS01Form']['year'];
             $month=$_POST['ReportXS01Form']['month'];
         }
+        if(!empty($year)){
+            $session['year']= $year;
+            $session['month']=$month;
+        }
         if(empty($year)&&empty($month)){
-            $year=$_POST['year'];
-            $month=$_POST['month'];
+            $year=$session['year'];
+            $month=$session['month'];
         }
         $model->determinePageNum($pageNum);
         $model->retrieveDataByPage($model->pageNum,$year,$month);
