@@ -66,6 +66,10 @@ class QueryController extends Controller
             $year=$_POST['ReportXS02Form']['year'];
             $month=$_POST['ReportXS02Form']['month'];
         }
+        if(!empty($year)){
+            $session['year']= $year;
+            $session['month']=$month;
+        }
         if(empty($year)&&empty($month)){
             $year=$_POST['year'];
             $month=$_POST['month'];
