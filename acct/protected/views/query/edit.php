@@ -38,13 +38,13 @@ $this->pageTitle=Yii::app()->name . ' - query Report';
     <div class="box">
     <div id="yw0" class="tabbable">
         <ul class="nav nav-tabs" role="menu">
-            <li class="active">
+            <li class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/view',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','ALL'); ?></a>
             </li>
-            <li  >
+            <li class="" >
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/new',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','New'); ?></a>
             </li>
-            <li  class="">
+            <li  class="active">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/edit',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','Edit'); ?></a>
             </li>
             <li  class="">
