@@ -66,6 +66,7 @@ class QueryController extends Controller
             $year=$_POST['ReportXS02Form']['year'];
             $month=$_POST['ReportXS02Form']['month'];
         }
+        $session = Yii::app()->session;
         if(!empty($year)){
             $session['year']= $year;
             $session['month']=$month;

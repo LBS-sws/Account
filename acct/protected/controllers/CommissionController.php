@@ -67,6 +67,7 @@ class CommissionController extends Controller
             $year=$_POST['ReportXS01Form']['year'];
             $month=$_POST['ReportXS01Form']['month'];
         }
+        $session = Yii::app()->session;
         if(!empty($year)){
             $session['year']= $year;
             $session['month']=$month;
