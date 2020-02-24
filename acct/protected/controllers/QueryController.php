@@ -72,8 +72,8 @@ class QueryController extends Controller
             $session['month']=$month;
         }
         if(empty($year)&&empty($month)){
-            $year=$_POST['year'];
-            $month=$_POST['month'];
+            $year=$session['year'];
+            $month=$session['month'];
         }
         $model->determinePageNum($pageNum);
         $model->retrieveDataByPage($model->pageNum,$year,$month);
