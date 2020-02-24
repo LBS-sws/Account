@@ -39,6 +39,9 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
 				'viewdtl'=>'//commission/_listdtl',
 				'gridsize'=>'24',
 				'height'=>'600',
+                'hasNavBar'=>false,
+                'hasPageBar'=>false,
+                'hasSearchBar'=>false,
 				'search'=>$search,
 		));
     echo TBhtml::button('dummyButtin',array('style'=>'display:none','disabled'=>true,'submit'=>'#',))
