@@ -48,7 +48,6 @@ $this->pageTitle=Yii::app()->name . ' - query Report';
 				'search'=>$search,
                 'hasNavBar'=>false,
                 'hasPageBar'=>false,
-                'hasSearchBar'=>false,
 		));
     echo TBhtml::button('dummyButtin',array('style'=>'display:none','disabled'=>true,'submit'=>'#',))
 	?>
