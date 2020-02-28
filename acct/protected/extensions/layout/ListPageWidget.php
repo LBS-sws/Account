@@ -61,7 +61,7 @@ class ListPageWidget extends CWidget
 		$layout .= '</div>';
 		
 		$layout .= '<div class="box-footer clearfix">';
-		if ($this->hasSearchBar) {
+		if ($this->hasPageBar) {
 			$layout .= '<div class="box-tools">'.$this->pageBar().'</div>';
 		}
 		$layout .= '<span class="pull-right">'.Yii::t('misc','Rec').': '.$this->model->totalRow.'&nbsp;&nbsp;<a href="#" id="goTableTop">'.Yii::t('misc','Go Top').'</a>'.'</span>';
