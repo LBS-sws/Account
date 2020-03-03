@@ -1,9 +1,9 @@
 <?php
-$this->pageTitle=Yii::app()->name . ' - Transaction Enquiry';
+$this->pageTitle=Yii::app()->name . ' - Account File';
 ?>
 
 <?php $form=$this->beginWidget('TbActiveForm', array(
-'id'=>'enquiry-list',
+'id'=>'acctfile-list',
 'enableClientValidation'=>true,
 'clientOptions'=>array('validateOnSubmit'=>true,),
 'layout'=>TbHtml::FORM_LAYOUT_INLINE,
@@ -11,31 +11,22 @@ $this->pageTitle=Yii::app()->name . ' - Transaction Enquiry';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('trans','Transaction Enquiry'); ?></strong>
+		<strong><?php echo Yii::t('app','Bank Balance'); ?></strong>
 	</h1>
-<!--
-	<ol class="breadcrumb">
-		<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-		<li><a href="#">Layout</a></li>
-		<li class="active">Top Navigation</li>
-	</ol>
--->
 </section>
 
 <section class="content">
 	<?php 
 		$search = array(
-						'acct_name',
-						'acct_type_desc',
-						'bank_name',
-						'acct_no',
+							'year_no',
+							'month_no',
 					);
 		if (!Yii::app()->user->isSingleCity()) $search[] = 'city_name';
 		$this->widget('ext.layout.ListPageWidget', array(
-			'title'=>Yii::t('trans','Account List'),
+			'title'=>Yii::t('trans','Bank List'),
 			'model'=>$model,
-				'viewhdr'=>'//transenq/_listhdr',
-				'viewdtl'=>'//transenq/_listdtl',
+				'viewhdr'=>'//acctfile/_listhdr',
+				'viewdtl'=>'//acctfile/_listdtl',
 				'search'=>$search,
 		));
 	?>
@@ -58,5 +49,4 @@ echo TbHtml::button('dummyButton', array('style'=>'display:none','disabled'=>tru
 	$js = Script::genTableRowClick();
 	Yii::app()->clientScript->registerScript('rowClick',$js,CClientScript::POS_READY);
 ?>
-
 

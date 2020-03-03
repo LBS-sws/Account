@@ -66,6 +66,7 @@ return array(
 'Accounting Item'=>'會計項目',
 'T3 Balance Checking'=>'T3餘額對賬',
 'Balance Adjustment'=>'餘額差異調整表',
+'Bank Balance'=>'網銀餘額查詢',
 
 'Report'=>'報表',
 'Reimbursement Form'=>'費用報銷單',

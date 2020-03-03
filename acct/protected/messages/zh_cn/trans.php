@@ -179,5 +179,22 @@ return array(
 	'No Tax Slip'=>'沒有上传税票',
 	'Show w/Tax Slip'=>'仅显示含税票',
 	'Show All'=>'显示所有',
+	
+	'Bank List'=>'网银列表',
+	'General AC'=>'一般账户',
+	'Basic AC'=>'基本账户',
+	'Other AC'=>'其他账户',
+	'Other Files'=>'其他附件',
+	'Not Sent'=>'未发送',
+	'Sent'=>'已发送',
+	'Email'=>'发电邮',
+	'Please upload'=>'请上传',
+	'General Account File'=>'一般账户附件',
+	'Basic Account File'=>'基本账户附件',
+	'Bank Balance Form'=>'网银余额表单',
+	'Bank Balance File Uploaded'=>'网银余额文件已上传',
+	'Bank balance file uploaded. Please check.'=>'网银余额文件已上传。 请检查。',
+	'Email Sent'=>'电邮已发送',
+	'Files'=>'附件',
 );
 ?>

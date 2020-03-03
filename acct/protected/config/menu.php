@@ -55,6 +55,10 @@ return array(
 //				'access'=>'XE06',
 //				'url'=>'/baladj/index',
 //			),
+			'Bank Balance'=>array(
+				'access'=>'XE07',
+				'url'=>'/acctfile/index',
+			),
 		),
 	),
 	'Report'=>array(

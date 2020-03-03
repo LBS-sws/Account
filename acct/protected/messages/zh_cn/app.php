@@ -66,6 +66,7 @@ return array(
 	'Accounting Item'=>'会计项目',
 	'T3 Balance Checking'=>'T3余额对账',
 	'Balance Adjustment'=>'余额差异调整表',
+	'Bank Balance'=>'网银余额查询',
 	
 	'Report'=>'报表',
 	'Reimbursement Form'=>'费用报销单',

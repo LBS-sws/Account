@@ -179,5 +179,22 @@ return array(
 'No Tax Slip'=>'沒有上傳稅票',
 'Show w/Tax Slip'=>'僅顯示含稅票',
 'Show All'=>'顯示所有',
+
+'Bank List'=>'網銀列表',
+'General AC'=>'一般賬戶',
+'Basic AC'=>'基本賬戶',
+'Other AC'=>'其他賬戶',
+'Other Files'=>'其他附件',
+'Not Sent'=>'未發送',
+'Sent'=>'已發送',
+'Email'=>'發電郵',
+'Please upload'=>'請上傳',
+'General Account File'=>'一般賬戶附件',
+'Basic Account File'=>'基本賬戶附件',
+'Bank Balance Form'=>'網銀餘額表單',
+'Bank Balance File Uploaded'=>'網銀餘額文件已上傳',
+'Bank balance file uploaded. Please check.'=>'網銀餘額文件已上傳。請檢查。 ',
+'Email Sent'=>'電郵已發送',
+'Files'=>'附件',
 );
 ?>
