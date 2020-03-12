@@ -789,6 +789,10 @@ class ReportXS01List extends CListPageModel
                 $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                 $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                 $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
+                if(empty($spanning)){
+                    Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+                    Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)));
+                }
                 if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                     $money+=$a;
                     $cust_type='fw';
@@ -811,6 +815,10 @@ class ReportXS01List extends CListPageModel
                     $a=$records['amt_paid']*$records['ctrt_period'];
                 }
                 $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
+                if(empty($spanning)){
+                    Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+                    Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)));
+                }
                 if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                     $money+=$a;
                     $cust_type='fw';
@@ -830,13 +838,16 @@ class ReportXS01List extends CListPageModel
             $fuwu=$this->getAmount($city,$cust_type,$start_dt,$money);//提成比例服务
             $fuwumoney=$moneys*$fuwu;
         }else{
-            $fuwumoney=0;
+              Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+              Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }
       if(!empty($cust_type1)){
           $inv=$this->getAmount($city,$cust_type1,$start_dt,$money1);//提成比例inv
           $invmoney=$money1*$inv;
       }else{
-          $invmoney=0;
+          Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+          Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)));
+
       }
 //        if(!empty($zhuangji)&&!empty($inv)){
 //            $zhuangjimoney=$zhuangji*$inv;
@@ -848,8 +859,14 @@ class ReportXS01List extends CListPageModel
         $sql3="select * from sales$suffix.sal_performance where city='$citys' and year='$year'  and month='$month'";
         $sum = Yii::app()->db->createCommand($sql3)->queryRow();
 
-        if(empty($sum)){$sum=0;}
-        if(empty($money)){$money=0;}
+        if(empty($sum)){
+                Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+                Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)));
+        }
+        if(empty($money)){
+                Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+                Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)));
+        }
         if($sum['sum']<=count($id)||$sum['sums']<=$money){
             $color=1; //计算
         }else{
@@ -906,6 +923,10 @@ class ReportXS01List extends CListPageModel
                     $record = Yii::app()->db->createCommand($sql)->queryRow();
                     $fuwumoney=$c*$record['new_calc'];
                     $spanning=$this->getRoyalty($index,$city,$years,$months,$records['othersalesman']);
+                    if(empty($spanning)){
+                        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+                        Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/edit',array('year'=>$year,'month'=>$month,'index'=>$index)));
+                    }
                     if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                         $moneys+=$c;
                         if(!empty($records['othersalesman'])){
@@ -935,8 +956,16 @@ class ReportXS01List extends CListPageModel
                     $records['salesman']=str_replace(')','',$records['salesman']);
                     $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
+                    if(empty($records1)){
+                        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+                        Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/edit',array('year'=>$years,'month'=>$months,'index'=>$index)));
+                    }
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                    if(empty($records2)){
+                        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+                        Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/edit',array('year'=>$years,'month'=>$months,'index'=>$index)));
+                    }
                     $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
                    if(!empty($m)){
                        if(!empty($records2)){
@@ -966,13 +995,16 @@ class ReportXS01List extends CListPageModel
                 }
             }
             if(empty($money1)){
-                $money1=0;
+                    Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+                    Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/edit',array('year'=>$years,'month'=>$months,'index'=>$index)));
             }
             if(empty($money)){
-                $money=0;
+                    Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+                    Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/edit',array('year'=>$years,'month'=>$months,'index'=>$index)));
             }
         if(empty($moneys)){
-            $moneys=0;
+                Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+                Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/edit',array('year'=>$years,'month'=>$months,'index'=>$index)));
         }
 //            if(empty($zhuangji)){
 //                $zhuangji=0;
@@ -992,7 +1024,7 @@ class ReportXS01List extends CListPageModel
         $model = Yii::app()->db->createCommand($sql1)->execute();
     }
 
-    public function endSale($id,$index,$royalty){
+    public function endSale($id,$index,$royalty,$year,$month){
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
         $money=array();
@@ -1137,7 +1169,8 @@ class ReportXS01List extends CListPageModel
         $money=array_sum($money);
         $money=-$money;
         if(empty($money)){
-            $money=0;
+                Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+                Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/end',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
@@ -1230,10 +1263,12 @@ class ReportXS01List extends CListPageModel
         }
 
         if(empty($money)){
-            $money=0;
+             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+             Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }
         if(empty($moneys)){
-            $moneys=0;
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+            Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
@@ -1343,13 +1378,16 @@ class ReportXS01List extends CListPageModel
         }
 
         if(empty($money1)){
-            $money1=0;
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+            Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceedit',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }
         if(empty($money)){
-            $money=0;
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+            Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceedit',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }
         if(empty($moneys)){
-            $moneys=0;
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+            Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceedit',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }
 //        if(empty($zhuangji)){
 //            $zhuangji=0;
@@ -1511,7 +1549,8 @@ class ReportXS01List extends CListPageModel
                     }
                 }
                 if(empty($mons)){
-                    $mons_sum=0;
+                    Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+                    Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index)));
                 }else{
                     $mons_sum=array_sum($mons);
                 }
@@ -1523,7 +1562,8 @@ class ReportXS01List extends CListPageModel
                         $royaltyes=$royaltys[0];
                     }
                 }else{
-                    $royaltyes=0;
+                    Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+                    Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index)));
                 }
 //                print_r('<pre>');
 //                print_r($arr['royalty']);
@@ -1536,7 +1576,8 @@ class ReportXS01List extends CListPageModel
         $money=array_sum($money);
         $money=-$money;
         if(empty($money)){
-            $money=0;
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding ') );
+            Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
