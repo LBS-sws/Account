@@ -839,6 +839,11 @@ class ReportXS01List extends CListPageModel
             }
         }
         if(!empty($cust_type)){
+            $sql_edit_money="select edit_money from acc_service_comm_dtl where hdr_id='$index'";
+            $records_edit_money = Yii::app()->db->createCommand($sql_edit_money)->queryRow();
+            if(!empty($records_edit_money)){
+                $money=$money+$records_edit_money['edit_money'];
+            }
             $fuwu=$this->getAmount($city,$cust_type,$start_dt,$money);//提成比例服务
             $fuwumoney=$moneys*$fuwu;
         }else{
@@ -900,6 +905,7 @@ class ReportXS01List extends CListPageModel
         $money=0;
         $money1=0;
         $moneys=0;
+        $start_dt=$years."-".$months."-01";
       //  $zhuangji=0;
         foreach ($id as $ai){
                 $sql="select * from swoper$suffix.swo_service where id='$ai'";
@@ -917,16 +923,17 @@ class ReportXS01List extends CListPageModel
              //   $zhuangji+=$records['amt_install'];
                 $c=$a-$b;
                 if($c>0){
-                    $sql="select new_calc from  acc_service_comm_dtl where hdr_id='$index'";
-                    $record = Yii::app()->db->createCommand($sql)->queryRow();
-                    $fuwumoney=$c*$record['new_calc'];
+//                    $sql="select new_calc from  acc_service_comm_dtl where hdr_id='$index'";
+//                    $record = Yii::app()->db->createCommand($sql)->queryRow();
+                   // $fuwumoney=$c*$record['new_calc'];
                     $spanning=$this->getRoyalty($index,$city,$years,$months,$records['othersalesman']);
                     if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
+                        $cust_type='fw';
                         $moneys+=$c;
                         if(!empty($records['othersalesman'])){
-                            $money+=$fuwumoney*$spanning;
+                            $money+=$c*$spanning;
                         }else{
-                            $money+=$fuwumoney;
+                            $money+=$c;
                         }
                     }
                 }else{
@@ -961,6 +968,7 @@ class ReportXS01List extends CListPageModel
                        if(!empty($records2)){
                            $m=$m*$records2['new_calc'];
                            if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
+                               $cust_type='fw';
                                if(!empty($records['othersalesman'])){
                                    $money1+=$m*$spanning;
                                }else{
@@ -972,6 +980,7 @@ class ReportXS01List extends CListPageModel
                        }else{
                            $m=$m*$royalty[$ai];
                            if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
+                               $cust_type='fw';
                                if(!empty($records['othersalesman'])){
                                    $money1+=$m*$spanning;
                                }else{
@@ -993,10 +1002,25 @@ class ReportXS01List extends CListPageModel
         if(empty($moneys)){
             $moneys=0;
         }
+        $sql_new_money="select new_money from acc_service_comm_dtl where hdr_id='$index'";
+        $records_new_money = Yii::app()->db->createCommand($sql_new_money)->queryRow();
+        if(!empty($records_new_money)){
+            $new_money=$moneys+$records_new_money['new_money'];
+        }else{
+            $new_money=$moneys;
+        }
+        $fuwu=$this->getAmount($city,$cust_type,$start_dt,$new_money);//提成比例服务
 //            if(empty($zhuangji)){
 //                $zhuangji=0;
 //            }
-        $fuwumoney=$money+$money1;
+        $money=$money*$fuwu;//更改新增提成
+        $fuwumoney=$money+$money1;//更改总和
+        //新增补充修改
+        if(!empty($records_new_money)){
+          $new_amount=$records_new_money['new_money']*$fuwu;
+          $sql_new="update acc_service_comm_dtl set new_amount='$new_amount' ,new_calc='$fuwu' where hdr_id='$index'";
+          $model = Yii::app()->db->createCommand($sql_new)->execute();
+        }
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(empty($records)){
