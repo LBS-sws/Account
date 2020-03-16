@@ -842,9 +842,9 @@ class ReportXS01List extends CListPageModel
             $sql_edit_money="select edit_money from acc_service_comm_dtl where hdr_id='$index'";
             $records_edit_money = Yii::app()->db->createCommand($sql_edit_money)->queryRow();
             if(!empty($records_edit_money)){
-                $money=$money+$records_edit_money['edit_money'];
+                $money_all=$money+$records_edit_money['edit_money'];
             }
-            $fuwu=$this->getAmount($city,$cust_type,$start_dt,$money);//提成比例服务
+            $fuwu=$this->getAmount($city,$cust_type,$start_dt,$money_all);//提成比例服务
             $fuwumoney=$moneys*$fuwu;
         }else{
             if(empty($cust_type)){
@@ -1002,10 +1002,15 @@ class ReportXS01List extends CListPageModel
         if(empty($moneys)){
             $moneys=0;
         }
-        $sql_new_money="select new_money from acc_service_comm_dtl where hdr_id='$index'";
+        $sql_new_money="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records_new_money = Yii::app()->db->createCommand($sql_new_money)->queryRow();
         if(!empty($records_new_money)){
-            $new_money=$moneys+$records_new_money['new_money'];
+            if(!empty($records_new_money['new_calc'])&&$records_new_money['new_calc']!=0){
+                $new_moneyss=$records_new_money['new_amount']/ $records_new_money['new_calc'];
+            }else{
+                $new_moneyss=0;
+            }
+            $new_money=$moneys+$new_moneyss;
         }else{
             $new_money=$moneys;
         }
@@ -1035,7 +1040,7 @@ class ReportXS01List extends CListPageModel
         $model = Yii::app()->db->createCommand($sql1)->execute();
     }
 
-    public function endSale($id,$index,$royalty){
+    public function endSale($id,$index,$royalty,$years,$months){
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
         $money=array();
@@ -1051,6 +1056,10 @@ class ReportXS01List extends CListPageModel
                     $a=$records['amt_paid']*$records['ctrt_period'];
                 }
                 if($records['all_number']!=NULL){
+                    if($records['all_number']==0){
+                        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
+                        Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/end',array('year'=>$years,'month'=>$months,'index'=>$index)));
+                    }
                     $new=$a/$records['all_number'];
                 }
                 if($records['surplus']!=NULL){
@@ -1069,7 +1078,7 @@ class ReportXS01List extends CListPageModel
                 $records['salesman']=str_replace(')','',$records['salesman']);
                 if(empty($records['city'])){
                     Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
-                    Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/end',array('year'=>$year,'month'=>$month,'index'=>$index)));
+                    Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/end',array('year'=>$years,'month'=>$months,'index'=>$index)));
                 }
                 $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
@@ -1121,6 +1130,10 @@ class ReportXS01List extends CListPageModel
                         $a=$record[$i]['b4_amt_paid']*$record[$i]['ctrt_period'];
                     }
                     if($records['all_number']!=NULL){
+                        if($records['all_number']==0){
+                            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
+                            Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/end',array('year'=>$years,'month'=>$months,'index'=>$index)));
+                        }
                         $new=$a/$records['all_number'];
                     }
                     if($records['surplus']!=NULL){
@@ -1134,7 +1147,7 @@ class ReportXS01List extends CListPageModel
                     }
                     if(empty($m)){
                         Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
-                        Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/end',array('year'=>$year,'month'=>$month,'index'=>$index)));
+                        Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/end',array('year'=>$years,'month'=>$months,'index'=>$index)));
                     }
                     $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
                     if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
@@ -1154,6 +1167,10 @@ class ReportXS01List extends CListPageModel
                         $surplus='surplus_edit'.$i;
                     if($b>0){
                         if($records[$all_number]!=NULL){
+                            if($records['all_number']==0){
+                                Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
+                                Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/end',array('year'=>$years,'month'=>$months,'index'=>$index)));
+                            }
                             $news=$b/$records[$all_number];
                         }
                         if($records[$surplus]!=NULL){
@@ -1348,6 +1365,10 @@ class ReportXS01List extends CListPageModel
                 }
             }else{
                 if($records['all_number']!=NULL){
+                    if($records['all_number']==0){
+                        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
+                        Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceedit',array('year'=>$year,'month'=>$month,'index'=>$index)));
+                    }
                     $new=$a/$records['all_number'];
                     $old=$b/$records['all_number'];
                 }
@@ -1420,7 +1441,7 @@ class ReportXS01List extends CListPageModel
         $model = Yii::app()->db->createCommand($sql1)->execute();
     }
 
-    public function performanceendSale($id,$index,$royalty){
+    public function performanceendSale($id,$index,$royalty,$years,$months){
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
         $money=array();
@@ -1436,6 +1457,10 @@ class ReportXS01List extends CListPageModel
                     $a=$records['amt_paid']*$records['ctrt_period'];
                 }
                 if($records['all_number']!=NULL){
+                    if($records['all_number']==0){
+                        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
+                        Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$years,'month'=>$months,'index'=>$index)));
+                    }
                     $new=$a/$records['all_number'];
                 }
                 if($records['surplus']!=NULL){
@@ -1445,6 +1470,10 @@ class ReportXS01List extends CListPageModel
                 }
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N'";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
+                if(empty($records)){
+                    Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
+                    Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceedit',array('year'=>$years,'month'=>$months,'index'=>$index)));
+                }
                 $date=$records['first_dt'];
                 $timestrap=strtotime($date);
                 $year=date('Y',$timestrap);
@@ -1497,6 +1526,10 @@ class ReportXS01List extends CListPageModel
                         }
 
                     if($records['all_number']!=NULL){
+                        if($records['all_number']==0){
+                            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
+                            Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$years,'month'=>$months,'index'=>$index)));
+                        }
                             $new=$a/$records['all_number'];
                         }
                     if($records['surplus']!=NULL){
@@ -1543,6 +1576,10 @@ class ReportXS01List extends CListPageModel
                         $royaltys[]=$model_royaltys['royaltys'];
                         if($b>0){
                             if($records[$all_number]!=NULL){
+                                if($records['all_number']==0){
+                                    Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
+                                    Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$years,'month'=>$months,'index'=>$index)));
+                                }
                                 $news=$b/$records[$all_number];
                             }
                             if($records[$surplus]!=NULL){
