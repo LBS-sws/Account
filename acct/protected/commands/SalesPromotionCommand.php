@@ -35,7 +35,12 @@ class SalesPromotionCommand extends CConsoleCommand
         {
             $val['code']=str_replace('(','',$val['code']);
             $val['code']=str_replace(')','',$val['code']);
-            if(in_array($val['code'],$code))
+            $sqls="select * from hr$suffix.hr_employee where name='".$val['name']."' and code='".$val['code']."' and city='".$val['city']."'";
+            $arr = Yii::app()->db->createCommand($sqls)->queryAll();
+            if(empty($arr)){
+                unset($records[$key]);
+            }
+            elseif(in_array($val['code'],$code))
             {
                 unset($records[$key]);
             }else
