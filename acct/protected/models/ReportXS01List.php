@@ -843,6 +843,8 @@ class ReportXS01List extends CListPageModel
             $records_edit_money = Yii::app()->db->createCommand($sql_edit_money)->queryRow();
             if(!empty($records_edit_money)){
                 $money_all=$money+$records_edit_money['edit_money'];
+            }else{
+                $money_all=$money;
             }
             $fuwu=$this->getAmount($city,$cust_type,$start_dt,$money_all);//提成比例服务
             $fuwumoney=$moneys*$fuwu;
