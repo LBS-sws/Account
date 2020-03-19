@@ -1009,10 +1009,12 @@ class ReportXS01List extends CListPageModel
         if(!empty($records_new_money)){
             if(!empty($records_new_money['new_calc'])&&$records_new_money['new_calc']!=0){
                 $new_moneyss=$records_new_money['new_amount']/ $records_new_money['new_calc'];
+                $new_m=$records_new_money['new_money'];
             }else{
                 $new_moneyss=0;
+                $new_m=0;
             }
-            $new_money=$moneys+$new_moneyss;
+            $new_money=$moneys+$new_m;
         }else{
             $new_money=$moneys;
         }
