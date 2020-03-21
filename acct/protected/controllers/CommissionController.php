@@ -253,6 +253,8 @@ class CommissionController extends Controller
                 $sql1="update acc_service_comm_dtl set new_calc='0' , new_amount='0',new_money='0' where hdr_id='$index'";
             }
             $record = Yii::app()->db->createCommand($sql1)->execute();
+            $sql2="update acc_service_comm_hdr set performance='2'  where id='$index'";
+            $records = Yii::app()->db->createCommand($sql2)->execute();
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
             $this->redirect(Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }
