@@ -196,5 +196,15 @@ return array(
 'Bank balance file uploaded. Please check.'=>'網銀餘額文件已上傳。請檢查。 ',
 'Email Sent'=>'電郵已發送',
 'Files'=>'附件',
+
+'Payroll File'=>'工資表',
+'Payroll File Approval'=>'工資審核',
+'Payroll File List'=>'工資表列表',
+'Payroll File Form'=>'工資表表單',
+'Accept'=>'確認',
+'Reject'=>'拒絕',
+'(if any)'=>'(如有)',
+'Rejection Done'=>'拒絕審核完成',
+'Acceptance Done'=>'確認審核完成',
 );
 ?>

@@ -5,6 +5,8 @@ return array(
 	array('code'=>'XA08','function'=>'Counter::countConfReq','color'=>'bg-green'),
 	array('code'=>'XA06','function'=>'Counter::countReimb','color'=>'bg-blue'),
 	array('code'=>'XA07','function'=>'Counter::countSign','color'=>'bg-red'),
+	array('code'=>'XS05','function'=>'Counter::countPayroll','color'=>'bg-teal'),
+	array('code'=>'XS06','function'=>'Counter::countPayrollAppr','color'=>'bg-orange'),
 );
 
 ?>

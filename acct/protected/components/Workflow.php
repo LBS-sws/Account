@@ -378,11 +378,11 @@ class Workflow {
 		return $rtn;
 	}
 
-	protected function getCurrentStateRespUser() {
+	public function getCurrentStateRespUser() {
 		return $this->getCurrentStateRespUserByType('P');
 	}
 	
-	protected function getCurrentStateRespStandbyUser() {
+	public function getCurrentStateRespStandbyUser() {
 		return $this->getCurrentStateRespUserByType('Q');
 	}
 	
@@ -568,7 +568,7 @@ class Workflow {
 				from workflow$suffix.wf_request_resp_user b, 
 					workflow$suffix.wf_action c
 				where b.request_id=$reqId
-				and b.current_state<>$logId   
+				and b.log_id<>$logId   
 				and b.status='C'
 				and b.action_id=c.id
 				and c.code='$action'
@@ -586,6 +586,26 @@ class Workflow {
 				$rtn[$row['username']] = $row['remarks'];
 			}
 			return $rtn;
+		}
+	}
+
+	protected function getCurrentStateRemarks($userid) {
+		$suffix = Yii::app()->params['envSuffix'];
+		$reqId = $this->request_id;
+		$state = $this->current_state;
+		$logId = $this->transit_log_id;
+		$sql = "select a.remarks
+				from workflow$suffix.wf_request_resp_user a
+				where a.request_id=$reqId
+				and a.status='C'
+				and a.username='$userid'
+				order by id desc limit 1
+			";
+		$row = $this->connection->createCommand($sql)->queryRow();
+		if ($row===false) {
+			return '';
+		} else {
+			return $row['remarks'];
 		}
 	}
 

@@ -1,8 +1,8 @@
 <?php
 
-class AcctfileController extends Controller 
+class PayrollController extends Controller 
 {
-	public $function_id='XE07';
+	public $function_id='XS05';
 
 	public function filters()
 	{
@@ -24,12 +24,12 @@ class AcctfileController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('edit','save','send','fileupload','fileremove'),
-				'expression'=>array('AcctfileController','allowReadWrite'),
+				'actions'=>array('edit','save','submit','resubmit','fileupload','fileremove'),
+				'expression'=>array('PayrollController','allowReadWrite'),
 			),
 			array('allow', 
 				'actions'=>array('index','view','filedownload'),
-				'expression'=>array('AcctfileController','allowReadOnly'),
+				'expression'=>array('PayrollController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -39,13 +39,13 @@ class AcctfileController extends Controller
 
 	public function actionIndex($pageNum=0) 
 	{
-		$model = new AcctfileList;
-		if (isset($_POST['AcctfileList'])) {
-			$model->attributes = $_POST['AcctfileList'];
+		$model = new PayrollList;
+		if (isset($_POST['PayrollList'])) {
+			$model->attributes = $_POST['PayrollList'];
 		} else {
 			$session = Yii::app()->session;
-			if (isset($session['criteria_xe07']) && !empty($session['criteria_xe07'])) {
-				$criteria = $session['criteria_xe07'];
+			if (isset($session['criteria_xs05']) && !empty($session['criteria_xs05'])) {
+				$criteria = $session['criteria_xs05'];
 				$model->setCriteria($criteria);
 			}
 		}
@@ -54,26 +54,15 @@ class AcctfileController extends Controller
 		$this->render('index',array('model'=>$model));
 	}
 
-	public function actionSend()
-	{
-		if (isset($_POST['AcctfileForm'])) {
-			$model = new AcctfileForm($_POST['AcctfileForm']['scenario']);
-			$model->attributes = $_POST['AcctfileForm'];
-			$model->send();
-			Dialog::message(Yii::t('dialog','Information'), Yii::t('trans','Email Sent'));
-			$this->redirect(Yii::app()->createUrl('acctfile/edit',array('index'=>$model->id)));
-		}
-	}
-
 	public function actionSave()
 	{
-		if (isset($_POST['AcctfileForm'])) {
-			$model = new AcctfileForm($_POST['AcctfileForm']['scenario']);
-			$model->attributes = $_POST['AcctfileForm'];
+		if (isset($_POST['PayrollForm'])) {
+			$model = new PayrollForm($_POST['PayrollForm']['scenario']);
+			$model->attributes = $_POST['PayrollForm'];
 			if ($model->validate()) {
 				$model->saveData();
 				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-				$this->redirect(Yii::app()->createUrl('acctfile/edit',array('index'=>$model->id)));
+				$this->redirect(Yii::app()->createUrl('payroll/edit',array('index'=>$model->id)));
 			} else {
 				$message = CHtml::errorSummary($model);
 				Dialog::message(Yii::t('dialog','Validation Message'), $message);
@@ -82,9 +71,45 @@ class AcctfileController extends Controller
 		}
 	}
 
-	public function actionView($index, $rtn='index')
+	public function actionResubmit()
 	{
-		$model = new AcctfileForm('view');
+		if (isset($_POST['PayrollForm'])) {
+			$model = new PayrollForm($_POST['PayrollForm']['scenario']);
+			$model->attributes = $_POST['PayrollForm'];
+			$model->scenario = 'resubmit';
+			if ($model->validate()) {
+				$model->resubmit();
+				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Submission Done'));
+				$this->redirect(Yii::app()->createUrl('payroll/edit',array('index'=>$model->id)));
+			} else {
+				$message = CHtml::errorSummary($model);
+				Dialog::message(Yii::t('dialog','Validation Message'), $message);
+				$this->render('form',array('model'=>$model,));
+			}
+		}
+	}
+
+	public function actionSubmit()
+	{
+		if (isset($_POST['PayrollForm'])) {
+			$model = new PayrollForm($_POST['PayrollForm']['scenario']);
+			$model->attributes = $_POST['PayrollForm'];
+			$model->scenario = 'submit';
+			if ($model->validate()) {
+				$model->submit();
+				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Submission Done'));
+				$this->redirect(Yii::app()->createUrl('payroll/edit',array('index'=>$model->id)));
+			} else {
+				$message = CHtml::errorSummary($model);
+				Dialog::message(Yii::t('dialog','Validation Message'), $message);
+				$this->render('form',array('model'=>$model,));
+			}
+		}
+	}
+
+	public function actionView($index)
+	{
+		$model = new PayrollForm('view');
 		if (!$model->retrieveData($index)) {
 			throw new CHttpException(404,'The requested page does not exist.');
 		} else {
@@ -92,9 +117,9 @@ class AcctfileController extends Controller
 		}
 	}
 	
-	public function actionEdit($index, $rtn='index')
+	public function actionEdit($index)
 	{
-		$model = new AcctfileForm('edit');
+		$model = new PayrollForm('edit');
 		if (!$model->retrieveData($index)) {
 			throw new CHttpException(404,'The requested page does not exist.');
 		} else {
@@ -103,9 +128,9 @@ class AcctfileController extends Controller
 	}
 	
 	public function actionFileupload($doctype) {
-		$model = new AcctfileForm();
-		if (isset($_POST['AcctfileForm'])) {
-			$model->attributes = $_POST['AcctfileForm'];
+		$model = new PayrollForm();
+		if (isset($_POST['PayrollForm'])) {
+			$model->attributes = $_POST['PayrollForm'];
 			
 			$id = $model->id;
 			$docman = new DocMan($doctype,$id,get_class($model));
@@ -119,9 +144,9 @@ class AcctfileController extends Controller
 	}
 	
 	public function actionFileRemove($doctype) {
-		$model = new AcctfileForm();
-		if (isset($_POST['AcctfileForm'])) {
-			$model->attributes = $_POST['AcctfileForm'];
+		$model = new PayrollForm();
+		if (isset($_POST['PayrollForm'])) {
+			$model->attributes = $_POST['PayrollForm'];
 			$docman = new DocMan($doctype,$model->id,get_class($model));
 			$docman->masterId = $model->docMasterId[strtolower($doctype)];
 			$docman->fileRemove($model->removeFileId[strtolower($doctype)]);
@@ -132,12 +157,12 @@ class AcctfileController extends Controller
 	}
 	
 	public function actionFileDownload($mastId, $docId, $fileId, $doctype) {
-		$sql = "select city from acc_account_file_hdr where id = $docId";
+		$sql = "select city from acc_payroll_file_hdr where id = $docId";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$citylist = Yii::app()->user->city_allow();
 			if (strpos($citylist, $row['city']) !== false) {
-				$docman = new DocMan($doctype,$docId,'AcctfileForm');
+				$docman = new DocMan($doctype,$docId,'PayrollForm');
 				$docman->masterId = $mastId;
 				$docman->fileDownload($fileId);
 			} else {
@@ -149,11 +174,11 @@ class AcctfileController extends Controller
 	}
 
 	public static function allowReadWrite() {
-		return Yii::app()->user->validRWFunction('XE07');
+		return Yii::app()->user->validRWFunction('XS05');
 	}
 	
 	public static function allowReadOnly() {
-		return Yii::app()->user->validFunction('XE07');
+		return Yii::app()->user->validFunction('XS05');
 	}
 
 }

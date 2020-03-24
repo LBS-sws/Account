@@ -29,5 +29,18 @@ return array(
 	'[Action]'=>'[待执行]',
 	'[Notice]'=>'[通知]',
 	'Payment request has been approved and signed'=>'付款申请已批准並签字',
+	
+	'You have 1 request for payroll file resubmission'=>'您有一个工资表重新提交的要求',
+	'You have 1 request for payroll file approval'=>'您有一个新的工资表审核需要',
+	'Payroll File Submission'=>'工资表提交',
+	'Payroll File Approval'=>'工资表审核',
+	'Payroll File Approved'=>'工资表已审核',
+	'Payroll File Denied'=>'工资表已被拒绝',
+	'Payroll file has been approved by Director'=>'工资表已經总监审核',
+	'Payroll file has been approved by Manager'=>'工资表已經总经理审核',
+	'Payroll file has been denied by Director'=>'工资表已被总监拒绝',
+	'Payroll file has been denied by Manager'=>'工资表已被总经理拒绝',
+	'Year/Month'=>'年/月',
+	
 );
 ?>

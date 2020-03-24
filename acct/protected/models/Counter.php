@@ -52,6 +52,30 @@ class Counter {
 		
 		return $rtn;
 	}
+
+	public static function countPayrollAppr() {
+		$rtn = 0;
+		$wf = new WorkflowPayroll;
+		$wf->connection = Yii::app()->db;
+		$list1 = $wf->getPendingRequestIdList('PAYROLL', 'PA', Yii::app()->user->id);
+		$list2 = $wf->getPendingRequestIdList('PAYROLL', 'PB', Yii::app()->user->id);
+		$items1 = empty($list1) ? array() : explode(',',$list1);
+		$items2 = empty($list2) ? array() : explode(',',$list2);
+		$rtn = count($items1) + count($items2);
+		
+		return $rtn;
+	}
+
+	public static function countPayroll() {
+		$rtn = 0;
+		$wf = new WorkflowPayroll;
+		$wf->connection = Yii::app()->db;
+		$list = $wf->getPendingRequestIdList('PAYROLL', 'PS', Yii::app()->user->id);
+		$items = empty($list) ? array() : explode(',',$list);
+		$rtn = count($items);
+		
+		return $rtn;
+	}
 }
 
 ?>

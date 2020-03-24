@@ -152,5 +152,8 @@ return array(
 'Year'=>'年',
 'Month'=>'月',
 'Money'=>'總金額',
+
+'Payroll File'=>'工資表',
+'Payroll File Approval'=>'工資審核',
 );
 ?>

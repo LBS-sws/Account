@@ -196,5 +196,15 @@ return array(
 	'Bank balance file uploaded. Please check.'=>'网银余额文件已上传。 请检查。',
 	'Email Sent'=>'电邮已发送',
 	'Files'=>'附件',
+	
+	'Payroll File'=>'工资表',
+	'Payroll File Approval'=>'工资审核',
+	'Payroll File List'=>'工资表列表',
+	'Payroll File Form'=>'工资表表单',
+	'Accept'=>'确认',
+	'Reject'=>'拒绝',
+	'(if any)'=>'(如有)',
+	'Rejection Done'=>'拒绝审核完成',
+	'Acceptance Done'=>'确认审核完成',
 );
 ?>

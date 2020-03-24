@@ -133,6 +133,14 @@ return array(
                 'access'=>'XS04',
                 'url'=>'/bonus/index',
             ),
+            'Payroll File'=>array(
+                'access'=>'XS05',
+                'url'=>'/payroll/index',
+            ),
+            'Payroll File Approval'=>array(
+                'access'=>'XS06',
+                'url'=>'/payrollappr/index',
+            ),
         ),
     ),
 	'System Setting'=>array(
