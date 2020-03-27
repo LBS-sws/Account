@@ -10,4 +10,5 @@ return array(
 	'Batch Approve'=>array('access'=>'CN07'),
 	'T3 Checker Right'=>array('access'=>'CN08',),
     'Sale Query'=>array('access'=>'CN09',),
+    'Import Customer/Supplier'=>array('access'=>'CN10',),
 );

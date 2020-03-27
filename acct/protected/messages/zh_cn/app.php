@@ -92,6 +92,7 @@ return array(
 	'Void Reimbursement'=>'撤消报销单',
 	'Batch Approve'=>'批量批准',
 	'T3 Checker Right'=>'T3对账权限',
+	'Import Customer/Supplier'=>'导入客户/供应商权限',
 	
 	'User'=>'帐户',
 	'Group'=>'群组',

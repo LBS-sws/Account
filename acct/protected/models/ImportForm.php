@@ -42,7 +42,8 @@ class ImportForm extends CFormModel
 	public function getImportTypeList() {
 		$rtn = array();
 		foreach ($this->choice as $key=>$value) {
-			$rtn[$key] = Yii::t('import',$key);
+			if (Yii::app()->user->validFunction('CN10') || !in_array($key, array('Customer','Supplier')))
+				$rtn[$key] = Yii::t('import',$key);
 		}
 		return $rtn;
 	}
