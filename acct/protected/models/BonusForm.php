@@ -67,6 +67,7 @@ class BonusForm extends CFormModel
 	
 	public function saveData($index)
     {
+        $city = Yii::app()->user->city();
         $money=0;
         $suffix = Yii::app()->params['envSuffix'];
         $sql = "select * from acc_bonus where id='$index'";
@@ -99,12 +100,15 @@ class BonusForm extends CFormModel
             }
             $c=$a-$b;
             if($c>0){
+                $sqlss="select id from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
+                $records1 = Yii::app()->db->createCommand($sqlss)->queryRow();
+                $otherspanning=$this->getOtherRoyalty($records1['id'],$city,$year,$month,$records['salesman']);
                 $span="select * from sales$suffix.sal_performance where city='".$records['city']."' and year='".$year."' and month='".$month."'";
                 $spanning = Yii::app()->db->createCommand($span)->queryRow();
                 if(empty($spanning['otherspanning'])){
                     $spanning['otherspanning']=0.5;
                 }
-                $money+=$c* $spanning['otherspanning']*0.04;
+                $money+=$c* $spanning['otherspanning']*0.04*$otherspanning;
             }
         }
         $sql2 = "select a.*,  c.description as type_desc, d.name as city_name					
@@ -119,7 +123,9 @@ class BonusForm extends CFormModel
             }else{
                 $a=$records['amt_paid']*12;
             }
-
+            $sqlss="select id from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
+            $records1 = Yii::app()->db->createCommand($sqlss)->queryRow();
+            $otherspanning=$this->getOtherRoyalty($records1['id'],$city,$year,$month,$records['salesman']);
             $span="select * from sales$suffix.sal_performance where city='".$records['city']."' and year='".$year."' and month='".$month."'";
 
             $spanning = Yii::app()->db->createCommand($span)->queryRow();
@@ -127,7 +133,7 @@ class BonusForm extends CFormModel
                 $spanning['otherspanning']=0.5;
             }
 
-            $money+=$a*$spanning['otherspanning']*0.04;
+            $money+=$a*$spanning['otherspanning']*0.04*$otherspanning;
 
         }
         if(empty($money)){
@@ -137,5 +143,49 @@ class BonusForm extends CFormModel
 			";
         $command=Yii::app()->db->createCommand($sql)->execute();
         return true;
+    }
+
+
+    public function getOtherRoyalty($index,$city,$year,$month,$ohersaleman){
+        //按什么比例计算被跨区提成
+        $suffix = Yii::app()->params['envSuffix'];
+        $sql="select a.group_type from hr$suffix.hr_employee a
+                    left outer join  acc_service_comm_hdr b on b.employee_code=a.code
+                    where b.id='$index'
+                ";
+        $records = Yii::app()->db->createCommand($sql)->queryScalar();
+        $span="select * from sales$suffix.sal_performance where city='$city' and year='$year' and month='$month'";
+        $spanning = Yii::app()->db->createCommand($span)->queryRow();
+        if($records==0){
+            if(empty($spanning['otherspanning'])){
+                $proportion=0.5;
+            }else{
+                $proportion=$spanning['otherspanning'];
+            }
+        }
+        if($records==1){
+            if(empty($spanning['business_otherspanning'])){
+                $proportion=0.5;
+            }else{
+                $proportion=$spanning['business_otherspanning'];
+            }
+        }
+        if($records==2){
+            if(empty($spanning['restaurant_otherspanning'])){
+                $proportion=0.5;
+            }else{
+                $proportion=$spanning['restaurant_otherspanning'];
+            }
+        }
+        if(!empty($ohersaleman)){
+            $ohersaleman=str_replace('(','',$ohersaleman);
+            $ohersaleman=str_replace(')','',$ohersaleman);
+            $sql1="select group_type from hr$suffix.hr_employee where  concat_ws(' ',name,code)= '".$ohersaleman."' ";
+            $record = Yii::app()->db->createCommand($sql)->queryScalar();
+            if($record!=$records){
+                $proportion=0.5;
+            }
+        }
+        return $proportion;
     }
 }
