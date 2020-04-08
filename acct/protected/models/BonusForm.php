@@ -103,12 +103,12 @@ class BonusForm extends CFormModel
                 $sqlss="select id from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
                 $records1 = Yii::app()->db->createCommand($sqlss)->queryRow();
                 $otherspanning=$this->getOtherRoyalty($records1['id'],$city,$year,$month,$records['salesman']);
-                $span="select * from sales$suffix.sal_performance where city='".$records['city']."' and year='".$year."' and month='".$month."'";
-                $spanning = Yii::app()->db->createCommand($span)->queryRow();
-                if(empty($spanning['otherspanning'])){
-                    $spanning['otherspanning']=0.5;
-                }
-                $money+=$c* $spanning['otherspanning']*0.04*$otherspanning;
+//                $span="select * from sales$suffix.sal_performance where city='".$records['city']."' and year='".$year."' and month='".$month."'";
+//                $spanning = Yii::app()->db->createCommand($span)->queryRow();
+//                if(empty($spanning['otherspanning'])){
+//                    $spanning['otherspanning']=0.5;
+//                }
+                $money+=$c*0.04*$otherspanning;
             }
         }
         $sql2 = "select a.*,  c.description as type_desc, d.name as city_name					
@@ -126,14 +126,12 @@ class BonusForm extends CFormModel
             $sqlss="select id from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
             $records1 = Yii::app()->db->createCommand($sqlss)->queryRow();
             $otherspanning=$this->getOtherRoyalty($records1['id'],$city,$year,$month,$records['salesman']);
-            $span="select * from sales$suffix.sal_performance where city='".$records['city']."' and year='".$year."' and month='".$month."'";
-
-            $spanning = Yii::app()->db->createCommand($span)->queryRow();
-            if(empty($spanning['otherspanning'])){
-                $spanning['otherspanning']=0.5;
-            }
-
-            $money+=$a*$spanning['otherspanning']*0.04*$otherspanning;
+//            $span="select * from sales$suffix.sal_performance where city='".$records['city']."' and year='".$year."' and month='".$month."'";
+//            $spanning = Yii::app()->db->createCommand($span)->queryRow();
+//            if(empty($spanning['otherspanning'])){
+//                $spanning['otherspanning']=0.5;
+//            }
+            $money+=$a*0.04*$otherspanning;
 
         }
         if(empty($money)){
