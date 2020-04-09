@@ -104,7 +104,6 @@ class BonusForm extends CFormModel
                 $ohersaleman=str_replace(')','',$ohersaleman);
                 $sqlss="select id from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$ohersaleman."' ";
                 $records1 = Yii::app()->db->createCommand($sqlss)->queryRow();
-                print_r($records);exit();
                 $otherspanning=$this->getOtherRoyalty($records1['id'],$city,$year,$month,$records['salesman']);
 //                $span="select * from sales$suffix.sal_performance where city='".$records['city']."' and year='".$year."' and month='".$month."'";
 //                $spanning = Yii::app()->db->createCommand($span)->queryRow();
@@ -159,7 +158,6 @@ class BonusForm extends CFormModel
         $records = Yii::app()->db->createCommand($sql)->queryScalar();
         $span="select * from sales$suffix.sal_performance where city='$city' and year='$year' and month='$month'";
         $spanning = Yii::app()->db->createCommand($span)->queryRow();
-
         if($records==0){
             if(empty($spanning['otherspanning'])){
                 $proportion=0.5;
