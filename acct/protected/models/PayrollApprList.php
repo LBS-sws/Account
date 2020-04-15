@@ -15,15 +15,19 @@ class PayrollApprList extends CListPageModel
 	
 	public function retrieveDataByPage($pageNum=1, $type='P')
 	{
-//		$type = Yii::app()->user->validFunction('YN01') ? 'PA' : 'PH';
-		
 		$wf = new WorkflowPayroll;
 		$wf->connection = Yii::app()->db;
 		$list1 = $wf->getPendingRequestIdList('PAYROLL', 'PA', Yii::app()->user->id);
 		$list2 = $wf->getPendingRequestIdList('PAYROLL', 'PB', Yii::app()->user->id);
+		$list3 = $wf->getPendingRequestIdList('PAYROLL', 'PC', Yii::app()->user->id);
+		$list4 = $wf->getPendingRequestIdList('PAYROLL', 'P1', Yii::app()->user->id);
+		$list5 = $wf->getPendingRequestIdList('PAYROLL', 'P2', Yii::app()->user->id);
 		$list = '0';
 		if (!empty($list1)) $list = $list1;
 		if (!empty($list2)) $list = $list=='0' ? $list2 : $list.','.$list2;
+		if (!empty($list3)) $list = $list=='0' ? $list3 : $list.','.$list3;
+		if (!empty($list4)) $list = $list=='0' ? $list4 : $list.','.$list4;
+		if (!empty($list5)) $list = $list=='0' ? $list5 : $list.','.$list5;
 		
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city_allow();

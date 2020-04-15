@@ -9,7 +9,7 @@
 			);
 	$this->beginWidget('bootstrap.widgets.TbModal', array(
 					'id'=>'acceptdialog',
-					'header'=>Yii::t('trans','Please enter reason').Yii::t('trans','(if any)'),
+					'header'=>Yii::t('trans','Please enter remarks').Yii::t('trans','(if any)'),
 					'footer'=>$ftrbtn,
 					'show'=>false,
 				));

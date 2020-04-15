@@ -196,6 +196,8 @@ return array(
 	'Bank balance file uploaded. Please check.'=>'网银余额文件已上传。 请检查。',
 	'Email Sent'=>'电邮已发送',
 	'Files'=>'附件',
+	'Account 1'=>'银行账户1',
+	'Account 2'=>'银行账户2',
 	
 	'Payroll File'=>'工资表',
 	'Payroll File Approval'=>'工资审核',
@@ -206,5 +208,6 @@ return array(
 	'(if any)'=>'(如有)',
 	'Rejection Done'=>'拒绝审核完成',
 	'Acceptance Done'=>'确认审核完成',
+	'Please enter remarks'=>'请输入备注',
 );
 ?>

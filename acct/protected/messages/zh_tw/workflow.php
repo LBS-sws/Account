@@ -31,7 +31,7 @@ return array(
 'Payment request has been approved and signed'=>'付款申請已批准並簽字',
 
 'You have 1 request for payroll file resubmission'=>'您有一個工資表重新提交的要求',
-'You have 1 request for payroll file approval'=>'您有一個新的工資表審核需要',
+'You have 1 request for payroll file approval'=>'您有一個新工資表需要審核',
 'Payroll File Submission'=>'工資表提交',
 'Payroll File Approval'=>'工資表審核',
 'Payroll File Approved'=>'工資表已審核',

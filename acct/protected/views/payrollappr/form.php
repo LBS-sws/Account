@@ -117,9 +117,16 @@ $this->pageTitle=Yii::app()->name . ' - Payroll File Form';
 <?php
 Script::genFileUpload($model,$form->id,'PAYFILE1');
 
+$path = Yii::app()->createUrl('payrollappr/accept');
+$isPC = $model->wfstatus=='P1' || $model->wfstatus=='P2' ? 'true' : 'false';
 $js=<<<EOF
 $('#btnAccept').on('click',function(){
-	$('#acceptdialog').modal('show');
+	var isPC=$isPC;
+	if (isPC) {
+		$('#acceptdialog').modal('show');
+	} else {
+		jQuery.yii.submitForm(this,'$path',{});
+	}
 });
 $('#btnDeny').on('click',function(){
 	$('#rejectdialog').modal('show');

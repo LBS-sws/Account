@@ -80,7 +80,7 @@ $this->pageTitle=Yii::app()->name . ' - Bank Balance Form';
 	<div class="col-sm-2">
 	<?php 
 		$counter = ($model->no_of_attm['acctfile1'] > 0) ? ' <span id="docacctfile1" class="label label-info">'.$model->no_of_attm['acctfile1'].'</span>' : ' <span id="docacctfile1"></span>';
-		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','General AC').$counter, array(
+		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans',(Yii::app()->params['version']=='intl' ? 'Account 1' : 'General AC')).$counter, array(
 			'name'=>'btnAcctfile1','id'=>'btnAcctfile1','data-toggle'=>'modal','data-target'=>'#fileuploadacctfile1',)
 		);
 	?>
@@ -88,7 +88,7 @@ $this->pageTitle=Yii::app()->name . ' - Bank Balance Form';
 	<div class="col-sm-2">
 	<?php 
 		$counter = ($model->no_of_attm['acctfile2'] > 0) ? ' <span id="docacctfile2" class="label label-info">'.$model->no_of_attm['acctfile2'].'</span>' : ' <span id="docacctfile2"></span>';
-		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','Basic AC').$counter, array(
+		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans',(Yii::app()->params['version']=='intl' ? 'Account 2' : 'Basic AC')).$counter, array(
 			'name'=>'btnAcctfile2','id'=>'btnAcctfile2','data-toggle'=>'modal','data-target'=>'#fileuploadacctfile2',)
 		);
 	?>
@@ -116,14 +116,14 @@ $this->pageTitle=Yii::app()->name . ' - Bank Balance Form';
 <?php $this->renderPartial('//site/fileupload',array('model'=>$model,
 													'form'=>$form,
 													'doctype'=>'ACCTFILE1',
-													'header'=>Yii::t('trans','General AC'),
+													'header'=>Yii::t('trans',(Yii::app()->params['version']=='intl' ? 'Account 1' : 'General AC')),
 													'ronly'=>$model->isReadOnly(),
 													)); 
 ?>
 <?php $this->renderPartial('//site/fileupload',array('model'=>$model,
 													'form'=>$form,
 													'doctype'=>'ACCTFILE2',
-													'header'=>Yii::t('trans','Basic AC'),
+													'header'=>Yii::t('trans',(Yii::app()->params['version']=='intl' ? 'Account 2' : 'Basic AC')),
 													'ronly'=>$model->isReadOnly(),
 													)); 
 ?>

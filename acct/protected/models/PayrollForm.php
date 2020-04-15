@@ -45,7 +45,7 @@ class PayrollForm extends CFormModel
 			'remarks'=>Yii::t('trans','Remarks'),
 			'wfstatusdesc'=>Yii::t('misc','Status'),
 			'reason'=>Yii::t('trans','Reason'),
-			'reason_accept'=>Yii::t('trans','Reason'),
+			'reason_accept'=>Yii::t('trans','Remarks'),
 			'reason_reject'=>Yii::t('trans','Reason'),
 		);
 	}
@@ -116,7 +116,7 @@ class PayrollForm extends CFormModel
 			}
 		}
 		
-		if ($this->wfstatus=='PS' || $this->wfstatus=='PA' || $this->wfstatus=='PB') {
+		if (substr($this->wfstatus,0,1)=='P') {
 			if ($wf->initReadOnlyProcess('PAYROLL',$this->id,$this->lcd)) {
 				$reasons = $wf->getLatestActionRemark();
 				if (!empty($reasons)) {

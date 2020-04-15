@@ -4,37 +4,48 @@ class WorkflowPayroll extends WorkflowDMS {
 
 	protected $approver_list;
 
-	public function isTwoLevel() {
+	protected $functions = array('hasLevelOne', 'hasLevelTwo');
+
+	public function hasLevelOne() {
 		return !empty($this->approver_list[1]);
 	}
 
-	public function isOneLevel() {
-		return empty($this->approver_list[1]);
+	public function hasLevelTwo() {
+		return !empty($this->approver_list[2]);
 	}
 
 	public function getApproverList() {
+		$right_ad = $this->hasRight($this->approvers['regionDirectorA'], 'XS06');
+		$right_m = $this->hasRight($this->approvers['regionMgr'], 'XS06');
+		$right_am = $this->hasRight($this->approvers['regionMgrA'], 'XS06');
+		$right_s = $this->hasRight($this->approvers['regionSuper'], 'XS06');
+
 		$lv_1 = array();
-		$lv_1[] = $this->approvers['regionMgr'];
-		if (!in_array($this->approvers['regionMgrA'], $lv_1)) $lv_1[] = $this->approvers['regionMgrA'];
-		if (!in_array($this->approvers['regionSuper'], $lv_1)) $lv_1[] = $this->approvers['regionSuper'];
+		if ($right_m) $lv_1[] = $this->approvers['regionMgr'];
+		if (!in_array($this->approvers['regionMgrA'], $lv_1) && $right_am) $lv_1[] = $this->approvers['regionMgrA'];
+		if (!in_array($this->approvers['regionSuper'], $lv_1) && $right_s) $lv_1[] = $this->approvers['regionSuper'];
 
 		$key = array_search($this->approvers['regionDirectorA'], $lv_1);
 		if ($key!==false) unset($lv_1[$key]);
-		$key = array_search($this->approvers['regionDirector'], $lv_1);
-		if ($key!==false) unset($lv_1[$key]);
+//		$key = array_search($this->approvers['regionDirector'], $lv_1);
+//		if ($key!==false) unset($lv_1[$key]);
 
 		$lv_2 = array();
-		if (empty($lv_1)) {
-			if ($this->approvers['regionDirector']!=$this->approvers['regionDirectorA']) $lv_1[] = $this->approvers['regionDirectorA'];
-			$lv_2[] = $this->approvers['regionDirector'];
-		} else {
-			$lv_2[] = $this->approvers['regionDirector'];
-			if (!in_array($this->approvers['regionDirectorA'], $lv_2)) $lv_2[] = $this->approvers['regionDirectorA'];
+		if ($this->approvers['regionDirector']!=$this->approvers['regionDirectorA']) {
+//			if (empty($lv_1)) {
+//				$lv_1[] = $this->approvers['regionDirectorA'];
+//			} else {
+				if ($right_ad) $lv_2[] = $this->approvers['regionDirectorA'];
+//			}
 		}
+
+		$lv_3 = array();
+		$lv_3[] = $this->approvers['regionDirector'];
 		
 		return array(
 				1=>$lv_1,
 				2=>$lv_2,
+				3=>$lv_3,
 			);
 	}
 
@@ -47,8 +58,17 @@ class WorkflowPayroll extends WorkflowDMS {
 		}
 	}
 
-	public function toDirector() {
+	public function toADirector() {
 		foreach ($this->approver_list[2] as $user) {
+			$this->assignRespUser($user);
+//			foreach ($this->getDelegated("'$user'") as $dele) {
+//				$this->assignRespUser($dele);
+//			}
+		}
+	}
+
+	public function toDirector() {
+		foreach ($this->approver_list[3] as $user) {
 			$this->assignRespUser($user);
 //			foreach ($this->getDelegated("'$user'") as $dele) {
 //				$this->assignRespUser($dele);
@@ -91,7 +111,8 @@ class WorkflowPayroll extends WorkflowDMS {
 							break;
 						}
 					} elseif ($strtmp=='P') {		// state start with 'P'
-						if (empty($item['condition']) || (method_exists($this,$item['condition']) && call_user_func(array($this,$item['condition'])))) {
+//						if (empty($item['condition']) || (method_exists($this,$item['condition']) && call_user_func(array($this,$item['condition'])))) {
+						if (empty($item['condition']) || $this->evaluate($item['condition'])) {
 							$path[$code] = $item['to'];
 							$match = $code;
 							break;
@@ -112,6 +133,18 @@ class WorkflowPayroll extends WorkflowDMS {
 			if (!$this->transit($code)) break;
 			if (!empty($to) && method_exists($this,$to)) call_user_func(array($this,$to));
 		}
+	}
+
+	protected function evaluate($stmt) {
+		foreach ($this->functions as $function) {
+			if (strpos($stmt, $function)!==false) {
+				$result = call_user_func(array($this,$function)) ? 'true' : 'false';
+				$stmt = str_replace($function, $result , $stmt);
+			}
+		}
+		$check = str_replace(array(' ','!','(',')','&','|','=','true','false'),'',$stmt);
+		$rtn = empty($check) ? eval("return ($stmt);") : false;
+		return $rtn===null ? false : $rtn;
 	}
 
 	protected function getApprovers() {
@@ -156,6 +189,17 @@ class WorkflowPayroll extends WorkflowDMS {
 			}
 		}
 		return $rtn;
+	}
+
+	protected function hasRight($user, $code) {
+		$suffix = Yii::app()->params['envSuffix'];
+		$sysid = Yii::app()->params['systemId'];
+		$sql = "select username from security$suffix.sec_user_access 
+				where username='$user' and system_id='$sysid' and a_read_write like '%$code%'
+				limit 1
+			";
+		$row = $this->connection->createCommand($sql)->queryRow();
+		return ($row!==false);
 	}
 
 	public function sendEmail($state) {
@@ -246,7 +290,7 @@ class WorkflowPayroll extends WorkflowDMS {
 		$msg1 = Yii::t('workflow','Payroll File Approved');
 		$msg2 = $this->requestDetail();
 		$reason = $this->getCurrentStateRemarks(Yii::app()->user->id);
-		if (!empty($reason)) $msg2 .= Yii::t('trans','Reason').': '.$reason.'<br>';
+		if (!empty($reason)) $msg2 .= Yii::t('trans','Remarks').': '.$reason.'<br>';
 		$msg2 .= Yii::t('workflow','Approver').': '.$this->getDisplayName(Yii::app()->user->id).'<br>';
 		return array(
 			'send'=>'Y',
@@ -266,7 +310,8 @@ class WorkflowPayroll extends WorkflowDMS {
 	protected function mailAB($docId, $year, $month, $cityname) {
 		$username = array();
 		$to_addr = array();
-		$this->getUsernameAndEmail('PB', $username, $to_addr);
+		$this->getUsernameAndEmail('P1', $username, $to_addr);
+		if (empty($username) && empty($to_addr)) $this->getUsernameAndEmail('PB', $username, $to_addr);
 
 		$user = $this->getRequestData('REQ_USER');
 		$username[] = $user;
@@ -275,7 +320,7 @@ class WorkflowPayroll extends WorkflowDMS {
 		$msg1 = Yii::t('workflow','Payroll File Approved');
 		$msg2 = $this->requestDetail();
 		$reason = $this->getCurrentStateRemarks(Yii::app()->user->id);
-		if (!empty($reason)) $msg2 .= Yii::t('trans','Reason').': '.$reason.'<br>';
+		if (!empty($reason)) $msg2 .= Yii::t('trans','Remarks').': '.$reason.'<br>';
 		$msg2 .= Yii::t('workflow','Approver').': '.$this->getDisplayName(Yii::app()->user->id).'<br>';
 		return array(
 			'send'=>'Y',
@@ -287,6 +332,36 @@ class WorkflowPayroll extends WorkflowDMS {
 			'message'=>"<p>$msg1</p><p>$msg2</p>",
 			'username'=>json_encode($username),
 			'form_id'=>'AB',
+			'rec_id'=>$docId,
+			'system_id'=>Yii::app()->user->system(),
+		);
+	}
+	
+	protected function mailAC($docId, $year, $month, $cityname) {
+		$username = array();
+		$to_addr = array();
+		$this->getUsernameAndEmail('P2', $username, $to_addr);
+		if (empty($username) && empty($to_addr)) $this->getUsernameAndEmail('PC', $username, $to_addr);
+
+		$user = $this->getRequestData('REQ_USER');
+		$username[] = $user;
+		$to_addr[] = $this->getEmail($user);
+
+		$msg1 = Yii::t('workflow','Payroll File Approved');
+		$msg2 = $this->requestDetail();
+		$reason = $this->getCurrentStateRemarks(Yii::app()->user->id);
+		if (!empty($reason)) $msg2 .= Yii::t('trans','Remarks').': '.$reason.'<br>';
+		$msg2 .= Yii::t('workflow','Approver').': '.$this->getDisplayName(Yii::app()->user->id).'<br>';
+		return array(
+			'send'=>'Y',
+			'note_type'=>'NOTI',
+			'to_addr'=>json_encode($to_addr),
+			'cc_addr'=>json_encode(array()),
+			'subject'=>Yii::t('workflow','Payroll file has been approved by A.Director')." ($cityname, $year/$month)",
+			'description'=>Yii::t('workflow','Payroll File Approval'),
+			'message'=>"<p>$msg1</p><p>$msg2</p>",
+			'username'=>json_encode($username),
+			'form_id'=>'AC',
 			'rec_id'=>$docId,
 			'system_id'=>Yii::app()->user->system(),
 		);
@@ -323,7 +398,8 @@ class WorkflowPayroll extends WorkflowDMS {
 	protected function mailDB($docId, $year, $month, $cityname) {
 		$username = array();
 		$to_addr = array();
-		$this->getUsernameAndEmail('PB', $username, $to_addr);
+		$this->getUsernameAndEmail('P1', $username, $to_addr);
+		if (empty($username) && empty($to_addr)) $this->getUsernameAndEmail('PB', $username, $to_addr);
 
 		$user = $this->getRequestData('REQ_USER');
 		$username[] = $user;
@@ -343,6 +419,35 @@ class WorkflowPayroll extends WorkflowDMS {
 			'message'=>"<p>$msg1</p><p>$msg2</p>",
 			'username'=>json_encode($username),
 			'form_id'=>'DB',
+			'rec_id'=>$docId,
+			'system_id'=>Yii::app()->user->system(),
+		);
+	}
+
+	protected function mailDC($docId, $year, $month, $cityname) {
+		$username = array();
+		$to_addr = array();
+		$this->getUsernameAndEmail('P2', $username, $to_addr);
+		if (empty($username) && empty($to_addr)) $this->getUsernameAndEmail('PC', $username, $to_addr);
+
+		$user = $this->getRequestData('REQ_USER');
+		$username[] = $user;
+		$to_addr[] = $this->getEmail($user);
+
+		$msg1 = Yii::t('workflow','Payroll File Denied');
+		$msg2 = $this->requestDetail();
+		$msg2 .= Yii::t('trans','Reason').': '.$this->getCurrentStateRemarks(Yii::app()->user->id).'<br>';
+		$msg2 .= Yii::t('workflow','Approver').': '.$this->getDisplayName(Yii::app()->user->id).'<br>';
+		return array(
+			'send'=>'Y',
+			'note_type'=>'NOTI',
+			'to_addr'=>json_encode($to_addr),
+			'cc_addr'=>json_encode(array()),
+			'subject'=>Yii::t('workflow','Payroll file has been denied by A.Director')." ($cityname, $year/$month)",
+			'description'=>Yii::t('workflow','Payroll File Approval'),
+			'message'=>"<p>$msg1</p><p>$msg2</p>",
+			'username'=>json_encode($username),
+			'form_id'=>'DC',
 			'rec_id'=>$docId,
 			'system_id'=>Yii::app()->user->system(),
 		);

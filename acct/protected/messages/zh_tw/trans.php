@@ -196,6 +196,8 @@ return array(
 'Bank balance file uploaded. Please check.'=>'網銀餘額文件已上傳。請檢查。 ',
 'Email Sent'=>'電郵已發送',
 'Files'=>'附件',
+'Account 1'=>'銀行賬戶1',
+'Account 2'=>'銀行賬戶2',
 
 'Payroll File'=>'工資表',
 'Payroll File Approval'=>'工資審核',
@@ -206,5 +208,6 @@ return array(
 '(if any)'=>'(如有)',
 'Rejection Done'=>'拒絕審核完成',
 'Acceptance Done'=>'確認審核完成',
+'Please enter remarks'=>'請輸入備註',
 );
 ?>
