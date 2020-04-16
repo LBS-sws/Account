@@ -91,14 +91,62 @@ $this->pageTitle=Yii::app()->name . ' - Payroll File Form';
 
 			<legend><?php echo Yii::t('trans','Files'); ?></legend>
 	
-	<div class="col-sm-2">
+			<div class="form-group">
+			<div class="col-sm-2">
 	<?php 
 		$counter = ($model->no_of_attm['payfile1'] > 0) ? ' <span id="docpayfile1" class="label label-info">'.$model->no_of_attm['payfile1'].'</span>' : ' <span id="docpayfile1"></span>';
 		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','Payroll File').$counter, array(
 			'name'=>'btnPayfile1','id'=>'btnPayfile1','data-toggle'=>'modal','data-target'=>'#fileuploadpayfile1',)
 		);
 	?>
-	</div>
+			</div>
+			</div>
+
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'amt_sales',array('class'=>"col-sm-1 control-label")); ?>
+				<div class="col-sm-2">
+					<?php
+						echo $form->numberField($model, 'amt_sales', 
+							array('size'=>10,'min'=>0,
+							'readonly'=>true,
+							'placeholder'=>Yii::t('trans','Please fill in amount'))
+						); 
+					?>
+				</div>
+
+				<?php echo $form->labelEx($model,'amt_tech',array('class'=>"col-sm-1 control-label")); ?>
+				<div class="col-sm-2">
+					<?php
+						echo $form->numberField($model, 'amt_tech', 
+							array('size'=>10,'min'=>0,
+							'readonly'=>true,
+							'placeholder'=>Yii::t('trans','Please fill in amount'))
+						); 
+					?>
+				</div>
+
+				<?php echo $form->labelEx($model,'amt_office',array('class'=>"col-sm-1 control-label")); ?>
+				<div class="col-sm-2">
+					<?php
+						echo $form->numberField($model, 'amt_office', 
+							array('size'=>10,'min'=>0,
+							'readonly'=>true,
+							'placeholder'=>Yii::t('trans','Please fill in amount'))
+						); 
+					?>
+				</div>
+
+				<?php echo $form->labelEx($model,'amt_total',array('class'=>"col-sm-1 control-label")); ?>
+				<div class="col-sm-2">
+					<?php
+						echo $form->numberField($model, 'amt_total', 
+							array('size'=>10,'min'=>0,
+							'readonly'=>true,
+							'placeholder'=>Yii::t('trans','Please fill in amount'))
+						); 
+					?>
+				</div>
+			</div>
 		</div>
 	</div>
 </section>
@@ -113,6 +161,7 @@ $this->pageTitle=Yii::app()->name . ' - Payroll File Form';
 
 <?php $this->renderPartial('//payrollappr/accept',array('model'=>$model,'form'=>$form)); ?>
 <?php $this->renderPartial('//payrollappr/reject',array('model'=>$model,'form'=>$form)); ?>
+<?php $this->renderPartial('//payrollappr/acceptdialog',array('model'=>$model,'form'=>$form)); ?>
 
 <?php
 Script::genFileUpload($model,$form->id,'PAYFILE1');
@@ -125,7 +174,11 @@ $('#btnAccept').on('click',function(){
 	if (isPC) {
 		$('#acceptdialog').modal('show');
 	} else {
-		jQuery.yii.submitForm(this,'$path',{});
+		$('#confirmdialog').modal('show');
+		$('#btnAcceptData').on('click',function() {
+			$('#confirmdialog').modal('hide');
+			jQuery.yii.submitForm(this,'$path',{});
+		});
 	}
 });
 $('#btnDeny').on('click',function(){

@@ -59,15 +59,15 @@ class PayrollController extends Controller
 		if (isset($_POST['PayrollForm'])) {
 			$model = new PayrollForm($_POST['PayrollForm']['scenario']);
 			$model->attributes = $_POST['PayrollForm'];
-			if ($model->validate()) {
+//			if ($model->validate()) {
 				$model->saveData();
 				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
 				$this->redirect(Yii::app()->createUrl('payroll/edit',array('index'=>$model->id)));
-			} else {
-				$message = CHtml::errorSummary($model);
-				Dialog::message(Yii::t('dialog','Validation Message'), $message);
-				$this->render('form',array('model'=>$model,));
-			}
+//			} else {
+//				$message = CHtml::errorSummary($model);
+//				Dialog::message(Yii::t('dialog','Validation Message'), $message);
+//				$this->render('form',array('model'=>$model,));
+//			}
 		}
 	}
 

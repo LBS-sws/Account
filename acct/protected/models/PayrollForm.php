@@ -18,9 +18,17 @@ class PayrollForm extends CFormModel
 	public $wfactionuser;
 	
 	public $remarks;
+	public $amt_sales;
+	public $amt_tech;
+	public $amt_office;
+	public $amt_total;
 	
 	public $fields = array(
 						'remarks',
+						'amt_sales',
+						'amt_tech',
+						'amt_office',
+						'amt_total',
 					);
 	
 	public $files;
@@ -47,6 +55,10 @@ class PayrollForm extends CFormModel
 			'reason'=>Yii::t('trans','Reason'),
 			'reason_accept'=>Yii::t('trans','Remarks'),
 			'reason_reject'=>Yii::t('trans','Reason'),
+			'amt_sales'=>Yii::t('trans','Sales Dept.'),
+			'amt_tech'=>Yii::t('trans','Tech. Dept.'),
+			'amt_office'=>Yii::t('trans','Office'),
+			'amt_total'=>Yii::t('trans','Total'),
 		);
 	}
 
@@ -59,6 +71,8 @@ class PayrollForm extends CFormModel
 			array('id, year_no, month_no, lcd, lud, city, city_name, remarks, reason, reason_accept, reason_reject, wfstatus, wfstatusdesc','safe'),
 			array('files, removeFileId, docMasterId','safe'), 
 			array ('no_of_attm','validateAttachment'),
+			array('amt_sales, amt_tech, amt_office','safe'), 
+			array('amt_total','validateAmount'),
 		);
 	}
 
@@ -66,6 +80,12 @@ class PayrollForm extends CFormModel
 		$count1 = $this->no_of_attm['payfile1'];
 		if (empty($count1) || $count1==0) {
 			$this->addError($attribute, Yii::t('trans','Please upload').' '.Yii::t('trans','Payroll File'));
+		}
+	}
+
+	public function validateAmount($attribute, $params) {
+		if (empty($this->amt_sales) && empty($this->amt_tech) && empty($this->amt_office) && empty($this->amt_total)) {
+			$this->addError($attribute, Yii::t('trans','Please fill in amount'));
 		}
 	}
 

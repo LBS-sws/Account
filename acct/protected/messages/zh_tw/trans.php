@@ -209,5 +209,12 @@ return array(
 'Rejection Done'=>'拒絕審核完成',
 'Acceptance Done'=>'確認審核完成',
 'Please enter remarks'=>'請輸入備註',
+'Are you sure to accept?'=>'確定審核?',
+'Accept Record'=>'審核',
+'Sales Dept.'=>'銷售部',
+'Tech. Dept.'=>'技術部',
+'Office'=>'內勤',
+'Total'=>'本月共計',
+'Please fill in amount'=>'請填寫金額',
 );
 ?>

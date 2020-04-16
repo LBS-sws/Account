@@ -60,15 +60,15 @@ class PayrollapprController extends Controller
 			$model = new PayrollForm($_POST['PayrollForm']['scenario']);
 			$model->attributes = $_POST['PayrollForm'];
 			$model->scenario = 'accept';
-			if ($model->validate()) {
+//			if ($model->validate()) {
 				$model->accept();
 				Dialog::message(Yii::t('dialog','Information'), Yii::t('trans','Acceptance Done'));
 				$this->redirect(Yii::app()->createUrl('payrollappr/index'));
-			} else {
-				$message = CHtml::errorSummary($model);
-				Dialog::message(Yii::t('dialog','Validation Message'), $message);
-				$this->render('form',array('model'=>$model));
-			}
+//			} else {
+//				$message = CHtml::errorSummary($model);
+//				Dialog::message(Yii::t('dialog','Validation Message'), $message);
+//				$this->render('form',array('model'=>$model));
+//			}
 		}
 	}
 
@@ -77,15 +77,15 @@ class PayrollapprController extends Controller
 		if (isset($_POST['PayrollForm'])) {
 			$model = new PayrollForm($_POST['PayrollForm']['scenario']);
 			$model->attributes = $_POST['PayrollForm'];
-			if ($model->validate()) {
+//			if ($model->validate()) {
 				$model->reject();
 				Dialog::message(Yii::t('dialog','Information'), Yii::t('trans','Rejection Done'));
 				$this->redirect(Yii::app()->createUrl('payrollappr/index'));
-			} else {
-				$message = CHtml::errorSummary($model);
-				Dialog::message(Yii::t('dialog','Validation Message'), $message);
-				$this->render('form',array('model'=>$model,));
-			}
+//			} else {
+//				$message = CHtml::errorSummary($model);
+//				Dialog::message(Yii::t('dialog','Validation Message'), $message);
+//				$this->render('form',array('model'=>$model,));
+//			}
 		}
 	}
 

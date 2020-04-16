@@ -209,5 +209,12 @@ return array(
 	'Rejection Done'=>'拒绝审核完成',
 	'Acceptance Done'=>'确认审核完成',
 	'Please enter remarks'=>'请输入备注',
+	'Are you sure to accept?'=>'确定审核?',
+	'Accept Record'=>'审核',
+	'Sales Dept.'=>'销售部',
+	'Tech. Dept.'=>'技术部',
+	'Office'=>'内勤',
+	'Total'=>'本月共计',
+	'Please fill in amount'=>'请填写金额',
 );
 ?>
