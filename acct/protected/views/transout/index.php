@@ -42,6 +42,7 @@ $this->pageTitle=Yii::app()->name . ' - Transaction Out';
 				'viewhdr'=>'//transout/_listhdr',
 				'viewdtl'=>'//transout/_listdtl',
 				'advancedSearch'=>true,
+				'hasDateButton'=>true,
 		));
 	?>
 </section>

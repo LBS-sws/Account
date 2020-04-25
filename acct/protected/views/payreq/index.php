@@ -41,6 +41,7 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request';
 				'viewhdr'=>'//payreq/_listhdr',
 				'viewdtl'=>'//payreq/_listdtl',
 				'advancedSearch'=>true,
+				'hasDateButton'=>true,
 		));
 	?>
 </section>

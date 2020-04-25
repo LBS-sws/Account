@@ -40,6 +40,7 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In';
 				'viewhdr'=>'//transin/_listhdr',
 				'viewdtl'=>'//transin/_listdtl',
 				'advancedSearch'=>true,
+				'hasDateButton'=>true,
 		));
 	?>
 </section>

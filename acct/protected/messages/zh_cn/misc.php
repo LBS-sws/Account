@@ -90,6 +90,11 @@ return array(
     'none'=>'无',
     'group business'=>'商业组',
     'group repast'=>'餐饮组',
+
+	'Latest month'=>'1个月內',
+	'3 months'=>'3个月內',
+	'6 months'=>'6个月內',
+	'1 year'=>'1年內',
 );
 
 ?>

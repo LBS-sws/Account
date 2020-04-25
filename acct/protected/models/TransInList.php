@@ -72,6 +72,7 @@ class TransInList extends CListPageModel
 				$clause .= General::getSqlConditionClause($columns[$this->searchField],$svalue);
 			}
 		}
+		$clause .= $this->getDateRangeCondition('a.trans_dt');
 		
 		$order = "";
 		if (!empty($this->orderField)) {

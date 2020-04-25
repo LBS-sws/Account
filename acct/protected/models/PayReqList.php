@@ -90,6 +90,7 @@ class PayReqList extends CListPageModel
 				$clause .= General::getSqlConditionClause($columns[$this->searchField],$svalue);
 			}
 		}
+		$clause .= $this->getDateRangeCondition('a.req_dt');
 		
 		$order = "";
 		if (!empty($this->orderField)) {
