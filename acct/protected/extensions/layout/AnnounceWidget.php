@@ -2,14 +2,18 @@
 class AnnounceWidget extends CWidget
 {
 	public function run() {
+		$noToShow = 10;
 		$content = '';
-		if (!$this->hasRead() && $this->hasItem()) {
-			$content .= $this->renderHeader();
-			$content .= $this->renderBody();
-			$content .= $this->renderFooter();
+		if (!$this->hasRead()) {
+			$noOfItem = $this->noOfItem();
+			if ($noOfItem > 0) {
+				$content .= $this->renderHeader();
+				$content .= $this->renderBody($noToShow, $noOfItem);
+				$content .= $this->renderFooter();
 			
-			$this->renderScript();
-			$this->setRead();
+				$this->renderScript();
+				$this->setRead();
+			}
 		}
 		echo $content;
 	}
@@ -55,9 +59,10 @@ EOF;
 		return $out;
 	}
 
-	protected function renderBody() {
+	protected function renderBody($show, $contain) {
 		$out = '';
-		$rows = $this->getItems();
+		
+		$rows = ($show >= $contain) ? $this->getItems() : $this->getRandomItems($show);
 		$active = true;
 		foreach ($rows as $row) {
 			$out .= $active ? '<div class="item active">' : '<div class="item">';
@@ -106,12 +111,31 @@ EOF;
 		return ($rtn > 0);
 	}
 
+	protected function noOfItem() {
+        $suffix = Yii::app()->params['envSuffix'];
+		$sql = "select count(id) from announcement$suffix.ann_announce where start_dt<=now() and date_add(end_dt, interval 1 day)>=now()";
+		$rtn = Yii::app()->db->createCommand($sql)->queryScalar();
+		return $rtn;
+	}
+
 	protected function getItems() {
         $suffix = Yii::app()->params['envSuffix'];
 		$sql = "select * from announcement$suffix.ann_announce where start_dt<=now() and date_add(end_dt, interval 1 day)>=now() order by priority desc";
 		$rtn = Yii::app()->db->createCommand($sql)->queryAll();
 		return $rtn;
 	}
+
+	protected function getRandomItems($num) {
+		if (empty($num)) $num = 10;
+        $suffix = Yii::app()->params['envSuffix'];
+		$sql = "select a.* from announcement$suffix.ann_announce as a join 
+				(select id from announcement$suffix.ann_announce where start_dt<=now() and date_add(end_dt, interval 1 day)>=now() order by rand() limit $num) as b
+				on a.id=b.id
+			";
+		$rtn = Yii::app()->db->createCommand($sql)->queryAll();
+		return $rtn;
+	}
+
 
 	public function render($view,$data=null,$return=false) {
 		$ctrl = $this->getController();
