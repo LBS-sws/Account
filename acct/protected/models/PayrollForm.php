@@ -21,6 +21,7 @@ class PayrollForm extends CFormModel
 	public $amt_sales;
 	public $amt_tech;
 	public $amt_office;
+	public $amt_other;
 	public $amt_total;
 	
 	public $fields = array(
@@ -28,6 +29,7 @@ class PayrollForm extends CFormModel
 						'amt_sales',
 						'amt_tech',
 						'amt_office',
+						'amt_other',
 						'amt_total',
 					);
 	
@@ -43,6 +45,10 @@ class PayrollForm extends CFormModel
 							'payfile1'=>0,
 						);
 	
+	public $wfCode = 'PAYROLL';
+	public $wfIdField = 'id';
+	public $wfDateField = 'lcd';
+
 	public function attributeLabels()
 	{
 		return array(
@@ -71,7 +77,7 @@ class PayrollForm extends CFormModel
 			array('id, year_no, month_no, lcd, lud, city, city_name, remarks, reason, reason_accept, reason_reject, wfstatus, wfstatusdesc','safe'),
 			array('files, removeFileId, docMasterId','safe'), 
 			array ('no_of_attm','validateAttachment'),
-			array('amt_sales, amt_tech, amt_office','safe'), 
+			array('amt_sales, amt_tech, amt_office, amt_other','safe'), 
 			array('amt_total','validateAmount'),
 		);
 	}
@@ -84,7 +90,7 @@ class PayrollForm extends CFormModel
 	}
 
 	public function validateAmount($attribute, $params) {
-		if (empty($this->amt_sales) && empty($this->amt_tech) && empty($this->amt_office) && empty($this->amt_total)) {
+		if (empty($this->amt_sales) && empty($this->amt_tech) && empty($this->amt_office) && empty($this->amt_other) && empty($this->amt_total)) {
 			$this->addError($attribute, Yii::t('trans','Please fill in amount'));
 		}
 	}
@@ -146,6 +152,9 @@ class PayrollForm extends CFormModel
 				}
 			}
 		}
+
+		if (!empty($this->wfstatus)) $wf->transaction->commit();
+		
 		return true;
 	}
 	
