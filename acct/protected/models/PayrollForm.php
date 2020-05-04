@@ -65,6 +65,7 @@ class PayrollForm extends CFormModel
 			'amt_tech'=>Yii::t('trans','Tech. Dept.'),
 			'amt_office'=>Yii::t('trans','Office'),
 			'amt_total'=>Yii::t('trans','Total'),
+			'amt_other'=>Yii::t('trans','Others'),
 		);
 	}
 
