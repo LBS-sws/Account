@@ -28,6 +28,7 @@ $this->pageTitle=Yii::app()->name . ' - Payroll File';
 				'viewhdr'=>'//payroll/_listhdr',
 				'viewdtl'=>'//payroll/_listdtl',
 				'search'=>$search,
+				'hasDateButton'=>true,
 		));
 	?>
 </section>
