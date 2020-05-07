@@ -28,6 +28,21 @@ $this->pageTitle=Yii::app()->name . ' - Payroll File Form';
 			'id'=>'btnDeny')); 
 		?>
 	</div>
+	<div class="btn-group pull-right" role="group">
+		<?php 
+			$counter = ($model->no_of_attm['payfile1'] > 0) ? ' <span id="docpayfile1" class="label label-info">'.$model->no_of_attm['payfile1'].'</span>' : ' <span id="docpayfile1"></span>';
+			echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','Payroll File').$counter, array(
+				'name'=>'btnPayfile1','id'=>'btnPayfile1','data-toggle'=>'modal','data-target'=>'#fileuploadpayfile1',)
+			);
+		?>
+<?php if (!empty($model->wfstatus)): ?>
+		<?php 
+			echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('misc','Flow'), array(
+				'name'=>'btnFlow','id'=>'btnFlow','data-toggle'=>'modal','data-target'=>'#flowinfodialog',)
+			);
+		?>
+<?php endif ?>
+	</div>
 	</div></div>
 
 	<div class="box box-info">
@@ -89,22 +104,13 @@ $this->pageTitle=Yii::app()->name . ' - Payroll File Form';
 			</div>
 <?php endif ?>
 
+<!--
 			<legend><?php echo Yii::t('trans','Files'); ?></legend>
-	
-			<div class="form-group">
-			<div class="col-sm-2">
-	<?php 
-		$counter = ($model->no_of_attm['payfile1'] > 0) ? ' <span id="docpayfile1" class="label label-info">'.$model->no_of_attm['payfile1'].'</span>' : ' <span id="docpayfile1"></span>';
-		echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('trans','Payroll File').$counter, array(
-			'name'=>'btnPayfile1','id'=>'btnPayfile1','data-toggle'=>'modal','data-target'=>'#fileuploadpayfile1',)
-		);
-	?>
-			</div>
-			</div>
+-->	
 
 			<div class="form-group">
-				<?php echo $form->labelEx($model,'amt_sales',array('class'=>"col-sm-1 control-label")); ?>
-				<div class="col-sm-2">
+				<?php echo $form->labelEx($model,'amt_sales',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-3">
 					<?php
 						echo $form->numberField($model, 'amt_sales', 
 							array('size'=>10,'min'=>0,
@@ -114,8 +120,8 @@ $this->pageTitle=Yii::app()->name . ' - Payroll File Form';
 					?>
 				</div>
 
-				<?php echo $form->labelEx($model,'amt_tech',array('class'=>"col-sm-1 control-label")); ?>
-				<div class="col-sm-2">
+				<?php echo $form->labelEx($model,'amt_tech',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-3">
 					<?php
 						echo $form->numberField($model, 'amt_tech', 
 							array('size'=>10,'min'=>0,
@@ -124,24 +130,39 @@ $this->pageTitle=Yii::app()->name . ' - Payroll File Form';
 						); 
 					?>
 				</div>
+			</div>
 
-				<?php echo $form->labelEx($model,'amt_office',array('class'=>"col-sm-1 control-label")); ?>
-				<div class="col-sm-2">
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'amt_office',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-3">
 					<?php
 						echo $form->numberField($model, 'amt_office', 
 							array('size'=>10,'min'=>0,
-							'readonly'=>true,
+							'readonly'=>($model->isReadOnly()),
 							'placeholder'=>Yii::t('trans','Please fill in amount'))
 						); 
 					?>
 				</div>
 
-				<?php echo $form->labelEx($model,'amt_total',array('class'=>"col-sm-1 control-label")); ?>
-				<div class="col-sm-2">
+				<?php echo $form->labelEx($model,'amt_other',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-3">
+					<?php
+						echo $form->numberField($model, 'amt_other', 
+							array('size'=>10,'min'=>0,
+							'readonly'=>($model->isReadOnly()),
+							'placeholder'=>Yii::t('trans','Please fill in amount'))
+						); 
+					?>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'amt_total',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-3">
 					<?php
 						echo $form->numberField($model, 'amt_total', 
 							array('size'=>10,'min'=>0,
-							'readonly'=>true,
+							'readonly'=>($model->isReadOnly()),
 							'placeholder'=>Yii::t('trans','Please fill in amount'))
 						); 
 					?>
@@ -162,6 +183,10 @@ $this->pageTitle=Yii::app()->name . ' - Payroll File Form';
 <?php $this->renderPartial('//payrollappr/accept',array('model'=>$model,'form'=>$form)); ?>
 <?php $this->renderPartial('//payrollappr/reject',array('model'=>$model,'form'=>$form)); ?>
 <?php $this->renderPartial('//payrollappr/acceptdialog',array('model'=>$model,'form'=>$form)); ?>
+<?php 
+	if (!empty($model->wfstatus))
+		$this->renderPartial('//site/flowinfopay',array('model'=>$model)); 
+?>
 
 <?php
 Script::genFileUpload($model,$form->id,'PAYFILE1');
