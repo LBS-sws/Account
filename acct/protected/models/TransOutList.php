@@ -39,13 +39,15 @@ class TransOutList extends CListPageModel
 	{
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city_allow();
+		$version = Yii::app()->params['version'];
+		$citystr = ($version=='intl' ? ' and a.city=e.city ' : '');
 		$sql1 = "select a.id, a.trans_dt, e.trans_type_desc, c.acct_type_desc, d.bank_name, d.acct_no, 
 					b.name as city_name, a.amount, a.status, g.field_value as int_fee      
 				from acc_trans a
 				inner join security$suffix.sec_city b on a.city=b.code 
 				inner join acc_account d on a.acct_id = d.id
 				inner join acc_account_type c on d.acct_type_id=c.id 
-				inner join acc_trans_type e on a.trans_type_code=e.trans_type_code
+				inner join acc_trans_type e on a.trans_type_code=e.trans_type_code $citystr
 				left outer join acc_trans_info g on a.id=g.trans_id and g.field_id='int_fee'
 				where a.city in ($city)
 				and a.trans_type_code<>'OPEN' 
@@ -56,7 +58,7 @@ class TransOutList extends CListPageModel
 				inner join security$suffix.sec_city b on a.city=b.code 
 				inner join acc_account d on a.acct_id = d.id
 				inner join acc_account_type c on d.acct_type_id=c.id 
-				inner join acc_trans_type e on a.trans_type_code=e.trans_type_code
+				inner join acc_trans_type e on a.trans_type_code=e.trans_type_code $citystr
 				left outer join acc_trans_info g on a.id=g.trans_id and g.field_id='int_fee'
 				where a.city in ($city)
 				and a.trans_type_code<>'OPEN' 

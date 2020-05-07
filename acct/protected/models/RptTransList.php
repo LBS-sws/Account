@@ -52,11 +52,13 @@ class RptTransList extends CReport {	protected function fields() {		return arr
 		$condition = ($trans_cat=='ALL' ? "" : " and b.trans_cat='$trans_cat' ")
 					.($account==0 ? "" : " and a.acct_id=$account ");
 
+		$version = Yii::app()->params['version'];
+		$citystr = ($version=='intl' ? ' and a.city=b.city ' : '');
 		$sql = "select a.*, 
 					b.trans_type_desc, 
 					b.trans_cat,
 					c.name as city_name
-				from acc_trans a inner join acc_trans_type b on a.trans_type_code=b.trans_type_code 
+				from acc_trans a inner join acc_trans_type b on a.trans_type_code=b.trans_type_code $citystr 
 				inner join security$suffix.sec_city c on a.city=c.code
 				where a.city in($citylist) and a.status <> 'V'
 					and a.trans_dt >= '$start_dt' and a.trans_dt <= '$end_dt'
