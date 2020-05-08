@@ -749,7 +749,7 @@ class ReportXS02List extends CListPageModel
                 if($record['paid_type']=='1'||$record['paid_type']=='Y'){
                     $a=$record['amt_paid'];
                 }else{
-                    $a=$record['amt_paid']*12;
+                    $a=$record['amt_paid']*$record['ctrt_period'];
                 }
                 $this->attr[] = array(
                     'id'=>$record['id'],
