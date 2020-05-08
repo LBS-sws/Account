@@ -38,9 +38,11 @@ class TransTypeForm extends CFormModel
 	}
 
 	public function validateCode($attribute, $params) {
+		$version = Yii::app()->params['version'];
+		$citystr = ($version=='intl' ? " and city='".Yii::app()->user->city()."' " : '');
 		$code = $this->$attribute;
 		if (!empty($code) && $this->scenario=='new') {
-			$sql = "select trans_type_code from acc_trans_type where trans_type_code='$code'";
+			$sql = "select trans_type_code from acc_trans_type where trans_type_code='$code' $citystr";
 			if (Yii::app()->db->createCommand($sql)->queryRow()!==false) {
 				$this->addError($attribute, Yii::t('code','Code')." '".$code."' ".Yii::t('app','already used'));
 			}
@@ -49,7 +51,9 @@ class TransTypeForm extends CFormModel
 
 	public function retrieveData($index)
 	{
-		$sql = "select * from acc_trans_type where trans_type_code='$index'";
+		$version = Yii::app()->params['version'];
+		$citystr = ($version=='intl' ? " and city='".Yii::app()->user->city()."' " : '');
+		$sql = "select * from acc_trans_type where trans_type_code='$index' $citystr";
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
 		if (count($rows) > 0)
 		{
@@ -81,24 +85,39 @@ class TransTypeForm extends CFormModel
 
 	protected function saveTransType(&$connection)
 	{
+		$version = Yii::app()->params['version'];
 		$sql = '';
 		switch ($this->scenario) {
 			case 'delete':
-				$sql = "delete from acc_trans_type where trans_type_code = :trans_type_code";
+				$sql = $version=='intl'
+					? "delete from acc_trans_type where trans_type_code = :trans_type_code and city=:city"
+					: "delete from acc_trans_type where trans_type_code = :trans_type_code";
 				break;
 			case 'new':
-				$sql = "insert into acc_trans_type(
+				$sql = $version=='intl'
+					? "insert into acc_trans_type(
+						trans_type_code, trans_type_desc, adj_type, trans_cat, counter_type, luu, lcu, city) values (
+						:trans_type_code, :trans_type_desc, :adj_type, :trans_cat, :counter_type, :luu, :lcu, :city)"
+					: "insert into acc_trans_type(
 						trans_type_code, trans_type_desc, adj_type, trans_cat, counter_type, luu, lcu) values (
 						:trans_type_code, :trans_type_desc, :adj_type, :trans_cat, :counter_type, :luu, :lcu)";
 				break;
 			case 'edit':
-				$sql = "update acc_trans_type set 
-					trans_type_desc = :trans_type_desc, 
-					adj_type = :adj_type, 
-					trans_cat = :trans_cat,
-					counter_type = :counter_type,
-					luu = :luu
-					where trans_type_code = :trans_type_code";
+				$sql = $version=='intl'
+					? "update acc_trans_type set 
+						trans_type_desc = :trans_type_desc, 
+						adj_type = :adj_type, 
+						trans_cat = :trans_cat,
+						counter_type = :counter_type,
+						luu = :luu
+						where trans_type_code = :trans_type_code and city = :city";
+					: "update acc_trans_type set 
+						trans_type_desc = :trans_type_desc, 
+						adj_type = :adj_type, 
+						trans_cat = :trans_cat,
+						counter_type = :counter_type,
+						luu = :luu
+						where trans_type_code = :trans_type_code";
 				break;
 		}
 
@@ -115,6 +134,10 @@ class TransTypeForm extends CFormModel
 			$command->bindParam(':trans_cat',$this->trans_cat,PDO::PARAM_STR);
 		if (strpos($sql,':counter_type')!==false)
 			$command->bindParam(':counter_type',$this->counter_type,PDO::PARAM_STR);
+		if (strpos($sql,':city')!==false) {
+			$city = Yii::app()->user->city();
+			$command->bindParam(':city',$city,PDO::PARAM_STR);
+		}
 		if (strpos($sql,':luu')!==false)
 			$command->bindParam(':luu',$uid,PDO::PARAM_STR);
 		if (strpos($sql,':lcu')!==false)
@@ -126,7 +149,11 @@ class TransTypeForm extends CFormModel
 
 	public function isOccupied($index) {
 		$rtn = false;
-		$sql = "select a.trans_type_code from acc_trans_type a where a.trans_type_code='$index' limit 1";
+		$city = Yii::app()->user->city();
+		$version = Yii::app()->params['version'];
+		$sql = $version=='intl'
+			? "select a.trans_type_code from acc_trans_type a where a.trans_type_code='$index' and a.city='$city' limit 1"
+			: "select a.trans_type_code from acc_trans_type a where a.trans_type_code='$index' limit 1";
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
 		foreach ($rows as $row) {
 			$rtn = true;

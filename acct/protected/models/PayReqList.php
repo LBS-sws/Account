@@ -41,6 +41,8 @@ class PayReqList extends CListPageModel
 	public function retrieveDataByPage($pageNum=1)
 	{
 		$suffix = Yii::app()->params['envSuffix'];
+		$version = Yii::app()->params['version'];
+		$citystr = ($version=='intl' ? ' and a.city=e.city ' : '');
 		$city = Yii::app()->user->city_allow();
 		$user = Yii::app()->user->id;
 		$sql1 = "select a.id, a.req_dt, e.trans_type_desc, a.item_desc, a.payee_name,
@@ -58,7 +60,7 @@ class PayReqList extends CListPageModel
 					end) as wfstatus,
 					workflow$suffix.RequestStatusDesc('PAYMENT',a.id,a.req_dt) as wfstatusdesc
 				from acc_request a inner join security$suffix.sec_city b on a.city=b.code
-					inner join acc_trans_type e on a.trans_type_code=e.trans_type_code 
+					inner join acc_trans_type e on a.trans_type_code=e.trans_type_code $citystr
 					left outer join acc_request_info f on a.id=f.req_id and f.field_id='ref_no'
 					left outer join acc_request_info g on a.id=g.req_id and g.field_id='int_fee'
 					left outer join acc_request_info h on a.id=h.req_id and h.field_id='acct_id'
@@ -70,7 +72,7 @@ class PayReqList extends CListPageModel
 			";
 		$sql2 = "select count(a.id)
 				from acc_request a inner join security$suffix.sec_city b on a.city=b.code
-					inner join acc_trans_type e on a.trans_type_code=e.trans_type_code 
+					inner join acc_trans_type e on a.trans_type_code=e.trans_type_code $citystr 
 					left outer join acc_request_info f on a.id=f.req_id and f.field_id='ref_no'
 					left outer join acc_request_info g on a.id=g.req_id and g.field_id='int_fee'
 					left outer join acc_request_info h on a.id=h.req_id and h.field_id='acct_id'

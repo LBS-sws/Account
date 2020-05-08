@@ -84,6 +84,8 @@ class TransEnq2List extends CListPageModel
 		$suffix = Yii::app()->params['envSuffix'];
 		$citylist = Yii::app()->user->city_allow();
 		$city = $this->city;
+		$version = Yii::app()->params['version'];
+		$citystr = ($version=='intl' ? ' and a.city=e.city ' : '');
 
 		$acct_id = $this->acct_id;
 		$fdt = General::toMyDate($this->fm_dt);
@@ -93,7 +95,7 @@ class TransEnq2List extends CListPageModel
 				if(e.trans_cat='IN',a.amount,null) as amount_in,
 				if(e.trans_cat='IN',null,a.amount) as amount_out,
 				docman$suffix.countdoc('TRANS',a.id) as no_of_attm, a.trans_type_code
-				from acc_trans a inner join acc_trans_type e on a.trans_type_code=e.trans_type_code
+				from acc_trans a inner join acc_trans_type e on a.trans_type_code=e.trans_type_code $citystr 
 				left outer join acc_trans_info b on a.id=b.trans_id and b.field_id='payer_name'
 				left outer join acc_trans_info c on a.id=c.trans_id and c.field_id='cheque_no'
 				left outer join acc_trans_info d on a.id=d.trans_id and d.field_id='invoice_no'
@@ -103,7 +105,7 @@ class TransEnq2List extends CListPageModel
 				and a.acct_id = $acct_id and a.city='$city'
 			";
 		$sql2 = "select count(a.id) as cur_total, sum(if(e.trans_cat='IN',a.amount,0)) as sum_in, sum(if(e.trans_cat='IN',0,a.amount)) as sum_out 
-				from acc_trans a inner join acc_trans_type e on a.trans_type_code=e.trans_type_code
+				from acc_trans a inner join acc_trans_type e on a.trans_type_code=e.trans_type_code $citystr 
 				left outer join acc_trans_info b on a.id=b.trans_id and b.field_id='payer_name'
 				left outer join acc_trans_info c on a.id=c.trans_id and c.field_id='cheque_no'
 				left outer join acc_trans_info d on a.id=d.trans_id and d.field_id='invoice_no'

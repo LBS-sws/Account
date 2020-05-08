@@ -92,6 +92,8 @@ class CashinAuditForm extends CListPageModel
 		$date = General::toMyDate($this->audit_dt);
 		$acctId = $this->acct_id;
 		$city = Yii::app()->user->city();
+		$version = Yii::app()->params['version'];
+		$citystr = ($version=='intl' ? ' and a.city=e.city ' : '');
 		$sql = "select AccountBalance(a.id,'$city','2010-01-01','$date') as balance, 
 				a.id, a.acct_no, a.acct_name, a.bank_name, b.name as city_name,
 				c.disp_name as req_user_name
@@ -122,7 +124,7 @@ class CashinAuditForm extends CListPageModel
 				e.adj_type
 				from acc_trans a
 				left outer join acc_trans_audit_dtl x on a.id=x.trans_id 
-				inner join acc_trans_type e on a.trans_type_code=e.trans_type_code
+				inner join acc_trans_type e on a.trans_type_code=e.trans_type_code $citystr
 				left outer join acc_trans_info b on a.id=b.trans_id and b.field_id='payer_name'
 				left outer join acc_trans_info c on a.id=c.trans_id and c.field_id='cheque_no'
 				left outer join acc_trans_info d on a.id=d.trans_id and d.field_id='invoice_no'
@@ -204,6 +206,8 @@ class CashinAuditForm extends CListPageModel
 		$suffix = Yii::app()->params['envSuffix'];
 		$citylist = Yii::app()->user->city_allow();
 		$city = $this->city;
+		$version = Yii::app()->params['version'];
+		$citystr = ($version=='intl' ? ' and a.city=e.city ' : '');
 
 		$hdrId = $this->hdr_id;
 		$sql1 = "select a.id, a.trans_dt, e.trans_type_desc, a.status, b.field_value as pay_subject, 
@@ -215,7 +219,7 @@ class CashinAuditForm extends CListPageModel
 				e.adj_type
 				from acc_trans_audit_dtl x
 				inner join acc_trans a on x.trans_id = a.id
-				inner join acc_trans_type e on a.trans_type_code=e.trans_type_code
+				inner join acc_trans_type e on a.trans_type_code=e.trans_type_code $citystr 
 				left outer join acc_trans_info b on a.id=b.trans_id and b.field_id='payer_name'
 				left outer join acc_trans_info c on a.id=c.trans_id and c.field_id='cheque_no'
 				left outer join acc_trans_info d on a.id=d.trans_id and d.field_id='invoice_no'
@@ -225,7 +229,7 @@ class CashinAuditForm extends CListPageModel
 		$sql2 = "select count(x.trans_id)
 				from acc_trans_audit_dtl x
 				inner join acc_trans a on x.trans_id = a.id
-				inner join acc_trans_type e on a.trans_type_code=e.trans_type_code
+				inner join acc_trans_type e on a.trans_type_code=e.trans_type_code $citystr 
 				left outer join acc_trans_info b on a.id=b.trans_id and b.field_id='payer_name'
 				left outer join acc_trans_info c on a.id=c.trans_id and c.field_id='cheque_no'
 				left outer join acc_trans_info d on a.id=d.trans_id and d.field_id='invoice_no'

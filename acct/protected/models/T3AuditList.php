@@ -113,7 +113,7 @@ class T3AuditList extends CListPageModel
 		$year = date('Y',$end_dt);
 		$month = date('m',$end_dt);
 		$city = Yii::app()->user->city();
-		$sql = "select id from acc_t3_audit_hdr where city='$city' and audit_year=$year and audit_month=$month and audit_dt is not null";
+		$sql = "select id from acc_t3_audit_hdr where city='$city' and audit_year=$year and audit_month=$month";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		return ($row!==false);
 	}
