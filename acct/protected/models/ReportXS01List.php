@@ -1089,6 +1089,10 @@ class ReportXS01List extends CListPageModel
                 $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                 $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                 $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
+                print_r('<pre>');
+                print_r($records);
+                print_r($records['othersalesman']);
+                exit();
                 if(isset($m)){
                     if(!empty($records2)){
                         $m=$m*$records2['new_calc'];
@@ -1281,7 +1285,6 @@ class ReportXS01List extends CListPageModel
                 $color = Yii::app()->db->createCommand($sql3)->queryRow();
                 if($color['performance']==1) {
                     $records['othersalesman']=str_replace('(','',$records['othersalesman']);
-                    $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                     $sql1 = "select * from acc_service_comm_hdr where year_no='" . $year . "' and month_no='" . $month . "' and city='" . $records['city'] . "' and  concat_ws(' ',employee_name,employee_code)= '" . $records['othersalesman'] . "' ";
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
                     $sql2 = "select new_calc from  acc_service_comm_dtl where hdr_id='" . $records1['id'] . "'";
