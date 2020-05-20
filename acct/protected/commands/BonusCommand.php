@@ -10,10 +10,8 @@ class BonusCommand extends CConsoleCommand
         $years = date("Y",strtotime($date));
         echo $start=date('Y-m-01', strtotime($date));
         echo $end=date('Y-m-t', strtotime($date));
-
 //        $start=$years."-".$months."-01";
 //        $end=$years."-".$months."-31";
-        $money=0;
             $suffix = Yii::app()->params['envSuffix'];
             $sql="select a.code
 				from security$suffix.sec_city a left outer join security$suffix.sec_city b on a.code=b.region 
@@ -22,6 +20,7 @@ class BonusCommand extends CConsoleCommand
             $rows = Yii::app()->db->createCommand($sql)->queryAll();
             if (count($rows) > 0) {
                 foreach ($rows as $row) {
+                    $money=0;
                     $city = $row['code'];
                     $uid = 'admin';
                     $month=$months-1;
