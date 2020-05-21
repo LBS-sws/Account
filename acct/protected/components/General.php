@@ -153,7 +153,7 @@ class General {
 		$cond = empty($exclude) ? '' : " and a.id not in ($exclude) ";
 		$sql = "select a.id, a.acct_no, a.acct_name, a.bank_name, b.acct_type_desc  
 				from acc_account a, acc_account_type b
-				where a.acct_type_id=b.id and a.city in ($city,'99999') $cond
+				where a.acct_type_id=b.id and a.city in ($city,'99999') and a.status='Y' $cond
 				order by a.id
 			";
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();

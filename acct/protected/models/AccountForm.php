@@ -13,6 +13,7 @@ class AccountForm extends CFormModel
 	public $city;
 	public $trans_city;
 	public $coa;
+	public $status;
 
 	public function init() {
 		$this->city = Yii::app()->user->city();
@@ -29,13 +30,14 @@ class AccountForm extends CFormModel
 			'open_bal'=>Yii::t('code','Open Balance'),
 			'open_dt'=>Yii::t('code','Balance Date'),
 			'coa'=>Yii::t('code','COA'),
+			'status'=>Yii::t('misc','Display'),
 		);
 	}
 
 	public function rules()
 	{
 		return array(
-			array('acct_type_id, coa, open_bal, open_dt','required'),
+			array('acct_type_id, coa, open_bal, open_dt, status','required'),
 			array('coa','validateCoa'),
 			array('id, acct_no, acct_name, bank_name, remarks, city, trans_city','safe'), 
 		);
@@ -77,6 +79,7 @@ class AccountForm extends CFormModel
 				$this->coa = $row['coa'];
 				$this->city = $row['city'];
 				$this->trans_city = $row['trans_city'];
+				$this->status = $row['status'];
 				break;
 			}
 		}
@@ -107,8 +110,8 @@ class AccountForm extends CFormModel
 				break;
 			case 'new':
 				$sql = "insert into acc_account(
-						acct_type_id, acct_no, acct_name, bank_name, coa, remarks, city, luu, lcu) values (
-						:acct_type_id, :acct_no, :acct_name, :bank_name, :coa, :remarks, :city, :luu, :lcu)";
+						acct_type_id, acct_no, acct_name, bank_name, coa, remarks, city, status, luu, lcu) values (
+						:acct_type_id, :acct_no, :acct_name, :bank_name, :coa, :remarks, :city, :status, :luu, :lcu)";
 				break;
 			case 'edit':
 				$sql = "update acc_account set 
@@ -118,6 +121,7 @@ class AccountForm extends CFormModel
 					bank_name = :bank_name, 
 					coa = :coa, 
 					remarks = :remarks,
+					status = :status,
 					luu = :luu
 					where id = :id and city=:city";
 				break;
@@ -143,6 +147,8 @@ class AccountForm extends CFormModel
 			$command->bindParam(':remarks',$this->remarks,PDO::PARAM_STR);
 		if (strpos($sql,':city')!==false)
 			$command->bindParam(':city',$city,PDO::PARAM_STR);
+		if (strpos($sql,':status')!==false)
+			$command->bindParam(':status',$this->status,PDO::PARAM_STR);
 		if (strpos($sql,':luu')!==false)
 			$command->bindParam(':luu',$uid,PDO::PARAM_STR);
 		if (strpos($sql,':lcu')!==false)

@@ -146,6 +146,21 @@ $this->pageTitle=Yii::app()->name . ' - Account Form';
 					</div>
 				</div>
 			</div>
+
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'status',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-2">
+					<?php
+						$statuslist = array('Y'=>Yii::t('misc','Yes'), 'N'=>Yii::t('misc','No'));
+						if ($model->isReadOnly()) {
+							echo $form->hiddenField($model, 'status');
+							echo TbHtml::textField('status_desc', $statuslist[$model->status], array('readonly'=>true));
+						} else {
+							echo $form->dropDownList($model, 'status', $statuslist); 
+						}
+					?>
+				</div>
+			</div>
 		</div>
 	</div>
 </section>

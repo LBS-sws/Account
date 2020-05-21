@@ -1,0 +1,1 @@
+alter table acc_account add column status char(1) not null default 'Y' after city;

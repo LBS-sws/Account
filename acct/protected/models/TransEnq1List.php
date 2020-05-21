@@ -38,13 +38,13 @@ class TransEnq1List extends CListPageModel
 		$sql1 = "select a.id, a.acct_no, a.acct_name, a.bank_name, b.name as city_name, c.acct_type_desc, a.city, b.code as trans_city, 
 				AccountBalance(a.id,b.code,'2010-01-01 00:00:00',now()) as balance
 				from security$suffix.sec_city b
-				left outer join acc_account a on (b.code=a.city or a.city='99999') 
+				left outer join acc_account a on (b.code=a.city or a.city='99999') and a.status='Y'
 				left outer join acc_account_type c on a.acct_type_id=c.id
 				where b.code in ($city)
 			";
 		$sql2 = "select count(a.id)
 				from security$suffix.sec_city b
-				left outer join acc_account a on (b.code=a.city or a.city='99999') 
+				left outer join acc_account a on (b.code=a.city or a.city='99999') and a.status='Y' 
 				left outer join acc_account_type c on a.acct_type_id=c.id
 				where b.code in ($city)
 			";
