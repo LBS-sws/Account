@@ -272,8 +272,8 @@ class PayReqForm extends CFormModel
 			$this->updateDocman($connection,'PAYREQ');
 			$this->updateDocman($connection,'TAX');
 			if ($wf->startProcess('PAYMENT',$this->id,$this->req_dt)) {
-				$wf->saveRequestData('CITY',Yii::app()->user->city());
-				$wf->saveRequestData('REQ_USER',Yii::app()->user->id);
+//				$wf->saveRequestData('CITY',Yii::app()->user->city());
+//				$wf->saveRequestData('REQ_USER',Yii::app()->user->id);
 				$wf->saveRequestData('REF_NO',$this->ref_no);
 				$wf->saveRequestData('AMOUNT',$this->amount);
 				$payee = $this->getPayeeUserId();
