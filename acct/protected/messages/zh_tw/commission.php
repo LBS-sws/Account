@@ -26,6 +26,6 @@ return array(
     'edit_money'=>'更改新增業績',
     'out_money'=>'跨區業績',
     'performanceedit_money'=>'跨區更改新增業績',
-
+    'point'=>'銷售提成激勵點',
 );
 ?>

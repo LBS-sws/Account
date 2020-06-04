@@ -26,6 +26,7 @@ return array(
     'edit_money'=>'更改新增业绩',
     'out_money'=>'跨区业绩',
     'performanceedit_money'=>'跨区更改新增业绩',
+    'point'=>'销售提成激励点',
 
 );
 ?>

@@ -846,8 +846,9 @@ class ReportXS01List extends CListPageModel
             }else{
                 $money_all=$money;
             }
-            $fuwu=$this->getAmount($city,$cust_type,$start_dt,$money_all);//提成比例服务
-            $fuwumoney=$moneys*$fuwu;
+            $fuwu=$this->getAmount($city,$cust_type,$start_dt,$money_all);//本月提成比例服务
+            $fuwu_last=$this->getAmountLast($year,$month,$index);//上月提成比例服务
+            $fuwumoney=$moneys*$fuwu_last;
         }else{
             if(empty($cust_type)){
                 Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
@@ -925,9 +926,6 @@ class ReportXS01List extends CListPageModel
              //   $zhuangji+=$records['amt_install'];
                 $c=$a-$b;
                 if($c>0){
-//                    $sql="select new_calc from  acc_service_comm_dtl where hdr_id='$index'";
-//                    $record = Yii::app()->db->createCommand($sql)->queryRow();
-                   // $fuwumoney=$c*$record['new_calc'];
                     $spanning=$this->getRoyalty($index,$city,$years,$months,$records['othersalesman']);
                     if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                         $cust_type='fw';
@@ -963,12 +961,13 @@ class ReportXS01List extends CListPageModel
                     $records['salesman']=str_replace(')','',$records['salesman']);
                     $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
-                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
-                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+//                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
+//                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                    $fuwu_last=$this->getAmountLast($year,$month,$records1['id']);//上月提成比例服务
                     $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
                    if(isset($m)){
                        if(!empty($records2)){
-                           $m=$m*$records2['new_calc'];
+                           $m=$m*$fuwu_last;
                            if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                $cust_type='fw';
                                if(!empty($records['othersalesman'])){
@@ -976,7 +975,7 @@ class ReportXS01List extends CListPageModel
                                }else{
                                    $money1+=$m;
                                }
-                               $sqlct="update swoper$suffix.swo_service set royalty='".$records2['new_calc']."'  where id='$ai'";
+                               $sqlct="update swoper$suffix.swo_service set royalty='".$fuwu_last."'  where id='$ai'";
                                $model = Yii::app()->db->createCommand($sqlct)->execute();
                            }
                        }else{
@@ -1006,8 +1005,9 @@ class ReportXS01List extends CListPageModel
         }
         $sql_new_money="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records_new_money = Yii::app()->db->createCommand($sql_new_money)->queryRow();
+        $fuwu_last=$this->getAmountLast($years,$months,$index);//上月提成比例服务
         if(!empty($records_new_money)){
-            if(!empty($records_new_money['new_calc'])&&$records_new_money['new_calc']!=0){
+            if(!empty($fuwu_last)&&$fuwu_last!=0){
                 $new_m=$records_new_money['new_money'];
             }else{
                 $new_moneyss=0;
@@ -1021,15 +1021,11 @@ class ReportXS01List extends CListPageModel
 //            if(empty($zhuangji)){
 //                $zhuangji=0;
 //            }
-        $money=$money*$fuwu;//更改新增提成
+        $money=$money*$fuwu_last;//更改新增提成
         $fuwumoney=$money+$money1;//更改总和
         //新增补充修改
-        if(!empty($records_new_money)){
-            $new_moneyss=$records_new_money['new_amount']/ $records_new_money['new_calc'];
-          $new_amount=$new_moneyss*$fuwu;
-          $sql_new="update acc_service_comm_dtl set new_amount='$new_amount' ,new_calc='$fuwu' where hdr_id='$index'";
-          $model = Yii::app()->db->createCommand($sql_new)->execute();
-        }
+        $sql_new="update acc_service_comm_dtl set new_calc='$fuwu' where hdr_id='$index'";
+        $model = Yii::app()->db->createCommand($sql_new)->execute();
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(empty($records)){
@@ -1086,19 +1082,20 @@ class ReportXS01List extends CListPageModel
                 }
                 $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
-                $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
-                $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+//                $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
+//                $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                $fuwu_last=$this->getAmountLast($years,$months,$records1['id']);//上月提成比例服务
                 $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
                 if(isset($m)){
                     if(!empty($records2)){
-                        $m=$m*$records2['new_calc'];
+                        $m=$m*$fuwu_last;
                         if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                             if(!empty($records['othersalesman'])){
                                 $money[]=$m*$spanning;
                             }else{
                                 $money[]=$m;
                             }
-                            $sqlct="update swoper$suffix.swo_service set royalty='".$records2['new_calc']."'  where id='$ai'";
+                            $sqlct="update swoper$suffix.swo_service set royalty='".$fuwu_last."'  where id='$ai'";
                             $model = Yii::app()->db->createCommand($sqlct)->execute();
                         }
                     }else{
@@ -1254,12 +1251,13 @@ class ReportXS01List extends CListPageModel
                     $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                     $sql1 = "select * from acc_service_comm_hdr where year_no='" . $year . "' and month_no='" . $month . "' and city='" . $records['city'] . "' and  concat_ws(' ',employee_name,employee_code)= '" . $records['othersalesman'] . "'";
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
-                    $sql2 = "select new_calc from  acc_service_comm_dtl where hdr_id='" . $records1['id'] . "'";
-                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+//                    $sql2 = "select new_calc from  acc_service_comm_dtl where hdr_id='" . $records1['id'] . "'";
+//                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                    $fuwu_last=$this->getAmountLast($year,$month,$records1['id']);//上月提成比例服务
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     if (!empty($a)) {
                         $moneys += $a * $otherspanning;
-                        $a = $a * $records2['new_calc'];
+                        $a = $a * $fuwu_last;
                         if ($records['cust_type'] == '1' || $records['cust_type'] == '2' || $records['cust_type'] == '3' || $records['cust_type'] == '5' || $records['cust_type'] == '6' || $records['cust_type'] == '7') {
                             $money += $a * $otherspanning;
                         }
@@ -1283,12 +1281,13 @@ class ReportXS01List extends CListPageModel
                     $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                     $sql1 = "select * from acc_service_comm_hdr where year_no='" . $year . "' and month_no='" . $month . "' and city='" . $records['city'] . "' and  concat_ws(' ',employee_name,employee_code)= '" . $records['othersalesman'] . "' ";
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
-                    $sql2 = "select new_calc from  acc_service_comm_dtl where hdr_id='" . $records1['id'] . "'";
-                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+//                    $sql2 = "select new_calc from  acc_service_comm_dtl where hdr_id='" . $records1['id'] . "'";
+//                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                    $fuwu_last=$this->getAmountLast($year,$month,$records1['id']);//上月提成比例服务
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     if (!empty($a)) {
                         $moneys += $a * $otherspanning;
-                        $a = $a * $records2['new_calc'];
+                        $a = $a * $fuwu_last;
                         if ($records['cust_type'] == '1' || $records['cust_type'] == '2' || $records['cust_type'] == '3' || $records['cust_type'] == '5' || $records['cust_type'] == '6' || $records['cust_type'] == '7') {
                             $money += $a * $otherspanning;
                         }
@@ -1355,10 +1354,11 @@ class ReportXS01List extends CListPageModel
                     $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                     $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
-                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
-                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+//                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
+//                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                    $fuwu_last=$this->getAmountLast($year,$month,$records1['id']);//上月提成比例服务
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
-                    $fuwumoney=$c*$records2['new_calc'];
+                    $fuwumoney=$c*$fuwu_last;
                     if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                         $money+=$fuwumoney*$otherspanning;
                         $moneys+=$c*$otherspanning;
@@ -1394,15 +1394,16 @@ class ReportXS01List extends CListPageModel
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
                 $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                 if($records1['performance']==1){
-                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
-                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+//                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
+//                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                    $fuwu_last=$this->getAmountLast($years,$months,$records1['id']);//上月提成比例服务
                     if(isset($m)){
-                        if($records2['new_calc']!=0&&empty(!$records2['new_calc'])){
-                            $m=$m*$records2['new_calc'];
+                        if($fuwu_last!=0&&empty(!$fuwu_last)){
+                            $m=$m*$fuwu_last;
                             if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                 $money1+=$m*$otherspanning;
                             }
-                            $sqlct="update swoper$suffix.swo_service set royaltys='".$records2['new_calc']."'  where id='$ai'";
+                            $sqlct="update swoper$suffix.swo_service set royaltys='".$fuwu_last."'  where id='$ai'";
                             $model = Yii::app()->db->createCommand($sqlct)->execute();
                         }else{
                             $m=$m*$royalty[$ai];
@@ -1487,16 +1488,17 @@ class ReportXS01List extends CListPageModel
                 $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
                 if($records1['performance']==1){
-                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";//当初提成比例
-                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+//                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";//当初提成比例
+//                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                    $fuwu_last=$this->getAmountLast($year,$month,$records1['id']);//上月提成比例服务
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     if(isset($m)){
-                        if($records2['new_calc']!=0&&empty(!$records2['new_calc'])){
-                            $m=$m*$records2['new_calc'];
+                        if($fuwu_last!=0&&empty(!$fuwu_last)){
+                            $m=$m*$fuwu_last;
                             if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                 $money[]=$m*$otherspanning;
                             }
-                            $sqlct="update swoper$suffix.swo_service set royaltys='".$records2['new_calc']."'  where id='$ai'";
+                            $sqlct="update swoper$suffix.swo_service set royaltys='".$fuwu_last."'  where id='$ai'";
                             $model = Yii::app()->db->createCommand($sqlct)->execute();
                         }else{
                             $m=$m*$royalty[$ai];
@@ -1678,6 +1680,26 @@ class ReportXS01List extends CListPageModel
 //                        print_r('<pre>');
 //                print_r($row);
         return $rtn;
+    }
+
+    public function getAmountLast($year,$month,$id){
+        $month=$month-1;
+        if($month==0){
+            $month=12;
+            $year=$year-1;
+        }
+        $suffix = Yii::app()->params['envSuffix'];
+        $sql1="select f.point,b.new_calc from acc_service_comm_hdr a
+              left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
+              left outer join security$suffix.sec_city c on  a.city=c.code 
+              left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
+              left outer join hr$suffix.hr_binding e on  a.employee_name=e.employee_name 
+              inner join sales$suffix.sal_integral f on  e.user_id=f.username
+              where a.id='$id'  and  f.year='$year' and  f.month='$month'
+";
+        $point = Yii::app()->db->createCommand($sql1)->queryRow();
+        $new_calc=$point['new_calc'];
+        return $new_calc;
     }
 
     public function getRoyalty($index,$city,$year,$month,$ohersaleman){
