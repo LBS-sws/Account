@@ -123,12 +123,20 @@ class LookupController extends Controller
 				and leave_dt is null or leave_dt=0 or leave_dt > now() ";
 		$result1 = Yii::app()->db->createCommand($sql)->queryAll();
 
+		$sql = "select a.id, concat(a.name, ' (', a.code, ')') as value from swoper$suffix.swo_staff_v a, hr$suffix.hr_plus_city b
+				where (a.code like '%".$searchx."%' or a.name like '%".$searchx."%') 
+				and b.city='$city'
+				and (a.leave_dt is null or a.leave_dt=0 or a.leave_dt > now())
+				and a.id=b.employee_id
+			";
+		$result3 = Yii::app()->db->createCommand($sql)->queryAll();
+
 		$sql = "select id, concat(name, ' (', code, ')',' ".Yii::t('app','(Resign)')."') as value from swoper$suffix.swo_staff_v
 				where (code like '%$searchx%' or name like '%$searchx%') and city='$city'
 				and  leave_dt is not null and leave_dt<>0 and leave_dt <= now() ";
 		$result2 = Yii::app()->db->createCommand($sql)->queryAll();
 		
-		$result = array_merge($result1, $result2);
+		$result = array_merge($result1, $result3, $result2);
 		$data = TbHtml::listData($result, 'id', 'value');
 		echo TbHtml::listBox('lstlookup', '', $data, array('size'=>'15',));
 	}
@@ -146,12 +154,20 @@ class LookupController extends Controller
 				and (leave_dt is null or leave_dt=0 or leave_dt > now()) ";
 		$result1 = Yii::app()->db->createCommand($sql)->queryAll();
 
+		$sql = "select a.id, concat(a.name, ' (', a.code, ')') as value from swoper$suffix.swo_staff_v a, hr$suffix.hr_plus_city b
+				where (a.code like '%".$searchx."%' or a.name like '%".$searchx."%') 
+				and b.city='$city'
+				and (a.leave_dt is null or a.leave_dt=0 or a.leave_dt > now())
+				and a.id=b.employee_id
+			";
+		$result3 = Yii::app()->db->createCommand($sql)->queryAll();
+
 		$sql = "select id, concat(name, ' (', code, ')',' ".Yii::t('app','(Resign)')."') as value from swoper$suffix.swo_staff_v
 				where (code like '%$searchx%' or name like '%$searchx%') and city='$city'
 				and  leave_dt is not null and leave_dt<>0 and leave_dt <= now() ";
 		$result2 = Yii::app()->db->createCommand($sql)->queryAll();
 		
-		$records = array_merge($result1, $result2);
+		$records = array_merge($result1, $result3, $result2);
 		if (count($records) > 0) {
 			foreach ($records as $k=>$record) {
 				$result[] = array(
