@@ -966,7 +966,7 @@ class ReportXS01List extends CListPageModel
                     $fuwu_last=$this->getAmountLast($year,$month,$records1['id']);//上月提成比例服务
                     $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
                    if(isset($m)){
-                       if(!empty($records2)){
+                       if(!empty($fuwu_last)){
                            $m=$m*$fuwu_last;
                            if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                $cust_type='fw';
@@ -992,6 +992,7 @@ class ReportXS01List extends CListPageModel
                            $model = Yii::app()->db->createCommand($sqlct)->execute();
                        }
                    }
+
                 }
             }
             if(empty($money1)){
@@ -1003,14 +1004,14 @@ class ReportXS01List extends CListPageModel
         if(empty($moneys)){
             $moneys=0;
         }
+
         $sql_new_money="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records_new_money = Yii::app()->db->createCommand($sql_new_money)->queryRow();
         $fuwu_last=$this->getAmountLast($years,$months,$index);//上月提成比例服务
         if(!empty($records_new_money)){
-            if(!empty($fuwu_last)&&$fuwu_last!=0){
+            if(!empty($records_new_money['new_money'])&&$records_new_money['new_money']!=0){
                 $new_m=$records_new_money['new_money'];
             }else{
-                $new_moneyss=0;
                 $new_m=0;
             }
             $new_money=$moneys+$new_m;
@@ -1023,6 +1024,7 @@ class ReportXS01List extends CListPageModel
 //            }
         $money=$money*$fuwu_last;//更改新增提成
         $fuwumoney=$money+$money1;//更改总和
+        print_r($new_money);exit();
         //新增补充修改
         $sql_new="update acc_service_comm_dtl set new_calc='$fuwu' where hdr_id='$index'";
         $model = Yii::app()->db->createCommand($sql_new)->execute();
@@ -1087,7 +1089,7 @@ class ReportXS01List extends CListPageModel
                 $fuwu_last=$this->getAmountLast($years,$months,$records1['id']);//上月提成比例服务
                 $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
                 if(isset($m)){
-                    if(!empty($records2)){
+                    if(!empty($fuwu_last)){
                         $m=$m*$fuwu_last;
                         if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                             if(!empty($records['othersalesman'])){
