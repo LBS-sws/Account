@@ -139,13 +139,12 @@ class ReportXS01Form extends CReportForm
                 $year=$records['year_no']-1;
             }
 
-            $sql1="select f.point,b.new_calc from acc_service_comm_hdr a
+            $sql1="select a.*, f.point,b.new_calc from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
-              left outer join security$suffix.sec_city c on  a.city=c.code 
               left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
               left outer join hr$suffix.hr_binding e on  a.employee_name=e.employee_name 
               inner join sales$suffix.sal_integral f on  e.user_id=f.username
-              where a.id='$index'  and  f.year='$year' and  f.month='$month'
+              where  a.year_no='$year' and  a.month_no='$month' and f.year='$year' and f.month='$month'
 ";
             $point = Yii::app()->db->createCommand($sql1)->queryRow();
             $this->city=$records['city_name'];

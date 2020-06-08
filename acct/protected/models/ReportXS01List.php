@@ -1024,7 +1024,7 @@ class ReportXS01List extends CListPageModel
 //            }
         $money=$money*$fuwu_last;//更改新增提成
         $fuwumoney=$money+$money1;//更改总和
-        print_r($new_money);exit();
+        print_r($fuwu);exit();
         //新增补充修改
         $sql_new="update acc_service_comm_dtl set new_calc='$fuwu' where hdr_id='$index'";
         $model = Yii::app()->db->createCommand($sql_new)->execute();
@@ -1691,16 +1691,15 @@ class ReportXS01List extends CListPageModel
             $year=$year-1;
         }
         $suffix = Yii::app()->params['envSuffix'];
-        $sql1="select f.point,b.new_calc from acc_service_comm_hdr a
+        $sql1="select a.*, f.point,b.new_calc from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
-              left outer join security$suffix.sec_city c on  a.city=c.code 
               left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
               left outer join hr$suffix.hr_binding e on  a.employee_name=e.employee_name 
               inner join sales$suffix.sal_integral f on  e.user_id=f.username
-              where a.id='$id'  and  f.year='$year' and  f.month='$month'
+              where  a.year_no='$year' and  a.month_no='$month' and f.year='$year' and f.month='$month'
 ";
         $point = Yii::app()->db->createCommand($sql1)->queryRow();
-        $new_calc=$point['new_calc'];
+        $new_calc=$point['new_calc']+$point['point'];
         return $new_calc;
     }
 
