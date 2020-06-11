@@ -28,7 +28,7 @@ class PayrollController extends Controller
 				'expression'=>array('PayrollController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view','filedownload'),
+				'actions'=>array('index','view','filedownload','rollback'),
 				'expression'=>array('PayrollController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -104,6 +104,21 @@ class PayrollController extends Controller
 				Dialog::message(Yii::t('dialog','Validation Message'), $message);
 				$this->render('form',array('model'=>$model,));
 			}
+		}
+	}
+
+	public function actionRollback()
+	{
+		if (isset($_POST['PayrollForm'])) {
+			$model = new PayrollForm($_POST['PayrollForm']['scenario']);
+			$model->attributes = $_POST['PayrollForm'];
+			$model->scenario = 'rollback';
+			$model->rollback();
+			Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Rollback Done'));
+			if ($this->allowReadWrite())
+				$this->redirect(Yii::app()->createUrl('payroll/edit',array('index'=>$model->id)));
+			else 
+				$this->redirect(Yii::app()->createUrl('payroll/view',array('index'=>$model->id)));
 		}
 	}
 

@@ -232,6 +232,21 @@ class PayrollForm extends CFormModel
 		}
 	}
 
+	public function rollback() {
+		$wf = new WorkflowPayroll;
+		$connection = $wf->openConnection();
+		try {
+			if ($wf->startProcess('PAYROLL',$this->id,$this->lcd)) {
+				$wf->rollbackFromEndState();
+			}
+			$wf->transaction->commit();
+		}
+		catch(Exception $e) {
+			$wf->transaction->rollback();
+			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
+		}
+	}
+
 	public function saveData()
 	{
 		$connection = Yii::app()->db;

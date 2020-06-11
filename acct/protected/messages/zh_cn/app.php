@@ -156,5 +156,6 @@ return array(
 	
 	'Payroll File'=>'工资表',
 	'Payroll File Approval'=>'工资审核',
+	'Payroll File Rollback'=>'工資表退回',
 );
 ?>

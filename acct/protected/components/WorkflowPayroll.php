@@ -546,5 +546,55 @@ class WorkflowPayroll extends WorkflowDMS {
 			return $rtn;
 		}
 	}
+	
+	public function rollbackFromEndState() {
+		$state = $this->current_state;
+		$proc = $this->proc_id;
+		$reqid = $this->request_id;
+		
+		$suffix = Yii::app()->params['envSuffix'];
+		$sql = "select code from workflow$suffix.wf_state where proc_ver_id=$proc and id=$state";
+		$row = $this->connection->createCommand($sql)->queryRow();
+		if ($row!==false && $row['code']=='ED') {
+			$sql = "select current_state from workflow$suffix.wf_request_resp_user
+					where request_id=$reqid
+					order by id desc limit 1
+				";
+			$row = $this->connection->createCommand($sql)->queryRow();
+			if ($row!==false) {
+				$lastState = $row['current_state'];
+				$log_ids = array();
+				$transitId = 0;
+				$sql = "select id, old_state, new_state from workflow$suffix.wf_request_transit_log
+						where request_id=$reqid
+						order by id desc
+					";
+				$records = $this->connection->createCommand($sql)->queryAll();
+				foreach ($records as $record) {
+					if ($record['new_state']!=$lastState) {
+						$log_ids[] = $record['id'];
+					} else {
+						$transitId = $record['id'];
+						break;
+					}
+				}
+
+				if (!empty($log_ids) && $transitId > 0) {
+					$idlist = implode(',',$log_ids);
+					$sql = "delete from workflow$suffix.wf_request_transit_log where id in ($idlist)";
+					$this->connection->createCommand($sql)->execute();
+
+					$sql = "update workflow$suffix.wf_request_resp_user
+							set status='P', action_id=0, remarks=''
+							where request_id=$reqid and log_id=$transitId
+						";
+					$this->connection->createCommand($sql)->execute();
+						
+					$sql = "update workflow$suffix.wf_request set current_state=$lastState where id=$reqid";
+					$this->connection->createCommand($sql)->execute();
+				}
+			}
+		}
+	}
 }
 ?>

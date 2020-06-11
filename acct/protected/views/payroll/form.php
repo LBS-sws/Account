@@ -36,6 +36,11 @@ $this->pageTitle=Yii::app()->name . ' - Payroll File Form';
 			'submit'=>Yii::app()->createUrl('payroll/resubmit'))); 
 		?>
 <?php endif ?>
+<?php if ($model->wfstatus=='ED' && Yii::app()->user->validFunction('CN11')): ?>
+		<?php echo TbHtml::button('<span class="fa fa-retweet"></span> '.Yii::t('misc','Rollback'), array(
+			'submit'=>Yii::app()->createUrl('payroll/rollback'))); 
+		?>
+<?php endif ?>
 	</div>
 	<div class="btn-group pull-right" role="group">
 		<?php 

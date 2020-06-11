@@ -11,4 +11,5 @@ return array(
 	'T3 Checker Right'=>array('access'=>'CN08',),
     'Sale Query'=>array('access'=>'CN09',),
     'Import Customer/Supplier'=>array('access'=>'CN10',),
+	'Payroll File Rollback'=>array('access'=>'CN11',),
 );
