@@ -132,13 +132,15 @@ class ReportXS01Form extends CReportForm
 ";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(!empty($records)){
-            $month=$records['month_no']-1;
-            $year=$records['year_no'];
-            if($month==0){
-                $month=12;
-                $year=$records['year_no']-1;
+            $city=Yii::app()->user->city();
+            if($city='CD'||$city='FS'||$city='NJ'||$city='TJ'){
+                $month=$records['month_no']-1;
+                $year=$records['year_no'];
+                if($month==0){
+                    $month=12;
+                    $year=$records['year_no']-1;
+                }
             }
-
             $sql1="select a.*, f.point,b.new_calc from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
               left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 

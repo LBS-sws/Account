@@ -1024,7 +1024,7 @@ class ReportXS01List extends CListPageModel
 //            }
         $money=$money*$fuwu_last;//更改新增提成
         $fuwumoney=$money+$money1;//更改总和
-        print_r($fuwu);exit();
+//        print_r($fuwu);exit();
         //新增补充修改
         $sql_new="update acc_service_comm_dtl set new_calc='$fuwu' where hdr_id='$index'";
         $model = Yii::app()->db->createCommand($sql_new)->execute();
@@ -1685,10 +1685,13 @@ class ReportXS01List extends CListPageModel
     }
 
     public function getAmountLast($year,$month,$id){
-        $month=$month-1;
-        if($month==0){
-            $month=12;
-            $year=$year-1;
+        $city=Yii::app()->user->city();
+	    if($city='CD'||$city='FS'||$city='NJ'||$city='TJ'){
+            $month=$month-1;
+            if($month==0){
+                $month=12;
+                $year=$year-1;
+            }
         }
         $suffix = Yii::app()->params['envSuffix'];
         $sql1="select a.*, f.point,b.new_calc from acc_service_comm_hdr a
