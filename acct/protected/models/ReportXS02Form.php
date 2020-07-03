@@ -13,6 +13,7 @@ class ReportXS02Form extends CReportForm
     public $product_id;
     public $amt_paid;
     public $paid_type;
+    public $point;
     public $amt_install;
 	public $staffs_desc;
     public $first_dt;
@@ -128,7 +129,10 @@ class ReportXS02Form extends CReportForm
         $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(!empty($records)){
             $city=Yii::app()->user->city();
-            if($city='CD'||$city='FS'||$city='NJ'||$city='TJ'){
+            if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+                $month=$records['month_no'];
+                $year=$records['year_no'];
+            }else{
                 $month=$records['month_no']-1;
                 $year=$records['year_no'];
                 if($month==0){
@@ -136,11 +140,13 @@ class ReportXS02Form extends CReportForm
                     $year=$records['year_no']-1;
                 }
             }
+            $sql="select employee_name from acc_service_comm_hdr where id=$index";
+            $name = Yii::app()->db->createCommand($sql)->queryScalar();
             $sql1="select a.*, b.new_calc ,e.user_id from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
               left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
               left outer join hr$suffix.hr_binding e on  a.employee_name=e.employee_name            
-              where  a.year_no='$year' and  a.month_no='$month' 
+              where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name'
 ";
             $arr = Yii::app()->db->createCommand($sql1)->queryRow();
             $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."'";
