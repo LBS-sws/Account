@@ -119,18 +119,36 @@ class ReportXS02Form extends CReportForm
 
     public function retrieveData($index){
         $suffix = Yii::app()->params['envSuffix'];
-	    $sql="select a.*,b.*,c.name as city_name,d.group_type  from acc_service_comm_hdr a
+        $sql="select a.*,b.*,c.name as city_name ,d.group_type from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
               left outer join security$suffix.sec_city c on  a.city=c.code 
-                 left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
+              left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
               where a.id='$index'
 ";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(!empty($records)){
+            $city=Yii::app()->user->city();
+            if($city='CD'||$city='FS'||$city='NJ'||$city='TJ'){
+                $month=$records['month_no']-1;
+                $year=$records['year_no'];
+                if($month==0){
+                    $month=12;
+                    $year=$records['year_no']-1;
+                }
+            }
+            $sql1="select a.*, b.new_calc ,e.user_id from acc_service_comm_hdr a
+              left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
+              left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
+              left outer join hr$suffix.hr_binding e on  a.employee_name=e.employee_name            
+              where  a.year_no='$year' and  a.month_no='$month' 
+";
+            $arr = Yii::app()->db->createCommand($sql1)->queryRow();
+            $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."'";
+            $point = Yii::app()->db->createCommand($sql_point)->queryRow();
             $this->city=$records['city_name'];
             $this->employee_name=$records['employee_name'];
             $this->saleyear=$records['year_no']."/".$records['month_no'];
-            $new_calc=$records['new_calc']*100;
+            $new_calc=$arr['new_calc']*100;
             $this->new_calc=$new_calc."%";
             $this->new_amount=$records['new_amount'];
             $this->edit_amount=$records['edit_amount'];
@@ -143,6 +161,10 @@ class ReportXS02Form extends CReportForm
             $this->new_money=$records['new_money'];
             $this->edit_money=$records['edit_money'];
             $this->out_money=$records['out_money'];
+            if(empty($point)){
+                $point['point']=0;
+            }
+            $this->point=$point['point'];
             $this->performanceedit_amount=$records['performanceedit_amount'];
             $this->performanceend_amount=$records['performanceend_amount'];
             $this->performanceedit_money=$records['performanceedit_money'];

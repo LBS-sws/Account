@@ -1694,15 +1694,16 @@ class ReportXS01List extends CListPageModel
             }
         }
         $suffix = Yii::app()->params['envSuffix'];
-        $sql1="select a.*, f.point,b.new_calc from acc_service_comm_hdr a
+        $sql1="select a.*, b.new_calc ,e.user_id from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
               left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
-              left outer join hr$suffix.hr_binding e on  a.employee_name=e.employee_name 
-              inner join sales$suffix.sal_integral f on  e.user_id=f.username
-              where  a.year_no='$year' and  a.month_no='$month' and f.year='$year' and f.month='$month'
+              left outer join hr$suffix.hr_binding e on  a.employee_name=e.employee_name            
+              where  a.year_no='$year' and  a.month_no='$month' 
 ";
-        $point = Yii::app()->db->createCommand($sql1)->queryRow();
-        $new_calc=$point['new_calc']+$point['point'];
+        $arr = Yii::app()->db->createCommand($sql1)->queryRow();
+        $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."'";
+        $point = Yii::app()->db->createCommand($sql_point)->queryRow();
+        $new_calc=$arr['new_calc']+$point['point'];
         return $new_calc;
     }
 
