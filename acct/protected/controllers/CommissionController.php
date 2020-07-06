@@ -48,7 +48,12 @@ class CommissionController extends Controller
 
     public function actionIndex_s($pageNum=0)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='SH'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         if (isset($_POST['ReportXS01List'])) {
             $model->attributes = $_POST['ReportXS01List'];
         } else {
@@ -58,7 +63,7 @@ class CommissionController extends Controller
                 $model->setCriteria($criteria);
             }
         }
-      //  print_r($model);
+
         if(!empty($_POST['ReportXS01List']['year'])){
             $year=$_POST['ReportXS01List']['year'];
             $month=$_POST['ReportXS01List']['month'];
@@ -97,7 +102,12 @@ class CommissionController extends Controller
 
     public function actionNew($pageNum=0,$year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         if (isset($_POST['ReportXS01List'])) {
             $model->attributes = $_POST['ReportXS01List'];
         } else {
@@ -117,7 +127,12 @@ class CommissionController extends Controller
 
     public function actionEdit($pageNum=0,$year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         if (isset($_POST['ReportXS01List'])) {
             $model->attributes = $_POST['ReportXS01List'];
         } else {
@@ -137,7 +152,12 @@ class CommissionController extends Controller
 
     public function actionEnd($pageNum=0,$year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         if (isset($_POST['ReportXS01List'])) {
             $model->attributes = $_POST['ReportXS01List'];
         } else {
@@ -154,7 +174,12 @@ class CommissionController extends Controller
 
     public function actionPerformance($pageNum=0,$year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         if (isset($_POST['ReportXS01List'])) {
             $model->attributes = $_POST['ReportXS01List'];
         } else {
@@ -171,7 +196,12 @@ class CommissionController extends Controller
 
     public function actionPerformanceEdit($pageNum=0,$year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         if (isset($_POST['ReportXS01List'])) {
             $model->attributes = $_POST['ReportXS01List'];
         } else {
@@ -188,7 +218,12 @@ class CommissionController extends Controller
 
     public function actionPerformanceEnd($pageNum=0,$year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         if (isset($_POST['ReportXS01List'])) {
             $model->attributes = $_POST['ReportXS01List'];
         } else {
@@ -214,7 +249,12 @@ class CommissionController extends Controller
 {
 
     if (isset($_POST['ReportXS01Form'])) {
-        $model = new ReportXS01Form($_POST['ReportXS01Form']['scenario']);
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         $model->attributes = $_POST['ReportXS01Form'];
 //            print_r('<pre>');
 //            print_r( $model->attributes);
@@ -232,7 +272,12 @@ class CommissionController extends Controller
 
     public function actionNewSave($year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         if (isset($_POST['ReportXS01From']['id'])) {
 //            $model->attributes = $_POST['ReportXS01List'];
 //                    print_r('<pre>');
@@ -261,7 +306,12 @@ class CommissionController extends Controller
     }
     public function actionEditSave($year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
        // print_r($_POST['ReportXS01List']['id']);
         if (isset($_POST['ReportXS01List']['id'])) {
             $model->editSale($_POST['ReportXS01List']['id'],$index,$_POST['ReportXS01List']['royalty'],$year,$month);
@@ -287,7 +337,12 @@ class CommissionController extends Controller
 
     public function actionEndSave($year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
          //print_r($_POST['ReportXS01List']['id']);
         if (isset($_POST['ReportXS01List']['id'])) {
             $model->endSale($_POST['ReportXS01List']['id'],$index,$_POST['ReportXS01List']['royalty'],$year,$month);
@@ -313,7 +368,12 @@ class CommissionController extends Controller
 
     public function actionPerformanceSave($year,$month,$index)
 {
-    $model = new ReportXS01List;
+    $city=Yii::app()->user->city();
+    if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+        $model = new ReportXS01SList;
+    }else{
+        $model = new ReportXS01List;
+    }
     //print_r($_POST['ReportXS01List']['id']);
     if (isset($_POST['ReportXS01From']['id'])) {
         $model->performanceSale($_POST['ReportXS01From']['id'],$year,$month,$index);
@@ -339,7 +399,12 @@ class CommissionController extends Controller
 
     public function actionPerformanceEditSave($year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         //print_r($_POST['ReportXS01List']['id']);
         if (isset($_POST['ReportXS01List']['id'])) {
             $model->performanceeditSale($_POST['ReportXS01List']['id'],$year,$month,$index,$_POST['ReportXS01List']['royalty']);
@@ -365,7 +430,12 @@ class CommissionController extends Controller
 
     public function actionPerformanceEndSave($year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         //print_r($_POST['ReportXS01List']['id']);
         if (isset($_POST['ReportXS01List']['id'])) {
             $model->performanceendSale($_POST['ReportXS01List']['id'],$index,$_POST['ReportXS01List']['royalty'],$year,$month);
