@@ -847,6 +847,8 @@ class ReportXS01SList extends CListPageModel
                 $money_all=$money;
             }
             $fuwu=$this->getAmount($city,$cust_type,$start_dt,$money_all);//提成比例服务
+            $point=$this->getPoint($year,$month,$index);//积分激励点
+            $fuwu=$fuwu+$point;
             $fuwumoney=$moneys*$fuwu;
         }else{
             if(empty($cust_type)){
@@ -1018,6 +1020,8 @@ class ReportXS01SList extends CListPageModel
             $new_money=$moneys;
         }
         $fuwu=$this->getAmount($city,$cust_type,$start_dt,$new_money);//提成比例服务
+        $point=$this->getPoint($years,$months,$index);//积分激励点
+        $fuwu=$fuwu+$point;
 //            if(empty($zhuangji)){
 //                $zhuangji=0;
 //            }
@@ -1679,6 +1683,22 @@ class ReportXS01SList extends CListPageModel
 //                        print_r('<pre>');
 //                print_r($row);
         return $rtn;
+    }
+
+    public function getPoint($year,$month,$id){
+        $sql="select employee_name from acc_service_comm_hdr where id=$id";
+        $name = Yii::app()->db->createCommand($sql)->queryScalar();
+        $suffix = Yii::app()->params['envSuffix'];
+        $sql1="select a.*, b.new_calc ,e.user_id from acc_service_comm_hdr a
+              left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
+              left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
+              left outer join hr$suffix.hr_binding e on  a.employee_name=e.employee_name            
+              where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name'
+";
+        $arr = Yii::app()->db->createCommand($sql1)->queryRow();
+        $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."'";
+        $point = Yii::app()->db->createCommand($sql_point)->queryRow();
+        return $point['point'];
     }
 
     public function getRoyalty($index,$city,$year,$month,$ohersaleman){
