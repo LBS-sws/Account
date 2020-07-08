@@ -1024,10 +1024,13 @@ class ReportXS01List extends CListPageModel
         $money=$money*$fuwu;//更改新增提成
         $fuwumoney=$money+$money1;//更改总和
         //新增补充修改
-        if(!empty($records_new_money)){
+        if(!empty($records_new_money['new_calc'])){
             $new_moneyss=$records_new_money['new_amount']/ $records_new_money['new_calc'];
             $new_amount=$new_moneyss*$fuwu;
             $sql_new="update acc_service_comm_dtl set new_amount='$new_amount' ,new_calc='$fuwu' where hdr_id='$index'";
+            $model = Yii::app()->db->createCommand($sql_new)->execute();
+        }else{
+            $sql_new="update acc_service_comm_dtl set new_calc='$fuwu' where hdr_id='$index'";
             $model = Yii::app()->db->createCommand($sql_new)->execute();
         }
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
