@@ -237,7 +237,7 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 				<div class="col-sm-7">
 					<?php 
 						echo $form->textField($model, 'payee_name', 
-							array('size'=>60,'maxlength'=>500,'readonly'=>($model->isReadOnly()||$model->payee_type!='O'),
+							array('maxlength'=>1000,'readonly'=>($model->isReadOnly()||$model->payee_type!='O'),
 							'append'=>TbHtml::button('<span class="fa fa-search"></span> '.Yii::t('trans','Payee'),array('name'=>'btnPayee','id'=>'btnPayee','disabled'=>($model->isReadOnly()||$model->payee_type=='O'))),
 						)); 
 						echo $form->hiddenField($model, 'payee_id');
