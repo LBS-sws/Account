@@ -754,7 +754,7 @@ class ReportXS01List extends CListPageModel
     public function renewalDataByPage($pageNum=1,$year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
-        $citys = Yii::app()->user->city_allow();
+        $citys = "'BJ','SH','GZ','SZ'";
         $city=Yii::app()->user->city();
         if(strstr($citys, $city)){
             $amt_paid_money=2000;
@@ -905,7 +905,7 @@ class ReportXS01List extends CListPageModel
     public function renewalendDataByPage($pageNum=1,$year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
-        $city = Yii::app()->user->city_allow();
+        $city=Yii::app()->user->city();
         $start=$year."-".$month."-01";
         $end=$year."-".$month."-31";
         $sql1="select a.*,  c.description as type_desc, d.name as city_name					
