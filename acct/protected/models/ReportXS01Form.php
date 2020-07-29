@@ -3,7 +3,7 @@
 
 class ReportXS01Form extends CReportForm
 {
-	public $staffs;
+    public $staffs;
     public $status_dt;
     public $company_name;
     public $status;
@@ -13,7 +13,7 @@ class ReportXS01Form extends CReportForm
     public $amt_paid;
     public $paid_type;
     public $amt_install;
-	public $staffs_desc;
+    public $staffs_desc;
     public $first_dt;
     public $sign_dt;
     public $all_number;
@@ -38,10 +38,13 @@ class ReportXS01Form extends CReportForm
     public $group_type;
     public $ctrt_period;
     public $point;
-	
-	protected function labelsEx() {
-		return array(
-		    'staffs'=>Yii::t('report','Staffs'),
+    public $renewal_amount;
+    public $renewalend_amount;
+    public $renewal_money;
+
+    protected function labelsEx() {
+        return array(
+            'staffs'=>Yii::t('report','Staffs'),
             'city_name'=>Yii::t('app','city'),
             'first_dt'=>Yii::t('app','first_dt'),
             'sign_dt'=>Yii::t('app','sign_dt'),
@@ -56,29 +59,29 @@ class ReportXS01Form extends CReportForm
             'othersalesman'=>Yii::t('app','Othersalesman'),
             'salesman'=>Yii::t('app','Salesman'),
             'ctrt_period'=>Yii::t('app','Ctrt_period'),
-			);
-	}
-	
-	protected function rulesEx() {
+        );
+    }
+
+    protected function rulesEx() {
         return array(
             array('staffs, staffs_desc','safe'),
         );
-	}
-	
-	protected function queueItemEx() {
-		return array(
-				'STAFFS'=>$this->staffs,
-				'STAFFSDESC'=>$this->staffs_desc,
-			);
-	}
-	
-	public function init() {
-		$this->id = 'RptFive';
-		$this->name = Yii::t('app','Five Steps');
-		$this->format = 'EXCEL';
-		$this->city =Yii::app()->user->city();
-		$this->fields = 'start_dt,end_dt,staffs,staffs_desc';
-		$this->start_dt = date("Y/m/d");
+    }
+
+    protected function queueItemEx() {
+        return array(
+            'STAFFS'=>$this->staffs,
+            'STAFFSDESC'=>$this->staffs_desc,
+        );
+    }
+
+    public function init() {
+        $this->id = 'RptFive';
+        $this->name = Yii::t('app','Five Steps');
+        $this->format = 'EXCEL';
+        $this->city =Yii::app()->user->city();
+        $this->fields = 'start_dt,end_dt,staffs,staffs_desc';
+        $this->start_dt = date("Y/m/d");
         $this->end_dt = date("Y/m/d");
         $this->first_dt = date("Y/m/d");
         $this->sign_dt = date("Y/m/d");
@@ -86,8 +89,8 @@ class ReportXS01Form extends CReportForm
         $this->date="";
         $this->month=date("m");
         $this->year=date("Y");
-		$this->staffs_desc = Yii::t('misc','All');
-	}
+        $this->staffs_desc = Yii::t('misc','All');
+    }
 
 //    public function retrieveDatas($model){
 //        $start_date = '2017-01-01'; // 自动为00:00:00 时分秒
@@ -124,7 +127,7 @@ class ReportXS01Form extends CReportForm
 
     public function retrieveData($index){
         $suffix = Yii::app()->params['envSuffix'];
-	    $sql="select a.*,b.*,c.name as city_name ,d.group_type from acc_service_comm_hdr a
+        $sql="select a.*,b.*,c.name as city_name ,d.group_type from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
               left outer join security$suffix.sec_city c on  a.city=c.code 
               left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
@@ -132,8 +135,18 @@ class ReportXS01Form extends CReportForm
 ";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(!empty($records)){
-            $month=$records['month_no'];
-            $year=$records['year_no'];
+            $city=Yii::app()->user->city();
+            if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+                $month=$records['month_no'];
+                $year=$records['year_no'];
+            }else{
+                $month=$records['month_no']-1;
+                $year=$records['year_no'];
+                if($month==0){
+                    $month=12;
+                    $year=$records['year_no']-1;
+                }
+            }
             $sql="select employee_name from acc_service_comm_hdr where id=$index";
             $name = Yii::app()->db->createCommand($sql)->queryScalar();
             $sql1="select a.*, b.new_calc ,e.user_id from acc_service_comm_hdr a
@@ -153,7 +166,7 @@ class ReportXS01Form extends CReportForm
             $this->new_amount=$records['new_amount'];
             $this->edit_amount=$records['edit_amount'];
             $this->end_amount=$records['end_amount'];
-            $num=$records['new_amount']+$records['edit_amount']+$records['end_amount']+$records['performance_amount']+$records['performanceedit_amount']+$records['performanceend_amount'];
+            $num=$records['new_amount']+$records['edit_amount']+$records['end_amount']+$records['performance_amount']+$records['performanceedit_amount']+$records['performanceend_amount']+$records['renewal_amount']+$records['renewalend_amount'];
             $this->all_amount=number_format($num,2);
             $this->performance_amount=$records['performance_amount'];
             $this->year=$records['year_no'];
@@ -168,6 +181,9 @@ class ReportXS01Form extends CReportForm
             $this->performanceedit_amount=$records['performanceedit_amount'];
             $this->performanceend_amount=$records['performanceend_amount'];
             $this->performanceedit_money=$records['performanceedit_money'];
+            $this->renewal_amount=$records['renewal_amount'];
+            $this->renewalend_amount=$records['renewalend_amount'];
+            $this->renewal_money=$records['renewal_money'];
             $this->group_type=$this->getGroupType($records['group_type']);
             if($records['performance']==1){
                 $a='是';
@@ -183,7 +199,7 @@ class ReportXS01Form extends CReportForm
     }
 
     public function saveData($add,$index){
-	    $city=Yii::app()->user->city();
+        $city=Yii::app()->user->city();
         $add['amt_paid']=$add['amt_paid']==""?0:$add['amt_paid'];
         $add['amt_install']=$add['amt_install']==""?0:$add['amt_install'];
         $add['all_number']=$add['all_number']==""?0:$add['all_number'];
@@ -198,13 +214,13 @@ class ReportXS01Form extends CReportForm
     }
 
     public function getGroupType($type){
-       if($type==0) {
-           $model=Yii::t("misc","none");//無
-       }elseif($type==1){
-           $model=Yii::t("misc","group business");//商業組
-       }elseif($type==2) {
-           $model=Yii::t("misc","group repast");//餐飲組
-       }
+        if($type==0) {
+            $model=Yii::t("misc","none");//無
+        }elseif($type==1){
+            $model=Yii::t("misc","group business");//商業組
+        }elseif($type==2) {
+            $model=Yii::t("misc","group repast");//餐飲組
+        }
         return $model;
     }
 

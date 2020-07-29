@@ -32,6 +32,8 @@ return array(
     'Spanning Sales New Commission'=>'跨区新生意额计算',
     'Spanning Sales Edit Commission'=>'跨区更改生意额计算',
     'Spanning Sales End Commission'=>'跨区终止生意额计算',
+    'Sales Renewal Commission'=>'续约生意额计算',
+    'Sales RenewalEnd Commission'=>'续约终止生意额计算',
 
     'Sales New Query'=>'销售新生意额查询',
     'Sales Edit Query'=>'销售更改生意额查询',

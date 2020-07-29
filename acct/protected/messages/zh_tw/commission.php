@@ -21,11 +21,16 @@ return array(
     'performance_amount'=>'跨區新增提成',
     'performanceedit_amount'=>'跨區更改提成',
     'performanceend_amount'=>'跨區終止提成',
+    'renewal_amount'=>'續約提成',
+    'renewalend_amount'=>'續約終止提成',
+    'renewal_money'=>'續約業績',
     'all_amount'=>'總额',
     'new_money'=>'新增業績',
     'edit_money'=>'更改新增業績',
     'out_money'=>'跨區業績',
     'performanceedit_money'=>'跨區更改新增業績',
     'point'=>'銷售提成激勵點',
+    'Renewal'=>'續約生意額',
+    'RenewalEnd'=>'續約終止生意額',
 );
 ?>

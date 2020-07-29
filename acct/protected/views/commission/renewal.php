@@ -1,17 +1,17 @@
 <?php
-$this->pageTitle=Yii::app()->name . ' - Month Report';
+$this->pageTitle=Yii::app()->name . ' - commission Report';
 ?>
 
 <?php $form=$this->beginWidget('TbActiveForm', array(
-'id'=>'tc-list',
-'enableClientValidation'=>true,
-'clientOptions'=>array('validateOnSubmit'=>true,),
-'layout'=>TbHtml::FORM_LAYOUT_INLINE,
+    'id'=>'tc-list',
+    'enableClientValidation'=>true,
+    'clientOptions'=>array('validateOnSubmit'=>true,),
+    'layout'=>TbHtml::FORM_LAYOUT_INLINE,
 )); ?>
 
 <section class="content-header">
 	<h1>
-        <strong><?php echo Yii::t('app','Spanning Sales End Commission'); ?></strong>
+		<strong><?php echo Yii::t('app','Sales Renewal Commission'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
@@ -27,14 +27,12 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
 <!--            --><?php //echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
 //                'submit'=>Yii::app()->createUrl('commission/index_s')));
 //            ?>
-            <?php  echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save1'), array(
-                    'submit'=>Yii::app()->createUrl('commission/performanceendsave',array('year'=>$year,'month'=>$month,'index'=>$index)))
+            <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save1'), array(
+                    'submit'=>Yii::app()->createUrl('commission/editsave',array('year'=>$year,'month'=>$month,'index'=>$index)))
             ); ?>
-
         </div>
     </div>
 </div>
-
 <section class="content" >
     <div class="box">
     <div id="yw0" class="tabbable">
@@ -49,7 +47,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/edit',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','Edit'); ?></a>
             </li>
             <li  class="">
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/end',array('year'=>$year,'month'=>$month,'index'=>$index));?>"  ><?php echo Yii::t('commission','END'); ?></a>
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/end',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','END'); ?></a>
             </li>
             <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','Performance'); ?></a>
@@ -57,10 +55,10 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
             <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/performanceedit',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','PerformanceEdit'); ?></a>
             </li>
-            <li  class="active">
+            <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','PerformanceEnd'); ?></a>
             </li>
-            <li  class="">
+            <li  class="active">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/renewal',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','Renewal'); ?></a>
             </li>
             <li  class="">
@@ -86,6 +84,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     'viewdtl'=>'//commission/t_listdtl',
                     'gridsize'=>'24',
                     'height'=>'600',
+                    'search'=>$search,
                     'hasNavBar'=>false,
                     'hasPageBar'=>false,
                     'hasSearchBar'=>false,
@@ -99,13 +98,12 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
 </section>
 
 <?php
-//	echo $form->hiddenField($model,'pageNum');
-//	echo $form->hiddenField($model,'totalRow');
-//	echo $form->hiddenField($model,'orderField');
-//	echo $form->hiddenField($model,'orderType');
+	echo $form->hiddenField($model,'pageNum');
+	echo $form->hiddenField($model,'totalRow');
+	echo $form->hiddenField($model,'orderField');
+	echo $form->hiddenField($model,'orderType');
 //?>
 <?php $this->endWidget(); ?>
-
 <?php
 $js = <<<EOF
 
@@ -121,7 +119,7 @@ $(document).ready(function(){
 });
 EOF;
 Yii::app()->clientScript->registerScript('starClick',$js,CClientScript::POS_HEAD);
-$js = Script::genTableRowClick();
-Yii::app()->clientScript->registerScript('rowClick',$js,CClientScript::POS_READY);
+	$js = Script::genTableRowClick();
+	Yii::app()->clientScript->registerScript('rowClick',$js,CClientScript::POS_READY);
 ?>
 

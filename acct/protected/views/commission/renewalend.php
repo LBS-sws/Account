@@ -11,7 +11,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
 
 <section class="content-header">
 	<h1>
-        <strong><?php echo Yii::t('app','Spanning Sales End Commission'); ?></strong>
+        <strong><?php echo Yii::t('app','Sales RenewalEnd Commission'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
@@ -28,7 +28,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
 //                'submit'=>Yii::app()->createUrl('commission/index_s')));
 //            ?>
             <?php  echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save1'), array(
-                    'submit'=>Yii::app()->createUrl('commission/performanceendsave',array('year'=>$year,'month'=>$month,'index'=>$index)))
+                    'submit'=>Yii::app()->createUrl('commission/renewalendsave',array('year'=>$year,'month'=>$month,'index'=>$index)))
             ); ?>
 
         </div>
@@ -57,13 +57,13 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
             <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/performanceedit',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','PerformanceEdit'); ?></a>
             </li>
-            <li  class="active">
+            <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','PerformanceEnd'); ?></a>
             </li>
             <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/renewal',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','Renewal'); ?></a>
             </li>
-            <li  class="">
+            <li  class="active">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/renewalend',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','RenewalEnd'); ?></a>
             </li>
         </ul>

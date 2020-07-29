@@ -65,6 +65,12 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
             <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','PerformanceEnd'); ?></a>
             </li>
+            <li  class="">
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/renewal',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','Renewal'); ?></a>
+            </li>
+            <li  class="">
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/renewalend',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','RenewalEnd'); ?></a>
+            </li>
         </ul>
         <div class="box-info" style="height: 1000px;position: relative;" >
             <div class="box-body" style="width: 400px;position: absolute;">
@@ -178,6 +184,22 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 800px;">
+                    <label class="col-sm-2 control-label" style="width: 130px;"><?php echo Yii::t('commission','renewal_amount'); ?></label>
+                    <div class="col-sm-7">
+                        <?php echo $form->textField($model, 'renewal_amount',
+                            array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
+                        ); ?>
+                    </div>
+                </div>
+                <div class="form-group" style="width: 800px;">
+                    <label class="col-sm-2 control-label" style="width: 130px;"><?php echo Yii::t('commission','renewalend_amount'); ?></label>
+                    <div class="col-sm-7">
+                        <?php echo $form->textField($model, 'renewalend_amount',
+                            array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
+                        ); ?>
+                    </div>
+                </div>
+                <div class="form-group" style="width: 800px;">
                     <label class="col-sm-2 control-label" style="width: 130px;"><?php echo Yii::t('commission','all_amount'); ?></label>
                     <div class="col-sm-7">
                         <?php echo $form->textField($model, 'all_amount',
@@ -233,12 +255,21 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                         <div style="height: 34px;width: 196px"></div>
                     </div>
                 </div>
+                <div class="form-group" style="width: 800px;">
+                    <label class="col-sm-2 control-label" style="width: 130px;"><?php echo Yii::t('commission','renewal_money'); ?></label>
+                    <div class="col-sm-7">
+                        <?php echo $form->textField($model, 'renewal_money',
+                            array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
+                        ); ?>
+                    </div>
+                </div>
                 <div class="form-group" style="width: 400px;">
                     <label class="col-sm-2 control-label" style="width: 150px;">&nbsp;</label>
                     <div class="col-sm-3">
                         <div style="height: 34px;width: 196px"></div>
                     </div>
                 </div>
+
 
 <!--                <div class="form-group" style="width: 400px;">-->
 <!--                    <label class="col-sm-2 control-label" style="width: 130px;">xxxxx</label>-->

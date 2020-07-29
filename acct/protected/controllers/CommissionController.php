@@ -24,7 +24,8 @@ class CommissionController extends Controller
     {
         return array(
             array('allow',
-                'actions'=>array('save','new','add','newsave','performance','performanceedit','performanceend','editsave','endsave','performancesave','performanceeditsave','performanceendsave'),
+                'actions'=>array('save','new','add','newsave','performance','performanceedit','performanceend','editsave','endsave','performancesave',
+                    'performanceeditsave','performanceendsave','renewal','renewalend','renewalsave','renewalendsave'),
                 'expression'=>array('CommissionController','allowReadWrite'),
             ),
             array('allow',
@@ -40,7 +41,7 @@ class CommissionController extends Controller
     public function actionIndex()
     {
         $model = new ReportXS01Form;
-   //     $model->retrieveDatas($model);
+        //     $model->retrieveDatas($model);
 //        print_r('<pre>');
 //        print_r($model);
         $this->render('index',array('model'=>$model));
@@ -48,7 +49,12 @@ class CommissionController extends Controller
 
     public function actionIndex_s($pageNum=0)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='SH'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         if (isset($_POST['ReportXS01List'])) {
             $model->attributes = $_POST['ReportXS01List'];
         } else {
@@ -58,7 +64,7 @@ class CommissionController extends Controller
                 $model->setCriteria($criteria);
             }
         }
-      //  print_r($model);
+
         if(!empty($_POST['ReportXS01List']['year'])){
             $year=$_POST['ReportXS01List']['year'];
             $month=$_POST['ReportXS01List']['month'];
@@ -97,7 +103,12 @@ class CommissionController extends Controller
 
     public function actionNew($pageNum=0,$year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         if (isset($_POST['ReportXS01List'])) {
             $model->attributes = $_POST['ReportXS01List'];
         } else {
@@ -117,7 +128,12 @@ class CommissionController extends Controller
 
     public function actionEdit($pageNum=0,$year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         if (isset($_POST['ReportXS01List'])) {
             $model->attributes = $_POST['ReportXS01List'];
         } else {
@@ -137,7 +153,12 @@ class CommissionController extends Controller
 
     public function actionEnd($pageNum=0,$year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         if (isset($_POST['ReportXS01List'])) {
             $model->attributes = $_POST['ReportXS01List'];
         } else {
@@ -154,7 +175,12 @@ class CommissionController extends Controller
 
     public function actionPerformance($pageNum=0,$year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         if (isset($_POST['ReportXS01List'])) {
             $model->attributes = $_POST['ReportXS01List'];
         } else {
@@ -171,7 +197,12 @@ class CommissionController extends Controller
 
     public function actionPerformanceEdit($pageNum=0,$year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         if (isset($_POST['ReportXS01List'])) {
             $model->attributes = $_POST['ReportXS01List'];
         } else {
@@ -188,7 +219,12 @@ class CommissionController extends Controller
 
     public function actionPerformanceEnd($pageNum=0,$year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         if (isset($_POST['ReportXS01List'])) {
             $model->attributes = $_POST['ReportXS01List'];
         } else {
@@ -203,6 +239,40 @@ class CommissionController extends Controller
         $this->render('performanceend',array('model'=>$model,'index'=>$index,'year'=>$year,'month'=>$month,));
     }
 
+    public function actionRenewal($pageNum=0,$year,$month,$index)
+    {
+        $model = new ReportXS01List;
+        if (isset($_POST['ReportXS01List'])) {
+            $model->attributes = $_POST['ReportXS01List'];
+        } else {
+            $session = Yii::app()->session;
+            if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+                $criteria = $session[$model->criteriaName()];
+                $model->setCriteria($criteria);
+            }
+        }
+        $model->determinePageNum($pageNum);
+        $model->renewalDataByPage($model->pageNum,$year,$month,$index);
+        $this->render('renewal',array('model'=>$model,'index'=>$index,'year'=>$year,'month'=>$month,));
+    }
+
+    public function actionRenewalEnd($pageNum=0,$year,$month,$index)
+    {
+        $model = new ReportXS01List;
+        if (isset($_POST['ReportXS01List'])) {
+            $model->attributes = $_POST['ReportXS01List'];
+        } else {
+            $session = Yii::app()->session;
+            if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+                $criteria = $session[$model->criteriaName()];
+                $model->setCriteria($criteria);
+            }
+        }
+        $model->determinePageNum($pageNum);
+        $model->renewalendDataByPage($model->pageNum,$year,$month,$index);
+        $this->render('renewalend',array('model'=>$model,'index'=>$index,'year'=>$year,'month'=>$month,));
+    }
+
     public function actionAdd($year,$month,$index)
     {
         $model = new ReportXS01Form('add');
@@ -211,28 +281,38 @@ class CommissionController extends Controller
 
 
     public function actionSave($year,$month,$index)
-{
+    {
 
-    if (isset($_POST['ReportXS01Form'])) {
-        $model = new ReportXS01Form($_POST['ReportXS01Form']['scenario']);
-        $model->attributes = $_POST['ReportXS01Form'];
+        if (isset($_POST['ReportXS01Form'])) {
+            $city=Yii::app()->user->city();
+            if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+                $model = new ReportXS01SList;
+            }else{
+                $model = new ReportXS01List;
+            }
+            $model->attributes = $_POST['ReportXS01Form'];
 //            print_r('<pre>');
 //            print_r( $model->attributes);
-        if ($model->validate()) {
-            $model->saveData($_POST['ReportXS01Form'],$index);
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-            $this->redirect(Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)));
-        } else {
-            $message = CHtml::errorSummary($model);
-            Dialog::message(Yii::t('dialog','Validation Message'), $message);
-            $this->render('new',array('model'=>$model,'index'=>$index,'year'=>$year,'month'=>$month,));
+            if ($model->validate()) {
+                $model->saveData($_POST['ReportXS01Form'],$index);
+                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                $this->redirect(Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)));
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+                $this->render('new',array('model'=>$model,'index'=>$index,'year'=>$year,'month'=>$month,));
+            }
         }
     }
-}
 
     public function actionNewSave($year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         if (isset($_POST['ReportXS01From']['id'])) {
 //            $model->attributes = $_POST['ReportXS01List'];
 //                    print_r('<pre>');
@@ -261,8 +341,13 @@ class CommissionController extends Controller
     }
     public function actionEditSave($year,$month,$index)
     {
-        $model = new ReportXS01List;
-       // print_r($_POST['ReportXS01List']['id']);
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
+        // print_r($_POST['ReportXS01List']['id']);
         if (isset($_POST['ReportXS01List']['id'])) {
             $model->editSale($_POST['ReportXS01List']['id'],$index,$_POST['ReportXS01List']['royalty'],$year,$month);
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
@@ -287,8 +372,13 @@ class CommissionController extends Controller
 
     public function actionEndSave($year,$month,$index)
     {
-        $model = new ReportXS01List;
-         //print_r($_POST['ReportXS01List']['id']);
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
+        //print_r($_POST['ReportXS01List']['id']);
         if (isset($_POST['ReportXS01List']['id'])) {
             $model->endSale($_POST['ReportXS01List']['id'],$index,$_POST['ReportXS01List']['royalty'],$year,$month);
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
@@ -312,34 +402,44 @@ class CommissionController extends Controller
     }
 
     public function actionPerformanceSave($year,$month,$index)
-{
-    $model = new ReportXS01List;
-    //print_r($_POST['ReportXS01List']['id']);
-    if (isset($_POST['ReportXS01From']['id'])) {
-        $model->performanceSale($_POST['ReportXS01From']['id'],$year,$month,$index);
-        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
-        $this->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
-    }else{
-        $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
-        $records = Yii::app()->db->createCommand($sql)->queryRow();
-        if(empty($records)){
-            $sql1 = "insert into acc_service_comm_dtl(
+    {
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
+        //print_r($_POST['ReportXS01List']['id']);
+        if (isset($_POST['ReportXS01From']['id'])) {
+            $model->performanceSale($_POST['ReportXS01From']['id'],$year,$month,$index);
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
+            $this->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
+        }else{
+            $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
+            $records = Yii::app()->db->createCommand($sql)->queryRow();
+            if(empty($records)){
+                $sql1 = "insert into acc_service_comm_dtl(
 					hdr_id, performance_amount,out_money
 				) values (
 					'".$index."','0','0'
 				)";
-        }else{
-            $sql1="update acc_service_comm_dtl set performance_amount='0' ,out_money='0'  where hdr_id='$index'";
+            }else{
+                $sql1="update acc_service_comm_dtl set performance_amount='0' ,out_money='0'  where hdr_id='$index'";
+            }
+            $model = Yii::app()->db->createCommand($sql1)->execute();
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
+            $this->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }
-        $model = Yii::app()->db->createCommand($sql1)->execute();
-        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
-        $this->redirect(Yii::app()->createUrl('commission/performance',array('year'=>$year,'month'=>$month,'index'=>$index)));
     }
-}
 
     public function actionPerformanceEditSave($year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         //print_r($_POST['ReportXS01List']['id']);
         if (isset($_POST['ReportXS01List']['id'])) {
             $model->performanceeditSale($_POST['ReportXS01List']['id'],$year,$month,$index,$_POST['ReportXS01List']['royalty']);
@@ -365,7 +465,12 @@ class CommissionController extends Controller
 
     public function actionPerformanceEndSave($year,$month,$index)
     {
-        $model = new ReportXS01List;
+        $city=Yii::app()->user->city();
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            $model = new ReportXS01SList;
+        }else{
+            $model = new ReportXS01List;
+        }
         //print_r($_POST['ReportXS01List']['id']);
         if (isset($_POST['ReportXS01List']['id'])) {
             $model->performanceendSale($_POST['ReportXS01List']['id'],$index,$_POST['ReportXS01List']['royalty'],$year,$month);
@@ -386,6 +491,60 @@ class CommissionController extends Controller
             $model = Yii::app()->db->createCommand($sql1)->execute();
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
             $this->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index)));
+        }
+    }
+
+    public function actionRenewalSave($year,$month,$index)
+    {
+        $city=Yii::app()->user->city();
+        $model = new ReportXS01List;
+        //print_r($_POST['ReportXS01List']['id']);
+        if (isset($_POST['ReportXS01List']['id'])) {
+            $model->renewalSale($_POST['ReportXS01List']['id'],$index,$_POST['ReportXS01List']['royalty'],$year,$month);
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
+            $this->redirect(Yii::app()->createUrl('commission/renewal',array('year'=>$year,'month'=>$month,'index'=>$index)));
+        }else{
+            $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
+            $records = Yii::app()->db->createCommand($sql)->queryRow();
+            if(empty($records)){
+                $sql1 = "insert into acc_service_comm_dtl(
+					hdr_id, renewal_amount
+				) values (
+					'".$index."','0'
+				)";
+            }else{
+                $sql1="update acc_service_comm_dtl set renewal_amount='0'  where hdr_id='$index'";
+            }
+            $model = Yii::app()->db->createCommand($sql1)->execute();
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
+            $this->redirect(Yii::app()->createUrl('commission/renewal',array('year'=>$year,'month'=>$month,'index'=>$index)));
+        }
+    }
+
+    public function actionRenewaEndlSave($year,$month,$index)
+    {
+        $city=Yii::app()->user->city();
+        $model = new ReportXS01List;
+        //print_r($_POST['ReportXS01List']['id']);
+        if (isset($_POST['ReportXS01List']['id'])) {
+            $model->renewalendSale($_POST['ReportXS01List']['id'],$index,$_POST['ReportXS01List']['royalty'],$year,$month);
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
+            $this->redirect(Yii::app()->createUrl('commission/renewalend',array('year'=>$year,'month'=>$month,'index'=>$index)));
+        }else{
+            $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
+            $records = Yii::app()->db->createCommand($sql)->queryRow();
+            if(empty($records)){
+                $sql1 = "insert into acc_service_comm_dtl(
+					hdr_id, renewal_amount
+				) values (
+					'".$index."','0'
+				)";
+            }else{
+                $sql1="update acc_service_comm_dtl set renewal_amount='0'  where hdr_id='$index'";
+            }
+            $model = Yii::app()->db->createCommand($sql1)->execute();
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
+            $this->redirect(Yii::app()->createUrl('commission/renewalend',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }
     }
 
