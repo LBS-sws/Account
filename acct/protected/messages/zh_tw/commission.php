@@ -21,7 +21,7 @@ return array(
     'performance_amount'=>'跨區新增提成',
     'performanceedit_amount'=>'跨區更改提成',
     'performanceend_amount'=>'跨區終止提成',
-    'renewal_amount'=>'續約提成',
+    'renewal_amount'=>'續約生意提成',
     'renewalend_amount'=>'續約終止提成',
     'renewal_money'=>'續約業績',
     'all_amount'=>'總额',

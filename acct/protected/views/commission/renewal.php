@@ -11,7 +11,7 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('app','Sales Renewal Commission'); ?></strong>
+		<strong><?php echo Yii::t('app','Sales Renewal Commission');?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
@@ -28,7 +28,7 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
 //                'submit'=>Yii::app()->createUrl('commission/index_s')));
 //            ?>
             <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save1'), array(
-                    'submit'=>Yii::app()->createUrl('commission/editsave',array('year'=>$year,'month'=>$month,'index'=>$index)))
+                    'submit'=>Yii::app()->createUrl('commission/renewal',array('year'=>$year,'month'=>$month,'index'=>$index)))
             ); ?>
         </div>
     </div>
@@ -80,8 +80,8 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
                 $this->widget('ext.layout.ListPageWidget', array(
                     'title'=>Yii::t('app','sale commission'),
                     'model'=>$model,
-                    'viewhdr'=>'//commission/t_listhdr',
-                    'viewdtl'=>'//commission/t_listdtl',
+                    'viewhdr'=>'//commission/r_listhdr',
+                    'viewdtl'=>'//commission/r_listdtl',
                     'gridsize'=>'24',
                     'height'=>'600',
                     'search'=>$search,

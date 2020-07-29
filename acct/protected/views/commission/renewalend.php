@@ -82,8 +82,8 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                 $this->widget('ext.layout.ListPageWidget', array(
                     'title'=>Yii::t('app','sale commission'),
                     'model'=>$model,
-                    'viewhdr'=>'//commission/t_listhdr',
-                    'viewdtl'=>'//commission/t_listdtl',
+                    'viewhdr'=>'//commission/r_listhdr',
+                    'viewdtl'=>'//commission/r_listdtl',
                     'gridsize'=>'24',
                     'height'=>'600',
                     'hasNavBar'=>false,

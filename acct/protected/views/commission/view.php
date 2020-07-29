@@ -255,9 +255,9 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                         <div style="height: 34px;width: 196px"></div>
                     </div>
                 </div>
-                <div class="form-group" style="width: 800px;">
-                    <label class="col-sm-2 control-label" style="width: 130px;"><?php echo Yii::t('commission','renewal_money'); ?></label>
-                    <div class="col-sm-7">
+                <div class="form-group" style="width: 400px;">
+                    <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('commission','renewal_money'); ?></label>
+                    <div class="col-sm-3">
                         <?php echo $form->textField($model, 'renewal_money',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
                         ); ?>
