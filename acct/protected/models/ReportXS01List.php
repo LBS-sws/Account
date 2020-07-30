@@ -771,7 +771,8 @@ class ReportXS01List extends CListPageModel
 				from swoper$suffix.swo_service a 
 				inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=2 and a.city ='$city' and (((a.amt_paid>='$amt_paid_money') and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid*a.ctrt_period>='$amt_paid_money') and  a.paid_type='M'))
+				where  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=2 
+				and a.city ='$city' and (((a.amt_paid>='$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid>='$amt_paid_money') and  a.paid_type='M'))
 			  
 			";
         $clause = "";
@@ -818,7 +819,8 @@ class ReportXS01List extends CListPageModel
 				from swoper$suffix.swo_service a 
 				inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city ='$city'  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=2 and  (((a.amt_paid<'$amt_paid_money') and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid*a.ctrt_period<'$amt_paid_money') and  a.paid_type='M'))			
+				where a.city ='$city'  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end'
+				 and a.nature_type=2 and  (((a.amt_paid<'$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid<'$amt_paid_money') and  a.paid_type='M'))			
 			";
         $ou = Yii::app()->db->createCommand($sql_ou)->queryAll();
 //判断续约金额加起来有2000/1000的
@@ -837,7 +839,7 @@ class ReportXS01List extends CListPageModel
             }
         }
         foreach ($list as $key => $value){
-            if($value>=$amt_paid_money){
+            if($value>=$amt_paid_money*12){
                 $ids[]=$key;
             }
         }
@@ -848,9 +850,9 @@ class ReportXS01List extends CListPageModel
                 unset($ou[$k]);
             }
         }
+
 //
 //餐饮连锁客户（餐饮类）
-
         $sql_eat="select a.*,  c.description as type_desc, d.name as city_name,b.group_id
         from swoper$suffix.swo_service a
         left outer join security$suffix.sec_city d on a.city=d.code 			  
@@ -859,7 +861,6 @@ class ReportXS01List extends CListPageModel
 		where a.city ='$city'  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=1	  
         ";
         $eat = Yii::app()->db->createCommand($sql_eat)->queryAll();
-
         foreach ($eat as $k=>&$v){
             $sql="select count(id) from  swoper$suffix.swo_company where group_id='".$v['group_id']."' and status=1";
             $sum = Yii::app()->db->createCommand($sql)->queryScalar();
@@ -909,23 +910,11 @@ class ReportXS01List extends CListPageModel
         $start=$year."-".$month."-01";
         $end=$year."-".$month."-31";
         $sql1="select a.*,  c.description as type_desc, d.name as city_name					
-				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
+				from swoper$suffix.swo_service a 
+				inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city =$city   and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city ='$city'   and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
 ";
-        $records = Yii::app()->db->createCommand($sql1)->queryAll();
-        foreach ($records as $k=>&$record){
-            $sql2="select a.*,  c.description as type_desc, d.name as city_name					
-				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
-				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city =$city   and a.status='C'  and  a.company_name='".$record['company_name']."' and  a.cust_type='".$record['cust_type']."' and a.cust_type_name='".$record['cust_type_name']."'  and a.royalty=0.01
-				order by  a.id desc
-";
-            $c = Yii::app()->db->createCommand($sql2)->queryRow();
-            if(empty($c)){
-                unset($records[$k]);
-            }
-        }
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
             $svalue = str_replace("'","\'",$this->searchValue);
@@ -961,11 +950,23 @@ class ReportXS01List extends CListPageModel
         }else{
             $order ="order by id desc";
         }
-        $this->totalRow = count($records);
         $sql = $sql1.$clause.$order;
         $sql = $this->sqlWithPageCriteria($sql, $this->pageNum);
         $records = Yii::app()->db->createCommand($sql)->queryAll();
+        foreach ($records as $k=>&$record){
+            $sql2="select a.*,  c.description as type_desc, d.name as city_name					
+				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
+				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
+				where a.city ='$city'   and a.status='C'  and  a.company_name='".$record['company_name']."' and  a.cust_type='".$record['cust_type']."' and a.cust_type_name='".$record['cust_type_name']."'  and a.royalty=0.01
+				order by  a.id desc
+";
+            $c = Yii::app()->db->createCommand($sql2)->queryRow();
 
+            if(empty($c)){
+                unset($records[$k]);
+            }
+        }
+        $this->totalRow = count($records);
         $list = array();
         $this->attr = array();
         if (count($records) > 0) {
@@ -1898,7 +1899,7 @@ class ReportXS01List extends CListPageModel
     }
 
 
-    public function renewalSale($id,$index,$royalty,$years,$months){
+    public function renewalSale($id,$index,$years,$months){
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
         $money=array();

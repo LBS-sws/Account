@@ -498,9 +498,10 @@ class CommissionController extends Controller
     {
         $city=Yii::app()->user->city();
         $model = new ReportXS01List;
-        //print_r($_POST['ReportXS01List']['id']);
+//        print_r(1); exit();
         if (isset($_POST['ReportXS01List']['id'])) {
-            $model->renewalSale($_POST['ReportXS01List']['id'],$index,$_POST['ReportXS01List']['royalty'],$year,$month);
+
+            $model->renewalSale($_POST['ReportXS01List']['id'],$index,$year,$month);
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
             $this->redirect(Yii::app()->createUrl('commission/renewal',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }else{
@@ -521,7 +522,7 @@ class CommissionController extends Controller
         }
     }
 
-    public function actionRenewaEndlSave($year,$month,$index)
+    public function actionRenewalEndSave($year,$month,$index)
     {
         $city=Yii::app()->user->city();
         $model = new ReportXS01List;
