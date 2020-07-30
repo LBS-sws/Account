@@ -500,7 +500,6 @@ class CommissionController extends Controller
         $model = new ReportXS01List;
 //        print_r(1); exit();
         if (isset($_POST['ReportXS01List']['id'])) {
-
             $model->renewalSale($_POST['ReportXS01List']['id'],$index,$year,$month);
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
             $this->redirect(Yii::app()->createUrl('commission/renewal',array('year'=>$year,'month'=>$month,'index'=>$index)));

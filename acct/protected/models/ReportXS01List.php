@@ -857,21 +857,26 @@ class ReportXS01List extends CListPageModel
         from swoper$suffix.swo_service a
         left outer join security$suffix.sec_city d on a.city=d.code 			  
 		left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-		left outer join swoper$suffix.swo_company b on a.company_name=concat_ws(' ',b.code,b.name) 
+		left outer join swoper$suffix.swo_company b on a.company_name=concat_ws('',b.code,b.name) 
 		where a.city ='$city'  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=1	  
         ";
         $eat = Yii::app()->db->createCommand($sql_eat)->queryAll();
+                print_r('<pre>');
+        print_r($eat);
         foreach ($eat as $k=>&$v){
             $sql="select count(id) from  swoper$suffix.swo_company where group_id='".$v['group_id']."' and status=1";
             $sum = Yii::app()->db->createCommand($sql)->queryScalar();
+            print_r('<pre>');
+            print_r($sum);
             if($sum<10){
                 unset($eat[$k]);
             }
         }
+        print_r('<pre>');
+        print_r($eat);
         $records=array_merge($eat,$ou,$records);
         $this->totalRow = count($records);
-//        print_r('<pre>');
-//        print_r($ou);
+
 
         $this->attr = array();
         if (count($records) > 0) {
