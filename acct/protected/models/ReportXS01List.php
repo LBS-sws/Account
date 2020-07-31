@@ -1959,9 +1959,10 @@ class ReportXS01List extends CListPageModel
                 $a=$records['amt_paid']*$records['ctrt_period'];
             }
             $money=$a/$records['all_number']*$records['surplus'];
-            $money[]=-$money;
+            $money[]=$money;
         }
         $money=array_sum($money);
+        $money=-$money;
         $money=$money*0.01;
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
