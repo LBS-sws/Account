@@ -1958,7 +1958,7 @@ class ReportXS01List extends CListPageModel
             }else{
                 $a=$records['amt_paid']*$records['ctrt_period'];
             }
-            $money=$a/$records['paid_type']*$records['surplus'];
+            $money=$a/$records['all_number']*$records['surplus'];
             $money[]=-$money;
         }
         $money=array_sum($money);
