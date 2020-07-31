@@ -861,19 +861,15 @@ class ReportXS01List extends CListPageModel
 		where a.city ='$city'  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=1	  
         ";
         $eat = Yii::app()->db->createCommand($sql_eat)->queryAll();
-                print_r('<pre>');
-        print_r($eat);
+//                print_r('<pre>');
+//        print_r($eat);
         foreach ($eat as $k=>&$v){
-            $sql="select count(id) from  swoper$suffix.swo_company where group_id='".$v['group_id']."' and status=1";
+            $sql="select count(id) from  swoper$suffix.swo_company where group_id='".$v['group_id']."' and status=1 and group_id<>''";
             $sum = Yii::app()->db->createCommand($sql)->queryScalar();
-            print_r('<pre>');
-            print_r($sum);
             if($sum<10){
                 unset($eat[$k]);
             }
         }
-        print_r('<pre>');
-        print_r($eat);
         $records=array_merge($eat,$ou,$records);
         $this->totalRow = count($records);
 
@@ -1533,6 +1529,7 @@ class ReportXS01List extends CListPageModel
                 $color = Yii::app()->db->createCommand($sql3)->queryRow();
                 if($color['performance']==1) {
                     $records['othersalesman']=str_replace('(','',$records['othersalesman']);
+                    $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                     $sql1 = "select * from acc_service_comm_hdr where year_no='" . $year . "' and month_no='" . $month . "' and city='" . $records['city'] . "' and  concat_ws(' ',employee_name,employee_code)= '" . $records['othersalesman'] . "' ";
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
 //                    $sql2 = "select new_calc from  acc_service_comm_dtl where hdr_id='" . $records1['id'] . "'";
