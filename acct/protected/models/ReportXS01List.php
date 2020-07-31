@@ -857,7 +857,7 @@ class ReportXS01List extends CListPageModel
         from swoper$suffix.swo_service a
         left outer join security$suffix.sec_city d on a.city=d.code 			  
 		left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-		left outer join swoper$suffix.swo_company b on a.company_name=concat_ws('',b.code,b.name) 
+		left outer join swoper$suffix.swo_company b on a.company_name=concat_ws(' ',b.code,b.name) 
 		where a.city ='$city'  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=1	  
         ";
         $eat = Yii::app()->db->createCommand($sql_eat)->queryAll();
