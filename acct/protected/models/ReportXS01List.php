@@ -908,13 +908,17 @@ class ReportXS01List extends CListPageModel
     {
         $suffix = Yii::app()->params['envSuffix'];
         $city=Yii::app()->user->city();
+        $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
+        $name = Yii::app()->db->createCommand($sqlm)->queryRow();
+        $name['name']=str_replace(' ',' (',$name['name']);
+        $name['name'].=")";
         $start=$year."-".$month."-01";
         $end=$year."-".$month."-31";
         $sql1="select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a 
 				inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city ='$city'   and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city ='$city'   and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'  and  a.salesman ='".$name['name']."'
 ";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -958,7 +962,8 @@ class ReportXS01List extends CListPageModel
             $sql2="select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city ='$city'   and a.status='C'  and  a.company_name='".$record['company_name']."' and  a.cust_type='".$record['cust_type']."' and a.cust_type_name='".$record['cust_type_name']."'  and a.royalty=0.01
+				where a.city ='$city'   and a.status='C'  and  a.company_name='".$record['company_name']."'  and  a.salesman ='".$name['name']."'
+				and  a.cust_type='".$record['cust_type']."' and a.cust_type_name='".$record['cust_type_name']."'  and a.royalty=0.01
 				order by  a.id desc
 ";
             $c = Yii::app()->db->createCommand($sql2)->queryRow();
@@ -1939,7 +1944,7 @@ class ReportXS01List extends CListPageModel
     }
 
 
-    public function renewalendSale($id,$index,$royalty,$years,$months){
+    public function renewalendSale($id,$index,$years,$months){
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
         $money=array();
