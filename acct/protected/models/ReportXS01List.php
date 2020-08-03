@@ -958,6 +958,7 @@ class ReportXS01List extends CListPageModel
         $sql = $sql1.$clause.$order;
         $sql = $this->sqlWithPageCriteria($sql, $this->pageNum);
         $records = Yii::app()->db->createCommand($sql)->queryAll();
+
         foreach ($records as $k=>&$record){
             $sql2="select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
@@ -967,7 +968,6 @@ class ReportXS01List extends CListPageModel
 				order by  a.id desc
 ";
             $c = Yii::app()->db->createCommand($sql2)->queryRow();
-
             if(empty($c)){
                 unset($records[$k]);
             }
@@ -1953,14 +1953,15 @@ class ReportXS01List extends CListPageModel
             $mons=array();
             $sql="select * from swoper$suffix.swo_service where id='$ai'";
             $records = Yii::app()->db->createCommand($sql)->queryRow();
+
             if($records['paid_type']=='1'||$records['paid_type']=='Y'){
                 $a=$records['amt_paid'];
             }else{
                 $a=$records['amt_paid']*$records['ctrt_period'];
             }
-            $money=$a/$records['all_number']*$records['surplus'];
-            $money[]=$money;
-        }
+            $moneys=$a/$records['all_number']*$records['surplus'];
+            $money[]=$moneys;
+        }   
         $money=array_sum($money);
         $money=-$money;
         $money=$money*0.01;
