@@ -24,7 +24,7 @@ class QueryController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','downs'),
+				'actions'=>array('new','edit','delete','save','downs','renewal','renewalend'),
 				'expression'=>array('QueryController','allowReadWrite'),
 			),
 			array('allow', 
@@ -199,6 +199,40 @@ class QueryController extends Controller
         $model->determinePageNum($pageNum);
         $model->performanceendDataByPage($model->pageNum,$year,$month,$index);
         $this->render('performanceend',array('model'=>$model,'index'=>$index,'year'=>$year,'month'=>$month,));
+    }
+
+    public function actionRenewal($pageNum=0,$year,$month,$index)
+    {
+        $model = new ReportXS02List;
+        if (isset($_POST['ReportXS02List'])) {
+            $model->attributes = $_POST['ReportXS02List'];
+        } else {
+            $session = Yii::app()->session;
+            if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+                $criteria = $session[$model->criteriaName()];
+                $model->setCriteria($criteria);
+            }
+        }
+        $model->determinePageNum($pageNum);
+        $model->renewalDataByPage($model->pageNum,$year,$month,$index);
+        $this->render('renewal',array('model'=>$model,'index'=>$index,'year'=>$year,'month'=>$month,));
+    }
+
+    public function actionRenewalEnd($pageNum=0,$year,$month,$index)
+    {
+        $model = new ReportXS02List;
+        if (isset($_POST['ReportXS02List'])) {
+            $model->attributes = $_POST['ReportXS02List'];
+        } else {
+            $session = Yii::app()->session;
+            if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+                $criteria = $session[$model->criteriaName()];
+                $model->setCriteria($criteria);
+            }
+        }
+        $model->determinePageNum($pageNum);
+        $model->renewalendDataByPage($model->pageNum,$year,$month,$index);
+        $this->render('renewalend',array('model'=>$model,'index'=>$index,'year'=>$year,'month'=>$month,));
     }
 
 	public function actionDowns($year,$month,$index)

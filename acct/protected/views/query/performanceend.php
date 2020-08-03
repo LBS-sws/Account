@@ -38,14 +38,20 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
             <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/end',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','END'); ?></a>
             </li>
-            <li  class="active">
+            <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/performance',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','Performance'); ?></a>
             </li>
             <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/performanceedit',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','PerformanceEdit'); ?></a>
             </li>
-            <li  class="">
+            <li  class="active">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','PerformanceEnd'); ?></a>
+            </li>
+            <li  class="">
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/renewal',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','Renewal'); ?></a>
+            </li>
+            <li  class="">
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/renewalend',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','RenewalEnd'); ?></a>
             </li>
         </ul>
         <div class="box-info" >

@@ -47,6 +47,12 @@ $this->pageTitle=Yii::app()->name . ' - query Report';
             <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','PerformanceEnd'); ?></a>
             </li>
+            <li  class="">
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/renewal',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','Renewal'); ?></a>
+            </li>
+            <li  class="">
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/renewalend',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','RenewalEnd'); ?></a>
+            </li>
         </ul>
         <div class="box-info" style="height: 1000px;" >
             <div class="box-body" >

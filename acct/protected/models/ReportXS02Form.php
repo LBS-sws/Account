@@ -36,7 +36,10 @@ class ReportXS02Form extends CReportForm
     public $performanceedit_amount;
     public $performanceend_amount;
     public $performanceedit_money;
-	
+    public $renewal_amount;
+    public $renewalend_amount;
+    public $renewal_money;
+
 	protected function labelsEx() {
 		return array(
 		    'staffs'=>Yii::t('report','Staffs'),
@@ -54,20 +57,20 @@ class ReportXS02Form extends CReportForm
             'othersalesman'=>Yii::t('app','Othersalesman'),
 			);
 	}
-	
+
 	protected function rulesEx() {
         return array(
             array('staffs, staffs_desc','safe'),
         );
 	}
-	
+
 	protected function queueItemEx() {
 		return array(
 				'STAFFS'=>$this->staffs,
 				'STAFFSDESC'=>$this->staffs_desc,
 			);
 	}
-	
+
 	public function init() {
 		$this->id = 'RptFive';
 		$this->name = Yii::t('app','Five Steps');
@@ -159,7 +162,7 @@ class ReportXS02Form extends CReportForm
             $this->new_amount=$records['new_amount'];
             $this->edit_amount=$records['edit_amount'];
             $this->end_amount=$records['end_amount'];
-            $num=$records['new_amount']+$records['edit_amount']+$records['end_amount']+$records['performance_amount']+$records['performanceedit_amount']+$records['performanceend_amount'];
+            $num=$records['new_amount']+$records['edit_amount']+$records['end_amount']+$records['performance_amount']+$records['performanceedit_amount']+$records['performanceend_amount']+$records['renewal_amount']+$records['renewalend_amount'];
             $this->all_amount=number_format($num,2);
             $this->performance_amount=$records['performance_amount'];
             $this->year=$records['year_no'];
@@ -174,6 +177,9 @@ class ReportXS02Form extends CReportForm
             $this->performanceedit_amount=$records['performanceedit_amount'];
             $this->performanceend_amount=$records['performanceend_amount'];
             $this->performanceedit_money=$records['performanceedit_money'];
+            $this->renewal_amount=$records['renewal_amount'];
+            $this->renewalend_amount=$records['renewalend_amount'];
+            $this->renewal_money=$records['renewal_money'];
             $this->group_type=$this->getGroupType($records['group_type']);
             if($records['performance']==1){
                 $a='是';

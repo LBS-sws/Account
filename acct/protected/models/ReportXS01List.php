@@ -1961,7 +1961,7 @@ class ReportXS01List extends CListPageModel
             }
             $moneys=$a/$records['all_number']*$records['surplus'];
             $money[]=$moneys;
-        }   
+        }
         $money=array_sum($money);
         $money=-$money;
         $money=$money*0.01;

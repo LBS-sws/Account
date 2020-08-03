@@ -11,7 +11,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
 
 <section class="content-header">
 	<h1>
-        <strong><?php echo Yii::t('app','Sales End Query'); ?></strong>
+        <strong><?php echo Yii::t('app','Sales RenewalEnd Commission'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
@@ -21,6 +21,20 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
 	</ol>
 -->
 </section>
+<div class="box"><div class="box-body">
+        <div class="btn-group" role="group">
+
+<!--            --><?php //echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
+//                'submit'=>Yii::app()->createUrl('commission/index_s')));
+//            ?>
+            <?php  echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save1'), array(
+                    'submit'=>Yii::app()->createUrl('commission/renewalendsave',array('year'=>$year,'month'=>$month,'index'=>$index)))
+            ); ?>
+
+        </div>
+    </div>
+</div>
+
 <section class="content" >
     <div class="box">
     <div id="yw0" class="tabbable">
@@ -28,14 +42,14 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
             <li class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/view',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','ALL'); ?></a>
             </li>
-            <li class="">
+            <li class="" >
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/new',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','New'); ?></a>
             </li>
             <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/edit',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','Edit'); ?></a>
             </li>
-            <li  class="active">
-                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/end',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','END'); ?></a>
+            <li  class="">
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/end',array('year'=>$year,'month'=>$month,'index'=>$index));?>"  ><?php echo Yii::t('commission','END'); ?></a>
             </li>
             <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/performance',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','Performance'); ?></a>
@@ -49,7 +63,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
             <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/renewal',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','Renewal'); ?></a>
             </li>
-            <li  class="">
+            <li  class="active">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('query/renewalend',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','RenewalEnd'); ?></a>
             </li>
         </ul>
@@ -68,11 +82,10 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                 $this->widget('ext.layout.ListPageWidget', array(
                     'title'=>Yii::t('app','sale commission'),
                     'model'=>$model,
-                    'viewhdr'=>'//query/t_listhdr',
-                    'viewdtl'=>'//query/t_listdtl',
+                    'viewhdr'=>'//commission/r_listhdr',
+                    'viewdtl'=>'//commission/r_listdtl',
                     'gridsize'=>'24',
                     'height'=>'600',
-                    'search'=>$search,
                     'hasNavBar'=>false,
                     'hasPageBar'=>false,
                     'hasSearchBar'=>false,
