@@ -1216,6 +1216,10 @@ class ReportXS01List extends CListPageModel
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
 //                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
 //                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                if(empty($records1['id'])){
+                    Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Some records cannot be calculated') );
+                    Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$years,'month'=>$months,'index'=>$index)));
+                }
                 $fuwu_last=$this->getAmountLast($year,$month,$records1['id']);//上月提成比例服务
                 $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
                 if(isset($m)){
@@ -1339,6 +1343,10 @@ class ReportXS01List extends CListPageModel
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
 //                $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
 //                $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                if(empty($records1['id'])){
+                    Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Some records cannot be calculated') );
+                    Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$years,'month'=>$months,'index'=>$index)));
+                }
                 $fuwu_last=$this->getAmountLast($years,$months,$records1['id']);//上月提成比例服务
                 $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
                 if(isset($m)){
@@ -1508,6 +1516,10 @@ class ReportXS01List extends CListPageModel
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
 //                    $sql2 = "select new_calc from  acc_service_comm_dtl where hdr_id='" . $records1['id'] . "'";
 //                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                    if(empty($records1['id'])){
+                        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Some records cannot be calculated') );
+                        Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index)));
+                    }
                     $fuwu_last=$this->getAmountLast($year,$month,$records1['id']);//上月提成比例服务
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     if (!empty($a)) {
@@ -1539,6 +1551,10 @@ class ReportXS01List extends CListPageModel
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
 //                    $sql2 = "select new_calc from  acc_service_comm_dtl where hdr_id='" . $records1['id'] . "'";
 //                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                    if(empty($records1['id'])){
+                        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Some records cannot be calculated') );
+                        Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index)));
+                    }
                     $fuwu_last=$this->getAmountLast($year,$month,$records1['id']);//上月提成比例服务
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     if (!empty($a)) {
@@ -1612,6 +1628,10 @@ class ReportXS01List extends CListPageModel
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
 //                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
 //                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                    if(empty($records1['id'])){
+                        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Some records cannot be calculated') );
+                        Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index)));
+                    }
                     $fuwu_last=$this->getAmountLast($year,$month,$records1['id']);//上月提成比例服务
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     $fuwumoney=$c*$fuwu_last;
@@ -1652,6 +1672,10 @@ class ReportXS01List extends CListPageModel
                 if($records1['performance']==1){
 //                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
 //                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                    if(empty($records1['id'])){
+                        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Some records cannot be calculated') );
+                        Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$year,'month'=>$month,'index'=>$index)));
+                    }
                     $fuwu_last=$this->getAmountLast($years,$months,$records1['id']);//上月提成比例服务
                     if(isset($m)){
                         if($fuwu_last!=0&&empty(!$fuwu_last)){
@@ -1746,6 +1770,10 @@ class ReportXS01List extends CListPageModel
                 if($records1['performance']==1){
 //                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";//当初提成比例
 //                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                    if(empty($records1['id'])){
+                        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Some records cannot be calculated') );
+                        Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$years,'month'=>$months,'index'=>$index)));
+                    }
                     $fuwu_last=$this->getAmountLast($year,$month,$records1['id']);//上月提成比例服务
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     if(isset($m)){

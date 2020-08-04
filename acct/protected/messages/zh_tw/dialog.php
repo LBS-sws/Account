@@ -65,6 +65,8 @@ return array(
 'Mark read for all selected records?'=>'列表上的所有記錄標記為已讀？',
 'Mark Read Done'=>'標記已讀完成',
 'Request Approved and Signed'=>'批准申請及簽字完成',
+'Data is filled in incorrectly, please check and modify before proceeding'=>'數據填寫有誤，請檢查修改后再進行',
 'Request Confirmed'=>'確認申請完成',
+'Some records cannot be calculated'=>'部分記錄無法計算',
 );
 ?>
