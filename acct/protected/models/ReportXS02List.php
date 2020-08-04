@@ -1061,23 +1061,25 @@ class ReportXS02List extends CListPageModel
         $objPHPExcel->getActiveSheet()->setCellValue('A6','新增生意提成 : '.$view['new_amount']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('A7','更改生意提成 : '.$view['edit_amount']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('A8','终止生意提成 : '.$view['end_amount']) ;
-        $objPHPExcel->getActiveSheet()->setCellValue('A9','总额 : '.$view['all_amount']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('A9','续约生意提成 : '.$view['renewal_amount']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('A10','总额 : '.$view['all_amount']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('B5','跨区提成是否计算 : '.$view['performance']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('B6','跨区新增提成 : '.$view['performance_amount']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('B7','跨区更改提成 : '.$view['performanceedit_amount']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('B8','跨区终止提成 : '.$view['performanceend_amount']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('B9','续约终止提成 : '.$view['renewalend_amount']) ;
 
-        $objPHPExcel->getActiveSheet()->getStyle('A11:H11')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-        $objPHPExcel->getActiveSheet()->getStyle('A11:H11')->getFill()->getStartColor()->setARGB('99FFFF');
+        $objPHPExcel->getActiveSheet()->getStyle('A12:H12')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+        $objPHPExcel->getActiveSheet()->getStyle('A12:H12')->getFill()->getStartColor()->setARGB('99FFFF');
 
         $new=$this->Newdown($year,$month,$index);
-        $objPHPExcel->getActiveSheet()->setCellValue('A13','类别 : 新生意额') ;
-        $objPHPExcel->getActiveSheet()->mergeCells('A13:H13');
-        $objPHPExcel->getActiveSheet()->getStyle('A13')->getFont()->setBold(true);
-        $objPHPExcel->getActiveSheet()->getStyle('A13')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-        $objPHPExcel->getActiveSheet()->getStyle('A13')->getFill()->getStartColor()->setARGB('99FFFF');
+        $objPHPExcel->getActiveSheet()->setCellValue('A14','类别 : 新生意额') ;
+        $objPHPExcel->getActiveSheet()->mergeCells('A14:H14');
+        $objPHPExcel->getActiveSheet()->getStyle('A14')->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('A14')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+        $objPHPExcel->getActiveSheet()->getStyle('A14')->getFill()->getStartColor()->setARGB('99FFFF');
 
-        $i=14;
+        $i=15;
         for($o=0;$o<count($new);$o++){
             $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$new[$o]['first_dt']) ;
             $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$new[$o]['sign_dt']) ;

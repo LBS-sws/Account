@@ -21,19 +21,20 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
 	</ol>
 -->
 </section>
-<div class="box"><div class="box-body">
-        <div class="btn-group" role="group">
-
+<!--<div class="box">-->
+<!--    <div class="box-body">-->
+<!--        <div class="btn-group" role="group">-->
+<!---->
 <!--            --><?php //echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
 //                'submit'=>Yii::app()->createUrl('commission/index_s')));
 //            ?>
-            <?php  echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save1'), array(
-                    'submit'=>Yii::app()->createUrl('commission/renewalendsave',array('year'=>$year,'month'=>$month,'index'=>$index)))
-            ); ?>
-
-        </div>
-    </div>
-</div>
+<!--            --><?php // echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save1'), array(
+//                    'submit'=>Yii::app()->createUrl('commission/renewalendsave',array('year'=>$year,'month'=>$month,'index'=>$index)))
+//            ); ?>
+<!---->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 
 <section class="content" >
     <div class="box">
