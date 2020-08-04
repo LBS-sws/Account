@@ -284,12 +284,7 @@ class CommissionController extends Controller
     {
 
         if (isset($_POST['ReportXS01Form'])) {
-            $city=Yii::app()->user->city();
-            if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
-                $model = new ReportXS01SList;
-            }else{
-                $model = new ReportXS01List;
-            }
+            $model = new ReportXS01Form;
             $model->attributes = $_POST['ReportXS01Form'];
 //            print_r('<pre>');
 //            print_r( $model->attributes);

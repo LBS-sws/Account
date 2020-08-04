@@ -25,7 +25,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
         <div class="btn-group" role="group">
 
             <?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
-                'submit'=>Yii::app()->createUrl('commission/index_s')));
+                'submit'=>Yii::app()->createUrl('query/index_s')));
             ?>
 
         </div>

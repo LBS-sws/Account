@@ -38,7 +38,7 @@ class ReportXS01List extends CListPageModel
             $month=12;
             $year=$year-1;
         }
-        $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,d.performance_amount,d.performanceedit_amount,d.performanceend_amount,e.name as cityname from acc_service_comm_hdr a
+        $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,d.performance_amount,d.performanceedit_amount,d.performanceend_amount,d.renewal_amount,d.renewalend_amount,e.name as cityname from acc_service_comm_hdr a
                  inner join  hr$suffix.hr_employee b  on b.code=a.employee_code
                  inner join  hr$suffix.hr_dept c on b.position=c.id      
                  inner join security$suffix.sec_city e on a.city=e.code 		  
@@ -91,7 +91,7 @@ class ReportXS01List extends CListPageModel
             foreach ($records as $k=>$record) {
                 $str=str_replace('(','',$record['employee_code']);
                 $str=str_replace(')','',$str);
-                $arr=$record['new_amount']+$record['edit_amount']+$record['end_amount']+$record['performance_amount']+$record['performanceedit_amount']+$record['performanceend_amount'];
+                $arr=$record['new_amount']+$record['edit_amount']+$record['end_amount']+$record['performance_amount']+$record['performanceedit_amount']+$record['performanceend_amount']+$record['renewal_amount']+$record['renewalend_amount'];
                 $this->attr[] = array(
                     'id'=>$record['id'],
                     'employee_code'=>$str,
