@@ -2044,10 +2044,13 @@ class ReportXS01List extends CListPageModel
     }
 
     public function getAmountLast($year,$month,$id){
-        $month=$month-1;
-        if($month==0){
-            $month=12;
-            $year=$year-1;
+        if($year<2020&&$month<7){
+        }else{
+            $month=$month-1;
+            if($month==0){
+                $month=12;
+                $year=$year-1;
+            }
         }
         $sql="select employee_name from acc_service_comm_hdr where id=$id";
         $name = Yii::app()->db->createCommand($sql)->queryScalar();
