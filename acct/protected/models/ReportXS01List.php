@@ -2064,6 +2064,9 @@ class ReportXS01List extends CListPageModel
         $arr = Yii::app()->db->createCommand($sql1)->queryRow();
         $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."'";
         $point = Yii::app()->db->createCommand($sql_point)->queryRow();
+        if(empty($arr['new_calc'])){
+            $arr['new_calc']=0.05;
+        }
         $new_calc=$arr['new_calc']+$point['point'];
         return $new_calc;
     }
