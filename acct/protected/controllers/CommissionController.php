@@ -24,7 +24,7 @@ class CommissionController extends Controller
     {
         return array(
             array('allow',
-                'actions'=>array('save','new','add','newsave','performance','performanceedit','performanceend','editsave','endsave','performancesave',
+                'actions'=>array('save','new','add','newsave','performance','performanceedit','performanceend','editsave','endsave','performancesave','position',
                     'performanceeditsave','performanceendsave','renewal','renewalend','renewalsave','renewalendsave'),
                 'expression'=>array('CommissionController','allowReadWrite'),
             ),
@@ -91,8 +91,9 @@ class CommissionController extends Controller
 
     public function actionView($year,$month,$index)
     {
+        $a=$this->actionPosition($index);
         $model = new ReportXS01Form('view');
-        if (!$model->retrieveData($index)) {
+        if (!$model->retrieveData($index,$a)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
 //      print_r('<pre>');
@@ -104,7 +105,8 @@ class CommissionController extends Controller
     public function actionNew($pageNum=0,$year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+        $a=$this->actionPosition($index);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -129,7 +131,8 @@ class CommissionController extends Controller
     public function actionEdit($pageNum=0,$year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+        $a=$this->actionPosition($index);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -154,7 +157,8 @@ class CommissionController extends Controller
     public function actionEnd($pageNum=0,$year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+        $a=$this->actionPosition($index);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -176,7 +180,8 @@ class CommissionController extends Controller
     public function actionPerformance($pageNum=0,$year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+        $a=$this->actionPosition($index);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -198,7 +203,8 @@ class CommissionController extends Controller
     public function actionPerformanceEdit($pageNum=0,$year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+        $a=$this->actionPosition($index);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -220,7 +226,8 @@ class CommissionController extends Controller
     public function actionPerformanceEnd($pageNum=0,$year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+        $a=$this->actionPosition($index);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -303,7 +310,8 @@ class CommissionController extends Controller
     public function actionNewSave($year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+        $a=$this->actionPosition($index);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -337,7 +345,8 @@ class CommissionController extends Controller
     public function actionEditSave($year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+        $a=$this->actionPosition($index);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -368,7 +377,8 @@ class CommissionController extends Controller
     public function actionEndSave($year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+        $a=$this->actionPosition($index);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -399,7 +409,8 @@ class CommissionController extends Controller
     public function actionPerformanceSave($year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+        $a=$this->actionPosition($index);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -430,7 +441,8 @@ class CommissionController extends Controller
     public function actionPerformanceEditSave($year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+        $a=$this->actionPosition($index);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -461,7 +473,8 @@ class CommissionController extends Controller
     public function actionPerformanceEndSave($year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+        $a=$this->actionPosition($index);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -549,5 +562,21 @@ class CommissionController extends Controller
 
     public static function allowReadOnly() {
         return Yii::app()->user->validFunction('XS01');
+    }
+
+    public function actionPosition($index){
+        $suffix = Yii::app()->params['envSuffix'];
+        $sql="select position from hr$suffix.hr_employee a
+            left outer join  acc_service_comm_hdr b on a.code=b.employee_code
+            where  b.id='$index'
+        ";
+        $position = Yii::app()->db->createCommand($sql)->queryScalar();
+        $a=array('2718','2719','2720','4716','2684');
+        if(in_array($position,$a)){
+            $records=1;//不加入东成西就
+        }else{
+            $records=2;
+        }
+        return $records;
     }
 }

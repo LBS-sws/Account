@@ -83,8 +83,9 @@ class QueryController extends Controller
 
     public function actionView($year,$month,$index)
     {
+        $a=$this->actionPosition($index);
         $model = new ReportXS02Form('view');
-        if (!$model->retrieveData($index)) {
+        if (!$model->retrieveData($index,$a)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
 //      print_r('<pre>');

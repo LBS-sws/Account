@@ -121,7 +121,7 @@ class ReportXS02Form extends CReportForm
 //        return $city;
 //    }
 
-    public function retrieveData($index){
+    public function retrieveData($index,$a){
         $suffix = Yii::app()->params['envSuffix'];
         $sql="select a.*,b.*,c.name as city_name ,d.group_type from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
@@ -132,7 +132,7 @@ class ReportXS02Form extends CReportForm
         $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(!empty($records)){
             $city=Yii::app()->user->city();
-            if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'){
+            if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
                 $month=$records['month_no'];
                 $year=$records['year_no'];
             }else{
@@ -158,6 +158,9 @@ class ReportXS02Form extends CReportForm
             $this->employee_name=$records['employee_name'];
             $this->saleyear=$records['year_no']."/".$records['month_no'];
             $new_calc=$arr['new_calc']*100;
+            if($new_calc==0){
+                $new_calc=5;
+            }
             $this->new_calc=$new_calc."%";
             $this->new_amount=$records['new_amount'];
             $this->edit_amount=$records['edit_amount'];
