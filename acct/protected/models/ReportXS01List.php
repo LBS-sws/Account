@@ -1039,7 +1039,6 @@ class ReportXS01List extends CListPageModel
                 }else{
                     $a=$records['amt_paid']*$records['ctrt_period'];
                 }
-                $records['othersalesman']=str_replace(' ','',$records['othersalesman']);
                 $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                 $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                 $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
@@ -1205,13 +1204,13 @@ class ReportXS01List extends CListPageModel
                     $m=0;
                 }
                 //当初提成比例
+                $records['company_name']=str_replace(' ','',$records['company_name']);
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N'";
                 $recordss = Yii::app()->db->createCommand($sql)->queryRow();
                 $date=$recordss['first_dt'];
                 $timestrap=strtotime($date);
                 $year=date('Y',$timestrap);
                 $month=date('m',$timestrap);
-                $records['salesman']=str_replace(' ','',$records['salesman']);
                 $records['salesman']=str_replace('(','',$records['salesman']);
                 $records['salesman']=str_replace(')','',$records['salesman']);
                 $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
@@ -1328,14 +1327,13 @@ class ReportXS01List extends CListPageModel
                 }else{
                     $m=0;
                 }
-
+                $records['company_name']=str_replace(' ','',$records['company_name']);
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N'";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
                 $date=$records['first_dt'];
                 $timestrap=strtotime($date);
                 $year=date('Y',$timestrap);
                 $month=date('m',$timestrap);
-                $records['salesman']=str_replace(' ','',$records['salesman']);
                 $records['salesman']=str_replace('(','',$records['salesman']);
                 $records['salesman']=str_replace(')','',$records['salesman']);
                 if(empty($records['city'])){
@@ -1378,6 +1376,7 @@ class ReportXS01List extends CListPageModel
                     }
                 }
             }else{
+                $records['company_name']=str_replace(' ','',$records['company_name']);
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='A' order by status_dt ";//更改
                 $record = Yii::app()->db->createCommand($sql)->queryAll();
                 for ($i=0;$i<count($record);$i++){
@@ -1513,7 +1512,6 @@ class ReportXS01List extends CListPageModel
                 $sql3="select performance from acc_service_comm_hdr where  id='$index'";
                 $color = Yii::app()->db->createCommand($sql3)->queryRow();
                 if($color['performance']==1) {
-                    $records['othersalesman']=str_replace(' ','',$records['othersalesman']);
                     $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                     $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                     $sql1 = "select * from acc_service_comm_hdr where year_no='" . $year . "' and month_no='" . $month . "' and city='" . $records['city'] . "' and  concat_ws(' ',employee_name,employee_code)= '" . $records['othersalesman'] . "'";
@@ -1549,7 +1547,6 @@ class ReportXS01List extends CListPageModel
                 $sql3="select performance from acc_service_comm_hdr where  id='$index'";
                 $color = Yii::app()->db->createCommand($sql3)->queryRow();
                 if($color['performance']==1) {
-                    $records['othersalesman']=str_replace(' ','',$records['othersalesman']);
                     $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                     $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                     $sql1 = "select * from acc_service_comm_hdr where year_no='" . $year . "' and month_no='" . $month . "' and city='" . $records['city'] . "' and  concat_ws(' ',employee_name,employee_code)= '" . $records['othersalesman'] . "' ";
@@ -1627,7 +1624,6 @@ class ReportXS01List extends CListPageModel
                 $sql3="select performance from acc_service_comm_hdr where  id='$index'";
                 $color = Yii::app()->db->createCommand($sql3)->queryRow();
                 if($color['performance']==1){
-                    $records['othersalesman']=str_replace(' ','',$records['othersalesman']);
                     $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                     $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                     $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
@@ -1663,13 +1659,13 @@ class ReportXS01List extends CListPageModel
                 }else{
                     $m=0;
                 }
+                $records['company_name']=str_replace(' ','',$records['company_name']);
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N'";
                 $recordss = Yii::app()->db->createCommand($sql)->queryRow();
                 $date=$recordss['first_dt'];
                 $timestrap=strtotime($date);
                 $years=date('Y',$timestrap);
                 $months=date('m',$timestrap);
-                $records['othersalesman']=str_replace(' ','',$records['othersalesman']);
                 $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                 $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                 $sql1="select * from acc_service_comm_hdr where year_no='".$years."' and month_no='".$months."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
@@ -1759,6 +1755,7 @@ class ReportXS01List extends CListPageModel
                 }else{
                     $m=0;
                 }
+                $records['company_name']=str_replace(' ','',$records['company_name']);
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N'";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
                 if(empty($records)){
@@ -1769,7 +1766,6 @@ class ReportXS01List extends CListPageModel
                 $timestrap=strtotime($date);
                 $year=date('Y',$timestrap);
                 $month=date('m',$timestrap);
-                $records['othersalesman']=str_replace(' ','',$records['othersalesman']);
                 $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                 $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                 $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
@@ -1802,6 +1798,7 @@ class ReportXS01List extends CListPageModel
                     }
                 }
             }else{
+                $records['company_name']=str_replace(' ','',$records['company_name']);
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='A' order by status_dt ";//更改
                 $record = Yii::app()->db->createCommand($sql)->queryAll();
                 for ($i=0;$i<count($record);$i++){
@@ -1811,7 +1808,6 @@ class ReportXS01List extends CListPageModel
                     $timestrap=strtotime($date);
                     $year=date('Y',$timestrap);
                     $month=date('m',$timestrap);
-                    $records['othersalesman']=str_replace(' ','',$records['othersalesman']);
                     $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                     $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                     $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
@@ -1835,13 +1831,13 @@ class ReportXS01List extends CListPageModel
                     }else{
                         $m=0;
                     }
+                    $record[$i]['company_name']=str_replace(' ','',$record[$i]['company_name']);
                     $sqls="select * from  swoper$suffix.swo_service where company_name='".$record[$i]['company_name']."' and cust_type='".$record[$i]['cust_type']."' and status='N'";
                     $arr = Yii::app()->db->createCommand($sqls)->queryRow();
                     $date=$arr['first_dt'];
                     $timestrap=strtotime($date);
                     $year=date('Y',$timestrap);
                     $month=date('m',$timestrap);
-                    $records['othersalesman']=str_replace(' ','',$records['othersalesman']);
                     $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                     $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                     $sqlss="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
@@ -2112,7 +2108,6 @@ class ReportXS01List extends CListPageModel
             }
         }
         if(!empty($ohersaleman)){
-            $ohersaleman=str_replace(' ','',$ohersaleman);
             $ohersaleman=str_replace('(','',$ohersaleman);
             $ohersaleman=str_replace(')','',$ohersaleman);
             $sql1="select group_type from hr$suffix.hr_employee where  concat_ws(' ',name,code)= '".$ohersaleman."' ";
@@ -2156,7 +2151,6 @@ class ReportXS01List extends CListPageModel
             }
         }
         if(!empty($ohersaleman)){
-            $ohersaleman=str_replace(' ','',$ohersaleman);
             $ohersaleman=str_replace('(','',$ohersaleman);
             $ohersaleman=str_replace(')','',$ohersaleman);
             $sql1="select group_type from hr$suffix.hr_employee where  concat_ws(' ',name,code)= '".$ohersaleman."' ";
