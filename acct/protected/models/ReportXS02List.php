@@ -140,7 +140,7 @@ class ReportXS02List extends CListPageModel
     public function editDataByPage($pageNum=1,$year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $start=$year."-".$month."-01";
@@ -151,13 +151,13 @@ class ReportXS02List extends CListPageModel
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 			    inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.salesman ='".$name['name']."' and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'	  
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'	  
 			";
         $sql2 = "select count(a.id)
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.salesman ='".$name['name']."' and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -236,7 +236,7 @@ class ReportXS02List extends CListPageModel
     public function endDataByPage($pageNum=1,$year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $start=$year."-".$month."-01";
@@ -247,13 +247,13 @@ class ReportXS02List extends CListPageModel
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.salesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $sql2 = "select count(a.id)
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.salesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -332,7 +332,7 @@ class ReportXS02List extends CListPageModel
     public function performanceDataByPage($pageNum=1,$year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $start=$year."-".$month."-01";
@@ -343,13 +343,13 @@ class ReportXS02List extends CListPageModel
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.othersalesman ='".$name['name']."' and a.status='N' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.othersalesman ='".$name['name']."' and a.status='N' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $sql2 = "select count(a.id)
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.othersalesman ='".$name['name']."' and a.status='N' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.othersalesman ='".$name['name']."' and a.status='N' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -462,7 +462,7 @@ class ReportXS02List extends CListPageModel
     public function performanceeditDataByPage($pageNum=1,$year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $start=$year."-".$month."-01";
@@ -473,13 +473,13 @@ class ReportXS02List extends CListPageModel
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 			    inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.othersalesman ='".$name['name']."' and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'	  
+				where a.city in ($city)  and  a.othersalesman ='".$name['name']."' and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'	  
 			";
         $sql2 = "select count(a.id)
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.othersalesman ='".$name['name']."' and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.othersalesman ='".$name['name']."' and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -558,7 +558,7 @@ class ReportXS02List extends CListPageModel
     public function performanceendDataByPage($pageNum=1,$year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $start=$year."-".$month."-01";
@@ -569,13 +569,13 @@ class ReportXS02List extends CListPageModel
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.othersalesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.othersalesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $sql2 = "select count(a.id)
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.othersalesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.othersalesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -654,7 +654,7 @@ class ReportXS02List extends CListPageModel
     public function newDataByPage($pageNum=1,$year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $start=$year."-".$month."-01";
@@ -665,13 +665,13 @@ class ReportXS02List extends CListPageModel
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.salesman ='".$name['name']."' and a.status='N'  and a.first_dt>='$start' and a.first_dt<='$end'
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='N'  and a.first_dt>='$start' and a.first_dt<='$end'
 			";
         $sql2 = "select count(a.id)			
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.salesman ='".$name['name']."' and a.status='N' and a.first_dt>='$start' and a.first_dt<='$end'
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='N' and a.first_dt>='$start' and a.first_dt<='$end'
 			";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -778,7 +778,7 @@ class ReportXS02List extends CListPageModel
     {
         $suffix = Yii::app()->params['envSuffix'];
         $citys = "'BJ','SH','GZ','SZ'";
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         if(strstr($citys, $city)){
             $amt_paid_money=2000;
         }else{
@@ -795,7 +795,7 @@ class ReportXS02List extends CListPageModel
 				inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				where  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=2 
-				and a.city ='$city' and (((a.amt_paid>='$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid>='$amt_paid_money') and  a.paid_type='M'))
+				and a.city in ($city) and (((a.amt_paid>='$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid>='$amt_paid_money') and  a.paid_type='M'))
 			  
 			";
         $clause = "";
@@ -842,7 +842,7 @@ class ReportXS02List extends CListPageModel
 				from swoper$suffix.swo_service a 
 				inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city ='$city'  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end'
 				 and a.nature_type=2 and  (((a.amt_paid<'$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid<'$amt_paid_money') and  a.paid_type='M'))			
 			";
         $ou = Yii::app()->db->createCommand($sql_ou)->queryAll();
@@ -881,7 +881,7 @@ class ReportXS02List extends CListPageModel
         left outer join security$suffix.sec_city d on a.city=d.code 			  
 		left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 		left outer join swoper$suffix.swo_company b on a.company_name=concat_ws(' ',b.code,b.name) 
-		where a.city ='$city'  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=1	  
+		where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=1	  
         ";
         $eat = Yii::app()->db->createCommand($sql_eat)->queryAll();
 //                print_r('<pre>');
@@ -930,7 +930,7 @@ class ReportXS02List extends CListPageModel
     public function renewalendDataByPage($pageNum=1,$year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $name['name']=str_replace(' ',' (',$name['name']);
@@ -941,7 +941,7 @@ class ReportXS02List extends CListPageModel
 				from swoper$suffix.swo_service a 
 				inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city ='$city'   and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'  and  a.salesman ='".$name['name']."'
+				where a.city in ($city)  and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'  and  a.salesman ='".$name['name']."'
 ";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -986,7 +986,7 @@ class ReportXS02List extends CListPageModel
             $sql2="select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city ='$city'   and a.status='C'  and  a.company_name='".$record['company_name']."'  and  a.salesman ='".$name['name']."'
+				where a.city in ($city)   and a.status='C'  and  a.company_name='".$record['company_name']."'  and  a.salesman ='".$name['name']."'
 				and  a.cust_type='".$record['cust_type']."' and a.cust_type_name='".$record['cust_type_name']."'  and a.royalty=0.01
 				order by  a.id desc
 ";
@@ -1252,7 +1252,7 @@ ob_end_clean();
 
     public function Newdown($year,$month,$index){
         $suffix = Yii::app()->params['envSuffix'];
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         $new=array();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
@@ -1264,7 +1264,7 @@ ob_end_clean();
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.salesman ='".$name['name']."' and a.status='N'  and a.first_dt>='$start' and a.first_dt<='$end'
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='N'  and a.first_dt>='$start' and a.first_dt<='$end'
 			";
         $records = Yii::app()->db->createCommand($sql)->queryAll();
         $sqls = "select a.*,  c.description as type_desc, d.name as city_name					
@@ -1324,7 +1324,7 @@ ob_end_clean();
     public function Editdown($year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         $new=array();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
@@ -1336,7 +1336,7 @@ ob_end_clean();
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 			    inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.salesman ='".$name['name']."' and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'	  
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'	  
 			";
         $records = Yii::app()->db->createCommand($sql)->queryAll();
         if (count($records) > 0) {
@@ -1366,7 +1366,7 @@ ob_end_clean();
 
     public function Enddown($year,$month,$index){
         $suffix = Yii::app()->params['envSuffix'];
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         $new=array();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
@@ -1378,7 +1378,7 @@ ob_end_clean();
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.salesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $records = Yii::app()->db->createCommand($sql)->queryAll();
         if (count($records) > 0) {
@@ -1409,7 +1409,7 @@ ob_end_clean();
     public function NewPerdown($year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         $newper=array();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
@@ -1421,7 +1421,7 @@ ob_end_clean();
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.othersalesman ='".$name['name']."' and a.status='N' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.othersalesman ='".$name['name']."' and a.status='N' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $records = Yii::app()->db->createCommand($sql)->queryAll();
         $sqls = "select a.*,  c.description as type_desc, d.name as city_name					
@@ -1481,7 +1481,7 @@ ob_end_clean();
 
     public function EditPerdown($year,$month,$index){
         $suffix = Yii::app()->params['envSuffix'];
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         $editper=array();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
@@ -1493,7 +1493,7 @@ ob_end_clean();
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 			    inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.othersalesman ='".$name['name']."' and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'	  
+				where a.city in ($city)  and  a.othersalesman ='".$name['name']."' and a.status='A' and a.status_dt>='$start' and a.status_dt<='$end'	  
 			";
         $records = Yii::app()->db->createCommand($sql)->queryAll();
         if (count($records) > 0) {
@@ -1523,7 +1523,7 @@ ob_end_clean();
 
     public function EndPerdown($year,$month,$index){
         $suffix = Yii::app()->params['envSuffix'];
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         $endper=array();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
@@ -1535,7 +1535,7 @@ ob_end_clean();
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city='$city'  and  a.othersalesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.othersalesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'
 			";
         $records = Yii::app()->db->createCommand($sql)->queryAll();
         if (count($records) > 0) {
@@ -1567,7 +1567,7 @@ ob_end_clean();
     {
         $suffix = Yii::app()->params['envSuffix'];
         $citys = "'BJ','SH','GZ','SZ'";
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         if(strstr($citys, $city)){
             $amt_paid_money=2000;
         }else{
@@ -1584,7 +1584,7 @@ ob_end_clean();
 				inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				where  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=2 
-				and a.city ='$city' and (((a.amt_paid>='$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid>='$amt_paid_money') and  a.paid_type='M'))
+				and a.city in ($city) and (((a.amt_paid>='$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid>='$amt_paid_money') and  a.paid_type='M'))
 			  
 			";
 
@@ -1596,7 +1596,7 @@ ob_end_clean();
 				from swoper$suffix.swo_service a 
 				inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city ='$city'  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end'
 				 and a.nature_type=2 and  (((a.amt_paid<'$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid<'$amt_paid_money') and  a.paid_type='M'))			
 			";
         $ou = Yii::app()->db->createCommand($sql_ou)->queryAll();
@@ -1634,7 +1634,7 @@ ob_end_clean();
         left outer join security$suffix.sec_city d on a.city=d.code 			  
 		left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 		left outer join swoper$suffix.swo_company b on a.company_name=concat_ws(' ',b.code,b.name) 
-		where a.city ='$city'  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=1	  
+		where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=1	  
         ";
         $eat = Yii::app()->db->createCommand($sql_eat)->queryAll();
 //                print_r('<pre>');
@@ -1676,7 +1676,7 @@ ob_end_clean();
     public function renewalenddown($year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $name['name']=str_replace(' ',' (',$name['name']);
@@ -1687,14 +1687,14 @@ ob_end_clean();
 				from swoper$suffix.swo_service a 
 				inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city ='$city'   and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'  and  a.salesman ='".$name['name']."'
+				where a.city in ($city)   and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'  and  a.salesman ='".$name['name']."'
 ";
         $records = Yii::app()->db->createCommand($sql1)->queryAll();
         foreach ($records as $k=>&$record){
             $sql2="select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city ='$city'   and a.status='C'  and  a.company_name='".$record['company_name']."'  and  a.salesman ='".$name['name']."'
+				where a.city in ($city)   and a.status='C'  and  a.company_name='".$record['company_name']."'  and  a.salesman ='".$name['name']."'
 				and  a.cust_type='".$record['cust_type']."' and a.cust_type_name='".$record['cust_type_name']."'  and a.royalty=0.01
 				order by  a.id desc
 ";
