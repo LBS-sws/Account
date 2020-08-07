@@ -33,6 +33,7 @@ class ReportXS02List extends CListPageModel
 //        print_r($month);
 		$suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city();
+        $citys = Yii::app()->user->city_allow();
         $month=$month-1;
         if($month==0){
             $month=12;
@@ -45,14 +46,14 @@ class ReportXS02List extends CListPageModel
                  inner join  hr$suffix.hr_dept c on b.position=c.id      
                  inner join security$suffix.sec_city e on a.city=e.code 		  
                  left outer join  acc_service_comm_dtl d on a.id=d.hdr_id            
-			     where  a.year_no='$year'  and a.month_no='$month' and a.city='$city' and b.city='$city'  and b.staff_status = 0
+			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)  and b.staff_status = 0
 			";
             $sql2 = "select count(a.id) from acc_service_comm_hdr a
 			      inner join  hr$suffix.hr_employee b  on b.code=a.employee_code   
                  inner join  hr$suffix.hr_dept c on b.position=c.id   
                   inner join security$suffix.sec_city e on a.city=e.code 		   
                   left outer join  acc_service_comm_dtl d on a.id=d.hdr_id          
-			     where  a.year_no='$year'  and a.month_no='$month' and a.city='$city' and b.city='$city'  and b.staff_status = 0
+			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($city) and b.city in ($city)  and b.staff_status = 0
 			";
         }else{
             $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,d.performance_amount,d.performanceedit_amount,d.performanceend_amount,d.renewal_amount,d.renewalend_amount,e.name as cityname from acc_service_comm_hdr a
