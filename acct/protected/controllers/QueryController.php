@@ -24,7 +24,7 @@ class QueryController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','downs','renewal','renewalend'),
+				'actions'=>array('new','edit','delete','save','downs','renewal','renewalend','position'),
 				'expression'=>array('QueryController','allowReadWrite'),
 			),
 			array('allow', 
@@ -303,7 +303,23 @@ class QueryController extends Controller
 //			Yii::app()->end();
 //		}
 //	}
-	
+
+    public function actionPosition($index){
+        $suffix = Yii::app()->params['envSuffix'];
+        $sql="select position from hr$suffix.hr_employee a
+            left outer join  acc_service_comm_hdr b on a.code=b.employee_code
+            where  b.id='$index'
+        ";
+        $position = Yii::app()->db->createCommand($sql)->queryScalar();
+        $a=array('2718','2719','2720','4716','2684');
+        if(in_array($position,$a)){
+            $records=1;//不加入东成西就
+        }else{
+            $records=2;
+        }
+        return $records;
+    }
+
 	public static function allowReadWrite() {
 		return Yii::app()->user->validRWFunction('XS02');
 	}
