@@ -1348,7 +1348,7 @@ class ReportXS01List extends CListPageModel
                     Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Some records cannot be calculated') );
                     Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/end',array('year'=>$years,'month'=>$months,'index'=>$index)));
                 }
-                $fuwu_last=$this->getAmountLast($years,$months,$records1['id']);//上月提成比例服务
+                $fuwu_last=$this->getAmountLast($year,$month,$records1['id']);//上月提成比例服务
                 $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
                 if(isset($m)){
                     if(!empty($fuwu_last)){
