@@ -238,9 +238,9 @@ class QueryController extends Controller
 
 	public function actionDowns($year,$month,$index)
 	{
-
+        $a=$this->actionPosition($index);
         $model = new ReportXS02Form('view');
-        $model->retrieveData($index);
+        $model->retrieveData($index,$a);
         $view=$model;
         $model = new ReportXS02List;
         $model->retrieveXiaZai($year,$month,$index,$view);
