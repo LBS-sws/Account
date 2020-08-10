@@ -311,7 +311,7 @@ class CommissionController extends Controller
     {
         $city=Yii::app()->user->city();
         $a=$this->actionPosition($index);
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||($year<=2020&&$month<7)){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -346,7 +346,7 @@ class CommissionController extends Controller
     {
         $city=Yii::app()->user->city();
         $a=$this->actionPosition($index);
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||($year<=2020&&$month<7)){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -378,7 +378,7 @@ class CommissionController extends Controller
     {
         $city=Yii::app()->user->city();
         $a=$this->actionPosition($index);
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||($year<=2020&&$month<7)){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -410,7 +410,7 @@ class CommissionController extends Controller
     {
         $city=Yii::app()->user->city();
         $a=$this->actionPosition($index);
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||($year<=2020&&$month<7)){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -442,7 +442,7 @@ class CommissionController extends Controller
     {
         $city=Yii::app()->user->city();
         $a=$this->actionPosition($index);
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||($year<=2020&&$month<7)){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -474,7 +474,7 @@ class CommissionController extends Controller
     {
         $city=Yii::app()->user->city();
         $a=$this->actionPosition($index);
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1){
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||($year<=2020&&$month<7)){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
