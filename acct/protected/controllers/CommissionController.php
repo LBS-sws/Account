@@ -86,7 +86,7 @@ class CommissionController extends Controller
 
     public function actionView($year,$month,$index)
     {
-        $a=$this->actionPosition($index);
+        $a=$this->position($index);
         $model = new ReportXS01Form('view');
         if (!$model->retrieveData($index,$a)) {
             throw new CHttpException(404,'The requested page does not exist.');
@@ -269,11 +269,11 @@ class CommissionController extends Controller
     public function actionNewSave($year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        $a=$this->actionPosition($index);
+        $a=$this->position($index);
         $date=$year."/".$month;
-        print_r($a);
+        print_r($a);  print_r($date);  exit();
         if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
-            exit();$model = new ReportXS01SList;
+          $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
         }
@@ -306,7 +306,7 @@ class CommissionController extends Controller
     public function actionEditSave($year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        $a=$this->actionPosition($index);
+        $a=$this->position($index);
         $date=$year."/".$month;
         if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
             $model = new ReportXS01SList;
@@ -339,7 +339,7 @@ class CommissionController extends Controller
     public function actionEndSave($year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        $a=$this->actionPosition($index);
+        $a=$this->position($index);
         $date=$year."/".$month;
         if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
             $model = new ReportXS01SList;
@@ -372,7 +372,7 @@ class CommissionController extends Controller
     public function actionPerformanceSave($year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        $a=$this->actionPosition($index);
+        $a=$this->position($index);
         $date=$year."/".$month;
         if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
             $model = new ReportXS01SList;
@@ -405,7 +405,7 @@ class CommissionController extends Controller
     public function actionPerformanceEditSave($year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        $a=$this->actionPosition($index);
+        $a=$this->position($index);
         $date=$year."/".$month;
         if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
             $model = new ReportXS01SList;
@@ -438,7 +438,7 @@ class CommissionController extends Controller
     public function actionPerformanceEndSave($year,$month,$index)
     {
         $city=Yii::app()->user->city();
-        $a=$this->actionPosition($index);
+        $a=$this->position($index);
         $date=$year."/".$month;
         if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
             $model = new ReportXS01SList;
@@ -530,7 +530,7 @@ class CommissionController extends Controller
         return Yii::app()->user->validFunction('XS01');
     }
 
-    public function actionPosition($index){
+    public function position($index){
         $suffix = Yii::app()->params['envSuffix'];
         $sql="select position from hr$suffix.hr_employee a
             left outer join  acc_service_comm_hdr b on a.code=b.employee_code

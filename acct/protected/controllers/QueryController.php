@@ -83,7 +83,7 @@ class QueryController extends Controller
 
     public function actionView($year,$month,$index)
     {
-        $a=$this->actionPosition($index);
+        $a=$this->position($index);
         $model = new ReportXS02Form('view');
         if (!$model->retrieveData($index,$a)) {
             throw new CHttpException(404,'The requested page does not exist.');
@@ -238,7 +238,7 @@ class QueryController extends Controller
 
 	public function actionDowns($year,$month,$index)
 	{
-        $a=$this->actionPosition($index);
+        $a=$this->position($index);
         $model = new ReportXS02Form('view');
         $model->retrieveData($index,$a);
         $view=$model;
@@ -304,7 +304,7 @@ class QueryController extends Controller
 //		}
 //	}
 
-    public function actionPosition($index){
+    public function position($index){
         $suffix = Yii::app()->params['envSuffix'];
         $sql="select position from hr$suffix.hr_employee a
             left outer join  acc_service_comm_hdr b on a.code=b.employee_code
