@@ -133,7 +133,7 @@ class ReportXS02Form extends CReportForm
         if(!empty($records)){
             $city=Yii::app()->user->city();
             $date=$records['year_no']."/".$records['month_no'];
-            if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/8'){
+            if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
                 $month=$records['month_no'];
                 $year=$records['year_no'];
             }else{
