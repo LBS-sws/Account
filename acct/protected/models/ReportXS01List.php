@@ -2049,7 +2049,8 @@ class ReportXS01List extends CListPageModel
     }
 
     public function getAmountLast($year,$month,$id){
-        if($year<=2020&&$month<7){
+        $date=$year."/".$month;
+        if($date<'2020/8'){
         }else{
             $month=$month-1;
             if($month==0){
