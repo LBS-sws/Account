@@ -271,8 +271,9 @@ class CommissionController extends Controller
         $city=Yii::app()->user->city();
         $a=$this->actionPosition($index);
         $date=$year."/".$month;
+        print_r($a);
         if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
-            $model = new ReportXS01SList;
+            exit();$model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
         }
