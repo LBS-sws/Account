@@ -1091,7 +1091,6 @@ class ReportXS01List extends CListPageModel
                 //     $zhuangji+=$records['amt_install'];
             }
         }
-         print_r($moneys);print_r('--');
         if(!empty($cust_type)){
             $sql_edit_money="select edit_money from acc_service_comm_dtl where hdr_id='$index'";
             $records_edit_money = Yii::app()->db->createCommand($sql_edit_money)->queryRow();
@@ -1103,7 +1102,6 @@ class ReportXS01List extends CListPageModel
             $fuwu=$this->getAmount($city,$cust_type,$start_dt,$money_all);//本月提成比例服务
             $fuwu_last=$this->getAmountLast($year,$month,$index);//上月提成比例服务
             $fuwumoney=$moneys*$fuwu_last;
-            print_r($fuwu_last);print_r('--');   print_r($fuwumoney);print_r('--');
         }else{
             if(empty($cust_type)){
                 Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
@@ -1133,7 +1131,6 @@ class ReportXS01List extends CListPageModel
         }else{
             $color=2;//不计算
         }
-        exit();
         $salemoney=$fuwumoney+$invmoney;
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
@@ -2072,7 +2069,7 @@ class ReportXS01List extends CListPageModel
         $arr = Yii::app()->db->createCommand($sql1)->queryRow();
         $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."'";
         $point = Yii::app()->db->createCommand($sql_point)->queryRow();
-        if(empty($arr['new_calc'])){
+        if(empty($arr['new_calc'])&&$arr['new_calc']==0){
             $arr['new_calc']=0.05;
         }
         $new_calc=$arr['new_calc']+$point['point'];
