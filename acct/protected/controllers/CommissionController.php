@@ -271,7 +271,6 @@ class CommissionController extends Controller
         $city=Yii::app()->user->city();
         $a=$this->position($index);
         $date=$year."/".$month;
-        print_r($a);  print_r($date);  exit();
         if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
           $model = new ReportXS01SList;
         }else{
@@ -535,10 +534,10 @@ class CommissionController extends Controller
         $sql="select * from hr$suffix.hr_employee a
             left outer join  acc_service_comm_hdr b on a.code=b.employee_code
             inner join hr$suffix.hr_dept c on a.position=c.id 
-            where  b.id='$index' and c.manager_type ='3' 
+            where  b.id='$index' and (c.manager_type ='1' or c.manager_type ='2')
         ";
         $position = Yii::app()->db->createCommand($sql)->queryRow();
-        if(!empty($position)){
+        if(empty($position)){
             $records=1;//不加入东成西就
         }else{
             $records=2;
