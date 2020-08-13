@@ -848,8 +848,8 @@ class ReportXS01SList extends CListPageModel
             }
             $fuwu=$this->getAmount($city,$cust_type,$start_dt,$money_all);//提成比例服务
             $point=$this->getPoint($year,$month,$index);//积分激励点
-            $fuwu=$fuwu+$point;
-            $fuwumoney=$moneys*$fuwu;
+            $fuwus=$fuwu+$point;
+            $fuwumoney=$moneys*$fuwus;
         }else{
             if(empty($cust_type)){
                 Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );

@@ -2178,7 +2178,7 @@ class ReportXS01List extends CListPageModel
         $timestrap=strtotime($record);
         $years=date('Y',$timestrap);
         $months=date('m',$timestrap);
-        if($years==$year&&$months=$month){
+        if($years==$year&&$months==$month){
             $a=1;
         }else{
             $a=2;
