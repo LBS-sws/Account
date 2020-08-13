@@ -1347,6 +1347,7 @@ class ReportXS01List extends CListPageModel
                 }
                 $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
+                print_r($sql1);print_r('<pre>');print_r($records);exit();
 //                $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
 //                $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                 if(empty($records1['id'])){
