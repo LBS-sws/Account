@@ -137,7 +137,8 @@ class ReportXS01Form extends CReportForm
         if(!empty($records)){
             $city=Yii::app()->user->city();
             $date=$records['year_no']."/".$records['month_no'];
-            if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
+            $employee=$this->getEmployee($records['employee_code'],$records['year_no'],$records['month_no']);
+            if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'||$employee==1){
                 $month=$records['month_no'];
                 $year=$records['year_no'];
             }else{
@@ -227,6 +228,23 @@ class ReportXS01Form extends CReportForm
             $model=Yii::t("misc","group repast");//餐飲組
         }
         return $model;
+    }
+
+    public  function getEmployee($employee,$year,$month){
+        $suffix = Yii::app()->params['envSuffix'];
+        $employee=str_replace('(','',$employee);
+        $employee=str_replace(')','',$employee);
+        $sql="select entry_time from hr$suffix.hr_employee where code= '".$employee."' ";
+        $record = Yii::app()->db->createCommand($sql)->queryScalar();
+        $timestrap=strtotime($record);
+        $years=date('Y',$timestrap);
+        $months=date('m',$timestrap);
+        if($years==$year&&$months=$month){
+            $a=1;
+        }else{
+            $a=2;
+        }
+        return $a;
     }
 
 }
