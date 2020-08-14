@@ -145,7 +145,7 @@ return array(
     'amt_paid'=>'服务年金额',
     'amt_install'=>'安装金额',
 	'cust_type'=>'类别',
-    'Othersalesman'=>'跨区业务员',
+    'Othersalesman'=>'被跨区业务员',
     'Salesman'=>'业务员',
     'Ctrt_period'=>'合同年限（月）',
 

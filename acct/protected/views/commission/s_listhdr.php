@@ -21,7 +21,7 @@
 		?>
 	</th>
     <th>
-        <?php echo TbHtml::link($this->getLabelName('跨区业务员'))
+        <?php echo TbHtml::link($this->getLabelName('被跨区业务员'))
         ;
         ?>
     </th>
