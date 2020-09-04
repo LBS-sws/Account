@@ -178,7 +178,8 @@ class ReportXS02Form extends CReportForm
             if(empty($point)){
                 $point['point']=0;
             }
-            $this->point=$point['point'];
+            $point=$point['point']*100;
+            $this->point=$point."%";
             $this->performanceedit_amount=$records['performanceedit_amount'];
             $this->performanceend_amount=$records['performanceend_amount'];
             $this->performanceedit_money=$records['performanceedit_money'];
