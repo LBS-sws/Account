@@ -138,6 +138,7 @@ class ReportXS01Form extends CReportForm
             $city=Yii::app()->user->city();
             $date=$records['year_no']."/".$records['month_no'];
             $employee=$this->getEmployee($records['employee_code'],$records['year_no'],$records['month_no']);
+            print_r($a);   print_r($employee);
             if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'||$employee==1){
                 $month=$records['month_no'];
                 $year=$records['year_no'];
