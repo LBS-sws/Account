@@ -2054,6 +2054,7 @@ class ReportXS01List extends CListPageModel
     }
 
     public function getAmountLast($year,$month,$id){
+        $city = Yii::app()->user->city();
         $date=$year."/".$month;
         if($date<'2020/7'){
             $a=1;
@@ -2074,7 +2075,7 @@ class ReportXS01List extends CListPageModel
               where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name'
 ";
         $arr = Yii::app()->db->createCommand($sql1)->queryRow();
-        $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."'";
+        $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."' and city='$city'";
         $point = Yii::app()->db->createCommand($sql_point)->queryRow();
         if((empty($arr['new_calc'])||$arr['new_calc']==0)&&empty($a)){
             $arr['new_calc']=0.05;

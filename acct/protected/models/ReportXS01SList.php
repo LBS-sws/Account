@@ -1692,6 +1692,7 @@ class ReportXS01SList extends CListPageModel
     }
 
     public function getPoint($year,$month,$id){
+        $city = Yii::app()->user->city();
         $sql="select employee_name from acc_service_comm_hdr where id=$id";
         $name = Yii::app()->db->createCommand($sql)->queryScalar();
         $suffix = Yii::app()->params['envSuffix'];
@@ -1702,7 +1703,7 @@ class ReportXS01SList extends CListPageModel
               where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name'
 ";
         $arr = Yii::app()->db->createCommand($sql1)->queryRow();
-        $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."'";
+        $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."' and city='$city'";
         $point = Yii::app()->db->createCommand($sql_point)->queryRow();
         return $point['point'];
     }
