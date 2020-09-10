@@ -1699,8 +1699,8 @@ class ReportXS01SList extends CListPageModel
         $sql1="select a.*, b.new_calc ,e.user_id from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
               left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
-              left outer join hr$suffix.hr_binding e on  a.employee_name=e.employee_name            
-              where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name' and e.city='$city'
+               left outer join hr$suffix.hr_binding e on  d.id=e.employee_id          
+              where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name' and d.city='$city'
 ";
         $arr = Yii::app()->db->createCommand($sql1)->queryRow();
         $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."' and city='$city'";
