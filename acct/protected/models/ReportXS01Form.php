@@ -159,7 +159,6 @@ class ReportXS01Form extends CReportForm
 ";
             $arr = Yii::app()->db->createCommand($sql1)->queryRow();
             $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."' and city='$city'";
-            print_r($sql_point);
             $point = Yii::app()->db->createCommand($sql_point)->queryRow();
             $this->city=$records['city_name'];
             $this->employee_name=$records['employee_name'];
