@@ -2055,7 +2055,7 @@ class ReportXS01List extends CListPageModel
 
     public function getAmountLast($year,$month,$id){
         $city = Yii::app()->user->city();
-        $date=$year."/".$month."01";
+        $date=$year."/".$month.'/'."01";
         $date1='2020/07/01';
         if(strtotime($date)<strtotime($date1)){
             $a=1;
