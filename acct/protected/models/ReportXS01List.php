@@ -1215,7 +1215,7 @@ class ReportXS01List extends CListPageModel
                 $date=$recordss['first_dt'];
                 $timestrap=strtotime($date);
                 $year=date('Y',$timestrap);
-                $month=date('m',$timestrap);
+                $month=date('j',$timestrap);
                 $records['salesman']=str_replace('(','',$records['salesman']);
                 $records['salesman']=str_replace(')','',$records['salesman']);
                 $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
@@ -1338,7 +1338,7 @@ class ReportXS01List extends CListPageModel
                 $date=$records['first_dt'];
                 $timestrap=strtotime($date);
                 $year=date('Y',$timestrap);
-                $month=date('m',$timestrap);
+                $month=date('j',$timestrap);
                 $records['salesman']=str_replace('(','',$records['salesman']);
                 $records['salesman']=str_replace(')','',$records['salesman']);
                 if(empty($records['city'])){
@@ -1394,7 +1394,7 @@ class ReportXS01List extends CListPageModel
                     $date=$record[$i]['first_dt'];
                     $timestrap=strtotime($date);
                     $year=date('Y',$timestrap);
-                    $month=date('m',$timestrap);
+                    $month=date('j',$timestrap);
                     if($record[$i]['b4_paid_type']=='1'||$record[$i]['b4_paid_type']=='Y'){
                         $a=$record[$i]['b4_amt_paid'];
                     }else{
@@ -1670,7 +1670,7 @@ class ReportXS01List extends CListPageModel
                 $date=$recordss['first_dt'];
                 $timestrap=strtotime($date);
                 $years=date('Y',$timestrap);
-                $months=date('m',$timestrap);
+                $months=date('j',$timestrap);
                 $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                 $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                 $sql1="select * from acc_service_comm_hdr where year_no='".$years."' and month_no='".$months."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
@@ -1770,7 +1770,7 @@ class ReportXS01List extends CListPageModel
                 $date=$records['first_dt'];
                 $timestrap=strtotime($date);
                 $year=date('Y',$timestrap);
-                $month=date('m',$timestrap);
+                $month=date('j',$timestrap);
                 $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                 $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                 $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
@@ -1812,7 +1812,7 @@ class ReportXS01List extends CListPageModel
                     $date=$record[$i]['status_dt'];
                     $timestrap=strtotime($date);
                     $year=date('Y',$timestrap);
-                    $month=date('m',$timestrap);
+                    $month=date('j',$timestrap);
                     $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                     $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                     $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
@@ -1842,7 +1842,7 @@ class ReportXS01List extends CListPageModel
                     $date=$arr['first_dt'];
                     $timestrap=strtotime($date);
                     $year=date('Y',$timestrap);
-                    $month=date('m',$timestrap);
+                    $month=date('j',$timestrap);
                     $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                     $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                     $sqlss="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
@@ -2182,7 +2182,7 @@ class ReportXS01List extends CListPageModel
         $record = Yii::app()->db->createCommand($sql)->queryScalar();
         $timestrap=strtotime($record);
         $years=date('Y',$timestrap);
-        $months=date('m',$timestrap);
+        $months=date('j',$timestrap);
         if($years==$year&&$months==$month){
             $a=1;
         }else{
