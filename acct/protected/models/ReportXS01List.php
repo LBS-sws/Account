@@ -1365,10 +1365,6 @@ class ReportXS01List extends CListPageModel
                                 $money[]=$m;
                             }
                             $sqlct="update swoper$suffix.swo_service set royalty='".$fuwu_last."'  where id='$ai'";
-                            print_r($year);
-                            print_r($month);
-                            print_r($sqlct);
-                            exit();
                             $model = Yii::app()->db->createCommand($sqlct)->execute();
                         }
                     }else{
@@ -2085,6 +2081,10 @@ class ReportXS01List extends CListPageModel
             $arr['new_calc']=0.05;
         }
         $new_calc=$arr['new_calc']+$point['point'];
+        print_r($a);  print_r(111);
+        print_r($sql1);
+        print_r(  $arr['new_calc']);
+        exit();
         return $new_calc;
     }
 
