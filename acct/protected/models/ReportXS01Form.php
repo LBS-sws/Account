@@ -138,7 +138,7 @@ class ReportXS01Form extends CReportForm
             $city=Yii::app()->user->city();
             $date=$records['year_no']."/".$records['month_no'];
             $employee=$this->getEmployee($records['employee_code'],$records['year_no'],$records['month_no']);
-            if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'||$employee==1){
+            if($records['city']=='CD'||$records['city']=='FS'||$records['city']=='NJ'||$records['city']=='TJ'||$a==1||$date<'2020/7'||$employee==1){
                 $month=$records['month_no'];
                 $year=$records['year_no'];
             }else{
@@ -155,10 +155,10 @@ class ReportXS01Form extends CReportForm
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
               left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
               left outer join hr$suffix.hr_binding e on  d.id=e.employee_id            
-              where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name' and d.city='$city'
+              where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name' and d.city='".$records['city']."'
 ";
             $arr = Yii::app()->db->createCommand($sql1)->queryRow();
-            $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."' and city='$city'";
+            $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."' and city='".$records['city']."'";
             $point = Yii::app()->db->createCommand($sql_point)->queryRow();
             $this->city=$records['city_name'];
             $this->employee_name=$records['employee_name'];
