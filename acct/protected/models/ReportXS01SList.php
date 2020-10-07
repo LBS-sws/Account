@@ -1262,10 +1262,12 @@ class ReportXS01SList extends CListPageModel
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
                     $sql2 = "select new_calc from  acc_service_comm_dtl where hdr_id='" . $records1['id'] . "'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                    $point=$this->getPoint($year,$month,$index);//积分激励点
+                    $fuwu_last=$point+$records2['new_calc'];
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     if (!empty($a)) {
                         $moneys += $a * $otherspanning;
-                        $a = $a * $records2['new_calc'];
+                        $a = $a * $fuwu_last;
                         if ($records['cust_type'] == '1' || $records['cust_type'] == '2' || $records['cust_type'] == '3' || $records['cust_type'] == '5' || $records['cust_type'] == '6' || $records['cust_type'] == '7') {
                             $money += $a * $otherspanning;
                         }
@@ -1292,10 +1294,12 @@ class ReportXS01SList extends CListPageModel
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
                     $sql2 = "select new_calc from  acc_service_comm_dtl where hdr_id='" . $records1['id'] . "'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                    $point=$this->getPoint($year,$month,$index);//积分激励点
+                    $fuwu_last=$point+$records2['new_calc'];
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     if (!empty($a)) {
                         $moneys += $a * $otherspanning;
-                        $a = $a * $records2['new_calc'];
+                        $a = $a * $fuwu_last;
                         if ($records['cust_type'] == '1' || $records['cust_type'] == '2' || $records['cust_type'] == '3' || $records['cust_type'] == '5' || $records['cust_type'] == '6' || $records['cust_type'] == '7') {
                             $money += $a * $otherspanning;
                         }
