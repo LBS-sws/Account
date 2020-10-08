@@ -1218,7 +1218,7 @@ class ReportXS01List extends CListPageModel
                 $month=date('m',$timestrap);
                 $records['salesman']=str_replace('(','',$records['salesman']);
                 $records['salesman']=str_replace(')','',$records['salesman']);
-                $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
+                $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."'";
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
 //                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
 //                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
@@ -1631,7 +1631,7 @@ class ReportXS01List extends CListPageModel
                 if($color['performance']==1){
                     $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                     $records['othersalesman']=str_replace(')','',$records['othersalesman']);
-                    $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' order by status_dt desc";
+                    $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."'";
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
 //                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
 //                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
