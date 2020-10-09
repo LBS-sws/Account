@@ -1029,7 +1029,7 @@ class ReportXS01SList extends CListPageModel
         $money=$money*$fuwu;//更改新增提成
         $fuwumoney=$money+$money1;//更改总和
         //新增补充修改
-        if(!empty($records_new_money['new_calc'])){
+        if(!empty($records_new_money['new_calc'])&&$records_new_money['new_calc']>0){
             $new_moneyss=$records_new_money['new_amount']/ $records_new_money['new_calc'];
           $new_amount=$new_moneyss*$fuwu;
           $sql_new="update acc_service_comm_dtl set new_amount='$new_amount' ,new_calc='$fuwu' where hdr_id='$index'";
