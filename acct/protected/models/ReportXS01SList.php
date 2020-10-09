@@ -969,9 +969,11 @@ class ReportXS01SList extends CListPageModel
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
+                    $point=$this->getPoint($year,$month,$index);//积分激励点
+                    $fuwu_last=$point+$records2['new_calc'];
                    if(isset($m)){
                        if(!empty($records2)){
-                           $m=$m*$records2['new_calc'];
+                           $m=$m*$fuwu_last;
                            if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                $cust_type='fw';
                                if(!empty($records['othersalesman'])){
@@ -1094,9 +1096,11 @@ class ReportXS01SList extends CListPageModel
                 $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                 $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                 $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
+                $point=$this->getPoint($year,$month,$index);//积分激励点
+                $fuwu_last=$point+$records2['new_calc'];
                 if(isset($m)){
                     if(!empty($records2)){
-                        $m=$m*$records2['new_calc'];
+                        $m=$m*$fuwu_last;
                         if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                             if(!empty($records['othersalesman'])){
                                 $money[]=$m*$spanning;
@@ -1369,7 +1373,9 @@ class ReportXS01SList extends CListPageModel
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
-                    $fuwumoney=$c*$records2['new_calc'];
+                    $point=$this->getPoint($year,$month,$index);//积分激励点
+                    $fuwu_last=$point+$records2['new_calc'];
+                    $fuwumoney=$c*$fuwu_last;
                     if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                         $money+=$fuwumoney*$otherspanning;
                         $moneys+=$c*$otherspanning;
@@ -1410,7 +1416,9 @@ class ReportXS01SList extends CListPageModel
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     if(isset($m)){
                         if($records2['new_calc']!=0&&empty(!$records2['new_calc'])){
-                            $m=$m*$records2['new_calc'];
+                            $point=$this->getPoint($year,$month,$index);//积分激励点
+                            $fuwu_last=$point+$records2['new_calc'];
+                            $m=$m*$fuwu_last;
                             if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                 $money1+=$m*$otherspanning;
                             }
@@ -1505,7 +1513,9 @@ class ReportXS01SList extends CListPageModel
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     if(isset($m)){
                         if($records2['new_calc']!=0&&empty(!$records2['new_calc'])){
-                            $m=$m*$records2['new_calc'];
+                            $point=$this->getPoint($year,$month,$index);//积分激励点
+                            $fuwu_last=$point+$records2['new_calc'];
+                            $m=$m*$fuwu_last;
                             if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                 $money[]=$m*$otherspanning;
                             }
