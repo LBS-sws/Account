@@ -1222,6 +1222,8 @@ class ReportXS01List extends CListPageModel
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
 //                    $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
 //                    $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                print_r($sql1);
+                print_r($records1);exit();
                 if(empty($records1['id'])){
                     Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Some records cannot be calculated') );
                     Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/edit',array('year'=>$years,'month'=>$months,'index'=>$index)));
