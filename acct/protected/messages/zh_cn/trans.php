@@ -216,5 +216,6 @@ return array(
 	'Office'=>'内勤',
 	'Total'=>'本月共计',
 	'Please fill in amount'=>'请填写金额',
+	'Approval Date'=>'审核时间',
 );
 ?>
