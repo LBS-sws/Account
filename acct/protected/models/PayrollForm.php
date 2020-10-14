@@ -204,7 +204,7 @@ class PayrollForm extends CFormModel
 		$connection = $wf->openConnection();
 		try {
 			if ($wf->startProcess('PAYROLL',$this->id,$this->lcd)) {
-				$action = $this->wfstatus=='PC' ? 'RDAPPROVE' : ($this->wfstatus=='PB' ? 'APPROVE' : 'RHAPPROVE');
+				$action = ($this->wfstatus=='PC'||$this->wfstatus=='P2') ? 'RDAPPROVE' : (($this->wfstatus=='PB'||$this->wfstatus=='P1') ? 'APPROVE' : 'RHAPPROVE');
 				$wf->takeAction($action,$this->reason_accept);
 			}
 			$wf->transaction->commit();
@@ -221,7 +221,7 @@ class PayrollForm extends CFormModel
 		$connection = $wf->openConnection();
 		try {
 			if ($wf->startProcess('PAYROLL',$this->id,$this->lcd)) {
-				$action = $this->wfstatus=='PC' ? 'RDDENY' : ($this->wfstatus=='PB' ? 'DENY' : 'RHDENY');
+				$action = ($this->wfstatus=='PC'||$this->wfstatus=='P2') ? 'RDDENY' : (($this->wfstatus=='PB'||$this->wfstatus=='P1') ? 'DENY' : 'RHDENY');
 				$wf->takeAction($action,$this->reason_reject);
 			}
 			$wf->transaction->commit();

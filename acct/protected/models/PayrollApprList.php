@@ -31,9 +31,11 @@ class PayrollApprList extends CListPageModel
 		
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city_allow();
+		$version = Yii::app()->params['version'];
+		$cityarg = ($version=='intl' ? 'a.city,' : '');
 		$sql1 = "select a.*, b.name as city_name, 
 					docman$suffix.countdoc('PAYFILE1',a.id) as file1countdoc,
-					workflow$suffix.RequestStatusDesc('PAYROLL',a.id,a.lcd) as wfstatusdesc
+					workflow$suffix.RequestStatusDesc($cityarg 'PAYROLL',a.id,a.lcd) as wfstatusdesc
 				from acc_payroll_file_hdr a, security$suffix.sec_city b 
 				where a.city in ($city) and a.city=b.code 
 				and a.id in ($list)

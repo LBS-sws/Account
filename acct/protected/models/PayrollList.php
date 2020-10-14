@@ -16,16 +16,18 @@ class PayrollList extends CListPageModel
 	public function retrieveDataByPage($pageNum=1) {
 		$suffix = Yii::app()->params['envSuffix'];
 		$citylist = Yii::app()->user->city_allow();
+		$version = Yii::app()->params['version'];
+		$cityarg = ($version=='intl' ? 'a.city,' : '');
 		$sql1 = "select a.*, b.name as city_name , 
 					docman$suffix.countdoc('PAYFILE1',a.id) as file1countdoc,
-					(select case workflow$suffix.RequestStatus('PAYROLL',a.id,a.lcd)
+					(select case workflow$suffix.RequestStatus($cityarg 'PAYROLL',a.id,a.lcd)
 							when '' then '4DF' 
 							when 'PB' then '1PB' 
 							when 'PA' then '2PA' 
 							when 'PS' then '0PS' 
 							when 'ED' then '3ED' 
 					end) as wfstatus,
-					workflow$suffix.RequestStatusDesc('PAYROLL',a.id,a.lcd) as wfstatusdesc
+					workflow$suffix.RequestStatusDesc($cityarg 'PAYROLL',a.id,a.lcd) as wfstatusdesc
 				from acc_payroll_file_hdr a inner join security$suffix.sec_city b on a.city=b.code 
 				where a.city in ($citylist)
 			";
