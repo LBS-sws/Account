@@ -273,10 +273,8 @@ class CommissionController extends Controller
         $date=$year."/".$month.'/'."01";
         $date1='2020/07/01';
         if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)){
-            print_r(1);exit();
           $model = new ReportXS01SList;
         }else{
-            print_r(2);exit();
             $model = new ReportXS01List;
         }
         if (isset($_POST['ReportXS01From']['id'])) {
