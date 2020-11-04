@@ -270,8 +270,9 @@ class CommissionController extends Controller
     {
         $city=Yii::app()->user->city();
         $a=$this->position($index);
-        $date=$year."/".$month;
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
+        $date=$year."/".$month.'/'."01";
+        $date1='2020/07/01';
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)){
             print_r(1);exit();
           $model = new ReportXS01SList;
         }else{
@@ -308,8 +309,9 @@ class CommissionController extends Controller
     {
         $city=Yii::app()->user->city();
         $a=$this->position($index);
-        $date=$year."/".$month;
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
+        $date=$year."/".$month.'/'."01";
+        $date1='2020/07/01';
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -341,12 +343,11 @@ class CommissionController extends Controller
     {
         $city=Yii::app()->user->city();
         $a=$this->position($index);
-        $date=$year."/".$month;
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
-            print_r(1);exit();
+        $date=$year."/".$month.'/'."01";
+        $date1='2020/07/01';
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)){
             $model = new ReportXS01SList;
         }else{
-            print_r(2);exit();
             $model = new ReportXS01List;
         }
         //print_r($_POST['ReportXS01List']['id']);
@@ -376,8 +377,9 @@ class CommissionController extends Controller
     {
         $city=Yii::app()->user->city();
         $a=$this->position($index);
-        $date=$year."/".$month;
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
+        $date=$year."/".$month.'/'."01";
+        $date1='2020/07/01';
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -409,8 +411,9 @@ class CommissionController extends Controller
     {
         $city=Yii::app()->user->city();
         $a=$this->position($index);
-        $date=$year."/".$month;
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
+        $date=$year."/".$month.'/'."01";
+        $date1='2020/07/01';
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -442,8 +445,9 @@ class CommissionController extends Controller
     {
         $city=Yii::app()->user->city();
         $a=$this->position($index);
-        $date=$year."/".$month;
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
+        $date=$year."/".$month.'/'."01";
+        $date1='2020/07/01';
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
