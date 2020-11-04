@@ -1107,19 +1107,19 @@ class ReportXS01List extends CListPageModel
             }else{
                 $fuwumoney=$moneys*$fuwu_last;
             }
-
+            print_r($fuwu_last);  print_r($fuwumoney);exit();
         }else{
             if(empty($cust_type)){
                 Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
                 Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)));
             }
         }
-        if(!empty($cust_type1)){
-            $inv=$this->getAmount($city,$cust_type1,$start_dt,$money1);//提成比例inv
-            $invmoney=$money1*$inv;
-        }else{
-            $invmoney=0;
-        }
+//        if(!empty($cust_type1)){
+//            $inv=$this->getAmount($city,$cust_type1,$start_dt,$money1);//提成比例inv
+//            $invmoney=$money1*$inv;
+//        }else{
+//            $invmoney=0;
+//        }
 //        if(!empty($zhuangji)&&!empty($inv)){
 //            $zhuangjimoney=$zhuangji*$inv;
 //        }else{
@@ -1137,7 +1137,7 @@ class ReportXS01List extends CListPageModel
         }else{
             $color=2;//不计算
         }
-        $salemoney=$fuwumoney+$invmoney;
+        $salemoney=$fuwumoney;
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(empty($records)){
@@ -1366,6 +1366,7 @@ class ReportXS01List extends CListPageModel
                             }
                             $sqlct="update swoper$suffix.swo_service set royalty='".$fuwu_last."'  where id='$ai'";
                             $model = Yii::app()->db->createCommand($sqlct)->execute();
+                            print_r($fuwu_last);print_r($sql1);print_r($records1);exit();
                         }
                     }else{
                         $m=$m*$royalty[$ai];
