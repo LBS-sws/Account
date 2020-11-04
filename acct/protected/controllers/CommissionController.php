@@ -272,8 +272,10 @@ class CommissionController extends Controller
         $a=$this->position($index);
         $date=$year."/".$month;
         if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
+            print_r(1);exit();
           $model = new ReportXS01SList;
         }else{
+            print_r(2);exit();
             $model = new ReportXS01List;
         }
         if (isset($_POST['ReportXS01From']['id'])) {
@@ -341,8 +343,10 @@ class CommissionController extends Controller
         $a=$this->position($index);
         $date=$year."/".$month;
         if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||$date<'2020/7'){
+            print_r(1);exit();
             $model = new ReportXS01SList;
         }else{
+            print_r(2);exit();
             $model = new ReportXS01List;
         }
         //print_r($_POST['ReportXS01List']['id']);
