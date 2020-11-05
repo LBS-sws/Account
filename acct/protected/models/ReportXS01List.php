@@ -772,8 +772,7 @@ class ReportXS01List extends CListPageModel
 				inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				where  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=2 
-				and a.city ='$city' and (((a.amt_paid>='$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid>='$amt_paid_money') and  a.paid_type='M'))
-			  
+				and a.city ='$city' and (((a.amt_paid>='$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid>='$amt_paid_money') and  a.paid_type='M'))			
 			";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -823,6 +822,15 @@ class ReportXS01List extends CListPageModel
 				 and a.nature_type=2 and  (((a.amt_paid<'$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid<'$amt_paid_money') and  a.paid_type='M'))			
 			";
         $ou = Yii::app()->db->createCommand($sql_ou)->queryAll();
+        //判断已经需要计算的门店
+        $sql2 = "select a.company_name					
+				from swoper$suffix.swo_service a 
+				inner join security$suffix.sec_city d on a.city=d.code 			  
+				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
+				where  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=2 
+				and a.city ='$city' and (((a.amt_paid>='$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid>='$amt_paid_money') and  a.paid_type='M'))			
+			";
+        $company_name = Yii::app()->db->createCommand($sql2)->queryRow();
 //判断续约金额加起来有2000/1000的
         foreach ($ou as &$v){
             if($v['paid_type']=='M'){
@@ -844,13 +852,12 @@ class ReportXS01List extends CListPageModel
             }
         }
         foreach($ou as $k=>&$v){
-            if(in_array($v['company_name'],$ids)){
+            if(in_array($v['company_name'],$ids)||in_array($v['company_name'],$company_name)){
 
             }else{
                 unset($ou[$k]);
             }
         }
-
 //
 //餐饮连锁客户（餐饮类）
         $sql_eat="select a.*,  c.description as type_desc, d.name as city_name,b.group_id
