@@ -272,7 +272,8 @@ class CommissionController extends Controller
         $a=$this->position($index);
         $date=$year."/".$month.'/'."01";
         $date1='2020/07/01';
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)){
+        $employee=$this->getEmployee($index,$year,$month);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1){
           $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -309,7 +310,8 @@ class CommissionController extends Controller
         $a=$this->position($index);
         $date=$year."/".$month.'/'."01";
         $date1='2020/07/01';
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)){
+        $employee=$this->getEmployee($index,$year,$month);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -343,7 +345,8 @@ class CommissionController extends Controller
         $a=$this->position($index);
         $date=$year."/".$month.'/'."01";
         $date1='2020/07/01';
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)){
+        $employee=$this->getEmployee($index,$year,$month);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -377,7 +380,8 @@ class CommissionController extends Controller
         $a=$this->position($index);
         $date=$year."/".$month.'/'."01";
         $date1='2020/07/01';
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)){
+        $employee=$this->getEmployee($index,$year,$month);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -411,7 +415,8 @@ class CommissionController extends Controller
         $a=$this->position($index);
         $date=$year."/".$month.'/'."01";
         $date1='2020/07/01';
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)){
+        $employee=$this->getEmployee($index,$year,$month);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -445,7 +450,8 @@ class CommissionController extends Controller
         $a=$this->position($index);
         $date=$year."/".$month.'/'."01";
         $date1='2020/07/01';
-        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)){
+        $employee=$this->getEmployee($index,$year,$month);
+        if($city=='CD'||$city=='FS'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -549,5 +555,30 @@ class CommissionController extends Controller
             $records=2;
         }
         return $records;
+    }
+
+    public  function getEmployee($index,$year,$month){
+        $suffix = Yii::app()->params['envSuffix'];
+        $sql="select a.*,b.*,c.name as city_name ,d.group_type from acc_service_comm_hdr a
+              left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
+              left outer join security$suffix.sec_city c on  a.city=c.code 
+              left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
+              where a.id='$index'
+";
+        $records = Yii::app()->db->createCommand($sql)->queryRow();
+        $suffix = Yii::app()->params['envSuffix'];
+        $employee=str_replace('(','',$records['employee_code']);
+        $employee=str_replace(')','',$employee);
+        $sql="select entry_time from hr$suffix.hr_employee where code= '".$employee."' ";
+        $record = Yii::app()->db->createCommand($sql)->queryScalar();
+        $timestrap=strtotime($record);
+        $years=date('Y',$timestrap);
+        $months=date('m',$timestrap);
+        if($years==$year&&$months==$month){
+            $a=1;
+        }else{
+            $a=2;
+        }
+        return $a;
     }
 }
