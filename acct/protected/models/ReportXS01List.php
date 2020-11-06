@@ -850,7 +850,7 @@ class ReportXS01List extends CListPageModel
             if($value>=$amt_paid_money*12){
                 $ids[]=$key;
             }
-        }
+        }    print_r('<pre>');print_r($ou);print_r($company_name);
         foreach($ou as $k=>&$v){
             if(in_array($v['company_name'],$ids)||in_array($v['company_name'],$company_name)){
 
@@ -858,6 +858,7 @@ class ReportXS01List extends CListPageModel
                 unset($ou[$k]);
             }
         }
+        print_r($ou);exit();
 //
 //餐饮连锁客户（餐饮类）
         $sql_eat="select a.*,  c.description as type_desc, d.name as city_name,b.group_id
