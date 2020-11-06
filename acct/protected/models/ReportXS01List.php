@@ -830,7 +830,7 @@ class ReportXS01List extends CListPageModel
 				where  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=2 
 				and a.city ='$city' and (((a.amt_paid>='$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid>='$amt_paid_money') and  a.paid_type='M'))			
 			";
-        $company_name = Yii::app()->db->createCommand($sql2)->queryRow();
+        $company_name = Yii::app()->db->createCommand($sql2)->queryColumn();
 //判断续约金额加起来有2000/1000的
         foreach ($ou as &$v){
             if($v['paid_type']=='M'){
@@ -850,7 +850,7 @@ class ReportXS01List extends CListPageModel
             if($value>=$amt_paid_money*12){
                 $ids[]=$key;
             }
-        }    print_r('<pre>');print_r($ou);print_r($company_name);
+        }
         foreach($ou as $k=>&$v){
             if(in_array($v['company_name'],$ids)||in_array($v['company_name'],$company_name)){
 
@@ -858,7 +858,7 @@ class ReportXS01List extends CListPageModel
                 unset($ou[$k]);
             }
         }
-        print_r($ou);exit();
+
 //
 //餐饮连锁客户（餐饮类）
         $sql_eat="select a.*,  c.description as type_desc, d.name as city_name,b.group_id
