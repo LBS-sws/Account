@@ -1341,7 +1341,7 @@ class ReportXS01List extends CListPageModel
                     $m=0;
                 }
                 //                $records['company_name']=str_replace(' ','',$records['company_name']);
-                $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N' and salesman='".$records['salesman']."' order by status_dt desc";
+                $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N' and salesman='".$records['salesman']."' and sign_dt='".$records['sign_dt']."' order by status_dt desc";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
                 $date=$records['first_dt'];
                 $timestrap=strtotime($date);
@@ -1769,7 +1769,7 @@ class ReportXS01List extends CListPageModel
                     $m=0;
                 }
                 //                $records['company_name']=str_replace(' ','',$records['company_name']);
-                $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N' and salesman='".$records['salesman']."' order by status_dt desc";
+                $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N' and salesman='".$records['salesman']."' and sign_dt='".$records['sign_dt']."' order by status_dt desc";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
                 if(empty($records)){
                     Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
