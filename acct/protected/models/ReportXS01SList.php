@@ -964,7 +964,7 @@ class ReportXS01SList extends CListPageModel
                     $month=date('m',$timestrap);
                     $records['salesman']=str_replace('(','',$records['salesman']);
                     $records['salesman']=str_replace(')','',$records['salesman']);
-                    print_r($sql); print_r($recordss);exit();
+//                    print_r($sql); print_r($recordss);exit();
                     $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";

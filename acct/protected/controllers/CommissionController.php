@@ -559,21 +559,19 @@ class CommissionController extends Controller
 
     public  function getEmployee($index,$year,$month){
         $suffix = Yii::app()->params['envSuffix'];
-        $sql="select a.*,b.*,c.name as city_name ,d.group_type from acc_service_comm_hdr a
-              left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
-              left outer join security$suffix.sec_city c on  a.city=c.code 
+        $sql="select e.user_id from acc_service_comm_hdr a             
               left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
+              left outer join hr$suffix.hr_binding e on  d.id=e.employee_id
               where a.id='$index'
 ";
-        $records = Yii::app()->db->createCommand($sql)->queryRow();
-        $suffix = Yii::app()->params['envSuffix'];
-        $employee=str_replace('(','',$records['employee_code']);
-        $employee=str_replace(')','',$employee);
-        $sql="select entry_time from hr$suffix.hr_employee where code= '".$employee."' ";
-        $record = Yii::app()->db->createCommand($sql)->queryScalar();
-        $timestrap=strtotime($record);
+        $records = Yii::app()->db->createCommand($sql)->queryScalar();
+        $sql1="select visit_dt from sales$suffix.sal_visit   where username='$records' order by visit_dt
+";
+        $record = Yii::app()->db->createCommand($sql1)->queryRow();
+        $timestrap=strtotime($record['visit_dt']);
         $years=date('Y',$timestrap);
         $months=date('m',$timestrap);
+//        print_r($record);exit();
         if($years==$year&&$months==$month){
             $a=1;
         }else{
