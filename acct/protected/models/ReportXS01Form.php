@@ -258,7 +258,6 @@ class ReportXS01Form extends CReportForm
         }else{
             $a=1;
         }
-
         return $a;
     }
 
