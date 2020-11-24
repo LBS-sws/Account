@@ -159,6 +159,7 @@ class ReportXS01Form extends CReportForm
               where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name' and d.city='".$records['city']."'
 ";
             $arr = Yii::app()->db->createCommand($sql1)->queryRow();
+            $employee=1;
             if($employee==1){
                 $months=$records['month_no']-1;
                 $years=$records['year_no'];
@@ -166,6 +167,9 @@ class ReportXS01Form extends CReportForm
                     $months=12;
                     $years=$records['year_no']-1;
                 }
+            }else{
+                $months=$month;
+                $years=$year;
             }
             $sql_point="select * from sales$suffix.sal_integral where year='$years' and month='$months' and username='".$arr['user_id']."' and city='".$records['city']."'";
             $point = Yii::app()->db->createCommand($sql_point)->queryRow();

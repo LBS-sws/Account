@@ -851,7 +851,12 @@ class ReportXS01SList extends CListPageModel
                 $money_all=$money;
             }
             $fuwu=$this->getAmount($city,$cust_type,$start_dt,$money_all);//提成比例服务
-            $point=$this->getPoint($year,$month,$index);//积分激励点
+            $point=$this->getPoint($year,$month,$index);//积分激励点      print_r($months);
+            $new_employee=$this->getEmployee($records['salesman'],$year,$month);
+            $a=$this->position($index);
+            if($new_employee==1&&$a==2){
+                $point=0;
+            }
             $fuwus=$fuwu+$point;
             $fuwumoney=$moneys*$fuwus;
         }else{
@@ -1835,5 +1840,52 @@ class ReportXS01SList extends CListPageModel
             }
         }
         return $proportion;
+    }
+
+    public  function getEmployee($employee,$year,$month){
+        $suffix = Yii::app()->params['envSuffix'];
+        $sql="select e.user_id from  hr$suffix.hr_employee d                  
+              left outer join hr$suffix.hr_binding e on  d.id=e.employee_id
+              where d.code='$employee'
+";
+        $records = Yii::app()->db->createCommand($sql)->queryScalar();
+        $sql="select entry_time from hr$suffix.hr_employee where code= '".$employee."' ";
+        $record = Yii::app()->db->createCommand($sql)->queryScalar();
+        $timestraps=strtotime($record);
+        $entry_time_year=date('Y',$timestraps);
+        $entry_time_month=date('m',$timestraps);
+        if($entry_time_year==$year&&$entry_time_month==$month){
+            $sql1="select visit_dt from sales$suffix.sal_visit   where username='$records' order by visit_dt
+";
+            $record = Yii::app()->db->createCommand($sql1)->queryRow();
+            $timestrap=strtotime($record['visit_dt']);
+            $years=date('Y',$timestrap);
+            $months=date('m',$timestrap);
+            if($years==$year&&$months==$month){
+                $a=1;
+            }else{
+                $a=2;
+            }
+        }else{
+            $a=1;
+        }
+
+        return $a;
+    }
+
+    public function position($index){
+        $suffix = Yii::app()->params['envSuffix'];
+        $sql="select * from hr$suffix.hr_employee a
+            left outer join  acc_service_comm_hdr b on a.code=b.employee_code
+            inner join hr$suffix.hr_dept c on a.position=c.id 
+            where  b.id='$index' and (c.manager_type ='1' or c.manager_type ='2')
+        ";
+        $position = Yii::app()->db->createCommand($sql)->queryRow();
+        if(empty($position)){
+            $records=1;//不加入东成西就
+        }else{
+            $records=2;
+        }
+        return $records;
     }
 }

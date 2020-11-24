@@ -2035,7 +2035,7 @@ class ReportXS01List extends CListPageModel
             }
             $moneys=$a/$records['all_number']*$records['surplus'];
             $money[]=$moneys;
-            $sqlct="update swoper$suffix.swo_service set royalty='0.01',commission='".$moneys."'  where id='$ai'";
+            $sqlct="update swoper$suffix.swo_service set royalty='0.01',commission='-".$moneys."'  where id='$ai'";
             $model = Yii::app()->db->createCommand($sqlct)->execute();
         }
         $money=array_sum($money);
