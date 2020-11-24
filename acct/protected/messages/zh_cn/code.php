@@ -39,8 +39,8 @@ return array(
 	'Out'=>'付款',
     'City'=>'城市',
     'Date'=>'日期',
-    'Sale ladder'=>'销售提成阶梯',
-    'Sale ladder list'=>'销售提成阶梯列表',
+    'Sale ladder'=>'服务提成阶梯',
+    'Sale ladder list'=>'服务提成阶梯列表',
 
     'Sales Amount'=>'营业额（年销额）',
     'Hy Pc Rate'=>'HY/PC',

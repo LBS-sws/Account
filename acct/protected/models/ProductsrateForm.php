@@ -1,10 +1,11 @@
 <?php
-class SRateForm extends CFormModel
+class ProductsrateForm extends CFormModel
 {
 	public $id = 0;
 	public $city;
 	public $city_name;
 	public $start_dt;
+    public $product_sale;
 	public $detail = array(
 				array('id'=>0,
 					'hdr_id'=>0,
@@ -69,14 +70,14 @@ class SRateForm extends CFormModel
 	public function retrieveData($index)
 	{
 		$city = Yii::app()->user->city_allow();
-		$sql = "select * from acc_service_rate_hdr where id=$index and city in($city)";
+		$sql = "select * from acc_product_rate_hdr where id=$index and city in($city)";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->id = $row['id'];
 			$this->city = $row['city'];
 			$this->start_dt = General::toDate($row['start_dt']);
 
-			$sql = "select * from acc_service_rate_dtl where hdr_id=$index order by operator desc, sales_amount";
+			$sql = "select * from acc_product_rate_dtl where hdr_id=$index order by operator desc, sales_amount";
 			$rows = Yii::app()->db->createCommand($sql)->queryAll();
 			if (count($rows) > 0) {
 				$this->detail = array();
@@ -111,7 +112,7 @@ class SRateForm extends CFormModel
 		}
 		catch(Exception $e) {
 			$transaction->rollback();
-			throw new CHttpException(404,'Cannot update.');
+			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
 		}
 	}
 
@@ -120,25 +121,25 @@ class SRateForm extends CFormModel
 		$sql = '';
 		switch ($this->scenario) {
 			case 'delete':
-				$sql = "delete from acc_service_rate_hdr where id = :id and city = :city";
+				$sql = "delete from acc_product_rate_hdr where id = :id and city = :city";
 				break;
 			case 'new':
-				$sql = "insert into acc_service_rate_hdr(
+				$sql = "insert into acc_product_rate_hdr(
 						name,start_dt, city, luu, lcu
 						) values (
 						:name,:start_dt, :city, :luu, :lcu
 						)";
-                $name=$_POST['SRateForm']['detail'][0]['name'];
+                $name=$_POST['ProductsrateForm']['detail'][0]['name'];
 				break;
 			case 'edit':
-				$sql = "update acc_service_rate_hdr set  
+				$sql = "update acc_product_rate_hdr set  
                             name = :name,                     
 							city = :city,
 							start_dt = :start_dt,
 							luu = :luu 
 						where id = :id
 						";
-                $name=$_POST['SRateForm']['detail'][0]['name'];
+                $name=$_POST['ProductsrateForm']['detail'][0]['name'];
 				break;
 		}
 
@@ -171,15 +172,15 @@ class SRateForm extends CFormModel
 	{
 		$uid = Yii::app()->user->id;
 
-		foreach ($_POST['SRateForm']['detail'] as $row) {
+		foreach ($_POST['ProductsrateForm']['detail'] as $row) {
 			$sql = '';
 			switch ($this->scenario) {
 				case 'delete':
-					$sql = "delete from acc_service_rate_dtl where hdr_id = :hdr_id";
+					$sql = "delete from acc_product_rate_dtl where hdr_id = :hdr_id";
 					break;
 				case 'new':
 					if ($row['uflag']=='Y') {
-						$sql = "insert into acc_service_rate_dtl(
+						$sql = "insert into acc_product_rate_dtl(
 									hdr_id, operator, sales_amount, rate, name,
 									luu, lcu
 								) values (
@@ -191,12 +192,12 @@ class SRateForm extends CFormModel
 				case 'edit':
 					switch ($row['uflag']) {
 						case 'D':
-							$sql = "delete from acc_service_rate_dtl where id = :id";
+							$sql = "delete from acc_product_rate_dtl where id = :id";
 							break;
 						case 'Y':
 							$sql = ($row['id']==0)
 									?
-									"insert into acc_service_rate_dtl(
+									"insert into acc_product_rate_dtl(
 										hdr_id, operator, sales_amount, rate, name,
 										luu, lcu
 									) values (
@@ -204,12 +205,12 @@ class SRateForm extends CFormModel
 										:luu, :lcu
 									)"
 									: 
-									"update acc_service_rate_dtl set
+									"update acc_product_rate_dtl set
 										hdr_id = :hdr_id,
 										operator = :operator, 
 										sales_amount = :sales_amount,
-										rate = :rate,
 										name = :name,
+										rate = :rate,
 										luu = :luu 
 									where id = :id
 									";
@@ -233,8 +234,8 @@ class SRateForm extends CFormModel
 					$command->bindParam(':sales_amount',$amt,PDO::PARAM_STR);
 				}
 				if (strpos($sql,':rate')!==false) {
-					$rate1 = General::toMyNumber($row['rate']);
-					$command->bindParam(':rate',$rate1,PDO::PARAM_STR);
+					$rate = General::toMyNumber($row['rate']);
+					$command->bindParam(':rate',$rate,PDO::PARAM_STR);
 				}
 				if (strpos($sql,':name')!==false) {
 
@@ -244,11 +245,33 @@ class SRateForm extends CFormModel
 					$command->bindParam(':luu',$uid,PDO::PARAM_STR);
 				if (strpos($sql,':lcu')!==false)
 					$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
+
 				$command->execute();
 			}
+
 		}
 		return true;
 	}
+
+	public function isProductSale(){
+        $suffix = Yii::app()->params['envSuffix'];
+        $city = Yii::app()->user->city();
+        $sql="select id,description from swoper$suffix.swo_task where city='$city'";
+        $records = Yii::app()->db->createCommand($sql)->queryAll();
+        $arr=array(
+            '99999'=>'纸品系列(默认)',
+            '99998'=>'消毒液及皂液系列(默认)',
+            '99997'=>'空气净化系列(默认)',
+            '99996'=>'化学剂系列(默认)',
+            '99995'=>'香熏系列(默认)',
+            '99994'=>'虫控系列(默认)',
+            '99993'=>'其他系列(默认)',
+        );
+        foreach ($records as $a ){
+            $arr[$a['id']]=$a['description'];
+        }
+      return $arr;
+    }
 	
 	public function isReadOnly() {
 		return ($this->scenario=='view');

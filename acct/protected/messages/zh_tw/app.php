@@ -55,8 +55,9 @@ return array(
 'Salary calculation'=>'薪資計算',
 'Sales Commission'=>'銷售提成計算',
 'Sales Commission history'=>'銷售提成查詢',
-'Sales Commission ladder'=>'銷售提成階梯',
+'Sales Commission ladder'=>'服务提成階梯',
 'Prize Vault'=>'獎金庫',
+'Product royalty ladder'=>'产品提成階梯',
 
 'Transaction'=>'交易記錄',
 'Transaction(In)'=>'收款記錄',
