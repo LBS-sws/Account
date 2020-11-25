@@ -129,6 +129,10 @@ return array(
                 'access'=>'XS03',
                 'url'=>'/srate/index',
             ),
+            'Product royalty ladder'=>array(
+                'access'=>'XS08',
+                'url'=>'/productsrate/index',
+            ),
             'Prize Vault'=>array(
                 'access'=>'XS04',
                 'url'=>'/bonus/index',
@@ -140,6 +144,10 @@ return array(
             'Payroll File Approval'=>array(
                 'access'=>'XS06',
                 'url'=>'/payrollappr/index',
+            ),
+            'Sales commission table'=>array(
+                'access'=>'XS07',
+                'url'=>'/salestable/index',
             ),
         ),
     ),
