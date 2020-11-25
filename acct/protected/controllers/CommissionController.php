@@ -571,7 +571,7 @@ class CommissionController extends Controller
         $entry_time_year=date('Y',$timestraps);
         $entry_time_month=date('m',$timestraps);
         if($entry_time_year==$year&&$entry_time_month==$month){
-            $sql1="select visit_dt from sales$suffix.sal_visit   where username='$records' order by visit_dt
+            $sql1="select visit_dt from sales$suffix.sal_visit   where username='".$records['user_id']."' order by visit_dt
 ";
             $record = Yii::app()->db->createCommand($sql1)->queryRow();
             $timestrap=strtotime($record['visit_dt']);
