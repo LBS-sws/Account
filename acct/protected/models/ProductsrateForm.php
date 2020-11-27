@@ -256,7 +256,7 @@ class ProductsrateForm extends CFormModel
 	public function isProductSale(){
         $suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city();
-        $sql="select id,description from swoper$suffix.swo_task where city='$city'";
+        $sql="select id,description from swoper$suffix.swo_task where city='$city' and sales_products!='wu'";
         $records = Yii::app()->db->createCommand($sql)->queryAll();
         $arr=array(
             'paper'=>'纸品系列(默认)',
