@@ -55,8 +55,10 @@ return array(
 	'Salary calculation'=>'薪资计算',
 	'Sales Commission'=>'销售提成计算',
     'Sales Commission history'=>'销售提成查询',
-    'Sales Commission ladder'=>'销售提成阶梯',
+    'Sales Commission ladder'=>'服务提成阶梯',
     'Prize Vault'=>'奖金库',
+    'Product royalty ladder'=>'产品提成阶梯',
+
 
 	'Transaction'=>'交易记录',
 	'Transaction(In)'=>'收款记录',
@@ -160,5 +162,8 @@ return array(
 	'Payroll File'=>'工资表',
 	'Payroll File Approval'=>'工资审核',
 	'Payroll File Rollback'=>'工資表退回',
+
+	'Sales commission table'=>'销售提成表',
+    'Time'=>'日期',
 );
 ?>

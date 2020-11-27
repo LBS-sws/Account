@@ -23,16 +23,16 @@ $this->pageTitle=Yii::app()->name . ' - salestabel';
 </section>
 
 <section class="content">
-	<div class="box"><div class="box-body">
-	<div class="btn-group" role="group">
-		<?php 
-			if (Yii::app()->user->validRWFunction('XE01'))
-				echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('misc','Add Record'), array(
-					'submit'=>Yii::app()->createUrl('transin/new'), 
-				)); 
-		?>
-	</div>
-	</div></div>
+<!--	<div class="box"><div class="box-body">-->
+<!--<!--	<div class="btn-group" role="group">-->
+<!--<!--		--><?php ////
+////			if (Yii::app()->user->validRWFunction('XE01'))
+////				echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('misc','Add Record'), array(
+////					'submit'=>Yii::app()->createUrl('transin/new'),
+////				));
+////		?>
+<!--<!--	</div>-->
+<!--	</div></div>-->
 	<?php 
 		$this->widget('ext.layout.ListPageWidget', array(
 			'title'=>Yii::t('trans','Transaction List'),

@@ -259,13 +259,13 @@ class ProductsrateForm extends CFormModel
         $sql="select id,description from swoper$suffix.swo_task where city='$city'";
         $records = Yii::app()->db->createCommand($sql)->queryAll();
         $arr=array(
-            '99999'=>'纸品系列(默认)',
-            '99998'=>'消毒液及皂液系列(默认)',
-            '99997'=>'空气净化系列(默认)',
-            '99996'=>'化学剂系列(默认)',
-            '99995'=>'香熏系列(默认)',
-            '99994'=>'虫控系列(默认)',
-            '99993'=>'其他系列(默认)',
+            'paper'=>'纸品系列(默认)',
+            'disinfectant'=>'消毒液及皂液系列(默认)',
+            'purification'=>'空气净化系列(默认)',
+            'chemical'=>'化学剂系列(默认)',
+            'aromatherapy'=>'香熏系列(默认)',
+            'pestcontrol'=>'虫控系列(默认)',
+            'other'=>'其他系列(默认)',
         );
         foreach ($records as $a ){
             $arr[$a['id']]=$a['description'];
