@@ -1,7 +1,7 @@
 <?php
 class SalesTableForm extends CFormModel
 {
-	public $id = 0;
+	public $id;
 	public $city;
 	public $city_name;
     public $attributes;
@@ -421,20 +421,20 @@ class SalesTableForm extends CFormModel
                 $temp['ic_end'] = '';//终止IC费
                 $temp['amt_paid'] = '';//焗雾白蚁甲醛雾化
                 $temp['amt_install'] = '';//I装机费
-                $temp['paper'] = $v['sales_products']=='paper'? $v['money']*$v['qty']:'';//纸
-                $temp['disinfectant'] =$v['sales_products']=='disinfectant'? $v['money']*$v['qty']: '';//消毒液
-                $temp['purification'] =$v['sales_products']=='purification'? $v['money']*$v['qty']: '';//空气净化
-                $temp['chemical'] =$v['sales_products']=='chemical'? $v['money']*$v['qty']: '';//化学剂
-                $temp['aromatherapy'] = $v['sales_products']=='aromatherapy'? $v['money']*$v['qty']:'';//香薰
-                $temp['pestcontrol'] = $v['sales_products']=='pestcontrol'? $v['money']*$v['qty']:'';//虫控
-                $temp['other'] = $v['sales_products']=='other'? $v['money']*$v['qty']:'';//其他
-                $temp['paper_money'] = $v['sales_products']=='paper'? $v['money']*$v['qty']*$fuwu:'';//纸提成
-                $temp['disinfectant_money'] =$v['sales_products']=='disinfectant'? $v['money']*$v['qty']*$fuwu: '';//消毒液提成
-                $temp['purification_money'] =$v['sales_products']=='purification'? $v['money']*$v['qty']*$fuwu: '';//空气净化提成
-                $temp['chemical_money'] =$v['sales_products']=='chemical'? $v['money']*$v['qty']*$fuwu: '';//化学剂提成
-                $temp['aromatherapy_money'] = $v['sales_products']=='aromatherapy'? $v['money']*$v['qty']*$fuwu:'';//香薰提成
-                $temp['pestcontrol_money'] = $v['sales_products']=='pestcontrol'? $v['money']*$v['qty']*$fuwu:'';//虫控提成
-                $temp['other_money'] = $v['sales_products']=='other'? $v['money']*$v['qty']*$fuwu:'';//其他提成
+                $temp['paper'] = $v['sales_products']=='paper'? $v['money']:'';//纸
+                $temp['disinfectant'] =$v['sales_products']=='disinfectant'? $v['money']: '';//消毒液
+                $temp['purification'] =$v['sales_products']=='purification'? $v['money']: '';//空气净化
+                $temp['chemical'] =$v['sales_products']=='chemical'? $v['money']: '';//化学剂
+                $temp['aromatherapy'] = $v['sales_products']=='aromatherapy'? $v['money']:'';//香薰
+                $temp['pestcontrol'] = $v['sales_products']=='pestcontrol'? $v['money']:'';//虫控
+                $temp['other'] = $v['sales_products']=='other'? $v['money']:'';//其他
+                $temp['paper_money'] = $v['sales_products']=='paper'? $v['money']*$fuwu:'';//纸提成
+                $temp['disinfectant_money'] =$v['sales_products']=='disinfectant'? $v['money']*$fuwu: '';//消毒液提成
+                $temp['purification_money'] =$v['sales_products']=='purification'? $v['money']*$fuwu: '';//空气净化提成
+                $temp['chemical_money'] =$v['sales_products']=='chemical'? $v['money']*$fuwu: '';//化学剂提成
+                $temp['aromatherapy_money'] = $v['sales_products']=='aromatherapy'? $v['money']*$fuwu:'';//香薰提成
+                $temp['pestcontrol_money'] = $v['sales_products']=='pestcontrol'? $v['money']*$fuwu:'';//虫控提成
+                $temp['other_money'] = $v['sales_products']=='other'? $v['money']*$fuwu:'';//其他提成
                 $temp['othersalesman'] ='';//其他
                 //年金额
                 $temp['y_ia'] = '';//IA费
@@ -505,7 +505,7 @@ class SalesTableForm extends CFormModel
         $this->reduce_money=$this->ia_end_money+$this->ib_end_money+$this->ic_end_money+$this->xuyuezhong_money;//金额 减少的
         $this->all_money=$this->add_money+$this->reduce_money;//金额 总计
         $this->final_money=$product['final_money'];
-        $this->id=$product['service_hdr_id'];
+        $this->id=$index;
         return true;
 	}
 
@@ -577,29 +577,22 @@ class SalesTableForm extends CFormModel
 
 	protected function saveHeader(&$connection)
 	{
-		$sql = '';
-		switch ($this->scenario) {
-//			case 'delete':
-//				$sql = "delete from acc_product where id = :id and city = :city";
-//				break;
-//			case 'new':
-//				$sql = "insert into acc_product(
-//						name,start_dt, city, luu, lcu
-//						) values (
-//						:name,:start_dt, :city, :luu, :lcu
-//						)";
-//                $name=$_POST['SRateForm']['detail'][0]['name'];
-//				break;
-			case 'edit':
-				$sql = "update acc_product set  
+        $sql1="select * from acc_product where service_hdr_id='".$_POST['SalesTableForm']['id']."'";
+        $a=$connection->createCommand($sql1)->queryAll();
+		if(empty($a)){
+            $sql = "insert into acc_product(
+						amt_install_royalty,final_money,service_hdr_id
+						) values (
+						:amt_install_royalty,:final_money,:service_hdr_id
+						)
+						";
+        }else{
+            $sql = "update acc_product set  
                             amt_install_royalty = :amt_install_royalty,                     					  
 							final_money = :final_money 
 						where service_hdr_id = :service_hdr_id
 						";
-//                $name=$_POST['SRateForm']['detail'][0]['name'];
-				break;
-		}
-
+        }
 //		$city = Yii::app()->user->city();
 		$uid = Yii::app()->user->id;
 		$command=$connection->createCommand($sql);
@@ -607,7 +600,7 @@ class SalesTableForm extends CFormModel
             $command->bindParam(':amt_install_royalty',$_POST['SalesTableForm']['amt_install_royalty'],PDO::PARAM_INT);
         if (strpos($sql,':final_money')!==false)
             $command->bindParam(':final_money',$_POST['SalesTableForm']['final_money'],PDO::PARAM_INT);
-
+       // print_r($_POST['SalesTableForm']['id']);exit();
         if (strpos($sql,':service_hdr_id')!==false)
             $command->bindParam(':service_hdr_id',$_POST['SalesTableForm']['id'],PDO::PARAM_INT);
 		$command->execute();
