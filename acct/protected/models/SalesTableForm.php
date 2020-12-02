@@ -496,7 +496,7 @@ class SalesTableForm extends CFormModel
         $this->xuyue_money= ($this->y_ia_c+ $this->y_ib_c+ $this->y_ic_c)*0.01;//金额 续约
         $this->amt_install_money=$this->amt_install*$product['amt_install_royalty'];//金额 装机
         $this->sale_money=$paper_money+$disinfectant_money+$purification_money+$aromatherapy_money+$pestcontrol_money+$other_money;//金额 销售
-        $this->huaxueji_money=$chemical_money;//金额 化学剂
+        $this->huaxueji_money=$chemical_money*0.1;//金额 化学剂
         $this->ia_end_money=$ia_money;//金额 B
         $this->ib_end_money=$ib_money;//金额 C
         $this->ic_end_money=$ic_money;//金额 租机
@@ -571,7 +571,7 @@ class SalesTableForm extends CFormModel
 		}
 		catch(Exception $e) {
 			$transaction->rollback();
-			throw new CHttpException(404,'Cannot update.');
+			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
 		}
 	}
 
@@ -579,7 +579,7 @@ class SalesTableForm extends CFormModel
 	{
         $sql1="select * from acc_product where service_hdr_id='".$_POST['SalesTableForm']['id']."'";
         $a=$connection->createCommand($sql1)->queryAll();
-		if(empty($a)){
+        if(empty($a)){
             $sql = "insert into acc_product(
 						amt_install_royalty,final_money,service_hdr_id
 						) values (
@@ -593,6 +593,7 @@ class SalesTableForm extends CFormModel
 						where service_hdr_id = :service_hdr_id
 						";
         }
+
 //		$city = Yii::app()->user->city();
 		$uid = Yii::app()->user->id;
 		$command=$connection->createCommand($sql);
