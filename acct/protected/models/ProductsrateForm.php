@@ -230,7 +230,7 @@ class ProductsrateForm extends CFormModel
 				if (strpos($sql,':operator')!==false)
 					$command->bindParam(':operator',$row['operator'],PDO::PARAM_STR);
 				if (strpos($sql,':sales_amount')!==false) {
-					$amt = General::toMyNumber($row['sales_amount']);
+					$amt = $row['sales_amount'];
 					$command->bindParam(':sales_amount',$amt,PDO::PARAM_STR);
 				}
 				if (strpos($sql,':rate')!==false) {

@@ -4,6 +4,10 @@ class SalesTableForm extends CFormModel
 	public $id;
 	public $city;
 	public $city_name;
+    public $sale;
+    public $year;
+    public $month;
+    public $examine;
     public $attributes;
 	public $start_dt;
 	public $detail = array();
@@ -135,6 +139,10 @@ class SalesTableForm extends CFormModel
         $rows = Yii::app()->db->createCommand($sql1)->queryAll();
         $sql1 = "select * from acc_product where  service_hdr_id='$index'";
         $product = Yii::app()->db->createCommand($sql1)->queryRow();
+        $this->sale=$salerow['employee_name'];
+        $this->year=$salerow['year_no'];
+        $this->month=$salerow['month_no'];
+        $this->examine=$product['examine']=='Y'?'已审核':'未审核';
 //        print_r('<pre>'); print_r($product);
 //        exit();
         if (count($rows) > 0) {
@@ -400,6 +408,7 @@ class SalesTableForm extends CFormModel
                	left outer join swoper$suffix.swo_task c on a.task=c.	id
                 where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$a."' and b.city=$city";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
+        //print_r('<pre>');print_r($rows);exit();
         if(count($rows)>0){
             foreach ($rows as $v){
                 $fuwu=$this->getAmount($city,$v['id'],$v['sales_products'],$start,$this->abc_money);//本单产品提成比例
@@ -600,7 +609,8 @@ class SalesTableForm extends CFormModel
         if (strpos($sql,':amt_install_royalty')!==false)
             $command->bindParam(':amt_install_royalty',$_POST['SalesTableForm']['amt_install_royalty'],PDO::PARAM_INT);
         if (strpos($sql,':final_money')!==false)
-            $command->bindParam(':final_money',$_POST['SalesTableForm']['final_money'],PDO::PARAM_INT);
+            $final_money=round($_POST['SalesTableForm']['final_money'], 2);
+            $command->bindParam(':final_money',$final_money,PDO::PARAM_INT);
        // print_r($_POST['SalesTableForm']['id']);exit();
         if (strpos($sql,':service_hdr_id')!==false)
             $command->bindParam(':service_hdr_id',$_POST['SalesTableForm']['id'],PDO::PARAM_INT);
@@ -691,7 +701,14 @@ class SalesTableForm extends CFormModel
 //		}
 //		return true;
 //	}
-	
+
+
+    public function saveExamine(){
+	    $sql="update acc_product set  	examine = 'Y' where service_hdr_id = '".$_POST['SalesTableForm']['id']."'";
+        $rows = Yii::app()->db->createCommand($sql)->execute();
+        $this->id=$_POST['SalesTableForm']['id'];
+        return true;
+    }
 	public function isReadOnly() {
 		return ($this->scenario=='view');
 	}
