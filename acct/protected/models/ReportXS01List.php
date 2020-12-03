@@ -2234,7 +2234,7 @@ class ReportXS01List extends CListPageModel
                 $a=2;
             }
         }else{
-            $a=1;
+            $a=2;
         }
 
         return $a;

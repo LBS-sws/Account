@@ -584,7 +584,7 @@ class CommissionController extends Controller
                 $a=2;
             }
         }else{
-            $a=1;
+            $a=2;
         }
 
         return $a;
