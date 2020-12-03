@@ -10,7 +10,7 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In Form';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('trans','Transaction(In) Form'); ?></strong>
+		<strong><?php echo Yii::t('salestable','Sales commission Bi'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
@@ -30,16 +30,21 @@ $this->pageTitle=Yii::app()->name . ' - Transaction In Form';
 			<?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save'), array(
 				'submit'=>Yii::app()->createUrl('salestable/save')));
 			?>
-
+        <?php if(Yii::app()->user->validFunction('CN12')){ echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Approval'), array(
+            'submit'=>Yii::app()->createUrl('salestable/examine')));
+        }?>
 
 	</div>
 	<div class="btn-group pull-right" role="group">
-
+        <?php echo TbHtml::button('<span class="fa fa-cloud-download"></span> '.Yii::t('misc','Down'), array(
+            'submit'=>Yii::app()->createUrl('salestable/down')));
+        ?>
 	</div>
 	</div></div>
 
 
 	<div class="box box-info">
+        <h3>&nbsp;&nbsp;&nbsp;<?php echo $model->year."年".$model->month."月".' '.$model->sale."提成表"."(".$model->examine.")";?></h3>
 		<div class="box-body">
 			<?php echo $form->hiddenField($model, 'scenario'); ?>
 			<?php echo $form->hiddenField($model, 'id'); ?>

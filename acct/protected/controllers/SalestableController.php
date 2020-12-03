@@ -24,7 +24,7 @@ class SalestableController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','fileupload','fileremove'),
+				'actions'=>array('new','edit','delete','save','fileupload','fileremove','examine'),
 				'expression'=>array('SalestableController','allowReadWrite'),
 			),
 			array('allow', 
@@ -85,16 +85,21 @@ class SalestableController extends Controller
 		}
 	}
 	
-	public function actionNew($index=0)
+	public function actionExamine()
 	{
-		$model = new TransInForm('new');
-		if ($index!==0 && $model->retrieveData($index)) {
-			$model->id = 0;
-			$model->trans_dt = date('Y/m/d');
-			$model->posted = false;
-			$model->status = 'A';
-		}
-		$this->render('form',array('model'=>$model,));
+        if (isset($_POST['SalesTableForm'])) {
+            $model = new SalesTableForm($_POST['SalesTableForm']['scenario']);
+            $model->attributes = $_POST['SalesTableForm'];
+            //    print_r($model->attributes);exit();
+            if ($model->validate()) {
+                $model->saveExamine();
+                Dialog::message(Yii::t('dialog','SalesTableForm'), Yii::t('dialog','Save Done'));
+                $this->redirect(Yii::app()->createUrl('salestable/edit',array('index'=>$model->id)));
+            } else {
+                Dialog::message(Yii::t('dialog','SalesTableForm'), Yii::t('dialog','Save Done'));
+                $this->redirect(Yii::app()->createUrl('salestable/edit',array('index'=>$model->id)));
+            }
+        }
 	}
 	
 	public function actionEdit($index)

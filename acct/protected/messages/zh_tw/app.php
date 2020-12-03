@@ -161,5 +161,9 @@ return array(
 'Payroll File'=>'工資表',
 'Payroll File Approval'=>'工資審核',
 'Payroll File Rollback'=>'工資表退回',
+'Sales commission table Approval'=>'銷售提成表審核',
+
+'Sales commission table'=>'銷售提成表',
+'Time'=>'日期',
 );
 ?>

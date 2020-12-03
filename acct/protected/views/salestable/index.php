@@ -11,7 +11,7 @@ $this->pageTitle=Yii::app()->name . ' - salestabel';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('trans','Transaction(In)'); ?></strong>
+		<strong><?php echo Yii::t('salestable','Sales commission Bi'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
@@ -35,7 +35,7 @@ $this->pageTitle=Yii::app()->name . ' - salestabel';
 <!--	</div></div>-->
 	<?php 
 		$this->widget('ext.layout.ListPageWidget', array(
-			'title'=>Yii::t('trans','Transaction List'),
+			'title'=>Yii::t('salestable','Sales commission Bi List'),
 			'model'=>$model,
 				'viewhdr'=>'//salestable/_listhdr',
 				'viewdtl'=>'//salestable/_listdtl',

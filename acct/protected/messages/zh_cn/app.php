@@ -162,6 +162,7 @@ return array(
 	'Payroll File'=>'工资表',
 	'Payroll File Approval'=>'工资审核',
 	'Payroll File Rollback'=>'工資表退回',
+    'Sales commission table Approval'=>'销售提成表审核',
 
 	'Sales commission table'=>'销售提成表',
     'Time'=>'日期',

@@ -58,6 +58,7 @@ return array(
 	'Confirm'=>'确认',
 	'OK'=>'确认',
 	'Void'=>'撤消',
+    'Approval'=>'审核',
 	
 	'Invalid Station. Please register first.'=>'工作站无效。请先登记。',
 	'User ID has been logged in more than one station.'=>'帐户已被登录到另一工作站。',

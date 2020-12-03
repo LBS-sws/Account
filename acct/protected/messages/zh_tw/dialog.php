@@ -68,5 +68,6 @@ return array(
 'Data is filled in incorrectly, please check and modify before proceeding'=>'數據填寫有誤，請檢查修改后再進行',
 'Request Confirmed'=>'確認申請完成',
 'Some records cannot be calculated'=>'部分記錄無法計算',
+'SalesTableForm'=>'銷售提成表',
 );
 ?>
