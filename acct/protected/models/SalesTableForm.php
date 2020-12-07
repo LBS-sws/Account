@@ -10,7 +10,7 @@ class SalesTableForm extends CFormModel
     public $examine;
     public $attributes;
 	public $start_dt;
-	public $detail = array();
+	public $group = array();
     public $ia;
     public $ia_c;
     public $ia_c_end;
@@ -75,7 +75,19 @@ class SalesTableForm extends CFormModel
     public $add_money;//金额 新增的
     public $reduce_money;//金额 减少的
     public $all_money;//金额 总计
+    public $supplement_money;//补充金额
     public $final_money;//最终金额
+    public $detail = array(
+        array('id'=>0,
+            'date'=>'',
+            'hdr_id'=>0,
+            'customer'=>'',
+            'type'=>'0',
+            'information'=>'',
+            'commission'=>'',
+            'uflag'=>'N',
+        ),
+    );
 
 
     public $commission;
@@ -95,6 +107,11 @@ class SalesTableForm extends CFormModel
 			'sales_amount'=>Yii::t('service','Sales Amount'),
 			'rate'=>Yii::t('service','Rate'),
 			'name'=>Yii::t('service','Name'),
+            'date'=>Yii::t('salestable','Date'),
+            'customer'=>Yii::t('salestable','Customer'),
+            'type'=>Yii::t('salestable','Type'),
+            'information'=>Yii::t('salestable','Information'),
+            'commission'=>Yii::t('salestable','Commission'),
 //            'amt_install_royalty'=>Yii::t('service','Name'),
 		);
 	}
@@ -102,7 +119,7 @@ class SalesTableForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('id, city_name,','safe'),
+			array('id, city_name,detail,customer','safe'),
 			array('','required'),
 			array('','validateDetailRecords'),
 		);
@@ -146,7 +163,7 @@ class SalesTableForm extends CFormModel
 //        print_r('<pre>'); print_r($product);
 //        exit();
         if (count($rows) > 0) {
-            $this->detail = array();
+            $this->group = array();
             foreach ($rows as $row) {
                 $temp = array();
                 if($row['paid_type']=='M'){
@@ -371,36 +388,36 @@ class SalesTableForm extends CFormModel
                         $temp['ic_money'] = $row['commission']<0?$row['commission']:'';//扣除IC提成
                     }
                 }
-                $this->detail[] = $temp;
+                $this->group[] = $temp;
             }
         }
         //月金额
-        $this->ia=array_sum(array_map(create_function('$val', 'return $val["ia"];'), $this->detail));
-        $this->ia_c=array_sum(array_map(create_function('$val', 'return $val["ia_c"];'), $this->detail));
-        $this->ia_c_end=array_sum(array_map(create_function('$val', 'return $val["ia_c_end"];'), $this->detail));
-        $this->ia_end=array_sum(array_map(create_function('$val', 'return $val["ia_end"];'), $this->detail));
-        $this->ib=array_sum(array_map(create_function('$val', 'return $val["ib"];'), $this->detail));
-        $this->ib_c=array_sum(array_map(create_function('$val', 'return $val["ib_c"];'), $this->detail));
-        $this->ib_c_end=array_sum(array_map(create_function('$val', 'return $val["ib_c_end"];'), $this->detail));
-        $this->ib_end=array_sum(array_map(create_function('$val', 'return $val["ib_end"];'), $this->detail));
-        $this->ic=array_sum(array_map(create_function('$val', 'return $val["ic"];'), $this->detail));
-        $this->ic_c=array_sum(array_map(create_function('$val', 'return $val["ic_c"];'), $this->detail));
-        $this->ic_c_end=array_sum(array_map(create_function('$val', 'return $val["ic_c_end"];'), $this->detail));
-        $this->ic_end=array_sum(array_map(create_function('$val', 'return $val["ic_end"];'), $this->detail));
+        $this->ia=array_sum(array_map(create_function('$val', 'return $val["ia"];'), $this->group));
+        $this->ia_c=array_sum(array_map(create_function('$val', 'return $val["ia_c"];'), $this->group));
+        $this->ia_c_end=array_sum(array_map(create_function('$val', 'return $val["ia_c_end"];'), $this->group));
+        $this->ia_end=array_sum(array_map(create_function('$val', 'return $val["ia_end"];'), $this->group));
+        $this->ib=array_sum(array_map(create_function('$val', 'return $val["ib"];'), $this->group));
+        $this->ib_c=array_sum(array_map(create_function('$val', 'return $val["ib_c"];'), $this->group));
+        $this->ib_c_end=array_sum(array_map(create_function('$val', 'return $val["ib_c_end"];'), $this->group));
+        $this->ib_end=array_sum(array_map(create_function('$val', 'return $val["ib_end"];'), $this->group));
+        $this->ic=array_sum(array_map(create_function('$val', 'return $val["ic"];'), $this->group));
+        $this->ic_c=array_sum(array_map(create_function('$val', 'return $val["ic_c"];'), $this->group));
+        $this->ic_c_end=array_sum(array_map(create_function('$val', 'return $val["ic_c_end"];'), $this->group));
+        $this->ic_end=array_sum(array_map(create_function('$val', 'return $val["ic_end"];'), $this->group));
 //年金额
-        $this->y_ia=array_sum(array_map(create_function('$val', 'return $val["y_ia"];'), $this->detail));
-        $this->y_ia_c=array_sum(array_map(create_function('$val', 'return $val["y_ia_c"];'), $this->detail));
-        $this->y_ia_c_end=array_sum(array_map(create_function('$val', 'return $val["y_ia_c_end"];'), $this->detail));
-        $this->y_ia_end=array_sum(array_map(create_function('$val', 'return $val["y_ia_end"];'), $this->detail));
-        $this->y_ib=array_sum(array_map(create_function('$val', 'return $val["y_ib"];'), $this->detail));
-        $this->y_ib_c=array_sum(array_map(create_function('$val', 'return $val["y_ib_c"];'), $this->detail));
-        $this->y_ib_c_end=array_sum(array_map(create_function('$val', 'return $val["y_ib_c_end"];'), $this->detail));
-        $this->y_ib_end=array_sum(array_map(create_function('$val', 'return $val["y_ib_end"];'), $this->detail));
-        $this->y_ic=array_sum(array_map(create_function('$val', 'return $val["y_ic"];'), $this->detail));
-        $this->y_ic_c=array_sum(array_map(create_function('$val', 'return $val["y_ic_c"];'), $this->detail));
-        $this->y_ic_c_end=array_sum(array_map(create_function('$val', 'return $val["y_ic_c_end"];'), $this->detail));
-        $this->y_ic_end=array_sum(array_map(create_function('$val', 'return $val["y_ic_end"];'), $this->detail));
-        $this->y_amt_paid=array_sum(array_map(create_function('$val', 'return $val["y_amt_paid"];'), $this->detail));
+        $this->y_ia=array_sum(array_map(create_function('$val', 'return $val["y_ia"];'), $this->group));
+        $this->y_ia_c=array_sum(array_map(create_function('$val', 'return $val["y_ia_c"];'), $this->group));
+        $this->y_ia_c_end=array_sum(array_map(create_function('$val', 'return $val["y_ia_c_end"];'), $this->group));
+        $this->y_ia_end=array_sum(array_map(create_function('$val', 'return $val["y_ia_end"];'), $this->group));
+        $this->y_ib=array_sum(array_map(create_function('$val', 'return $val["y_ib"];'), $this->group));
+        $this->y_ib_c=array_sum(array_map(create_function('$val', 'return $val["y_ib_c"];'), $this->group));
+        $this->y_ib_c_end=array_sum(array_map(create_function('$val', 'return $val["y_ib_c_end"];'), $this->group));
+        $this->y_ib_end=array_sum(array_map(create_function('$val', 'return $val["y_ib_end"];'), $this->group));
+        $this->y_ic=array_sum(array_map(create_function('$val', 'return $val["y_ic"];'), $this->group));
+        $this->y_ic_c=array_sum(array_map(create_function('$val', 'return $val["y_ic_c"];'), $this->group));
+        $this->y_ic_c_end=array_sum(array_map(create_function('$val', 'return $val["y_ic_c_end"];'), $this->group));
+        $this->y_ic_end=array_sum(array_map(create_function('$val', 'return $val["y_ic_end"];'), $this->group));
+        $this->y_amt_paid=array_sum(array_map(create_function('$val', 'return $val["y_amt_paid"];'), $this->group));
         $this->abc_money=$this->y_ia+ $this->y_ib+$this->y_ic+$this->y_amt_paid;//iaibic营业额
         //来源于物流配送的销售的单
         $sql = "select b.log_dt,b.company_name,a.money,a.qty,c.description,c.sales_products,c.id from swoper$suffix.swo_logistic_dtl a
@@ -462,39 +479,39 @@ class SalesTableForm extends CFormModel
                 $temp['ia_money'] = '';//扣除IA提成
                 $temp['ib_money'] = '';//扣除IB提成
                 $temp['ic_money'] = '';//扣除IC提成
-                $this->detail[] = $temp;
+                $this->group[] = $temp;
             }
         }
         //产品
-        $this->amt_paid=array_sum(array_map(create_function('$val', 'return $val["amt_paid"];'), $this->detail));
-        $this->amt_install=array_sum(array_map(create_function('$val', 'return $val["amt_install"];'), $this->detail));
-        $this->paper=array_sum(array_map(create_function('$val', 'return $val["paper"];'), $this->detail));
-        $this->disinfectant=array_sum(array_map(create_function('$val', 'return $val["disinfectant"];'), $this->detail));
-        $this->purification=array_sum(array_map(create_function('$val', 'return $val["purification"];'), $this->detail));
-        $this->chemical=array_sum(array_map(create_function('$val', 'return $val["chemical"];'), $this->detail));
-        $this->aromatherapy=array_sum(array_map(create_function('$val', 'return $val["aromatherapy"];'), $this->detail));
-        $this->pestcontrol=array_sum(array_map(create_function('$val', 'return $val["pestcontrol"];'), $this->detail));
-        $this->other=array_sum(array_map(create_function('$val', 'return $val["other"];'), $this->detail));
+        $this->amt_paid=array_sum(array_map(create_function('$val', 'return $val["amt_paid"];'), $this->group));
+        $this->amt_install=array_sum(array_map(create_function('$val', 'return $val["amt_install"];'), $this->group));
+        $this->paper=array_sum(array_map(create_function('$val', 'return $val["paper"];'), $this->group));
+        $this->disinfectant=array_sum(array_map(create_function('$val', 'return $val["disinfectant"];'), $this->group));
+        $this->purification=array_sum(array_map(create_function('$val', 'return $val["purification"];'), $this->group));
+        $this->chemical=array_sum(array_map(create_function('$val', 'return $val["chemical"];'), $this->group));
+        $this->aromatherapy=array_sum(array_map(create_function('$val', 'return $val["aromatherapy"];'), $this->group));
+        $this->pestcontrol=array_sum(array_map(create_function('$val', 'return $val["pestcontrol"];'), $this->group));
+        $this->other=array_sum(array_map(create_function('$val', 'return $val["other"];'), $this->group));
 
-        $ia_money=array_sum(array_map(create_function('$val', 'return $val["ia_money"];'), $this->detail));
-        $ib_money=array_sum(array_map(create_function('$val', 'return $val["ib_money"];'), $this->detail));
-        $ic_money=array_sum(array_map(create_function('$val', 'return $val["ic_money"];'), $this->detail));
+        $ia_money=array_sum(array_map(create_function('$val', 'return $val["ia_money"];'), $this->group));
+        $ib_money=array_sum(array_map(create_function('$val', 'return $val["ib_money"];'), $this->group));
+        $ic_money=array_sum(array_map(create_function('$val', 'return $val["ic_money"];'), $this->group));
 
-        $paper_money=array_sum(array_map(create_function('$val', 'return $val["paper_money"];'), $this->detail));
-        $disinfectant_money=array_sum(array_map(create_function('$val', 'return $val["disinfectant_money"];'), $this->detail));
-        $purification_money=array_sum(array_map(create_function('$val', 'return $val["purification_money"];'), $this->detail));
-        $chemical_money=array_sum(array_map(create_function('$val', 'return $val["chemical_money"];'), $this->detail));
-        $aromatherapy_money=array_sum(array_map(create_function('$val', 'return $val["aromatherapy_money"];'), $this->detail));
-        $pestcontrol_money=array_sum(array_map(create_function('$val', 'return $val["pestcontrol_money"];'), $this->detail));
-        $other_money=array_sum(array_map(create_function('$val', 'return $val["other_money"];'), $this->detail));
-        // $this->commission=array_sum(array_map(create_function('$val', 'return $val["commission"];'), $this->detail));
+        $paper_money=array_sum(array_map(create_function('$val', 'return $val["paper_money"];'), $this->group));
+        $disinfectant_money=array_sum(array_map(create_function('$val', 'return $val["disinfectant_money"];'), $this->group));
+        $purification_money=array_sum(array_map(create_function('$val', 'return $val["purification_money"];'), $this->group));
+        //$chemical_money=array_sum(array_map(create_function('$val', 'return $val["chemical_money"];'), $this->group));
+        $aromatherapy_money=array_sum(array_map(create_function('$val', 'return $val["aromatherapy_money"];'), $this->group));
+        $pestcontrol_money=array_sum(array_map(create_function('$val', 'return $val["pestcontrol_money"];'), $this->group));
+        $other_money=array_sum(array_map(create_function('$val', 'return $val["other_money"];'), $this->group));
+        // $this->commission=array_sum(array_map(create_function('$val', 'return $val["commission"];'), $this->group));
         $this->all_sale=$this->paper+$this->disinfectant+$this->purification+$this->chemical+$this->aromatherapy+$this->pestcontrol+$this->other;
         $this->ia_royalty=$salerow['new_calc']*100;//提成点数 B
         $this->ib_royalty=$salerow['new_calc']*100;//提成点数 C
         $this->amt_paid_royalty=$salerow['new_calc']*100;//提成点数 焗雾
         $this->ic_royalty=$salerow['new_calc']*100;//提成点数 租机
         $this->xuyue_royalty=1;//提成点数 续约
-        $this->amt_install_royalty=$product['amt_install_royalty']*100;//提成点数 装机
+        $this->amt_install_royalty=$product['amt_install_royalty'];//提成点数 装机
         $this->sale_royalty="/";//提成点数 销售
         $this->huaxueji_royalty=10;//提成点数 化学剂
         $this->xuyuezhong_royalty=1;//提成点数 续约终止
@@ -505,7 +522,7 @@ class SalesTableForm extends CFormModel
         $this->xuyue_money= ($this->y_ia_c+ $this->y_ib_c+ $this->y_ic_c)*0.01;//金额 续约
         $this->amt_install_money=$this->amt_install*$product['amt_install_royalty'];//金额 装机
         $this->sale_money=$paper_money+$disinfectant_money+$purification_money+$aromatherapy_money+$pestcontrol_money+$other_money;//金额 销售
-        $this->huaxueji_money=$chemical_money*0.1;//金额 化学剂
+        $this->huaxueji_money=$this->chemical*0.1;//金额 化学剂
         $this->ia_end_money=$ia_money;//金额 B
         $this->ib_end_money=$ib_money;//金额 C
         $this->ic_end_money=$ic_money;//金额 租机
@@ -513,8 +530,27 @@ class SalesTableForm extends CFormModel
         $this->add_money=$this->ia_money+$this->ib_money+$this->amt_paid_money+$this->ic_money+$this->xuyue_money+$this->amt_install_money+$this->sale_money+$this->huaxueji_money;//金额 新增的
         $this->reduce_money=$this->ia_end_money+$this->ib_end_money+$this->ic_end_money+$this->xuyuezhong_money;//金额 减少的
         $this->all_money=$this->add_money+$this->reduce_money;//金额 总计
-        $this->final_money=$product['final_money'];
         $this->id=$index;
+
+        $sql = "select * from acc_salestable where hdr_id=$index";
+        $rows = Yii::app()->db->createCommand($sql)->queryAll();
+        if (count($rows) > 0) {
+            $this->detail = array();
+            foreach ($rows as $row) {
+                $temp = array();
+                $temp['id'] = $row['id'];
+                $temp['hdr_id'] = $row['hdr_id'];
+                $temp['customer'] = $row['customer'];
+                $temp['type'] = $row['type'];
+                $temp['information'] = $row['information'];
+                $temp['date'] = General::toDate($row['date']);
+                $temp['commission'] = $row['commission'];
+                $temp['uflag'] = 'N';
+                $this->detail[] = $temp;
+            }
+        }
+        $this->supplement_money=array_sum(array_map(create_function('$val', 'return $val["commission"];'), $this->detail));
+        $this->final_money=$this->supplement_money+$this->add_money+$this->reduce_money;
         return true;
 	}
 
@@ -576,6 +612,7 @@ class SalesTableForm extends CFormModel
 		try {
 			$this->saveHeader($connection);
 //			$this->saveDetail($connection);
+            $this->saveSalestableDtl($connection);
 			$transaction->commit();
 		}
 		catch(Exception $e) {
@@ -619,11 +656,94 @@ class SalesTableForm extends CFormModel
 		return true;
 	}
 
+    protected function saveSalestableDtl(&$connection)
+    {
+        $city = Yii::app()->user->city();
+        $uid = Yii::app()->user->id;
+        print_r('<pre>'); print_r($this->attributes['detail']);
+        foreach ($this->attributes['detail'] as $row) {
+            $sql = '';
+            switch ($this->scenario) {
+                case 'delete':
+                    $sql = "delete from acc_salestable where hdr_id = :hdr_id ";
+                    break;
+                case 'new':
+                    if ($row['uflag']=='Y') {
+                        $sql = "insert into acc_salestable(
+									hdr_id, customer, type, information, date,commission,
+								   luu, lcu
+								) values (
+									:hdr_id, :customer, :type, :information, :date,:commission,
+									 :luu, :lcu
+								)";
+                    }
+                    break;
+                case 'edit':
+                    switch ($row['uflag']) {
+                        case 'D':
+                            $sql = "delete from acc_salestable where id = :id and city = :city";
+                            break;
+                        case 'Y':
+                            $sql = ($row['id']==0)
+                                ?
+                                "insert into acc_salestable(
+									hdr_id, customer, type, information, date,commission,
+										 luu, lcu
+									) values (
+										:hdr_id, :customer, :type, :information, :date,:commission,
+										 :luu, :lcu
+									)
+									"
+                                :
+                                "update acc_salestable set
+										hdr_id = :hdr_id,
+										customer = :customer, 
+										type=:type,
+										information = :information,
+										date = :date,
+										commission = :commission,
+										luu = :luu 
+									where id = :id and city = :city
+									";
+                            break;
+                    }
+                    break;
+            }
+
+            if ($sql != '') {
+                $command=$connection->createCommand($sql);
+                if (strpos($sql,':hdr_id')!==false)
+                    $command->bindParam(':hdr_id',$this->id,PDO::PARAM_INT);
+                if (strpos($sql,':customer')!==false) {
+                    $command->bindParam(':customer',$row['customer'],PDO::PARAM_STR);
+                }
+                if (strpos($sql,':type')!==false) {
+                    $command->bindParam(':type',$row['type'],PDO::PARAM_STR);
+                }
+                if (strpos($sql,':information')!==false) {
+                    $command->bindParam(':information',$row['information'],PDO::PARAM_STR);
+                }
+                if (strpos($sql,':date')!==false) {
+                    $dead = General::toMyDate($row['date']);
+                    $command->bindParam(':date',$dead,PDO::PARAM_STR);
+                }
+                if (strpos($sql,':commission')!==false)
+                    $command->bindParam(':commission',$row['commission'],PDO::PARAM_STR);
+                if (strpos($sql,':luu')!==false)
+                    $command->bindParam(':luu',$uid,PDO::PARAM_STR);
+                if (strpos($sql,':lcu')!==false)
+                    $command->bindParam(':lcu',$uid,PDO::PARAM_STR);
+                $command->execute();
+            }
+        }
+        return true;
+    }
+
 //	protected function saveDetail(&$connection)
 //	{
 //		$uid = Yii::app()->user->id;
 //
-//		foreach ($_POST['SRateForm']['detail'] as $row) {
+//		foreach ($_POST['SRateForm']['group'] as $row) {
 //			$sql = '';
 //			switch ($this->scenario) {
 //				case 'delete':

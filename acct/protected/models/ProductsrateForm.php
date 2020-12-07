@@ -3,6 +3,7 @@ class ProductsrateForm extends CFormModel
 {
 	public $id = 0;
 	public $city;
+    public $copy=0;
 	public $city_name;
 	public $start_dt;
     public $product_sale;
@@ -173,6 +174,10 @@ class ProductsrateForm extends CFormModel
 		$uid = Yii::app()->user->id;
 
 		foreach ($_POST['ProductsrateForm']['detail'] as $row) {
+		    if($_POST['ProductsrateForm']['copy']==1){
+                $row['uflag']='Y';
+                //print_r('<pre>');print_r($_POST['ProductsrateForm']['copy']);exit();
+            }
 			$sql = '';
 			switch ($this->scenario) {
 				case 'delete':

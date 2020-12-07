@@ -21,7 +21,7 @@ $this->pageTitle=Yii::app()->name . ' - Productsrate Form';
 				'submit'=>Yii::app()->createUrl('productsrate/index')));
 		?>
         <?php echo TbHtml::button('<span class="fa fa-clone"></span> '.Yii::t('misc','Copy'), array(
-                'submit'=>Yii::app()->createUrl('productsrate/new', array('index'=>$model->id)))
+                'submit'=>Yii::app()->createUrl('productsrate/new', array('index'=>$model->id,'copy'=>1)))
         );
         ?>
 
@@ -41,6 +41,7 @@ $this->pageTitle=Yii::app()->name . ' - Productsrate Form';
 			<?php echo $form->hiddenField($model, 'scenario'); ?>
 			<?php echo CHtml::hiddenField('dtltemplate'); ?>
 			<?php echo $form->hiddenField($model, 'id'); ?>
+            <?php echo $form->hiddenField($model, 'copy'); ?>
 
 			<div class="form-group">
 				<?php echo $form->labelEx($model,'city',array('class'=>"col-sm-2 control-label")); ?>

@@ -82,14 +82,16 @@ class ProductsrateController extends Controller
 		}
 	}
 	
-	public function actionNew($index=0)
+	public function actionNew($index=0,$copy=0)
 	{
 		$model = new ProductsrateForm('new');
 		$model->city = Yii::app()->user->city();
         if ($index!==0 && $model->retrieveData($index)) {
             $model->id = 0;
+            $model->copy = $copy;
             $model->start_dt = date('Y/m/d');
         }
+//        print_r($model);
 		$this->render('form',array('model'=>$model,));
 	}
 	
