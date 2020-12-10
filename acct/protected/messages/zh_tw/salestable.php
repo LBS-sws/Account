@@ -9,6 +9,12 @@ return array(
     'Type'=>'類型',
     'Information'=>'情況說明',
     'Commission'=>'提成金額',
+    'Examine'=>'狀態',
+    'Ject Remark'=>'拒絕原因',
+    'Not reviewed'=>'未審核',
+    'Reviewed'=>'待審核',
+    'Adopt'=>'審核通過',
+    'Rejected'=>'已拒絕',
 
 );
 ?>

@@ -58,7 +58,8 @@ return array(
 'Confirm'=>'確認',
 'OK'=>'確認',
 'Void'=>'撤消',
-'Approval'=>'審核',
+'Approval'=>'申請審核',
+'Audit'=>'審核通过',
 
 'Invalid Station. Please register first.'=>'工作站無效。請先登記。 ',
 'User ID has been logged in more than one station.'=>'帳戶已被登錄到另一工作站。 ',

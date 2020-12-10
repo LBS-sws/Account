@@ -85,12 +85,14 @@ class SalesTableForm extends CFormModel
             'type'=>'0',
             'information'=>'',
             'commission'=>'',
+            'examine'=>'',
             'uflag'=>'N',
         ),
     );
 
 
     public $commission;
+    public $ject_remark;
 			
 	/**
 	 * Declares customized attribute labels.
@@ -112,6 +114,8 @@ class SalesTableForm extends CFormModel
             'type'=>Yii::t('salestable','Type'),
             'information'=>Yii::t('salestable','Information'),
             'commission'=>Yii::t('salestable','Commission'),
+            'examine'=>Yii::t('salestable','Examine'),
+            'ject_remark'=>Yii::t('salestable','Ject Remark'),
 //            'amt_install_royalty'=>Yii::t('service','Name'),
 		);
 	}
@@ -119,7 +123,7 @@ class SalesTableForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('id, city_name,detail,customer','safe'),
+			array('id, city_name,detail,customer,ject_remark','safe'),
 			array('','required'),
 			array('','validateDetailRecords'),
 		);
@@ -159,7 +163,8 @@ class SalesTableForm extends CFormModel
         $this->sale=$salerow['employee_name'];
         $this->year=$salerow['year_no'];
         $this->month=$salerow['month_no'];
-        $this->examine=$product['examine']=='Y'?'已审核':'未审核';
+        $this->examine=$product['examine'];
+        $this->ject_remark=$product['ject_remark'];
 //        print_r('<pre>'); print_r($product);
 //        exit();
         if (count($rows) > 0) {
@@ -546,6 +551,7 @@ class SalesTableForm extends CFormModel
                 $temp['date'] = General::toDate($row['date']);
                 $temp['commission'] = $row['commission'];
                 $temp['uflag'] = 'N';
+                $temp['examine']=$product['examine'];
                 $this->detail[] = $temp;
             }
         }
@@ -660,7 +666,7 @@ class SalesTableForm extends CFormModel
     {
         $city = Yii::app()->user->city();
         $uid = Yii::app()->user->id;
-        print_r('<pre>'); print_r($this->attributes['detail']);
+//        print_r('<pre>'); print_r($this->attributes['detail']);
         foreach ($this->attributes['detail'] as $row) {
             $sql = '';
             switch ($this->scenario) {
@@ -739,88 +745,6 @@ class SalesTableForm extends CFormModel
         return true;
     }
 
-//	protected function saveDetail(&$connection)
-//	{
-//		$uid = Yii::app()->user->id;
-//
-//		foreach ($_POST['SRateForm']['group'] as $row) {
-//			$sql = '';
-//			switch ($this->scenario) {
-//				case 'delete':
-//					$sql = "delete from acc_service_rate_dtl where hdr_id = :hdr_id";
-//					break;
-//				case 'new':
-//					if ($row['uflag']=='Y') {
-//						$sql = "insert into acc_service_rate_dtl(
-//									hdr_id, operator, sales_amount, rate, name,
-//									luu, lcu
-//								) values (
-//									:hdr_id, :operator, :sales_amount, :rate, :name,
-//									:luu, :lcu
-//								)";
-//					}
-//					break;
-//				case 'edit':
-//					switch ($row['uflag']) {
-//						case 'D':
-//							$sql = "delete from acc_service_rate_dtl where id = :id";
-//							break;
-//						case 'Y':
-//							$sql = ($row['id']==0)
-//									?
-//									"insert into acc_service_rate_dtl(
-//										hdr_id, operator, sales_amount, rate, name,
-//										luu, lcu
-//									) values (
-//										:hdr_id, :operator, :sales_amount, :rate, :name,
-//										:luu, :lcu
-//									)"
-//									:
-//									"update acc_service_rate_dtl set
-//										hdr_id = :hdr_id,
-//										operator = :operator,
-//										sales_amount = :sales_amount,
-//										hy_pc_rate = :hy_pc_rate,
-//										inv_rate = :inv_rate,
-//										luu = :luu
-//									where id = :id
-//									";
-//							break;
-//					}
-//					break;
-//			}
-//
-//			if ($sql != '') {
-////                print_r('<pre>');
-////                print_r($sql);exit();
-//				$command=$connection->createCommand($sql);
-//				if (strpos($sql,':id')!==false)
-//					$command->bindParam(':id',$row['id'],PDO::PARAM_INT);
-//				if (strpos($sql,':hdr_id')!==false)
-//					$command->bindParam(':hdr_id',$this->id,PDO::PARAM_INT);
-//				if (strpos($sql,':operator')!==false)
-//					$command->bindParam(':operator',$row['operator'],PDO::PARAM_STR);
-//				if (strpos($sql,':sales_amount')!==false) {
-//					$amt = General::toMyNumber($row['sales_amount']);
-//					$command->bindParam(':sales_amount',$amt,PDO::PARAM_STR);
-//				}
-//				if (strpos($sql,':rate')!==false) {
-//					$rate1 = General::toMyNumber($row['rate']);
-//					$command->bindParam(':rate',$rate1,PDO::PARAM_STR);
-//				}
-//				if (strpos($sql,':name')!==false) {
-//
-//					$command->bindParam(':name',$row['name'],PDO::PARAM_STR);
-//				}
-//				if (strpos($sql,':luu')!==false)
-//					$command->bindParam(':luu',$uid,PDO::PARAM_STR);
-//				if (strpos($sql,':lcu')!==false)
-//					$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
-//				$command->execute();
-//			}
-//		}
-//		return true;
-//	}
 
 
     public function saveExamine(){
@@ -829,7 +753,21 @@ class SalesTableForm extends CFormModel
         $this->id=$_POST['SalesTableForm']['id'];
         return true;
     }
+
+    public function saveAudit(){
+        $sql="update acc_product set  	examine = 'A' where service_hdr_id = '".$_POST['SalesTableForm']['id']."'";
+        $rows = Yii::app()->db->createCommand($sql)->execute();
+        $this->id=$_POST['SalesTableForm']['id'];
+        return true;
+    }
+    public function saveReject(){
+
+        $sql="update acc_product set  	examine = 'S' , ject_remark='".$this->attributes['ject_remark']."' where service_hdr_id = '".$_POST['SalesTableForm']['id']."' ";
+        $rows = Yii::app()->db->createCommand($sql)->execute();
+        $this->id=$_POST['SalesTableForm']['id'];
+        return true;
+    }
 	public function isReadOnly() {
-		return ($this->scenario=='view');
+		return ($this->examine=='Y'||$this->examine=='A');
 	}
 }

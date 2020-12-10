@@ -30,11 +30,20 @@ $this->pageTitle=Yii::app()->name . ' - Salestable Form';
 			<?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save'), array(
 				'submit'=>Yii::app()->createUrl('salestable/save')));
 			?>
-        <?php if(Yii::app()->user->validFunction('CN12')){ echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Approval'), array(
+        <?php if( Yii::app()->user->validFunction('CN12')&&$model->examine=='Y'){ ?>
+            <?php  echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Audit'), array(
+            'submit'=>Yii::app()->createUrl('salestable/audit')));
+            ?>
+            <?php  echo TbHtml::button('<span class="fa fa-remove"></span> '.Yii::t('misc','Deny'), array(
+                'data-toggle'=>'modal','data-target'=>'#jectdialog'));
+            ?>
+        <?php  }else{  if($model->examine=='S'||$model->examine=='N')echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Approval'), array(
             'submit'=>Yii::app()->createUrl('salestable/examine')));
         }?>
-
 	</div>
+
+
+
 	<div class="btn-group pull-right" role="group">
         <?php echo TbHtml::button('<span class="fa fa-cloud-download"></span> '.Yii::t('misc','Down'), array(
             'submit'=>Yii::app()->createUrl('salestable/down')));
@@ -50,6 +59,7 @@ $this->pageTitle=Yii::app()->name . ' - Salestable Form';
 			<?php echo $form->hiddenField($model, 'id'); ?>
             <?php echo CHtml::hiddenField('dtltemplate'); ?>
 			<?php echo $form->hiddenField($model, 'city'); ?>
+            <?php echo $form->hiddenField($model, 'examine'); ?>
 
 
             <div class="form-group" style="margin-left: 2px;">
@@ -60,7 +70,27 @@ $this->pageTitle=Yii::app()->name . ' - Salestable Form';
                     .tftable td {font-size:12px;border-width: 1px;padding: 8px;border-style: solid;}
 
                 </style>
-
+                <div class="form-group">
+                    <?php echo $form->labelEx($model,'examine',array('class'=>"col-sm-2 control-label")); ?>
+                    <div class="col-sm-3">
+                        <?php echo $form->dropDownList($model, 'examine',
+                            array(
+                                'A'=>Yii::t('salestable','Adopt'),
+                                'S'=>Yii::t('salestable','Rejected'),
+                                'Y'=>Yii::t('salestable','Reviewed'),
+                                'N'=>Yii::t('salestable','Not reviewed'),
+                            ),
+                            array('disabled'=>'disabled')
+                        ); ?>
+                    </div>
+                    <?php if($model->examine=='S'){echo $form->labelEx($model,'ject_remark',array('class'=>"col-sm-2 control-label")); ?>
+                    <div class="col-sm-4">
+                        <?php echo $form->textArea($model, 'ject_remark',
+                            array('size'=>30,'maxlength'=>200,'readonly'=>'readonly')
+                        ); ?>
+                    </div>
+                    <?php }?>
+                </div>
                 <table class="tftable" border="1" >
                     <tr><th rowspan="2">日期</th><th rowspan="2">客户名称</th><th colspan="4">IA（清洁）</th><th colspan="4">IB（灭虫）</th><th colspan="4">IC（租机）</th><th rowspan="2">焗雾/白蚁/甲醛/雾化消毒</th><th rowspan="2">I（装机费）</th><th colspan="7">销售</th></tr>
                     <tr><th>IA费/月</th><th>续约IA费/月</th><th>终止IA费/月</th><th>续约终止费/月</th><th>IB费/月</th><th>续约IB费/月</th><th>终止IB费/月</th><th>续约终止费/月</th><th>IC费/月</th><th>续约IC费/月</th><th>终止IC费/月</th><th>续约终止费/月</th><th>纸品系列</th><th>消毒液及皂液</th><th>空气净化</th><th>化学剂</th><th>香薰系列</th><th>虫控系列</th><th>其他</th></tr>
@@ -79,7 +109,14 @@ $this->pageTitle=Yii::app()->name . ' - Salestable Form';
 
 
             </div>
-
+            <?php
+            $this->renderPartial('//site/ject',array(
+                'form'=>$form,
+                'model'=>$model,
+                'rejectName'=>"ject_remark",
+                'submit'=>Yii::app()->createUrl('salestable/reject'),
+            ));
+            ?>
 <?php //print_r('<pre>');print_r($model);?>
 			<div class="form-group">
 <!--				--><?php //echo $form->labelEx('$model','',array('class'=>"col-sm-2 control-label")); ?>
@@ -88,7 +125,7 @@ $this->pageTitle=Yii::app()->name . ' - Salestable Form';
                 </div>
 				<div class="col-sm-2">
 					<?php echo $form->textField($model, 'amt_install_royalty',
-						array('rows'=>3,'cols'=>60,'maxlength'=>200,)
+						array('rows'=>3,'cols'=>60,'maxlength'=>200,'readonly'=>$model->isReadOnly())
 					); ?>
 				</div>
                 <div class="col-sm-2 control-label">
@@ -96,7 +133,7 @@ $this->pageTitle=Yii::app()->name . ' - Salestable Form';
                 </div>
                 <div class="col-sm-2">
                     <?php echo $form->textField($model, 'supplement_money',
-                        array('rows'=>3,'cols'=>60,'maxlength'=>200,'readonly'=>'readonly')
+                        array('rows'=>3,'cols'=>60,'maxlength'=>200,'readonly'=>$model->isReadOnly())
                     ); ?>
                 </div>
                 <div class="col-sm-2 control-label">
@@ -104,7 +141,7 @@ $this->pageTitle=Yii::app()->name . ' - Salestable Form';
                 </div>
                 <div class="col-sm-2">
                     <?php echo $form->textField($model, 'final_money',
-                        array('rows'=>3,'cols'=>60,'maxlength'=>200,'readonly'=>'readonly')
+                        array('rows'=>3,'cols'=>60,'maxlength'=>200,'readonly'=>$model->isReadOnly())
                     ); ?>
                 </div>
 			</div>

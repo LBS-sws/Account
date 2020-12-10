@@ -24,7 +24,7 @@ class SalestableController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','fileupload','fileremove','examine'),
+				'actions'=>array('new','edit','delete','save','fileupload','fileremove','examine','reject','audit'),
 				'expression'=>array('SalestableController','allowReadWrite'),
 			),
 			array('allow', 
@@ -111,6 +111,40 @@ class SalestableController extends Controller
 			$this->render('form',array('model'=>$model,));
 		}
 	}
+
+    public function actionReject()
+    {
+        if (isset($_POST['SalesTableForm'])) {
+            $model = new SalesTableForm('reject');
+            $model->attributes = $_POST['SalesTableForm'];
+            if ($model->validate()) {
+                $model->saveReject();
+                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Request Denied'));
+                $this->redirect(Yii::app()->createUrl('salestable/edit',array('index'=>$model->id)));
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+                $this->render('form',array('model'=>$model,));
+            }
+        }
+    }
+    public function actionAudit()
+    {
+        if (isset($_POST['SalesTableForm'])) {
+            $model = new SalesTableForm('audit');
+            $model->attributes = $_POST['SalesTableForm'];
+//           / print_r(  $model->attributes);exit();
+            if ($model->validate()) {
+                $model->saveAudit();
+                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                $this->redirect(Yii::app()->createUrl('salestable/edit',array('index'=>$model->id)));
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+                $this->render('form',array('model'=>$model,));
+            }
+        }
+    }
 	
 //	public function actionDelete()
 //	{
@@ -182,7 +216,8 @@ class SalestableController extends Controller
 //			Yii::app()->end();
 //		}
 //	}
-	
+
+
 	public static function allowReadWrite() {
 		return Yii::app()->user->validRWFunction('XS07');
 	}
