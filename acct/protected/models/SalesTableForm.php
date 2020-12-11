@@ -452,20 +452,20 @@ class SalesTableForm extends CFormModel
                 $temp['ic_end'] = '';//终止IC费
                 $temp['amt_paid'] = '';//焗雾白蚁甲醛雾化
                 $temp['amt_install'] = '';//I装机费
-                $temp['paper'] = $v['sales_products']=='paper'? $v['money']:'';//纸
-                $temp['disinfectant'] =$v['sales_products']=='disinfectant'? $v['money']: '';//消毒液
-                $temp['purification'] =$v['sales_products']=='purification'? $v['money']: '';//空气净化
-                $temp['chemical'] =$v['sales_products']=='chemical'? $v['money']: '';//化学剂
-                $temp['aromatherapy'] = $v['sales_products']=='aromatherapy'? $v['money']:'';//香薰
-                $temp['pestcontrol'] = $v['sales_products']=='pestcontrol'? $v['money']:'';//虫控
-                $temp['other'] = $v['sales_products']=='other'? $v['money']:'';//其他
-                $temp['paper_money'] = $v['sales_products']=='paper'? $v['money']*$fuwu:'';//纸提成
-                $temp['disinfectant_money'] =$v['sales_products']=='disinfectant'? $v['money']*$fuwu: '';//消毒液提成
-                $temp['purification_money'] =$v['sales_products']=='purification'? $v['money']*$fuwu: '';//空气净化提成
-                $temp['chemical_money'] =$v['sales_products']=='chemical'? $v['money']*$fuwu: '';//化学剂提成
-                $temp['aromatherapy_money'] = $v['sales_products']=='aromatherapy'? $v['money']*$fuwu:'';//香薰提成
-                $temp['pestcontrol_money'] = $v['sales_products']=='pestcontrol'? $v['money']*$fuwu:'';//虫控提成
-                $temp['other_money'] = $v['sales_products']=='other'? $v['money']*$fuwu:'';//其他提成
+                $temp['paper'] = $v['sales_products']=='paper'? $v['money']*$v['qty']:'';//纸
+                $temp['disinfectant'] =$v['sales_products']=='disinfectant'? $v['money']*$v['qty']: '';//消毒液
+                $temp['purification'] =$v['sales_products']=='purification'? $v['money']*$v['qty']: '';//空气净化
+                $temp['chemical'] =$v['sales_products']=='chemical'? $v['money']*$v['qty']: '';//化学剂
+                $temp['aromatherapy'] = $v['sales_products']=='aromatherapy'? $v['money']*$v['qty']:'';//香薰
+                $temp['pestcontrol'] = $v['sales_products']=='pestcontrol'? $v['money']*$v['qty']:'';//虫控
+                $temp['other'] = $v['sales_products']=='other'? $v['money']*$v['qty']:'';//其他
+                $temp['paper_money'] = $v['sales_products']=='paper'? $v['money']*$fuwu*$v['qty']:'';//纸提成
+                $temp['disinfectant_money'] =$v['sales_products']=='disinfectant'? $v['money']*$fuwu*$v['qty']: '';//消毒液提成
+                $temp['purification_money'] =$v['sales_products']=='purification'? $v['money']*$fuwu*$v['qty']: '';//空气净化提成
+                $temp['chemical_money'] =$v['sales_products']=='chemical'? $v['money']*$fuwu*$v['qty']: '';//化学剂提成
+                $temp['aromatherapy_money'] = $v['sales_products']=='aromatherapy'? $v['money']*$fuwu*$v['qty']:'';//香薰提成
+                $temp['pestcontrol_money'] = $v['sales_products']=='pestcontrol'? $v['money']*$fuwu*$v['qty']:'';//虫控提成
+                $temp['other_money'] = $v['sales_products']=='other'? $v['money']*$fuwu*$v['qty']:'';//其他提成
                 $temp['othersalesman'] ='';//其他
                 //年金额
                 $temp['y_ia'] = '';//IA费
