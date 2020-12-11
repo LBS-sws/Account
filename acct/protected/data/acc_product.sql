@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2020-12-03 15:05:13
+Date: 2020-12-11 16:23:28
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,12 +25,13 @@ CREATE TABLE `acc_product` (
   `amt_install_royalty` decimal(11,2) DEFAULT NULL COMMENT '提成点数 装机',
   `final_money` decimal(11,2) DEFAULT NULL COMMENT '金额 总计',
   `examine` char(1) NOT NULL DEFAULT 'N' COMMENT 'N为未审核Y为已经审核',
+  `ject_remark` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of acc_product
 -- ----------------------------
-INSERT INTO `acc_product` VALUES ('6', '1836', '20.00', '0.00', 'N');
-INSERT INTO `acc_product` VALUES ('7', '1835', '1.00', '0.00', 'N');
-INSERT INTO `acc_product` VALUES ('8', '1834', '0.00', '0.00', 'Y');
+INSERT INTO `acc_product` VALUES ('6', '1836', '20.00', '0.00', 'N', null);
+INSERT INTO `acc_product` VALUES ('7', '1835', '1.00', '0.00', 'N', null);
+INSERT INTO `acc_product` VALUES ('8', '1834', '0.01', '3046.12', 'A', 'd sad a qdw qd ');
