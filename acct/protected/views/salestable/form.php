@@ -75,10 +75,10 @@ $this->pageTitle=Yii::app()->name . ' - Salestable Form';
                     <div class="col-sm-3">
                         <?php echo $form->dropDownList($model, 'examine',
                             array(
+                                'N'=>Yii::t('salestable','Not reviewed'),
                                 'A'=>Yii::t('salestable','Adopt'),
                                 'S'=>Yii::t('salestable','Rejected'),
                                 'Y'=>Yii::t('salestable','Reviewed'),
-                                'N'=>Yii::t('salestable','Not reviewed'),
                             ),
                             array('disabled'=>'disabled')
                         ); ?>
