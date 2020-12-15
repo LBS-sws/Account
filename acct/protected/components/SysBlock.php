@@ -202,6 +202,76 @@ class SysBlock {
 		return ($row===false);
 	}
 
+
+    /**
+    每月3日, 驗證 用户有月报表分析权限为读写的权限的未及时发送邮件, false: 未处理
+     **/
+    public function isMonthDispatch () {
+        $uid = Yii::app()->user->id;
+        $city = Yii::app()->user->city();
+        $suffix = Yii::app()->params['envSuffix'];
+        $email=Yii::app()->user->email();
+        $lastdate = date('d')<3 ? date('Y-m-d',strtotime('-3 months')) : date('Y-m-d',strtotime('-2 months'));
+        $year = date("Y", strtotime($lastdate));
+        $month = date("n", strtotime($lastdate));
+        $sql = "select a_control from security$suffix.sec_user_access 
+				where username='$uid' and system_id='drs' and a_read_write like '%H01%'
+			";
+        $row = Yii::app()->db->createCommand($sql)->queryRow();
+        if ($row===false) return true;
+        $subject="月报表总汇-" .$year.'/'.$month;
+        if($month==1){
+            $months=12;
+            $years=$year-1;
+       }else{
+            $months=$month-1;
+            $years=$year;
+        }
+        $subjectlast="月报表总汇-" .$years.'/'.$months;
+        $sql = "select id from swoper$suffix.swo_month_email               
+                where city='$city' and  request_dt<= '$lastdate' and subject='$subject' 	
+			";
+        $row = Yii::app()->db->createCommand($sql)->queryAll();
+       // print_r(count($row));exit();
+       if(count($row)==1){
+           return true;
+       }else{
+           return false;
+       }
+    }
+
+    /**
+    檢查上月的質檢平均分是否低於75分，如果低於75分，需要提示用戶去培訓系統進行測試
+     **/
+	public function validateExamination() {
+        $uid = Yii::app()->user->id;
+        $suffix = Yii::app()->params['envSuffix'];
+        $row = Yii::app()->db->createCommand()->select("b.id,b.code,b.name")->from("hr$suffix.hr_binding a")
+            ->leftJoin("hr$suffix.hr_employee b","a.employee_id=b.id")
+            ->leftJoin("security$suffix.sec_user_access e","a.user_id=e.username")
+            ->where("a.user_id=:user_id and a_read_write like'%EM02%'",array(":user_id"=>$uid))->queryRow();
+        if($row){
+            $date = date("Y-m",strtotime("-1 month"));
+            $username=$row['name']." (".$row["code"].")";
+            $result = Yii::app()->db->createCommand()->select("avg(qc_result) as result")->from("swoper$suffix.swo_qc")
+                ->where("date_format(qc_dt,'%Y-%m')=:date and job_staff=:job_staff",array(":date"=>$date,":job_staff"=>$username))->queryScalar();
+
+            if($result!==null){
+                $result=floatval($result);
+                if($result<75){ //上月的質檢平均分低於75分
+                    $nowMonth = date("Y-m");
+                    $title = Yii::app()->db->createCommand()->select("MAX(title_num/title_sum)")->from("exa_join")
+                        ->where("employee_id=:employee_id and date_format(lcd,'%Y-%m')=:date",array(":employee_id"=>$row['id'],":date"=>$nowMonth))->queryScalar();
+                    $title = $title===null?0:$title;
+                    if($title<0.85){//測驗後的正確率小於85%
+                        return false;
+                    }
+                }
+            }
+        }
+		return true;
+	}
+
 	public function test() {
 		return false;
 	}
