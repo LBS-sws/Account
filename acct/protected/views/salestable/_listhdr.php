@@ -1,5 +1,9 @@
 <tr>
-	<th></th>
+    <th>
+        <?php echo TbHtml::link($this->getLabelName('employee_code').$this->drawOrderArrow('employee_code'),'#',$this->createOrderLink('salestable-list','employee_code'))
+        ;
+        ?>
+    </th>
 	<th>
 		<?php echo TbHtml::link($this->getLabelName('employee_name').$this->drawOrderArrow('employee_name'),'#',$this->createOrderLink('salestable-list','employee_name'))
 			;

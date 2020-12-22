@@ -397,6 +397,7 @@ class SalesTableForm extends CFormModel
             }
         }
         //月金额
+       // print_r('<pre>'); print_r($this->group);exit();
         $this->ia=array_sum(array_map(create_function('$val', 'return $val["ia"];'), $this->group));
         $this->ia_c=array_sum(array_map(create_function('$val', 'return $val["ia_c"];'), $this->group));
         $this->ia_c_end=array_sum(array_map(create_function('$val', 'return $val["ia_c_end"];'), $this->group));
@@ -428,7 +429,7 @@ class SalesTableForm extends CFormModel
         $sql = "select b.log_dt,b.company_name,a.money,a.qty,c.description,c.sales_products,c.id from swoper$suffix.swo_logistic_dtl a
                 left outer join swoper$suffix.swo_logistic b on b.id=a.log_id		
                	left outer join swoper$suffix.swo_task c on a.task=c.	id
-                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$a."' and b.city=$city";
+                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$a."' and b.city in ($city)";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
         //print_r('<pre>');print_r($rows);exit();
         if(count($rows)>0){
@@ -516,7 +517,8 @@ class SalesTableForm extends CFormModel
         $this->amt_paid_royalty=$salerow['new_calc']*100;//提成点数 焗雾
         $this->ic_royalty=$salerow['new_calc']*100;//提成点数 租机
         $this->xuyue_royalty=1;//提成点数 续约
-        $this->amt_install_royalty=$product['amt_install_royalty'];//提成点数 装机
+        $amt_install_royalty=$this->getAmount($city,'paper','paper',$start,$this->abc_money);//装机提成比例
+        $this->amt_install_royalty=$amt_install_royalty;//提成点数 装机
         $this->sale_royalty="/";//提成点数 销售
         $this->huaxueji_royalty=10;//提成点数 化学剂
         $this->xuyuezhong_royalty=1;//提成点数 续约终止
@@ -525,7 +527,7 @@ class SalesTableForm extends CFormModel
         $this->amt_paid_money=$this->y_amt_paid*$salerow['new_calc'];//金额 焗雾
         $this->ic_money=$this->y_ic*$salerow['new_calc'];//金额 租机
         $this->xuyue_money= ($this->y_ia_c+ $this->y_ib_c+ $this->y_ic_c)*0.01;//金额 续约
-        $this->amt_install_money=$this->amt_install*$product['amt_install_royalty'];//金额 装机
+        $this->amt_install_money=$this->amt_install*$amt_install_royalty;//金额 装机
         $this->sale_money=$paper_money+$disinfectant_money+$purification_money+$aromatherapy_money+$pestcontrol_money+$other_money;//金额 销售
         $this->huaxueji_money=$this->chemical*0.1;//金额 化学剂
         $this->ia_end_money=$ia_money;//金额 B
@@ -633,14 +635,14 @@ class SalesTableForm extends CFormModel
         $a=$connection->createCommand($sql1)->queryAll();
         if(empty($a)){
             $sql = "insert into acc_product(
-						amt_install_royalty,final_money,service_hdr_id
+					final_money,service_hdr_id
 						) values (
-						:amt_install_royalty,:final_money,:service_hdr_id
+						:final_money,:service_hdr_id
 						)
 						";
         }else{
             $sql = "update acc_product set  
-                            amt_install_royalty = :amt_install_royalty,                     					  
+                                       					  
 							final_money = :final_money 
 						where service_hdr_id = :service_hdr_id
 						";
@@ -649,8 +651,8 @@ class SalesTableForm extends CFormModel
 //		$city = Yii::app()->user->city();
 		$uid = Yii::app()->user->id;
 		$command=$connection->createCommand($sql);
-        if (strpos($sql,':amt_install_royalty')!==false)
-            $command->bindParam(':amt_install_royalty',$_POST['SalesTableForm']['amt_install_royalty'],PDO::PARAM_INT);
+//        if (strpos($sql,':amt_install_royalty')!==false)
+//            $command->bindParam(':amt_install_royalty',$_POST['SalesTableForm']['amt_install_royalty'],PDO::PARAM_INT);
         if (strpos($sql,':final_money')!==false)
             $final_money=round($_POST['SalesTableForm']['final_money'], 2);
             $command->bindParam(':final_money',$final_money,PDO::PARAM_INT);

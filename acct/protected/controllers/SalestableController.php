@@ -40,8 +40,8 @@ class SalestableController extends Controller
 	public function actionIndex($pageNum=0) 
 	{
 		$model = new SalesTableList;
-		if (isset($_POST['SalesTabeListl'])) {
-			$model->attributes = $_POST['SalesTabeListl'];
+		if (isset($_POST['SalesTableList'])) {
+			$model->attributes = $_POST['SalesTableList'];
 		} else {
 			$session = Yii::app()->session;
 			if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {

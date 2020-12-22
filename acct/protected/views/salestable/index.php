@@ -33,23 +33,29 @@ $this->pageTitle=Yii::app()->name . ' - salestabel';
 ////		?>
 <!--<!--	</div>-->
 <!--	</div></div>-->
-	<?php 
+	<?php
+    $search = array(
+        'employee_code',
+        'city',
+        'employee_name',
+        'user_name'
+    );
 		$this->widget('ext.layout.ListPageWidget', array(
 			'title'=>Yii::t('salestable','Sales commission Bi List'),
 			'model'=>$model,
 				'viewhdr'=>'//salestable/_listhdr',
 				'viewdtl'=>'//salestable/_listdtl',
+                'search'=>$search,
 				'advancedSearch'=>true,
 				'hasDateButton'=>true,
 		));
 	?>
 </section>
 <?php
-	echo $form->hiddenField($model,'pageNum');
-	echo $form->hiddenField($model,'totalRow');
-	echo $form->hiddenField($model,'orderField');
-	echo $form->hiddenField($model,'orderType');
-	echo $form->hiddenField($model,'filter');
+echo $form->hiddenField($model,'pageNum');
+echo $form->hiddenField($model,'totalRow');
+echo $form->hiddenField($model,'orderField');
+echo $form->hiddenField($model,'orderType');
 ?>
 <?php $this->endWidget(); ?>
 
