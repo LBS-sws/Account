@@ -182,7 +182,7 @@ class SalesTableForm extends CFormModel
                     $amt_paid_year_a=  $amt_paid_a;
                 }
 
-                if($row['cust_type_name']==32||$row['cust_type_name']==33||$row['cust_type_name']==30||$row['cust_type_name']==28){
+                if($row['cust_type_name']==32||$row['cust_type_name']==33||$row['cust_type_name']==30||$row['cust_type_name']==28||$row['cust_type']==6){
                     $temp['status_dt'] = General::toDate($row['status_dt']);//日期
                     $temp['company_name'] = $row['company_name'];//客户名称
                     $temp['ia'] = '';//IA费
@@ -355,7 +355,7 @@ class SalesTableForm extends CFormModel
                         $temp['ia_money'] = '';//扣除IA提成
                         $temp['ib_money'] =$row['commission']<0?$row['commission']:'';//扣除IB提成
                         $temp['ic_money'] = '';//扣除IC提成
-                    }elseif($row['cust_type']==3){
+                    }elseif($row['cust_type']==3||$row['cust_type']==5){
                         $temp['status_dt'] = General::toDate($row['status_dt']);//日期
                         $temp['company_name'] = $row['company_name'];//客户名称
                         $temp['ia'] = '';//IA费
@@ -421,7 +421,7 @@ class SalesTableForm extends CFormModel
             }
         }
         //月金额
-        print_r('<pre>'); print_r($this->group);exit();
+      //  print_r('<pre>'); print_r($this->group);exit();
         $this->ia=array_sum(array_map(create_function('$val', 'return $val["ia"];'), $this->group));
         $this->ia_c=array_sum(array_map(create_function('$val', 'return $val["ia_c"];'), $this->group));
         $this->ia_c_end=array_sum(array_map(create_function('$val', 'return $val["ia_c_end"];'), $this->group));
@@ -538,7 +538,8 @@ class SalesTableForm extends CFormModel
         $other_money=array_sum(array_map(create_function('$val', 'return $val["other_money"];'), $this->group));
         // $this->commission=array_sum(array_map(create_function('$val', 'return $val["commission"];'), $this->group));
         $this->all_sale=$this->paper+$this->disinfectant+$this->purification+$this->chemical+$this->aromatherapy+$this->pestcontrol+$this->other;
-        $point=$this->getPoont($salerow,$index);
+        //$point=$this->getPoont($salerow,$index);
+        $point=0;
         $this->ia_royalty=($salerow['new_calc']+$point)*100;//提成点数 B
         $this->ib_royalty=($salerow['new_calc']+$point)*100;//提成点数 C
         $this->amt_paid_royalty=($salerow['new_calc']+$point)*100;//提成点数 焗雾
