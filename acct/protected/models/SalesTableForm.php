@@ -421,7 +421,7 @@ class SalesTableForm extends CFormModel
             }
         }
         //月金额
-        //print_r('<pre>'); print_r($this->group);exit();
+        print_r('<pre>'); print_r($this->group);exit();
         $this->ia=array_sum(array_map(create_function('$val', 'return $val["ia"];'), $this->group));
         $this->ia_c=array_sum(array_map(create_function('$val', 'return $val["ia_c"];'), $this->group));
         $this->ia_c_end=array_sum(array_map(create_function('$val', 'return $val["ia_c_end"];'), $this->group));
