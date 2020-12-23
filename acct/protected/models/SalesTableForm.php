@@ -172,14 +172,26 @@ class SalesTableForm extends CFormModel
             foreach ($rows as $row) {
                 $temp = array();
                 if($row['paid_type']=='M'){
-                    $amt_paid_a=$row['amt_paid']-$row['b4_amt_paid'];//月金额
+                    $amt_paid_a=$row['amt_paid'];//月金额
                     $amt_paid_year_a=$amt_paid_a*$row['ctrt_period'];
                 }elseif ($row['paid_type']=='Y'){
-                    $amt_paid_a=$row['amt_paid']-$row['b4_amt_paid'];//月金额
+                    $amt_paid_a=$row['amt_paid'];//月金额
                     $amt_paid_year_a= $amt_paid_a;
                 }else{
                     $amt_paid_a=$row['amt_paid'];//月金额
                     $amt_paid_year_a=  $amt_paid_a;
+                }
+                if($row['status']=='A'){
+                    if($row['paid_type']=='M'){
+                        $amt_paid_a=$row['amt_paid']-$row['b4_amt_paid'];//月金额
+                        $amt_paid_year_a=$amt_paid_a*$row['ctrt_period'];
+                    }elseif ($row['paid_type']=='Y'){
+                        $amt_paid_a=$row['amt_paid']-$row['b4_amt_paid'];//月金额
+                        $amt_paid_year_a= $amt_paid_a;
+                    }else{
+                        $amt_paid_a=$row['amt_paid'];//月金额
+                        $amt_paid_year_a=  $amt_paid_a;
+                    }
                 }
 
                 if($row['cust_type_name']==32||$row['cust_type_name']==33||$row['cust_type_name']==30||$row['cust_type_name']==28||$row['cust_type']==6){
@@ -230,7 +242,7 @@ class SalesTableForm extends CFormModel
                     $temp['y_ic_c'] = '';//续约IC费
                     $temp['y_ic_c_end'] = '';//终止续约IC费
                     $temp['y_ic_end'] = '';//终止IC费
-                    $temp['y_amt_paid'] = $row['amt_paid_year'];//焗雾白蚁甲醛雾化
+                    $temp['y_amt_paid'] = $amt_paid_year_a;//焗雾白蚁甲醛雾化
                     $temp['ia_money'] = '';//扣除IA提成
                     $temp['ib_money'] = '';//扣除IB提成
                     $temp['ic_money'] = '';//扣除IC提成
@@ -453,12 +465,12 @@ class SalesTableForm extends CFormModel
         $sql = "select b.log_dt,b.company_name,a.money,a.qty,c.description,c.sales_products,c.id from swoper$suffix.swo_logistic_dtl a
                 left outer join swoper$suffix.swo_logistic b on b.id=a.log_id		
                	left outer join swoper$suffix.swo_task c on a.task=c.	id
-                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$a."' and b.city in ($city)";
+                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$a."' and b.city in ($city) and a.money>0";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
         //print_r('<pre>');print_r($rows);exit();
         if(count($rows)>0){
             foreach ($rows as $v){
-                if($v['money']==0){
+
                     $fuwu=$this->getAmount($city,$v['id'],$v['sales_products'],$start,$this->abc_money);//本单产品提成比例
                     $temp['status_dt'] = General::toDate($v['log_dt']);//日期
                     $temp['company_name'] = $v['company_name'];//客户名称
@@ -511,7 +523,6 @@ class SalesTableForm extends CFormModel
                     $temp['ib_money'] = '';//扣除IB提成
                     $temp['ic_money'] = '';//扣除IC提成
                     $this->group[] = $temp;
-                }
             }
         }
         //产品
