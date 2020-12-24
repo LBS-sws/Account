@@ -194,7 +194,7 @@ class SalesTableForm extends CFormModel
                     }
                 }
 
-                if($row['cust_type_name']==32||$row['cust_type_name']==33||$row['cust_type_name']==30||$row['cust_type_name']==28||$row['cust_type']==6){
+                if($row['cust_type_name']==59||$row['cust_type_name']==55||$row['cust_type_name']==57||$row['cust_type_name']==58||$row['cust_type']==6){
                     $temp['status_dt'] = General::toDate($row['status_dt']);//日期
                     $temp['company_name'] = $row['company_name'];//客户名称
                     $temp['ia'] = '';//IA费
@@ -461,6 +461,11 @@ class SalesTableForm extends CFormModel
         $this->y_ic_end=array_sum(array_map(create_function('$val', 'return $val["y_ic_end"];'), $this->group));
         $this->y_amt_paid=array_sum(array_map(create_function('$val', 'return $val["y_amt_paid"];'), $this->group));
         $this->abc_money=$this->y_ia+ $this->y_ib+$this->y_ic+$this->y_amt_paid;//iaibic营业额
+        $sql_point="select * from sales$suffix.sal_integral where hdr_id='$index' ";
+        $point = Yii::app()->db->createCommand($sql_point)->queryRow();
+        if(empty($point)){
+            $point['point']=0;
+        }
         //来源于物流配送的销售的单
         $sql = "select b.log_dt,b.company_name,a.money,a.qty,c.description,c.sales_products,c.id from swoper$suffix.swo_logistic_dtl a
                 left outer join swoper$suffix.swo_logistic b on b.id=a.log_id		
@@ -471,6 +476,7 @@ class SalesTableForm extends CFormModel
         if(count($rows)>0){
             foreach ($rows as $v){
                     $fuwu=$this->getAmount($city,$v['id'],$v['sales_products'],$start,$this->abc_money);//本单产品提成比例
+                    $fuwu=$fuwu+$point['point'];
                     $temp['status_dt'] = General::toDate($v['log_dt']);//日期
                     $temp['company_name'] = $v['company_name'];//客户名称
                     $temp['ia'] = '';//IA费
@@ -548,20 +554,15 @@ class SalesTableForm extends CFormModel
         $other_money=array_sum(array_map(create_function('$val', 'return $val["other_money"];'), $this->group));
         // $this->commission=array_sum(array_map(create_function('$val', 'return $val["commission"];'), $this->group));
         $this->all_sale=$this->paper+$this->disinfectant+$this->purification+$this->chemical+$this->aromatherapy+$this->pestcontrol+$this->other;
-        $sql_point="select * from sales$suffix.sal_integral where hdr_id='$index' ";
-        $point = Yii::app()->db->createCommand($sql_point)->queryRow();
-        if(empty($point)){
-            $point['point']=0;
-        }
         $this->ia_royalty=($salerow['new_calc']+$point['point'])*100;//提成点数 B
         $this->ib_royalty=($salerow['new_calc']+$point['point'])*100;//提成点数 C
         $this->amt_paid_royalty=($salerow['new_calc']+$point['point'])*100;//提成点数 焗雾
         $this->ic_royalty=($salerow['new_calc']+$point['point'])*100;//提成点数 租机
         $this->xuyue_royalty=1;//提成点数 续约
         $amt_install_royalty=$this->getAmount($city,'paper','paper',$start,$this->abc_money);//装机提成比例
-        $this->amt_install_royalty=$amt_install_royalty;//提成点数 装机
+        $this->amt_install_royalty=$amt_install_royalty+$point['point'];//提成点数 装机
         $this->sale_royalty="/";//提成点数 销售
-        $this->huaxueji_royalty=10;//提成点数 化学剂
+        $this->huaxueji_royalty=(0.1+$point['point'])*100;//提成点数 化学剂
         $this->xuyuezhong_royalty=1;//提成点数 续约终止
         $this->ia_money=$this->y_ia*($salerow['new_calc']+$point['point']);//金额 a
         $this->ib_money=$this->y_ib*($salerow['new_calc']+$point['point']);//金额 b
@@ -570,7 +571,7 @@ class SalesTableForm extends CFormModel
         $this->xuyue_money= ($this->y_ia_c+ $this->y_ib_c+ $this->y_ic_c)*0.01;//金额 续约
         $this->amt_install_money=$this->amt_install*$amt_install_royalty;//金额 装机
         $this->sale_money=$paper_money+$disinfectant_money+$purification_money+$aromatherapy_money+$pestcontrol_money+$other_money;//金额 销售
-        $this->huaxueji_money=$this->chemical*0.1;//金额 化学剂
+        $this->huaxueji_money=$this->chemical*$this->huaxueji_royalty;//金额 化学剂
         $this->ia_end_money=$ia_money;//金额 B
         $this->ib_end_money=$ib_money;//金额 C
         $this->ic_end_money=$ic_money;//金额 租机
