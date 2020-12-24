@@ -173,6 +173,12 @@ class ReportXS01Form extends CReportForm
             }
             $sql_point="select * from sales$suffix.sal_integral where year='$years' and month='$months' and username='".$arr['user_id']."' and city='".$records['city']."'";
             $point = Yii::app()->db->createCommand($sql_point)->queryRow();
+            if(empty($point)){
+                $point['point']=0;
+                $point['id']=0;
+            }
+            $sql_points="update sales$suffix.sal_integral set hdr_id='$index' where id='".$point['id']."'";
+            $record = Yii::app()->db->createCommand($sql_points)->execute();
             $this->city=$records['city_name'];
             $this->employee_name=$records['employee_name'];
             $this->saleyear=$records['year_no']."/".$records['month_no'];
@@ -192,9 +198,6 @@ class ReportXS01Form extends CReportForm
             $this->new_money=$records['new_money'];
             $this->edit_money=$records['edit_money'];
             $this->out_money=$records['out_money'];
-            if(empty($point)){
-                $point['point']=0;
-            }
             $point=$point['point']*100;
             $this->point=$point."%";
             $this->performanceedit_amount=$records['performanceedit_amount'];

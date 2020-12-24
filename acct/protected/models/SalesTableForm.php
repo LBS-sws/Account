@@ -470,7 +470,6 @@ class SalesTableForm extends CFormModel
         //print_r('<pre>');print_r($rows);exit();
         if(count($rows)>0){
             foreach ($rows as $v){
-
                     $fuwu=$this->getAmount($city,$v['id'],$v['sales_products'],$start,$this->abc_money);//本单产品提成比例
                     $temp['status_dt'] = General::toDate($v['log_dt']);//日期
                     $temp['company_name'] = $v['company_name'];//客户名称
@@ -549,22 +548,25 @@ class SalesTableForm extends CFormModel
         $other_money=array_sum(array_map(create_function('$val', 'return $val["other_money"];'), $this->group));
         // $this->commission=array_sum(array_map(create_function('$val', 'return $val["commission"];'), $this->group));
         $this->all_sale=$this->paper+$this->disinfectant+$this->purification+$this->chemical+$this->aromatherapy+$this->pestcontrol+$this->other;
-        //$point=$this->getPoont($salerow,$index);
-        $point=0;
-        $this->ia_royalty=($salerow['new_calc']+$point)*100;//提成点数 B
-        $this->ib_royalty=($salerow['new_calc']+$point)*100;//提成点数 C
-        $this->amt_paid_royalty=($salerow['new_calc']+$point)*100;//提成点数 焗雾
-        $this->ic_royalty=($salerow['new_calc']+$point)*100;//提成点数 租机
+        $sql_point="select * from sales$suffix.sal_integral where hdr_id='$index' ";
+        $point = Yii::app()->db->createCommand($sql_point)->queryRow();
+        if(empty($point)){
+            $point['point']=0;
+        }
+        $this->ia_royalty=($salerow['new_calc']+$point['point'])*100;//提成点数 B
+        $this->ib_royalty=($salerow['new_calc']+$point['point'])*100;//提成点数 C
+        $this->amt_paid_royalty=($salerow['new_calc']+$point['point'])*100;//提成点数 焗雾
+        $this->ic_royalty=($salerow['new_calc']+$point['point'])*100;//提成点数 租机
         $this->xuyue_royalty=1;//提成点数 续约
         $amt_install_royalty=$this->getAmount($city,'paper','paper',$start,$this->abc_money);//装机提成比例
         $this->amt_install_royalty=$amt_install_royalty;//提成点数 装机
         $this->sale_royalty="/";//提成点数 销售
         $this->huaxueji_royalty=10;//提成点数 化学剂
         $this->xuyuezhong_royalty=1;//提成点数 续约终止
-        $this->ia_money=$this->y_ia*($salerow['new_calc']+$point);//金额 a
-        $this->ib_money=$this->y_ib*($salerow['new_calc']+$point);//金额 b
-        $this->amt_paid_money=$this->y_amt_paid*($salerow['new_calc']+$point);//金额 焗雾
-        $this->ic_money=$this->y_ic*($salerow['new_calc']+$point);//金额 租机
+        $this->ia_money=$this->y_ia*($salerow['new_calc']+$point['point']);//金额 a
+        $this->ib_money=$this->y_ib*($salerow['new_calc']+$point['point']);//金额 b
+        $this->amt_paid_money=$this->y_amt_paid*($salerow['new_calc']+$point['point']);//金额 焗雾
+        $this->ic_money=$this->y_ic*($salerow['new_calc']+$point['point']);//金额 租机
         $this->xuyue_money= ($this->y_ia_c+ $this->y_ib_c+ $this->y_ic_c)*0.01;//金额 续约
         $this->amt_install_money=$this->amt_install*$amt_install_royalty;//金额 装机
         $this->sale_money=$paper_money+$disinfectant_money+$purification_money+$aromatherapy_money+$pestcontrol_money+$other_money;//金额 销售
@@ -601,48 +603,6 @@ class SalesTableForm extends CFormModel
         return true;
 	}
 
-	public function getPoont($records,$index){
-        $suffix = Yii::app()->params['envSuffix'];
-        $date=$records['year_no']."/".$records['month_no'].'/'."01";
-        $date1='2020/07/01';
-        $employee=$this->getEmployee($records['employee_code'],$records['year_no'],$records['month_no']);
-        // print_r($a);print_r($employee);
-        if($records['city']=='CD'||$records['city']=='FS'||$records['city']=='NJ'||$records['city']=='TJ'||strtotime($date)<strtotime($date1)||$employee==1){
-            $month=$records['month_no'];
-            $year=$records['year_no'];
-        }else{
-            $month=$records['month_no']-1;
-            $year=$records['year_no'];
-            if($month==0){
-                $month=12;
-                $year=$records['year_no']-1;
-            }
-        }
-        $sql="select employee_name from acc_service_comm_hdr where id=$index";
-        $name = Yii::app()->db->createCommand($sql)->queryScalar();
-        $sql1="select a.*, b.new_calc ,e.user_id from acc_service_comm_hdr a
-              left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
-              left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
-              left outer join hr$suffix.hr_binding e on  d.id=e.employee_id            
-              where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name' and d.city='".$records['city']."'
-";
-        $arr = Yii::app()->db->createCommand($sql1)->queryRow();
-        if($employee==1){
-            $months=$records['month_no']-1;
-            $years=$records['year_no'];
-            if($months==0){
-                $months=12;
-                $years=$records['year_no']-1;
-            }
-        }else{
-            $months=$month;
-            $years=$year;
-        }
-        $sql_point="select * from sales$suffix.sal_integral where year='$years' and month='$months' and username='".$arr['user_id']."' and city='".$records['city']."'";
-        $point = Yii::app()->db->createCommand($sql_point)->queryRow();
-        if(empty($point)){$point=0;}
-        return $point;
-    }
 
     public  function getEmployee($employee,$year,$month){
         $suffix = Yii::app()->params['envSuffix'];
