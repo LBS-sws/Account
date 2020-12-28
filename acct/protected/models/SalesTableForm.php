@@ -646,7 +646,7 @@ class SalesTableForm extends CFormModel
             //   if ($row!==false) {
             //  $type = $row['rpt_cat'];
             $sdate = General::toMyDate($start_dt);
-            $sql = "select id from acc_product_rate_hdr where city=$city and start_dt<'$sdate'   order by start_dt desc limit 1";
+            $sql = "select id from acc_product_rate_hdr where city='$city' and start_dt<'$sdate'   order by start_dt desc limit 1";
             $row = Yii::app()->db->createCommand($sql)->queryRow();
             if ($row!==false) {
                 $id = $row['id'];
