@@ -148,11 +148,11 @@ class SalesTableForm extends CFormModel
 	public function retrieveData($index)
 	{
         $suffix = Yii::app()->params['envSuffix'];
-        $city = Yii::app()->user->city_allow();
         $sql = "select a.*,b.* from acc_service_comm_hdr a
                  left outer join acc_service_comm_dtl b on a.id=b.hdr_id		
                 where a.id=$index ";
         $salerow = Yii::app()->db->createCommand($sql)->queryRow();
+        $city = $salerow['city'];
         $start=$salerow['year_no'].'-'. $salerow['month_no'].'-01';
         $end=$salerow['year_no'].'-'. $salerow['month_no'].'-31';
         $a=$salerow['employee_name']." (".$salerow['employee_code'].")";
@@ -470,7 +470,7 @@ class SalesTableForm extends CFormModel
         $sql = "select b.log_dt,b.company_name,a.money,a.qty,c.description,c.sales_products,c.id from swoper$suffix.swo_logistic_dtl a
                 left outer join swoper$suffix.swo_logistic b on b.id=a.log_id		
                	left outer join swoper$suffix.swo_task c on a.task=c.	id
-                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$a."' and b.city in ($city) and a.money>0";
+                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$a."' and b.city ='$city' and a.money>0";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
         //print_r('<pre>');print_r($rows);exit();
         if(count($rows)>0){
@@ -571,7 +571,7 @@ class SalesTableForm extends CFormModel
         $this->xuyue_money= ($this->y_ia_c+ $this->y_ib_c+ $this->y_ic_c)*0.01;//金额 续约
         $this->amt_install_money=$this->amt_install*$amt_install_royalty;//金额 装机
         $this->sale_money=$paper_money+$disinfectant_money+$purification_money+$aromatherapy_money+$pestcontrol_money+$other_money;//金额 销售
-        $this->huaxueji_money=$this->chemical*$this->huaxueji_royalty;//金额 化学剂
+        $this->huaxueji_money=$this->chemical*(0.1+$point['point']);//金额 化学剂
         $this->ia_end_money=$ia_money;//金额 B
         $this->ib_end_money=$ib_money;//金额 C
         $this->ic_end_money=$ic_money;//金额 租机
