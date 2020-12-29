@@ -5,5 +5,5 @@
 	<td><?php echo $this->record['city']; ?></td>
 	<td><?php echo $this->record['time']; ?></td>
 	<td><?php echo $this->record['user_name']; ?></td>
-
+    <td><?php echo $this->record['examine']; ?></td>
 </tr>

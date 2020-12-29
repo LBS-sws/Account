@@ -10,6 +10,7 @@ class SalesTableList extends CListPageModel
             'city'=>Yii::t('app','city'),
             'user_name'=>Yii::t('app','user_name'),
             'time'=>Yii::t('app','Time'),
+            'examine'=>Yii::t('app','Examine'),
 		);
 	}
 	
@@ -28,18 +29,20 @@ class SalesTableList extends CListPageModel
 	{
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city_allow();
-        $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,d.performance_amount,d.performanceedit_amount,d.performanceend_amount,d.renewal_amount,d.renewalend_amount,e.name as cityname from acc_service_comm_hdr a
+        $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,d.performance_amount,d.performanceedit_amount,d.performanceend_amount,d.renewal_amount,d.renewalend_amount,e.name as cityname,f.examine from acc_service_comm_hdr a
                  inner join  hr$suffix.hr_employee b  on b.code=a.employee_code
                  inner join  hr$suffix.hr_dept c on b.position=c.id      
                  inner join security$suffix.sec_city e on a.city=e.code 		  
-                 left outer join  acc_service_comm_dtl d on a.id=d.hdr_id            
+                 left outer join  acc_service_comm_dtl d on a.id=d.hdr_id         
+                 left outer join  acc_product f on a.id=f.service_hdr_id             
 			     where   a.city in ($city) and b.city in ($city)
 			";
         $sql2 = "select count(*) from acc_service_comm_hdr a
                  inner join  hr$suffix.hr_employee b  on b.code=a.employee_code
                  inner join  hr$suffix.hr_dept c on b.position=c.id      
                  inner join security$suffix.sec_city e on a.city=e.code 		  
-                 left outer join  acc_service_comm_dtl d on a.id=d.hdr_id            
+                 left outer join  acc_service_comm_dtl d on a.id=d.hdr_id       
+                   left outer join  acc_product f on a.id=f.service_hdr_id         
 			     where   a.city in ($city) and b.city in ($city)
 			";
 		$clause = "";
@@ -98,7 +101,7 @@ class SalesTableList extends CListPageModel
                     'city'=>$record['cityname'],
                     'time'=>$record['year_no']."/".$record['month_no'],
                     'user_name'=>$record['name'],
-//                    'comm_total_amount'=>$arr,
+                    'examine'=>$this->examine($record['examine']),
 
                 );
             }
@@ -107,5 +110,13 @@ class SalesTableList extends CListPageModel
         $session[$this->criteriaName()] = $this->getCriteria();
         return true;
 	}
+
+	public function examine($examine){
+	    if($examine=='N')$a=Yii::t('salestable','Not reviewed');
+        if($examine=='A')$a=Yii::t('salestable','Adopt');
+        if($examine=='S')$a=Yii::t('salestable','Rejected');
+        if($examine=='Y')$a=Yii::t('salestable','Reviewed');
+	    return $a;
+    }
 
 }

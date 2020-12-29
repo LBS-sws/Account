@@ -152,11 +152,13 @@ class SalesTableForm extends CFormModel
                  left outer join acc_service_comm_dtl b on a.id=b.hdr_id		
                 where a.id=$index ";
         $salerow = Yii::app()->db->createCommand($sql)->queryRow();
+        $a=$this->position($index);
         $city = $salerow['city'];
+        $new_calc=$this->getCalc($index,$a);
         $start=$salerow['year_no'].'-'. $salerow['month_no'].'-01';
         $end=$salerow['year_no'].'-'. $salerow['month_no'].'-31';
         $a=$salerow['employee_name']." (".$salerow['employee_code'].")";
-        $sql1 = "select * from swoper$suffix.swo_service where commission!=' ' and status_dt<='$end' and  status_dt>='$start' and salesman='$a'";
+        $sql1 = "select * from swoper$suffix.swo_service where commission!=' ' and status_dt<='$end' and  status_dt>='$start' and (salesman='$a' or  othersalesman='$a')";
         $rows = Yii::app()->db->createCommand($sql1)->queryAll();
         $sql1 = "select * from acc_product where  service_hdr_id='$index'";
         $product = Yii::app()->db->createCommand($sql1)->queryRow();
@@ -250,7 +252,7 @@ class SalesTableForm extends CFormModel
                     if($row['cust_type']==1){
                         $temp['status_dt'] = General::toDate($row['status_dt']);//日期
                         $temp['company_name'] = $row['company_name'];//客户名称
-                        $temp['ia'] = $row['commission']>0&&$row['status']!='C'?$amt_paid_a:'';//IA费
+                        $temp['ia'] = $row['commission']>0&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_a:'';//IA费
                         $temp['ia_c'] = $row['commission']>0&&$row['status']=='C'?$amt_paid_a:'';//续约IA费
                         $temp['ia_c_end'] = $row['commission']<0&&$row['status']=='C'?$amt_paid_a:'';//终止续约IA费
                         if($row['status']=='T'){
@@ -287,7 +289,7 @@ class SalesTableForm extends CFormModel
                         $temp['other_money'] = '';//其他提成
                      //   $temp['commission'] = $row['commission']<0?$row['commission']:$row['commission']*(empty($row['othersalesman'])?$row['royalty']:$row['royaltys']);//提成金额
                         //年金额
-                        $temp['y_ia'] = $row['commission']>0&&$row['status']!='C'?$amt_paid_year_a:'';//IA费
+                        $temp['y_ia'] = $row['commission']>0&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a:'';//IA费
                         $temp['y_ia_c'] = $row['commission']>0&&$row['status']=='C'?$amt_paid_year_a:'';//续约IA费
                         $temp['y_ia_c_end'] = $row['commission']<0&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IA费
                         if($row['status']=='T'){
@@ -315,7 +317,7 @@ class SalesTableForm extends CFormModel
                         $temp['ia_c_end'] = '';//终止续约IA费
                         $temp['ia_end'] = '';//终止IA费
                         $temp['ia_service'] = '';//IA次数月
-                        $temp['ib'] = $row['commission']>0&&$row['status']!='C'?$amt_paid_a:'';//IB费
+                        $temp['ib'] = $row['commission']>0&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_a:'';//IB费
                         $temp['ib_c'] = $row['commission']>0&&$row['status']=='C'?$amt_paid_a:'';//续约IB费
                         $temp['ib_c_end'] = $row['commission']<0&&$row['status']=='C'?$amt_paid_a:'';//终止续约IB费
                         if($row['status']=='T'){
@@ -351,7 +353,7 @@ class SalesTableForm extends CFormModel
                         $temp['y_ia_c'] = '';//续约IA费
                         $temp['y_ia_c_end'] = '';//终止续约IA费
                         $temp['y_ia_end'] = '';//终止IA费
-                        $temp['y_ib'] = $row['commission']>0&&$row['status']!='C'?$amt_paid_year_a:'';//IB费
+                        $temp['y_ib'] = $row['commission']>0&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a:'';//IB费
                         $temp['y_ib_c'] = $row['commission']>0&&$row['status']=='C'?$amt_paid_year_a:'';//续约IB费
                         $temp['y_ib_c_end'] = $row['commission']<0&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IB费
                         if($row['status']=='T'){
@@ -380,7 +382,7 @@ class SalesTableForm extends CFormModel
                         $temp['ib_c_end'] = '';//终止续约IB费
                         $temp['ib_end'] = '';//终止IB费
                         $temp['ib_service'] = '';//IB次数月
-                        $temp['ic'] =$row['commission']>0&&$row['status']!='C'?$amt_paid_a: '';//IC费
+                        $temp['ic'] =$row['commission']>0&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_a: '';//IC费
                         $temp['ic_c'] = $row['commission']>0&&$row['status']=='C'?$amt_paid_a:'';//续约IC费
                         $temp['ic_c_end'] = $row['commission']<0&&$row['status']=='C'?$amt_paid_a:'';//终止续约IC费
                         if($row['status']=='T'){
@@ -415,7 +417,7 @@ class SalesTableForm extends CFormModel
                         $temp['y_ib_c'] = '';//续约IB费
                         $temp['y_ib_c_end'] = '';//终止续约IB费
                         $temp['y_ib_end'] = '';//终止IB费
-                        $temp['y_ic'] =$row['commission']>0&&$row['status']!='C'?$amt_paid_year_a: '';//IC费
+                        $temp['y_ic'] =$row['commission']>0&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a: '';//IC费
                         $temp['y_ic_c'] = $row['commission']>0&&$row['status']=='C'?$amt_paid_year_a:'';//续约IC费
                         $temp['y_ic_c_end'] = $row['commission']<0&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IC费
                         if($row['status']=='T'){
@@ -554,20 +556,20 @@ class SalesTableForm extends CFormModel
         $other_money=array_sum(array_map(create_function('$val', 'return $val["other_money"];'), $this->group));
         // $this->commission=array_sum(array_map(create_function('$val', 'return $val["commission"];'), $this->group));
         $this->all_sale=$this->paper+$this->disinfectant+$this->purification+$this->chemical+$this->aromatherapy+$this->pestcontrol+$this->other;
-        $this->ia_royalty=($salerow['new_calc']+$point['point'])*100;//提成点数 B
-        $this->ib_royalty=($salerow['new_calc']+$point['point'])*100;//提成点数 C
-        $this->amt_paid_royalty=($salerow['new_calc']+$point['point'])*100;//提成点数 焗雾
-        $this->ic_royalty=($salerow['new_calc']+$point['point'])*100;//提成点数 租机
+        $this->ia_royalty=($new_calc+$point['point'])*100;//提成点数 B
+        $this->ib_royalty=($new_calc+$point['point'])*100;//提成点数 C
+        $this->amt_paid_royalty=($new_calc+$point['point'])*100;//提成点数 焗雾
+        $this->ic_royalty=($new_calc+$point['point'])*100;//提成点数 租机
         $this->xuyue_royalty=1;//提成点数 续约
         $amt_install_royalty=$this->getAmount($city,'paper','paper',$start,$this->abc_money);//装机提成比例
         $this->amt_install_royalty=$amt_install_royalty+$point['point'];//提成点数 装机
         $this->sale_royalty="/";//提成点数 销售
         $this->huaxueji_royalty=(0.1+$point['point'])*100;//提成点数 化学剂
         $this->xuyuezhong_royalty=1;//提成点数 续约终止
-        $this->ia_money=$this->y_ia*($salerow['new_calc']+$point['point']);//金额 a
-        $this->ib_money=$this->y_ib*($salerow['new_calc']+$point['point']);//金额 b
-        $this->amt_paid_money=$this->y_amt_paid*($salerow['new_calc']+$point['point']);//金额 焗雾
-        $this->ic_money=$this->y_ic*($salerow['new_calc']+$point['point']);//金额 租机
+        $this->ia_money=$this->y_ia*($new_calc+$point['point']);//金额 a
+        $this->ib_money=$this->y_ib*($new_calc+$point['point']);//金额 b
+        $this->amt_paid_money=$this->y_amt_paid*($new_calc+$point['point']);//金额 焗雾
+        $this->ic_money=$this->y_ic*($new_calc+$point['point']);//金额 租机
         $this->xuyue_money= ($this->y_ia_c+ $this->y_ib_c+ $this->y_ic_c)*0.01;//金额 续约
         $this->amt_install_money=$this->amt_install*$amt_install_royalty;//金额 装机
         $this->sale_money=$paper_money+$disinfectant_money+$purification_money+$aromatherapy_money+$pestcontrol_money+$other_money;//金额 销售
@@ -605,6 +607,61 @@ class SalesTableForm extends CFormModel
 	}
 
 
+
+	public function getCalc($index,$a){
+        $suffix = Yii::app()->params['envSuffix'];
+        $sql="select a.*,b.*,c.name as city_name ,d.group_type from acc_service_comm_hdr a
+              left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
+              left outer join security$suffix.sec_city c on  a.city=c.code 
+              left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
+              where a.id='$index'
+";
+        $records = Yii::app()->db->createCommand($sql)->queryRow();
+        if(!empty($records)){
+            $city=Yii::app()->user->city();
+            $date=$records['year_no']."/".$records['month_no'].'/'."01";
+            $date1='2020/07/01';
+            $employee=$this->getEmployee($records['employee_code'],$records['year_no'],$records['month_no']);
+            // print_r($a);print_r($employee);
+            if($records['city']=='CD'||$records['city']=='FS'||$records['city']=='NJ'||$records['city']=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1){
+                $month=$records['month_no'];
+                $year=$records['year_no'];
+            }else{
+                $month=$records['month_no']-1;
+                $year=$records['year_no'];
+                if($month==0){
+                    $month=12;
+                    $year=$records['year_no']-1;
+                }
+            }
+            $sql="select employee_name from acc_service_comm_hdr where id=$index";
+            $name = Yii::app()->db->createCommand($sql)->queryScalar();
+            $sql1="select a.*, b.new_calc ,e.user_id from acc_service_comm_hdr a
+              left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
+              left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
+              left outer join hr$suffix.hr_binding e on  d.id=e.employee_id            
+              where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name' and d.city='".$records['city']."'
+";
+            $arr = Yii::app()->db->createCommand($sql1)->queryRow();
+            return $arr['new_calc'];
+        }
+	}
+
+    public function position($index){
+        $suffix = Yii::app()->params['envSuffix'];
+        $sql="select * from hr$suffix.hr_employee a
+            left outer join  acc_service_comm_hdr b on a.code=b.employee_code
+            inner join hr$suffix.hr_dept c on a.position=c.id 
+            where  b.id='$index' and (c.manager_type ='1' or c.manager_type ='2')
+        ";
+        $position = Yii::app()->db->createCommand($sql)->queryRow();
+        if(empty($position)){
+            $records=1;//不加入东成西就
+        }else{
+            $records=2;
+        }
+        return $records;
+    }
     public  function getEmployee($employee,$year,$month){
         $suffix = Yii::app()->params['envSuffix'];
         $sql="select e.user_id from  hr$suffix.hr_employee d                  

@@ -24,4 +24,9 @@
 			;
 		?>
 	</th>
+    <th>
+        <?php echo TbHtml::link($this->getLabelName('examine').$this->drawOrderArrow('examine'),'#',$this->createOrderLink('salestable-list','examine'))
+        ;
+        ?>
+    </th>
 </tr>

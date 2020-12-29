@@ -166,5 +166,6 @@ return array(
 
 	'Sales commission table'=>'销售提成表',
     'Time'=>'日期',
+	'Examine'=>'状态'
 );
 ?>
