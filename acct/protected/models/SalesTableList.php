@@ -116,6 +116,7 @@ class SalesTableList extends CListPageModel
         if($examine=='A')$a=Yii::t('salestable','Adopt');
         if($examine=='S')$a=Yii::t('salestable','Rejected');
         if($examine=='Y')$a=Yii::t('salestable','Reviewed');
+        if($examine=='')$a=Yii::t('salestable','Not reviewed');
 	    return $a;
     }
 
