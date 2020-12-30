@@ -158,7 +158,7 @@ class SalesTableForm extends CFormModel
         $start=$salerow['year_no'].'-'. $salerow['month_no'].'-01';
         $end=$salerow['year_no'].'-'. $salerow['month_no'].'-31';
         $a=$salerow['employee_name']." (".$salerow['employee_code'].")";
-        $sql1 = "select * from swoper$suffix.swo_service where （commission!=' ' or commission!=0） and status_dt<='$end' and  status_dt>='$start' and (salesman='$a' or  othersalesman='$a')";
+        $sql1 = "select * from swoper$suffix.swo_service where (commission!=' ' or commission!=0) and status_dt<='$end' and  status_dt>='$start' and (salesman='$a' or  othersalesman='$a')";
         $rows = Yii::app()->db->createCommand($sql1)->queryAll();
         $sql1 = "select * from acc_product where  service_hdr_id='$index'";
         $product = Yii::app()->db->createCommand($sql1)->queryRow();
