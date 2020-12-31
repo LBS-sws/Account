@@ -643,6 +643,7 @@ class SalesTableForm extends CFormModel
               where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name' and d.city='".$records['city']."'
 ";
             $arr = Yii::app()->db->createCommand($sql1)->queryRow();
+            print_r($sql1); print_r($arr);
             return $arr['new_calc'];
         }
 	}
