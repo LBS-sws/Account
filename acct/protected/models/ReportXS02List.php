@@ -1285,7 +1285,7 @@ ob_end_clean();
                 if($arrs['paid_type']=='1'||$arrs['paid_type']=='Y'){
                     $a=$arrs['amt_paid'];
                 }else{
-                    $a=$arrs['amt_paid']*12;
+                    $a=$arrs['amt_paid']*$arrs['ctrt_period'];
                 }
                 $new[] = array(
                     'id'=>$arrs['id'].'+',
@@ -1307,7 +1307,7 @@ ob_end_clean();
                 if($record['paid_type']=='1'||$record['paid_type']=='Y'){
                     $a=$record['amt_paid'];
                 }else{
-                    $a=$record['amt_paid']*12;
+                    $a=$record['amt_paid']*$record['ctrt_period'];
                 }
                 $new[] = array(
                     'id'=>$record['id'],
@@ -1350,7 +1350,7 @@ ob_end_clean();
                 if($record['paid_type']=='1'||$record['paid_type']=='Y'){
                     $a=$record['amt_paid'];
                 }else{
-                    $a=$record['amt_paid']*12;
+                    $a=$record['amt_paid']*$record['ctrt_period'];
                 }
                 $new[] = array(
                     'id'=>$record['id'],
@@ -1392,7 +1392,7 @@ ob_end_clean();
                 if($record['paid_type']=='1'||$record['paid_type']=='Y'){
                     $a=$record['amt_paid'];
                 }else{
-                    $a=$record['amt_paid']*12;
+                    $a=$record['amt_paid']*$record['ctrt_period'];
                 }
                 $new[] = array(
                     'id'=>$record['id'],
@@ -1442,7 +1442,7 @@ ob_end_clean();
                 if($arrs['paid_type']=='1'||$arrs['paid_type']=='Y'){
                     $a=$arrs['amt_paid'];
                 }else{
-                    $a=$arrs['amt_paid']*12;
+                    $a=$arrs['amt_paid']*$arrs['ctrt_period'];
                 }
                 $newper[] = array(
                     'id'=>$arrs['id'].'+',
@@ -1464,7 +1464,7 @@ ob_end_clean();
                 if($record['paid_type']=='1'||$record['paid_type']=='Y'){
                     $a=$record['amt_paid'];
                 }else{
-                    $a=$record['amt_paid']*12;
+                    $a=$record['amt_paid']*$record['ctrt_period'];
                 }
                 $newper[] = array(
                     'id'=>$record['id'],
@@ -1507,7 +1507,7 @@ ob_end_clean();
                 if($record['paid_type']=='1'||$record['paid_type']=='Y'){
                     $a=$record['amt_paid'];
                 }else{
-                    $a=$record['amt_paid']*12;
+                    $a=$record['amt_paid']*$record['ctrt_period'];
                 }
                 $editper[] = array(
                     'id'=>$record['id'],
@@ -1549,7 +1549,7 @@ ob_end_clean();
                 if($record['paid_type']=='1'||$record['paid_type']=='Y'){
                     $a=$record['amt_paid'];
                 }else{
-                    $a=$record['amt_paid']*12;
+                    $a=$record['amt_paid']*$record['ctrt_period'];
                 }
                 $endper[] = array(
                     'id'=>$record['id'],
