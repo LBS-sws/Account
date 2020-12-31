@@ -626,6 +626,7 @@ class SalesTableForm extends CFormModel
             if($records['city']=='CD'||$records['city']=='FS'||$records['city']=='NJ'||$records['city']=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1){
                 $month=$records['month_no'];
                 $year=$records['year_no'];
+
             }else{
                 $month=$records['month_no']-1;
                 $year=$records['year_no'];
@@ -643,7 +644,9 @@ class SalesTableForm extends CFormModel
               where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name' and d.city='".$records['city']."'
 ";
             $arr = Yii::app()->db->createCommand($sql1)->queryRow();
-            print_r($sql1); print_r($arr);
+            if($arr['new_calc']==0){
+                $arr['new_calc']=0.05;
+            }
             return $arr['new_calc'];
         }
 	}
