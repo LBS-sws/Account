@@ -38,7 +38,8 @@ $this->pageTitle=Yii::app()->name . ' - salestabel';
         'employee_code',
         'city',
         'employee_name',
-        'user_name'
+        'user_name',
+        'time'
     );
 		$this->widget('ext.layout.ListPageWidget', array(
 			'title'=>Yii::t('salestable','Sales commission Bi List'),

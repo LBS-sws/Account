@@ -2239,4 +2239,13 @@ class ReportXS01List extends CListPageModel
 
         return $a;
     }
+
+    public function clearn($id){
+        $city = Yii::app()->user->city();
+        $suffix = Yii::app()->params['envSuffix'];
+        foreach ($id as $ai) {
+            $sqlct="update swoper$suffix.swo_service set commission=0  where id='$ai'";
+            $model = Yii::app()->db->createCommand($sqlct)->execute();
+        }
+    }
 }

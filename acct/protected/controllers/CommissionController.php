@@ -25,7 +25,7 @@ class CommissionController extends Controller
         return array(
             array('allow',
                 'actions'=>array('save','new','add','newsave','performance','performanceedit','performanceend','editsave','endsave','performancesave','position',
-                    'performanceeditsave','performanceendsave','renewal','renewalend','renewalsave','renewalendsave'),
+                    'performanceeditsave','performanceendsave','renewal','renewalend','renewalsave','renewalendsave','clear'),
                 'expression'=>array('CommissionController','allowReadWrite'),
             ),
             array('allow',
@@ -532,6 +532,32 @@ class CommissionController extends Controller
             $this->redirect(Yii::app()->createUrl('commission/renewalend',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }
     }
+
+    public function actionClear($year,$month,$index,$clear)
+    {
+        $city=Yii::app()->user->city();
+        $model = new ReportXS01List;
+        if(empty($_POST['ReportXS01List']['id'])){
+            if(!empty($_POST['ReportXS01From']['id'])){
+                $id=$_POST['ReportXS01From']['id'];
+            }
+        }else{
+            if(!empty($_POST['ReportXS01List']['id'])){
+                $id=$_POST['ReportXS01List']['id'];
+            }
+        }
+     //   print_r($id);exit();
+        if (isset($id)) {
+            $model->clearn($id);
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
+            $this->redirect(Yii::app()->createUrl('commission/'.$clear,array('year'=>$year,'month'=>$month,'index'=>$index)));
+        }else{
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
+            $this->redirect(Yii::app()->createUrl('commission/'.$clear,array('year'=>$year,'month'=>$month,'index'=>$index)));
+        }
+    }
+
+
 
     public static function allowReadWrite() {
         return Yii::app()->user->validRWFunction('XS01');
