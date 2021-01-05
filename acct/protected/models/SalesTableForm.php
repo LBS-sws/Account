@@ -158,7 +158,7 @@ class SalesTableForm extends CFormModel
         $start=$salerow['year_no'].'-'. $salerow['month_no'].'-01';
         $end=$salerow['year_no'].'-'. $salerow['month_no'].'-31';
         $a=$salerow['employee_name']." (".$salerow['employee_code'].")";
-        $sql1 = "select * from swoper$suffix.swo_service where (commission!=' ' or commission!=0) and status_dt<='$end' and  status_dt>='$start' and (salesman='$a' or  othersalesman='$a')";
+        $sql1 = "select * from swoper$suffix.swo_service where commission!=' ' and commission!=0 and status_dt<='$end' and  status_dt>='$start' and (salesman='$a' or  othersalesman='$a')";
         $rows = Yii::app()->db->createCommand($sql1)->queryAll();
         $sql1 = "select * from acc_product where  service_hdr_id='$index'";
         $product = Yii::app()->db->createCommand($sql1)->queryRow();
@@ -571,7 +571,7 @@ class SalesTableForm extends CFormModel
         $this->amt_paid_money=$this->y_amt_paid*($new_calc+$point['point']);//金额 焗雾
         $this->ic_money=$this->y_ic*($new_calc+$point['point']);//金额 租机
         $this->xuyue_money= ($this->y_ia_c+ $this->y_ib_c+ $this->y_ic_c)*0.01;//金额 续约
-        $this->amt_install_money=$this->amt_install*$amt_install_royalty;//金额 装机
+        $this->amt_install_money=$this->amt_install*$this->amt_install_royalty;//金额 装机
         $this->sale_money=$paper_money+$disinfectant_money+$purification_money+$aromatherapy_money+$pestcontrol_money+$other_money;//金额 销售
         $this->huaxueji_money=$this->chemical*(0.1+$point['point']);//金额 化学剂
         $this->ia_end_money=$ia_money;//金额 B
