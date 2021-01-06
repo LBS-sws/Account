@@ -823,7 +823,7 @@ class SalesTableForm extends CFormModel
                 case 'edit':
                     switch ($row['uflag']) {
                         case 'D':
-                            $sql = "delete from acc_salestable where id = :id and city = :city";
+                            $sql = "delete from acc_salestable where id = :id ";
                             break;
                         case 'Y':
                             $sql = ($row['id']==0)
@@ -845,7 +845,7 @@ class SalesTableForm extends CFormModel
 										date = :date,
 										commission = :commission,
 										luu = :luu 
-									where id = :id and city = :city
+									where id = :id 
 									";
                             break;
                     }
@@ -854,6 +854,8 @@ class SalesTableForm extends CFormModel
 
             if ($sql != '') {
                 $command=$connection->createCommand($sql);
+                if (strpos($sql,':id')!==false)
+                    $command->bindParam(':id',$row['id'],PDO::PARAM_INT);
                 if (strpos($sql,':hdr_id')!==false)
                     $command->bindParam(':hdr_id',$this->id,PDO::PARAM_INT);
                 if (strpos($sql,':customer')!==false) {
