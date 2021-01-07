@@ -966,11 +966,12 @@ class ReportXS01List extends CListPageModel
         $records = Yii::app()->db->createCommand($sql)->queryAll();
 
         foreach ($records as $k=>&$record){
+            $cust_type_name=str_replace("'","''",$record['cust_type_name']);
             $sql2="select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				where a.city ='$city'   and a.status='C'  and  a.company_name='".$record['company_name']."'  and  a.salesman ='".$name['name']."'
-				and  a.cust_type='".$record['cust_type']."' and a.cust_type_name='".$record['cust_type_name']."'  and a.royalty=0.01
+				and  a.cust_type='".$record['cust_type']."' and a.cust_type_name='".$cust_type_name."'  and a.royalty=0.01
 				order by  a.id desc
 ";
             $c = Yii::app()->db->createCommand($sql2)->queryRow();
