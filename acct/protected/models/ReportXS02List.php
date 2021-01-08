@@ -981,12 +981,12 @@ class ReportXS02List extends CListPageModel
         $sql = $sql1.$clause.$order;
         $sql = $this->sqlWithPageCriteria($sql, $this->pageNum);
         $records = Yii::app()->db->createCommand($sql)->queryAll();
-
         foreach ($records as $k=>&$record){
+            $company_name=str_replace("'","''",$record['company_name']);
             $sql2="select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city in ($city)   and a.status='C'  and  a.company_name='".$record['company_name']."'  and  a.salesman ='".$name['name']."'
+				where a.city in ($city)   and a.status='C'  and  a.company_name='".$company_name."'  and  a.salesman ='".$name['name']."'
 				and  a.cust_type='".$record['cust_type']."' and a.cust_type_name='".$record['cust_type_name']."'  and a.royalty=0.01
 				order by  a.id desc
 ";
