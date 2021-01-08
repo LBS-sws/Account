@@ -172,6 +172,7 @@ class SalesTableForm extends CFormModel
         if (count($rows) > 0) {
             $this->group = array();
             foreach ($rows as $row) {
+                print_r('<pre>');  print_r($row);
                 $temp = array();
                 if($row['paid_type']=='M'){
                     $amt_paid_a=$row['amt_paid'];//月金额
