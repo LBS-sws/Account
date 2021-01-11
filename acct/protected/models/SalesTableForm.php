@@ -253,6 +253,10 @@ class SalesTableForm extends CFormModel
                     $temp['ia_money'] = '';//扣除IA提成
                     $temp['ib_money'] = '';//扣除IB提成
                     $temp['ic_money'] = '';//扣除IC提成
+                    $temp['new_ia_money'] = '';//新增IA提成
+                    $temp['new_ib_money'] = '';//新增IB提成
+                    $temp['new_ic_money'] = '';//新增IC提成
+                    $temp['new_amt_paid'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增焗雾白蚁甲醛雾化
                 }else{
                     if($row['cust_type']==1){
                         $temp['status_dt'] = General::toDate($row['status_dt']);//日期
@@ -318,6 +322,10 @@ class SalesTableForm extends CFormModel
                         }
                         $temp['ib_money'] = '';//扣除IB提成
                         $temp['ic_money'] = '';//扣除IC提成
+                        $temp['new_ia_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IA提成
+                        $temp['new_ib_money'] = '';//新增IB提成
+                        $temp['new_ic_money'] = '';//新增IC提成
+                        $temp['new_amt_paid'] = '';//新增焗雾白蚁甲醛雾化
                     }elseif($row['cust_type']==2){
                         $temp['status_dt'] = General::toDate($row['status_dt']);//日期
                         $temp['company_name'] = $row['company_name'];//客户名称
@@ -382,6 +390,10 @@ class SalesTableForm extends CFormModel
                             $temp['ib_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
                         }
                         $temp['ic_money'] = '';//扣除IC提成
+                        $temp['new_ia_money'] = '';//新增IA提成
+                        $temp['new_ib_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IB提成
+                        $temp['new_ic_money'] = '';//新增IC提成
+                        $temp['new_amt_paid'] = '';//新增焗雾白蚁甲醛雾化
                     }elseif($row['cust_type']==3||$row['cust_type']==5){
                         $temp['status_dt'] = General::toDate($row['status_dt']);//日期
                         $temp['company_name'] = $row['company_name'];//客户名称
@@ -446,6 +458,10 @@ class SalesTableForm extends CFormModel
                         }else{
                             $temp['ic_money'] = $row['commission']<0?$row['commission']:'';//扣除IC提成
                         }
+                        $temp['new_ia_money'] = '';//新增IA提成
+                        $temp['new_ib_money'] = '';//新增IB提成
+                        $temp['new_ic_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IC提成
+                        $temp['new_amt_paid'] = '';//新增焗雾白蚁甲醛雾化
                     }
                 }
                 $this->group[] = $temp;
@@ -546,6 +562,9 @@ class SalesTableForm extends CFormModel
                     $temp['ia_money'] = '';//扣除IA提成
                     $temp['ib_money'] = '';//扣除IB提成
                     $temp['ic_money'] = '';//扣除IC提成
+                    $temp['new_ia_money'] = '';//新增IA提成
+                    $temp['new_ib_money'] = '';//新增IB提成
+                    $temp['new_ic_money'] = '';//新增IC提成
                     $this->group[] = $temp;
             }
         }
@@ -563,6 +582,11 @@ class SalesTableForm extends CFormModel
         $ia_money=array_sum(array_map(create_function('$val', 'return $val["ia_money"];'), $this->group));
         $ib_money=array_sum(array_map(create_function('$val', 'return $val["ib_money"];'), $this->group));
         $ic_money=array_sum(array_map(create_function('$val', 'return $val["ic_money"];'), $this->group));
+
+        $new_ia_money=array_sum(array_map(create_function('$val', 'return $val["new_ia_money"];'), $this->group));
+        $new_ib_money=array_sum(array_map(create_function('$val', 'return $val["new_ib_money"];'), $this->group));
+        $new_ic_money=array_sum(array_map(create_function('$val', 'return $val["new_ic_money"];'), $this->group));
+        $new_amt_paid=array_sum(array_map(create_function('$val', 'return $val["new_amt_paid"];'), $this->group));
 
         $paper_money=array_sum(array_map(create_function('$val', 'return $val["paper_money"];'), $this->group));
         $disinfectant_money=array_sum(array_map(create_function('$val', 'return $val["disinfectant_money"];'), $this->group));
@@ -583,10 +607,10 @@ class SalesTableForm extends CFormModel
         $this->sale_royalty="/";//提成点数 销售
         $this->huaxueji_royalty=(0.1+$point['point'])*100;//提成点数 化学剂
         $this->xuyuezhong_royalty=1;//提成点数 续约终止
-        $this->ia_money=$this->y_ia*($new_calc+$point['point']);//金额 a
-        $this->ib_money=$this->y_ib*($new_calc+$point['point']);//金额 b
-        $this->amt_paid_money=$this->y_amt_paid*($new_calc+$point['point']);//金额 焗雾
-        $this->ic_money=$this->y_ic*($new_calc+$point['point']);//金额 租机
+//        $this->ia_money=$this->y_ia*($new_calc+$point['point']);//金额 a
+//        $this->ib_money=$this->y_ib*($new_calc+$point['point']);//金额 b
+//        $this->amt_paid_money=$this->y_amt_paid*($new_calc+$point['point']);//金额 焗雾
+//        $this->ic_money=$this->y_ic*($new_calc+$point['point']);//金额 租机
         $this->xuyue_money= ($this->y_ia_c+ $this->y_ib_c+ $this->y_ic_c)*0.01;//金额 续约
         $this->amt_install_money=$this->amt_install*$this->amt_install_royalty;//金额 装机
         $this->sale_money=$paper_money+$disinfectant_money+$purification_money+$aromatherapy_money+$pestcontrol_money+$other_money;//金额 销售
@@ -595,7 +619,7 @@ class SalesTableForm extends CFormModel
         $this->ib_end_money=$ib_money;//金额 C
         $this->ic_end_money=$ic_money;//金额 租机
         $this->xuyuezhong_money=($this->y_ia_c_end+ $this->y_ib_c_end+ $this->y_ic_c_end)*0.01;//金额 续约终止
-        $this->add_money=$this->ia_money+$this->ib_money+$this->amt_paid_money+$this->ic_money+$this->xuyue_money+$this->amt_install_money+$this->sale_money+$this->huaxueji_money;//金额 新增的
+        $this->add_money=$new_ia_money+$new_ib_money+$new_amt_paid+$new_ic_money+$this->xuyue_money+$this->amt_install_money+$this->sale_money+$this->huaxueji_money;//金额 新增的
         $this->reduce_money=$this->ia_end_money+$this->ib_end_money+$this->ic_end_money+$this->xuyuezhong_money;//金额 减少的
         $this->all_money=$this->add_money+$this->reduce_money;//金额 总计
         $this->id=$index;
