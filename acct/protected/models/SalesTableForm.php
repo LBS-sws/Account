@@ -315,11 +315,13 @@ class SalesTableForm extends CFormModel
                         $temp['y_ic_c_end'] = '';//终止续约IC费
                         $temp['y_ic_end'] = '';//终止IC费
                         $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
-                        if($row['status']=='T'){
+                        if($row['status']=='T'&&$row['commission']>0){
                             $temp['ia_money'] = -$row['commission'];//扣除IA提成
+
                         }else{
                             $temp['ia_money'] = $row['commission']<0?$row['commission']:'';//扣除IA提成
                         }
+
                         $temp['ib_money'] = '';//扣除IB提成
                         $temp['ic_money'] = '';//扣除IC提成
                         $temp['new_ia_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IA提成
@@ -384,7 +386,7 @@ class SalesTableForm extends CFormModel
                         $temp['y_ic_end'] = '';//终止IC费
                         $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
                         $temp['ia_money'] = '';//扣除IA提成
-                        if($row['status']=='T'){
+                        if($row['status']=='T'&&$row['commission']>0){
                             $temp['ib_money'] = -$row['commission'];//扣除IB提成
                         }else{
                             $temp['ib_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
@@ -453,7 +455,7 @@ class SalesTableForm extends CFormModel
                         $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
                         $temp['ia_money'] = '';//扣除IA提成
                         $temp['ib_money'] = '';//扣除IB提成
-                        if($row['status']=='T'){
+                        if($row['status']=='T'&&$row['commission']>0){
                             $temp['ic_money'] = -$row['commission'];//扣除IC提成
                         }else{
                             $temp['ic_money'] = $row['commission']<0?$row['commission']:'';//扣除IC提成
@@ -607,17 +609,17 @@ class SalesTableForm extends CFormModel
         $this->sale_royalty="/";//提成点数 销售
         $this->huaxueji_royalty=(0.1+$point['point'])*100;//提成点数 化学剂
         $this->xuyuezhong_royalty=1;//提成点数 续约终止
-//        $this->ia_money=$this->y_ia*($new_calc+$point['point']);//金额 a
-//        $this->ib_money=$this->y_ib*($new_calc+$point['point']);//金额 b
-//        $this->amt_paid_money=$this->y_amt_paid*($new_calc+$point['point']);//金额 焗雾
-//        $this->ic_money=$this->y_ic*($new_calc+$point['point']);//金额 租机
+        $this->ia_money=$new_ia_money;//金额 a
+        $this->ib_money=$new_ib_money;//金额 b
+        $this->amt_paid_money=$new_amt_paid;//金额 焗雾
+        $this->ic_money=$new_ic_money;//金额 租机
         $this->xuyue_money= ($this->y_ia_c+ $this->y_ib_c+ $this->y_ic_c)*0.01;//金额 续约
         $this->amt_install_money=$this->amt_install*$this->amt_install_royalty;//金额 装机
         $this->sale_money=$paper_money+$disinfectant_money+$purification_money+$aromatherapy_money+$pestcontrol_money+$other_money;//金额 销售
         $this->huaxueji_money=$this->chemical*(0.1+$point['point']);//金额 化学剂
-        $this->ia_end_money=$ia_money;//金额 B
-        $this->ib_end_money=$ib_money;//金额 C
-        $this->ic_end_money=$ic_money;//金额 租机
+        $this->ia_end_money=round($ia_money,2);//金额 B
+        $this->ib_end_money=round($ib_money,2);//金额 C
+        $this->ic_end_money=round($ic_money,2);//金额 租机
         $this->xuyuezhong_money=($this->y_ia_c_end+ $this->y_ib_c_end+ $this->y_ic_c_end)*0.01;//金额 续约终止
         $this->add_money=$new_ia_money+$new_ib_money+$new_amt_paid+$new_ic_money+$this->xuyue_money+$this->amt_install_money+$this->sale_money+$this->huaxueji_money;//金额 新增的
         $this->reduce_money=$this->ia_end_money+$this->ib_end_money+$this->ic_end_money+$this->xuyuezhong_money;//金额 减少的

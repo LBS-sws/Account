@@ -120,14 +120,14 @@ $this->pageTitle=Yii::app()->name . ' - Salestable Form';
 <?php //print_r('<pre>');print_r($model);?>
 			<div class="form-group">
 <!--				--><?php //echo $form->labelEx('$model','',array('class'=>"col-sm-2 control-label")); ?>
-                <div class="col-sm-2 control-label">
-                    装机提成比例(请输入小数,显示百分数)
-                </div>
-				<div class="col-sm-2">
-					<?php echo $form->textField($model, 'amt_install_royalty',
-						array('rows'=>3,'cols'=>60,'maxlength'=>200,'readonly'=>$model->isReadOnly())
-					); ?>
-				</div>
+<!--                <div class="col-sm-2 control-label">-->
+<!--                    装机提成比例(请输入小数,显示百分数)-->
+<!--                </div>-->
+<!--				<div class="col-sm-2">-->
+<!--					--><?php //echo $form->textField($model, 'amt_install_royalty',
+//						array('rows'=>3,'cols'=>60,'maxlength'=>200,'readonly'=>$model->isReadOnly())
+//					); ?>
+<!--				</div>-->
                 <div class="col-sm-2 control-label">
                     补充金额合计
                 </div>
