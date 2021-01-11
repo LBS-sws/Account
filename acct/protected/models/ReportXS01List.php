@@ -1594,7 +1594,7 @@ class ReportXS01List extends CListPageModel
                             $commission=$a * $otherspanning;
                             $comm= $commission* $fuwu_last;
                             $money += $comm;
-                            $sqlct="update swoper$suffix.swo_service set commission='".$commission."',royaltys='$fuwu_last'  where id='$ai'";
+                            $sqlct="update swoper$suffix.swo_service set other_commission='".$commission."',royaltys='$fuwu_last'  where id='$ai'";
                             $model = Yii::app()->db->createCommand($sqlct)->execute();
                         }
                     }
@@ -1673,7 +1673,7 @@ class ReportXS01List extends CListPageModel
                         $money+=$fuwumoney*$otherspanning;
                         $commission=$c*$otherspanning;
                         $moneys+=$c*$otherspanning;
-                        $sqlct="update swoper$suffix.swo_service set commission='".$commission."',royaltys='$fuwu_last'  where id='$ai'";
+                        $sqlct="update swoper$suffix.swo_service set  other_commission='".$commission."',royaltys='$fuwu_last'  where id='$ai'";
                         $model = Yii::app()->db->createCommand($sqlct)->execute();
                     }
                 }else{
@@ -1721,7 +1721,7 @@ class ReportXS01List extends CListPageModel
                                 $money1+=$m*$otherspanning;
                                 $commission=$m*$otherspanning;
                             }
-                            $sqlct="update swoper$suffix.swo_service set royaltys='".$fuwu_last."',commission='".$commission."'  where id='$ai'";
+                            $sqlct="update swoper$suffix.swo_service set royaltys='".$fuwu_last."', other_commission='".$commission."'  where id='$ai'";
                             $model = Yii::app()->db->createCommand($sqlct)->execute();
                         }else{
                             $m=$m*$royalty[$ai];
@@ -1729,7 +1729,7 @@ class ReportXS01List extends CListPageModel
                                 $money1+=$m*$otherspanning;
                                 $commission=$m*$otherspanning;
                             }
-                            $sqlct="update swoper$suffix.swo_service set royaltys='".$royalty[$ai]."',commission='".$commission."'  where id='$ai'";
+                            $sqlct="update swoper$suffix.swo_service set royaltys='".$royalty[$ai]."', other_commission='".$commission."'  where id='$ai'";
                             $model = Yii::app()->db->createCommand($sqlct)->execute();
                         }
 
@@ -1823,7 +1823,7 @@ class ReportXS01List extends CListPageModel
                                 $money[]=$m*$otherspanning;
                                 $commission=$m*$otherspanning;
                             }
-                            $sqlct="update swoper$suffix.swo_service set royaltys='".$fuwu_last."',commission='".$commission."'  where id='$ai'";
+                            $sqlct="update swoper$suffix.swo_service set royaltys='".$fuwu_last."', other_commission='-".$commission."'  where id='$ai'";
                             $model = Yii::app()->db->createCommand($sqlct)->execute();
                         }else{
                             $m=$m*$royalty[$ai];
@@ -1831,7 +1831,7 @@ class ReportXS01List extends CListPageModel
                                 $money[]=$m*$otherspanning;
                                 $commission=$m*$otherspanning;
                             }
-                            $sqlct="update swoper$suffix.swo_service set royaltys='".$royalty[$ai]."',commission='".$commission."'  where id='$ai'";
+                            $sqlct="update swoper$suffix.swo_service set royaltys='".$royalty[$ai]."', other_commission='-".$commission."'  where id='$ai'";
                             $model = Yii::app()->db->createCommand($sqlct)->execute();
                         }
                     }
@@ -1952,7 +1952,7 @@ class ReportXS01List extends CListPageModel
 //                exit();
                 $money[]=$mons_sum*$royaltyes;
                 $commission=$mons_sum*$royaltyes;
-                $sqlct="update swoper$suffix.swo_service set royaltys='".$royaltyes."',commission='".$commission."'  where id='$ai'";
+                $sqlct="update swoper$suffix.swo_service set royaltys='".$royaltyes."', other_commission='-".$commission."'  where id='$ai'";
                 $model = Yii::app()->db->createCommand($sqlct)->execute();
             }
         }
