@@ -311,7 +311,11 @@ class SalesTableForm extends CFormModel
                         $temp['y_ic_c_end'] = '';//终止续约IC费
                         $temp['y_ic_end'] = '';//终止IC费
                         $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
-                        $temp['ia_money'] = $row['commission']<0||$row['status']=='T'?$row['commission']:'';//扣除IA提成
+                        if($row['status']=='T'){
+                            $temp['ia_money'] = -$row['commission'];//扣除IA提成
+                        }else{
+                            $temp['ia_money'] = $row['commission']<0?$row['commission']:'';//扣除IA提成
+                        }
                         $temp['ib_money'] = '';//扣除IB提成
                         $temp['ic_money'] = '';//扣除IC提成
                     }elseif($row['cust_type']==2){
@@ -372,7 +376,11 @@ class SalesTableForm extends CFormModel
                         $temp['y_ic_end'] = '';//终止IC费
                         $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
                         $temp['ia_money'] = '';//扣除IA提成
-                        $temp['ib_money'] =$row['commission']<0||$row['status']=='T'?$row['commission']:'';//扣除IB提成
+                        if($row['status']=='T'){
+                            $temp['ib_money'] = -$row['commission'];//扣除IB提成
+                        }else{
+                            $temp['ib_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
+                        }
                         $temp['ic_money'] = '';//扣除IC提成
                     }elseif($row['cust_type']==3||$row['cust_type']==5){
                         $temp['status_dt'] = General::toDate($row['status_dt']);//日期
@@ -433,7 +441,11 @@ class SalesTableForm extends CFormModel
                         $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
                         $temp['ia_money'] = '';//扣除IA提成
                         $temp['ib_money'] = '';//扣除IB提成
-                        $temp['ic_money'] = $row['commission']<0||$row['status']=='T'?$row['commission']:'';//扣除IC提成
+                        if($row['status']=='T'){
+                            $temp['ic_money'] = -$row['commission'];//扣除IC提成
+                        }else{
+                            $temp['ic_money'] = $row['commission']<0?$row['commission']:'';//扣除IC提成
+                        }
                     }
                 }
                 $this->group[] = $temp;
