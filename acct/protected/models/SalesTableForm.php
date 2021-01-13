@@ -158,7 +158,7 @@ class SalesTableForm extends CFormModel
         $start=$salerow['year_no'].'-'. $salerow['month_no'].'-01';
         $end=$salerow['year_no'].'-'. $salerow['month_no'].'-31';
         $a=$salerow['employee_name']." (".$salerow['employee_code'].")";
-        $sql1 = "select * from swoper$suffix.swo_service where commission!=' ' and commission!=0 and status_dt<='$end' and  status_dt>='$start' and (salesman='$a' or  othersalesman='$a')";
+        $sql1 = "select * from swoper$suffix.swo_service where commission!=' ' and commission!=0 and other_commission!=0 and other_commission!=' ' and status_dt<='$end' and  status_dt>='$start' and (salesman='$a' or  othersalesman='$a')";
         $rows = Yii::app()->db->createCommand($sql1)->queryAll();
         $sql1 = "select * from acc_product where  service_hdr_id='$index'";
         $product = Yii::app()->db->createCommand($sql1)->queryRow();
@@ -219,7 +219,15 @@ class SalesTableForm extends CFormModel
                     }else{
                         $temp['amt_paid'] = $row['commission']<0&&$row['status']!='C'?$amt_paid_a:'';//焗雾白蚁甲醛雾化
                     }
-                    $temp['amt_install'] = $row['amt_install']>0?$row['amt_install']:'';//I装机费
+                    if(!empty($row['othersalesman'])) {
+                        if ($a == $row['othersalesman']) {
+                            $temp['amt_install'] ='';//I装机费
+                        }else{
+                            $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
+                        }
+                    }else{
+                        $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
+                    }
                     $temp['paper'] = '';//纸
                     $temp['disinfectant'] = '';//消毒液
                     $temp['purification'] = '';//空气净化
@@ -297,7 +305,15 @@ class SalesTableForm extends CFormModel
                         $temp['ic_c_end'] = '';//终止续约IC费
                         $temp['ic_end'] = '';//终止IC费
                         $temp['amt_paid'] = '';//焗雾白蚁甲醛雾化
-                        $temp['amt_install'] = $row['amt_install']>0?$row['amt_install']:'';//I装机费
+                        if(!empty($row['othersalesman'])) {
+                            if ($a == $row['othersalesman']) {
+                                $temp['amt_install'] ='';//I装机费
+                            }else{
+                                $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
+                            }
+                        }else{
+                            $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
+                        }
                         $temp['paper'] = '';//纸
                         $temp['disinfectant'] = '';//消毒液
                         $temp['purification'] = '';//空气净化
@@ -378,7 +394,15 @@ class SalesTableForm extends CFormModel
                         $temp['ic_c_end'] = '';//终止续约IC费
                         $temp['ic_end'] = '';//终止IC费
                         $temp['amt_paid'] = '';//焗雾白蚁甲醛雾化
-                        $temp['amt_install'] = $row['amt_install']>0?$row['amt_install']:'';//I装机费
+                        if(!empty($row['othersalesman'])) {
+                            if ($a == $row['othersalesman']) {
+                                $temp['amt_install'] ='';//I装机费
+                            }else{
+                                $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
+                            }
+                        }else{
+                            $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
+                        }
                         $temp['paper'] = '';//纸
                         $temp['disinfectant'] = '';//消毒液
                         $temp['purification'] = '';//空气净化
@@ -459,7 +483,15 @@ class SalesTableForm extends CFormModel
                             $temp['ic_end'] = $row['commission']<0&&$row['status']!='C'?$amt_paid_a:'';//终止IC费
                         }
                         $temp['amt_paid'] = '';//焗雾白蚁甲醛雾化
-                        $temp['amt_install'] = $row['amt_install']>0?$row['amt_install']:'';//I装机费
+                        if(!empty($row['othersalesman'])) {
+                            if ($a == $row['othersalesman']) {
+                                $temp['amt_install'] ='';//I装机费
+                            }else{
+                                $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
+                            }
+                        }else{
+                            $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
+                        }
                         $temp['paper'] = '';//纸
                         $temp['disinfectant'] = '';//消毒液
                         $temp['purification'] = '';//空气净化
@@ -665,14 +697,16 @@ class SalesTableForm extends CFormModel
         $this->sale_royalty="/";//提成点数 销售
         $this->huaxueji_royalty=(0.1+$point['point'])*100;//提成点数 化学剂
         $this->xuyuezhong_royalty=1;//提成点数 续约终止
-        $this->ia_money=$new_ia_money*($new_calc+$point['point']);//金额 a
-        $this->ib_money=$new_ib_money*($new_calc+$point['point']);//金额 b
-        $this->amt_paid_money=($new_amt_paid*($new_calc+$point['point']))+$end_amt_paid;//金额 焗雾
-        $this->ic_money=$new_ic_money*($new_calc+$point['point']);//金额 租机
+        $this->ia_money=round($new_ia_money*($new_calc+$point['point']),2);//金额 a
+        $this->ib_money=round($new_ib_money*($new_calc+$point['point']),2);//金额 b
+        $amt_paid_money=($new_amt_paid*($new_calc+$point['point']))+$end_amt_paid;
+        $this->amt_paid_money=round($amt_paid_money,2);//金额 焗雾
+        $this->ic_money=round($new_ic_money*($new_calc+$point['point']),2);//金额 租机
         $this->xuyue_money= ($this->y_ia_c+ $this->y_ib_c+ $this->y_ic_c)*0.01;//金额 续约
-        $this->amt_install_money=$this->amt_install*$this->amt_install_royalty;//金额 装机
-        $this->sale_money=$paper_money+$disinfectant_money+$purification_money+$aromatherapy_money+$pestcontrol_money+$other_money;//金额 销售
-        $this->huaxueji_money=$this->chemical*(0.1+$point['point']);//金额 化学剂
+        $this->amt_install_money=round($this->amt_install*$this->amt_install_royalty,2);//金额 装机
+        $sale_money=$paper_money+$disinfectant_money+$purification_money+$aromatherapy_money+$pestcontrol_money+$other_money;
+        $this->sale_money=round($sale_money,2);//金额 销售
+        $this->huaxueji_money=round($this->chemical*(0.1+$point['point']),2);//金额 化学剂
         $this->ia_end_money=round($ia_money,2);//金额 B
         $this->ib_end_money=round($ib_money,2);//金额 C
         $this->ic_end_money=round($ic_money,2);//金额 租机
