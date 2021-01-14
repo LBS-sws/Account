@@ -158,7 +158,7 @@ class SalesTableForm extends CFormModel
         $start=$salerow['year_no'].'-'. $salerow['month_no'].'-01';
         $end=$salerow['year_no'].'-'. $salerow['month_no'].'-31';
         $a=$salerow['employee_name']." (".$salerow['employee_code'].")";
-        $sql1 = "select * from swoper$suffix.swo_service where commission!=' ' and commission!=0 and other_commission!=0 and other_commission!=' ' and status_dt<='$end' and  status_dt>='$start' and (salesman='$a' or  othersalesman='$a')";
+        $sql1 = "select * from swoper$suffix.swo_service where  ((commission!=' ' and commission!=0) or (other_commission!=0 and other_commission!=' ')) and status_dt<='$end' and  status_dt>='$start' and (salesman='$a' or  othersalesman='$a')";
         $rows = Yii::app()->db->createCommand($sql1)->queryAll();
         $sql1 = "select * from acc_product where  service_hdr_id='$index'";
         $product = Yii::app()->db->createCommand($sql1)->queryRow();
@@ -217,7 +217,7 @@ class SalesTableForm extends CFormModel
                     if($row['status']=='T'){
                         $temp['amt_paid'] = -$amt_paid_a;//焗雾白蚁甲醛雾化
                     }else{
-                        $temp['amt_paid'] = $row['commission']<0&&$row['status']!='C'?$amt_paid_a:'';//焗雾白蚁甲醛雾化
+                        $temp['amt_paid'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_a:'';//焗雾白蚁甲醛雾化
                     }
                     if(!empty($row['othersalesman'])) {
                         if ($a == $row['othersalesman']) {
@@ -266,7 +266,7 @@ class SalesTableForm extends CFormModel
                     $temp['new_ic_money'] = '';//新增IC提成
                     if(!empty($row['othersalesman'])){
                         if($a==$row['othersalesman']){
-                            $temp['new_amt_paid'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['other_commission']:'';//新增焗雾白蚁甲醛雾化
+                            $temp['new_amt_paid'] = $row['status']=='N'||($row['status']=='A'&&$row['other_commission']>0)?$row['other_commission']:'';//新增焗雾白蚁甲醛雾化
                         }else{
                             $temp['new_amt_paid'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增焗雾白蚁甲醛雾化
                         }
@@ -275,7 +275,7 @@ class SalesTableForm extends CFormModel
                     }
                     if(!empty($row['othersalesman'])){
                         if($a==$row['othersalesman']){
-                            $temp['end_amt_paid'] = $row['status']=='T'||($row['status']=='A'&&$row['commission']<0)?$row['other_commission']:'';//终止焗雾白蚁甲醛雾化
+                            $temp['end_amt_paid'] = $row['status']=='T'||($row['status']=='A'&&$row['other_commission']<0)?$row['other_commission']:'';//终止焗雾白蚁甲醛雾化
                         }else{
                             $temp['end_amt_paid'] = $row['status']=='T'||($row['status']=='A'&&$row['commission']<0)?$row['commission']:'';//终止焗雾白蚁甲醛雾化
                         }
@@ -286,13 +286,13 @@ class SalesTableForm extends CFormModel
                     if($row['cust_type']==1){
                         $temp['status_dt'] = General::toDate($row['status_dt']);//日期
                         $temp['company_name'] = $row['company_name'];//客户名称
-                        $temp['ia'] = $row['commission']>0&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_a:'';//IA费
-                        $temp['ia_c'] = $row['commission']>0&&$row['status']=='C'?$amt_paid_a:'';//续约IA费
-                        $temp['ia_c_end'] = $row['commission']<0&&$row['status']=='C'?$amt_paid_a:'';//终止续约IA费
+                        $temp['ia'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_a:'';//IA费
+                        $temp['ia_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_a:'';//续约IA费
+                        $temp['ia_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_a:'';//终止续约IA费
                         if($row['status']=='T'){
                             $temp['ia_end'] = -$amt_paid_a;//终止IA费
                         }else{
-                            $temp['ia_end'] = $row['commission']<0&&$row['status']!='C'?$amt_paid_a:'';//终止IA费
+                            $temp['ia_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_a:'';//终止IA费
                         }
                         $temp['ia_service'] = $row['service'];//IA次数月
                         $temp['ib'] = '';//IB费
@@ -331,13 +331,13 @@ class SalesTableForm extends CFormModel
                         $temp['other_money'] = '';//其他提成
                      //   $temp['commission'] = $row['commission']<0?$row['commission']:$row['commission']*(empty($row['othersalesman'])?$row['royalty']:$row['royaltys']);//提成金额
                         //年金额
-                        $temp['y_ia'] = $row['commission']>0&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a:'';//IA费
-                        $temp['y_ia_c'] = $row['commission']>0&&$row['status']=='C'?$amt_paid_year_a:'';//续约IA费
-                        $temp['y_ia_c_end'] = $row['commission']<0&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IA费
+                        $temp['y_ia'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a:'';//IA费
+                        $temp['y_ia_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_year_a:'';//续约IA费
+                        $temp['y_ia_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IA费
                         if($row['status']=='T'){
                             $temp['y_ia_end'] = -$amt_paid_year_a;//终止IA费
                         }else{
-                            $temp['y_ia_end'] = $row['commission']<0&&$row['status']!='C'?$amt_paid_year_a:'';//终止IA费
+                            $temp['y_ia_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_year_a:'';//终止IA费
                         }
                         $temp['y_ib'] = '';//IB费
                         $temp['y_ib_c'] = '';//续约IB费
@@ -350,7 +350,7 @@ class SalesTableForm extends CFormModel
                         $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
                         if(!empty($row['othersalesman'])){
                             if($a==$row['othersalesman']){
-                                $temp['ia_money'] = $row['commission']<0?$row['other_commission']:'';//扣除IA提成
+                                $temp['ia_money'] = $row['other_commission']<0?$row['other_commission']:'';//扣除IA提成
                             }else{
                                 $temp['ia_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
                             }
@@ -361,7 +361,7 @@ class SalesTableForm extends CFormModel
                         $temp['ic_money'] = '';//扣除IC提成
                         if(!empty($row['othersalesman'])){
                             if($a==$row['othersalesman']){
-                                $temp['new_ia_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['other_commission']:'';//新增IA提成
+                                $temp['new_ia_money'] = $row['status']=='N'||($row['status']=='A'&&$row['other_commission']>0)?$row['other_commission']:'';//新增IA提成
                             }else{
                                 $temp['new_ia_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IA提成
                             }
@@ -380,13 +380,13 @@ class SalesTableForm extends CFormModel
                         $temp['ia_c_end'] = '';//终止续约IA费
                         $temp['ia_end'] = '';//终止IA费
                         $temp['ia_service'] = '';//IA次数月
-                        $temp['ib'] = $row['commission']>0&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_a:'';//IB费
-                        $temp['ib_c'] = $row['commission']>0&&$row['status']=='C'?$amt_paid_a:'';//续约IB费
-                        $temp['ib_c_end'] = $row['commission']<0&&$row['status']=='C'?$amt_paid_a:'';//终止续约IB费
+                        $temp['ib'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_a:'';//IB费
+                        $temp['ib_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_a:'';//续约IB费
+                        $temp['ib_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_a:'';//终止续约IB费
                         if($row['status']=='T'){
                             $temp['ib_end'] = -$amt_paid_a;//终止IA费
                         }else{
-                            $temp['ib_end'] = $row['commission']<0&&$row['status']!='C'?$amt_paid_a:'';//终止IB费
+                            $temp['ib_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_a:'';//终止IB费
                         }
                         $temp['ib_service'] = $row['service'];//IB次数月
                         $temp['ic'] = '';//IC费
@@ -424,13 +424,13 @@ class SalesTableForm extends CFormModel
                         $temp['y_ia_c'] = '';//续约IA费
                         $temp['y_ia_c_end'] = '';//终止续约IA费
                         $temp['y_ia_end'] = '';//终止IA费
-                        $temp['y_ib'] = $row['commission']>0&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a:'';//IB费
-                        $temp['y_ib_c'] = $row['commission']>0&&$row['status']=='C'?$amt_paid_year_a:'';//续约IB费
-                        $temp['y_ib_c_end'] = $row['commission']<0&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IB费
+                        $temp['y_ib'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a:'';//IB费
+                        $temp['y_ib_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_year_a:'';//续约IB费
+                        $temp['y_ib_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IB费
                         if($row['status']=='T'){
                             $temp['y_ib_end'] = -$amt_paid_year_a;//终止IA费
                         }else{
-                            $temp['y_ib_end'] = $row['commission']<0&&$row['status']!='C'?$amt_paid_year_a:'';//终止IB费
+                            $temp['y_ib_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_year_a:'';//终止IB费
                         }
                         $temp['y_ic'] = '';//IC费
                         $temp['y_ic_c'] = '';//续约IC费
@@ -440,7 +440,7 @@ class SalesTableForm extends CFormModel
                         $temp['ia_money'] = '';//扣除IA提成
                         if(!empty($row['othersalesman'])){
                             if($a==$row['othersalesman']){
-                                $temp['ib_money'] = $row['commission']<0?$row['other_commission']:'';//扣除IB提成
+                                $temp['ib_money'] = $row['other_commission']<0?$row['other_commission']:'';//扣除IB提成
                             }else{
                                 $temp['ib_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
                             }
@@ -451,7 +451,7 @@ class SalesTableForm extends CFormModel
                         $temp['new_ia_money'] = '';//新增IA提成
                         if(!empty($row['othersalesman'])){
                             if($a==$row['othersalesman']){
-                                $temp['new_ib_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['other_commission']:'';//新增IB提成
+                                $temp['new_ib_money'] = $row['status']=='N'||($row['status']=='A'&&$row['other_commission']>0)?$row['other_commission']:'';//新增IB提成
                             }else{
                                 $temp['new_ib_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IB提成
                             }
@@ -474,13 +474,13 @@ class SalesTableForm extends CFormModel
                         $temp['ib_c_end'] = '';//终止续约IB费
                         $temp['ib_end'] = '';//终止IB费
                         $temp['ib_service'] = '';//IB次数月
-                        $temp['ic'] =$row['commission']>0&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_a: '';//IC费
-                        $temp['ic_c'] = $row['commission']>0&&$row['status']=='C'?$amt_paid_a:'';//续约IC费
-                        $temp['ic_c_end'] = $row['commission']<0&&$row['status']=='C'?$amt_paid_a:'';//终止续约IC费
+                        $temp['ic'] =($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_a: '';//IC费
+                        $temp['ic_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_a:'';//续约IC费
+                        $temp['ic_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_a:'';//终止续约IC费
                         if($row['status']=='T'){
                             $temp['ic_end'] = -$amt_paid_a;//终止IA费
                         }else{
-                            $temp['ic_end'] = $row['commission']<0&&$row['status']!='C'?$amt_paid_a:'';//终止IC费
+                            $temp['ic_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_a:'';//终止IC费
                         }
                         $temp['amt_paid'] = '';//焗雾白蚁甲醛雾化
                         if(!empty($row['othersalesman'])) {
@@ -517,20 +517,20 @@ class SalesTableForm extends CFormModel
                         $temp['y_ib_c'] = '';//续约IB费
                         $temp['y_ib_c_end'] = '';//终止续约IB费
                         $temp['y_ib_end'] = '';//终止IB费
-                        $temp['y_ic'] =$row['commission']>0&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a: '';//IC费
-                        $temp['y_ic_c'] = $row['commission']>0&&$row['status']=='C'?$amt_paid_year_a:'';//续约IC费
-                        $temp['y_ic_c_end'] = $row['commission']<0&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IC费
+                        $temp['y_ic'] =($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a: '';//IC费
+                        $temp['y_ic_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_year_a:'';//续约IC费
+                        $temp['y_ic_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IC费
                         if($row['status']=='T'){
                             $temp['y_ic_end'] = -$amt_paid_year_a;//终止IA费
                         }else{
-                            $temp['y_ic_end'] = $row['commission']<0&&$row['status']!='C'?$amt_paid_year_a:'';//终止IC费
+                            $temp['y_ic_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_year_a:'';//终止IC费
                         }
                         $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
                         $temp['ia_money'] = '';//扣除IA提成
                         $temp['ib_money'] = '';//扣除IB提成
                         if(!empty($row['othersalesman'])){
                             if($a==$row['othersalesman']){
-                                $temp['ic_money'] = $row['commission']<0?$row['other_commission']:'';//扣除IC提成
+                                $temp['ic_money'] = $row['other_commission']<0?$row['other_commission']:'';//扣除IC提成
                             }else{
                                 $temp['ic_money'] = $row['commission']<0?$row['commission']:'';//扣除IC提成
                             }
@@ -541,7 +541,7 @@ class SalesTableForm extends CFormModel
                         $temp['new_ib_money'] = '';//新增IB提成
                         if(!empty($row['othersalesman'])){
                             if($a==$row['othersalesman']){
-                                $temp['new_ic_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['other_commission']:'';//新增IC提成
+                                $temp['new_ic_money'] = $row['status']=='N'||($row['status']=='A'&&$row['other_commission']>0)?$row['other_commission']:'';//新增IC提成
                             }else{
                                 $temp['new_ic_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IC提成
                             }
@@ -653,6 +653,7 @@ class SalesTableForm extends CFormModel
                     $temp['new_ia_money'] = '';//新增IA提成
                     $temp['new_ib_money'] = '';//新增IB提成
                     $temp['new_ic_money'] = '';//新增IC提成
+                    $temp['new_amt_paid'] = '';//新增焗雾白蚁甲醛雾化
                     $temp['end_amt_paid'] = '';//终止焗雾白蚁甲醛雾化
                     $this->group[] = $temp;
             }
