@@ -167,7 +167,55 @@ class SalesTableForm extends CFormModel
         $this->month=$salerow['month_no'];
         $this->examine=$product['examine'];
         $this->ject_remark=$product['ject_remark'];
-//        print_r('<pre>'); print_r($product);
+        //之前月份业绩↓
+        $sql="select * from hr$suffix.hr_employee a
+            left outer join  acc_service_comm_hdr b on a.code=b.employee_code
+            inner join hr$suffix.hr_dept c on a.position=c.id 
+            where  b.id='$index' and (c.manager_type ='1' or c.manager_type ='2')
+        ";
+        $position = Yii::app()->db->createCommand($sql)->queryRow();
+        if(empty($position)){
+            $dcxj=1;//不加入东成西就
+        }else{
+            $records=2;
+        }
+        $sql="select a.*,b.*,c.name as city_name ,d.group_type from acc_service_comm_hdr a
+              left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
+              left outer join security$suffix.sec_city c on  a.city=c.code 
+              left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
+              where a.id='$index'
+";
+        $records = Yii::app()->db->createCommand($sql)->queryRow();
+        if(!empty($records)) {
+            $city = Yii::app()->user->city();
+            $date = $records['year_no'] . "/" . $records['month_no'] . '/' . "01";
+            $date1 = '2020/07/01';
+            $employee = $this->getEmployee($records['employee_code'], $records['year_no'], $records['month_no']);
+            // print_r($a);print_r($employee);
+            if ($records['city'] == 'CD' || $records['city'] == 'FS' || $records['city'] == 'NJ' || $records['city'] == 'TJ' || $a == 1 || strtotime($date) < strtotime($date1) || $employee == 1) {
+                $month = $records['month_no'];
+                $year = $records['year_no'];
+            } else {
+                $month = $records['month_no'] - 1;
+                $year = $records['year_no'];
+                if ($month == 0) {
+                    $month = 12;
+                    $year = $records['year_no'] - 1;
+                }
+            }
+            $sql = "select employee_name from acc_service_comm_hdr where id=$index";
+            $name = Yii::app()->db->createCommand($sql)->queryScalar();
+            $sql1 = "select a.*, b.new_calc ,b.new_money ,b.edit_money ,e.user_id from acc_service_comm_hdr a
+              left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
+              left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
+              left outer join hr$suffix.hr_binding e on  d.id=e.employee_id            
+              where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name' and d.city='" . $records['city'] . "'
+";
+            $arr = Yii::app()->db->createCommand($sql1)->queryRow();
+            $money=$arr['new_money']+$arr['edit_money'];
+        }
+        //之前月份业绩↑
+//        print_r('<pre>'); print_r($arr);
 //        exit();
         if (count($rows) > 0) {
             $this->group = array();
@@ -598,7 +646,7 @@ class SalesTableForm extends CFormModel
         //print_r('<pre>');print_r($rows);exit();
         if(count($rows)>0){
             foreach ($rows as $v){
-                    $fuwu=$this->getAmount($city,$v['id'],$v['sales_products'],$start,$this->abc_money);//本单产品提成比例
+                    $fuwu=$this->getAmount($city,$v['id'],$v['sales_products'],$start,$money);//本单产品提成比例
                     $fuwu=$fuwu+$point['point'];
                     $temp['status_dt'] = General::toDate($v['log_dt']);//日期
                     $temp['company_name'] = $v['company_name'];//客户名称
@@ -706,6 +754,9 @@ class SalesTableForm extends CFormModel
         $this->xuyue_money= ($this->y_ia_c+ $this->y_ib_c+ $this->y_ic_c)*0.01;//金额 续约
         $this->amt_install_money=round($this->amt_install*$this->amt_install_royalty,2);//金额 装机
         $sale_money=$paper_money+$disinfectant_money+$purification_money+$aromatherapy_money+$pestcontrol_money+$other_money;
+        if($sale_money<0){
+            $sale_money=0;
+        }
         $this->sale_money=round($sale_money,2);//金额 销售
         $this->huaxueji_money=round($this->chemical*(0.1+$point['point']),2);//金额 化学剂
         $this->ia_end_money=round($ia_money,2);//金额 B
@@ -739,7 +790,6 @@ class SalesTableForm extends CFormModel
         $this->final_money=$this->supplement_money+$this->add_money+$this->reduce_money;
         return true;
 	}
-
 
 
 	public function getCalc($index,$a){
