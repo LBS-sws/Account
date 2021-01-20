@@ -24,7 +24,7 @@ class SalestableController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','fileupload','fileremove','examine','reject','audit'),
+				'actions'=>array('new','edit','delete','save','fileupload','fileremove','examine','reject','audit','down'),
 				'expression'=>array('SalestableController','allowReadWrite'),
 			),
 			array('allow', 
@@ -145,7 +145,17 @@ class SalestableController extends Controller
             }
         }
     }
-	
+
+    public function actionDown($index){
+        $model = new SalesTableForm;
+        if (!$model->retrieveData($index)) {
+            throw new CHttpException(404,'The requested page does not exist.');
+        } else {
+            $model->retrieveXiaZai($model);
+            //$this->render('form',array('model'=>$model,));
+        }
+
+    }
 //	public function actionDelete()
 //	{
 //		$model = new TransInForm('delete');

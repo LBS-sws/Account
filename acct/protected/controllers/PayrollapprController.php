@@ -39,19 +39,29 @@ class PayrollapprController extends Controller
 
 	public function actionIndex($pageNum=0) 
 	{
-		$model = new PayrollApprList;
-		if (isset($_POST['PayrollApprList'])) {
-			$model->attributes = $_POST['PayrollApprList'];
-		} else {
-			$session = Yii::app()->session;
-			if (isset($session['criteria_xs06']) && !empty($session['criteria_xs06'])) {
-				$criteria = $session['criteria_xs06'];
-				$model->setCriteria($criteria);
-			}
-		}
-		$model->determinePageNum($pageNum);
-		$model->retrieveDataByPage($model->pageNum);
-		$this->render('index',array('model'=>$model));
+        $city=Yii::app()->user->city();
+        if(Yii::app()->user->validFunction('CN12')){
+            $sql="select * from acc_product where city='$city' and examine='Y'";
+            $rows = Yii::app()->db->createCommand($sql)->queryAll();
+        }
+        if(empty($rows)){
+            $model = new PayrollApprList;
+            if (isset($_POST['PayrollApprList'])) {
+                $model->attributes = $_POST['PayrollApprList'];
+            } else {
+                $session = Yii::app()->session;
+                if (isset($session['criteria_xs06']) && !empty($session['criteria_xs06'])) {
+                    $criteria = $session['criteria_xs06'];
+                    $model->setCriteria($criteria);
+                }
+            }
+            $model->determinePageNum($pageNum);
+            $model->retrieveDataByPage($model->pageNum);
+            $this->render('index',array('model'=>$model));
+        }else{
+            throw new CHttpException(404,Yii::t('dialog','Please complete the sales commission form audit first'));
+        }
+
 	}
 
 	public function actionAccept()

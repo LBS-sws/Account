@@ -1245,11 +1245,11 @@ class ReportXS02List extends CListPageModel
         $str="salecommsion_".$time.".xlsx";
         header("Content-Type:application/vnd.ms-excel");
         header('Content-Disposition:attachment;filename="'.$str.'"');
-       header("Pragma: no-cache");
+         header("Pragma: no-cache");
         header("Expires: 0");
 
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-ob_end_clean();
+        ob_end_clean();
         $objWriter->save('php://output');
 
         spl_autoload_register(array('YiiBase','autoload'));

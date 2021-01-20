@@ -953,14 +953,14 @@ class SalesTableForm extends CFormModel
         $a=$connection->createCommand($sql1)->queryAll();
         if(empty($a)){
             $sql = "insert into acc_product(
-					final_money,service_hdr_id
+					final_money,service_hdr_id,city
 						) values (
-						:final_money,:service_hdr_id
+						:final_money,:service_hdr_id,:city
 						)
 						";
         }else{
             $sql = "update acc_product set  
-                                       					  
+                              city=:city,         					  
 							final_money = :final_money 
 						where service_hdr_id = :service_hdr_id
 						";
@@ -969,8 +969,10 @@ class SalesTableForm extends CFormModel
 //		$city = Yii::app()->user->city();
 		$uid = Yii::app()->user->id;
 		$command=$connection->createCommand($sql);
-//        if (strpos($sql,':amt_install_royalty')!==false)
-//            $command->bindParam(':amt_install_royalty',$_POST['SalesTableForm']['amt_install_royalty'],PDO::PARAM_INT);
+        $city=Yii::app()->user->city();
+        if (strpos($sql,':city')!==false) {
+            $command->bindParam(':city',$city,PDO::PARAM_STR);
+        }
         if (strpos($sql,':final_money')!==false)
             $final_money=round($_POST['SalesTableForm']['final_money'], 2);
             $command->bindParam(':final_money',$final_money,PDO::PARAM_INT);
@@ -1083,7 +1085,6 @@ class SalesTableForm extends CFormModel
         return true;
     }
     public function saveReject(){
-
         $sql="update acc_product set  	examine = 'S' , ject_remark='".$this->attributes['ject_remark']."' where service_hdr_id = '".$_POST['SalesTableForm']['id']."' ";
         $rows = Yii::app()->db->createCommand($sql)->execute();
         $this->id=$_POST['SalesTableForm']['id'];
@@ -1092,4 +1093,170 @@ class SalesTableForm extends CFormModel
 	public function isReadOnly() {
 		return ($this->examine=='Y'||$this->examine=='A');
 	}
+
+    public function retrieveXiaZai($model){
+        Yii::$enableIncludePath = false;
+        $phpExcelPath = Yii::getPathOfAlias('ext.phpexcel');
+        spl_autoload_unregister(array('YiiBase','autoload'));
+        include($phpExcelPath . DIRECTORY_SEPARATOR . 'PHPExcel.php');
+        $objPHPExcel = new PHPExcel;
+        $objReader  = PHPExcel_IOFactory::createReader('Excel2007');
+        $path = Yii::app()->basePath.'/commands/template/salestables.xlsx';
+        $objPHPExcel = $objReader->load($path);
+        $objPHPExcel->getActiveSheet()->mergeCells('A2:C2');//合并单元
+        $objPHPExcel->getActiveSheet()->setCellValue('A2', $model['year'].'年'.$model['month'].'月'.$model['sale'].'销售提成报表') ;
+        $i=5;
+        $objActSheet=$objPHPExcel->setActiveSheetIndex(0);
+        foreach ($model->group as $value){
+            $i=$i+1;
+            $objWorksheet = $objActSheet;
+            $objWorksheet->insertNewRowBefore($i, 1);
+            $objActSheet->setCellValue('A'.$i, $value['status_dt']) ;
+            $objActSheet->setCellValue('B'.$i, $value['company_name']) ;
+            $objActSheet->setCellValue('C'.$i, $value['ia']) ;
+            $objActSheet->setCellValue('D'.$i, $value['ia_c']) ;
+            $objActSheet->setCellValue('E'.$i, $value['ia_end']) ;
+            $objActSheet->setCellValue('F'.$i, $value['ia_c_end']) ;
+            $objActSheet->setCellValue('G'.$i, $value['ib']) ;
+            $objActSheet->setCellValue('H'.$i, $value['ib_c']) ;
+            $objActSheet->setCellValue('I'.$i, $value['ib_end']) ;
+            $objActSheet->setCellValue('J'.$i, $value['ib_c_end']) ;
+            $objActSheet->setCellValue('K'.$i, $value['ic']) ;
+            $objActSheet->setCellValue('L'.$i, $value['ic_c']) ;
+            $objActSheet->setCellValue('M'.$i, $value['ic_end']) ;
+            $objActSheet->setCellValue('N'.$i, $value['ic_c_end']) ;
+            $objActSheet->setCellValue('O'.$i, $value['amt_paid']) ;
+            $objActSheet->setCellValue('P'.$i, $value['amt_install']) ;
+            $objActSheet->setCellValue('Q'.$i, $value['paper']) ;
+            $objActSheet->setCellValue('R'.$i, $value['disinfectant']) ;
+            $objActSheet->setCellValue('S'.$i, $value['purification']) ;
+            $objActSheet->setCellValue('T'.$i, $value['chemical']) ;
+            $objActSheet->setCellValue('U'.$i, $value['aromatherapy']) ;
+            $objActSheet->setCellValue('V'.$i, $value['pestcontrol']) ;
+            $objActSheet->setCellValue('W'.$i, $value['other']) ;
+        }
+        $i=$i+1;
+        $objPHPExcel->getActiveSheet()->removeRow($i);
+        $objActSheet->setCellValue('C'.$i, $model->ia) ;//月营业额
+        $objActSheet->setCellValue('D'.$i, $model->ia_c) ;
+        $objActSheet->setCellValue('E'.$i, $model->ia_end) ;
+        $objActSheet->setCellValue('F'.$i, $model->ia_c_end) ;
+        $objActSheet->setCellValue('G'.$i, $model->ib) ;
+        $objActSheet->setCellValue('H'.$i, $model->ib_c) ;
+        $objActSheet->setCellValue('I'.$i, $model->ib_end) ;
+        $objActSheet->setCellValue('J'.$i, $model->ib_c_end) ;
+        $objActSheet->setCellValue('K'.$i, $model->ic) ;
+        $objActSheet->setCellValue('L'.$i, $model->ic_c) ;
+        $objActSheet->setCellValue('M'.$i, $model->ic_end) ;
+        $objActSheet->setCellValue('N'.$i, $model->ic_c_end) ;
+        $objActSheet->setCellValue('O'.$i, $model->amt_paid) ;
+        $objActSheet->setCellValue('P'.$i, $model->amt_install) ;
+        $objActSheet->setCellValue('Q'.$i, $model->paper) ;
+        $objActSheet->setCellValue('R'.$i, $model->disinfectant) ;
+        $objActSheet->setCellValue('S'.$i, $model->purification) ;
+        $objActSheet->setCellValue('T'.$i, $model->chemical) ;
+        $objActSheet->setCellValue('U'.$i, $model->aromatherapy) ;
+        $objActSheet->setCellValue('V'.$i, $model->pestcontrol) ;
+        $objActSheet->setCellValue('W'.$i, $model->other) ;
+        $i=$i+1;
+        $objActSheet->setCellValue('C'.$i, $model->y_ia) ;//年营业额
+        $objActSheet->setCellValue('D'.$i, $model->y_ia_c) ;
+        $objActSheet->setCellValue('E'.$i, $model->y_ia_end) ;
+        $objActSheet->setCellValue('F'.$i, $model->y_ia_c_end) ;
+        $objActSheet->setCellValue('G'.$i, $model->y_ib) ;
+        $objActSheet->setCellValue('H'.$i, $model->y_ib_c) ;
+        $objActSheet->setCellValue('I'.$i, $model->y_ib_end) ;
+        $objActSheet->setCellValue('J'.$i, $model->y_ib_c_end) ;
+        $objActSheet->setCellValue('K'.$i, $model->y_ic) ;
+        $objActSheet->setCellValue('L'.$i, $model->y_ic_c) ;
+        $objActSheet->setCellValue('M'.$i, $model->y_ic_end) ;
+        $objActSheet->setCellValue('N'.$i, $model->y_ic_c_end) ;
+        $objActSheet->setCellValue('O'.$i, $model->y_amt_paid) ;
+        $objActSheet->setCellValue('P'.$i, $model->amt_install) ;
+        $objActSheet->setCellValue('Q'.$i, $model->all_sale) ;
+//        print_r('<pre>');
+//        print_r($model);exit();
+            $styleArray = array(
+                'borders' => array(
+                    'allborders' => array(
+                        //'style' => PHPExcel_Style_Border::BORDER_THICK,//边框是粗的
+                        'style' => PHPExcel_Style_Border::BORDER_THIN,//细边框
+                        'color' => array(PHPExcel_Style_Color::COLOR_BLACK,),
+                    ),
+                ),
+            );
+            $objPHPExcel->getActiveSheet()->getStyle('A6'.':W'.$i)->applyFromArray($styleArray);
+        $i=$i+1;
+        $objActSheet->setCellValue('C'.$i, $model->abc_money) ;//新客户IA/IB/IC营业额
+        $i=$i+3;
+        $objActSheet->setCellValue('C'.$i, $model->ia_royalty."%") ;//提成点数
+        $objActSheet->setCellValue('E'.$i, $model->ib_royalty."%") ;
+        $objActSheet->setCellValue('G'.$i, $model->amt_paid_royalty."%") ;
+        $objActSheet->setCellValue('I'.$i, $model->ic_royalty."%") ;
+        $a=$model->amt_install_royalty*100;
+        $objActSheet->setCellValue('J'.$i, $a."%") ;
+        $objActSheet->setCellValue('M'.$i, $model->huaxueji_royalty."%") ;
+        $objActSheet->setCellValue('O'.$i, $model->xuyue_royalty."%") ;
+        $i=$i+1;
+        $objActSheet->setCellValue('C'.$i, $model->ia_money) ;//金额
+        $objActSheet->setCellValue('E'.$i, $model->ib_money) ;
+        $objActSheet->setCellValue('G'.$i, $model->amt_paid_money) ;
+        $objActSheet->setCellValue('I'.$i, $model->ic_money) ;
+        $objActSheet->setCellValue('J'.$i, $model->amt_install_money) ;
+        $objActSheet->setCellValue('L'.$i, $model->sale_money) ;
+        $objActSheet->setCellValue('M'.$i, $model->huaxueji_money) ;
+        $objActSheet->setCellValue('O'.$i, $model->xuyue_money) ;
+        $objActSheet->setCellValue('Q'.$i, $model->ia_end_money) ;
+        $objActSheet->setCellValue('S'.$i, $model->ib_end_money) ;
+        $objActSheet->setCellValue('U'.$i, $model->ic_end_money) ;
+        $objActSheet->setCellValue('W'.$i, $model->xuyuezhong_money) ;
+        $i=$i+1;
+        $objActSheet->setCellValue('C'.$i, $model->add_money) ;//金额合计
+        $objActSheet->setCellValue('Q'.$i, $model->reduce_money);
+        $i=$i+2;
+        $objActSheet->setCellValue('C'.$i, $model->supplement_money) ;//
+        $objActSheet->setCellValue('F'.$i, $model->final_money);
+        $i=$i+8;
+        $o=$i;
+        foreach ($model->detail as $v){
+            $objActSheet->setCellValue('A'.$i,$v['date']) ;
+            $objActSheet->setCellValue('B'.$i, $v['customer']) ;
+            $objActSheet->setCellValue('C'.$i, $v['type']) ;
+            $objPHPExcel->getActiveSheet()->mergeCells('D'.$i.':P'.$i);
+            $objActSheet->setCellValue('D'.$i, $v['information']) ;
+            $objActSheet->setCellValue('Q'.$i, $v['commission']) ;
+            $i=$i+1;
+        }
+        $i=$i-1;
+        $styleArray = array(
+            'borders' => array(
+                'allborders' => array(
+                    //'style' => PHPExcel_Style_Border::BORDER_THICK,//边框是粗的
+                    'style' => PHPExcel_Style_Border::BORDER_THIN,//细边框
+                    'color' => array(PHPExcel_Style_Color::COLOR_BLACK,),
+                ),
+            ),
+        );
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$o.':Q'.$i)->applyFromArray($styleArray);
+//        print_r('<pre/>');
+//        print_r($model['all']);
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        ob_start();
+        $objWriter->save('php://output');
+        $output = ob_get_clean();
+        spl_autoload_register(array('YiiBase','autoload'));
+        $time=time();
+        $str="templates/TurnoverExcel_".$time.".xlsx";
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");;
+        header('Content-Disposition:attachment;filename="'.$str.'"');
+        header("Content-Transfer-Encoding:binary");
+        echo $output;
+    }
+
 }

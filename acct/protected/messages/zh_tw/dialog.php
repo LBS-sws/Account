@@ -69,5 +69,6 @@ return array(
 'Request Confirmed'=>'確認申請完成',
 'Some records cannot be calculated'=>'部分記錄無法計算',
 'SalesTableForm'=>'銷售提成表',
+'Please complete the sales commission form audit first'=>'請先完成銷售提成表審核',
 );
 ?>

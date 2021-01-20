@@ -82,6 +82,24 @@ class Counter {
 		
 		return $rtn;
 	}
+
+
+    public static function countSalesTable() {
+        $rtn = 0;
+        $city=Yii::app()->user->city();
+        if(Yii::app()->user->validFunction('CN12')){
+            $sql="select * from acc_product where city='$city' and examine='Y'";
+            $rows = Yii::app()->db->createCommand($sql)->queryAll();
+        }
+        empty($rows)?$rtn=0:$rtn=count($rows);
+//        $wf = new WorkflowPayroll;
+//        $wf->connection = Yii::app()->db;
+//        $list = $wf->getPendingRequestIdList('PAYROLL', 'PS', Yii::app()->user->id);
+//        $items = empty($list) ? array() : explode(',',$list);
+//        $rtn = count($items);
+
+        return $rtn;
+    }
 }
 
 ?>

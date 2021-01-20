@@ -46,7 +46,7 @@ $this->pageTitle=Yii::app()->name . ' - Salestable Form';
 
 	<div class="btn-group pull-right" role="group">
         <?php echo TbHtml::button('<span class="fa fa-cloud-download"></span> '.Yii::t('misc','Down'), array(
-            'submit'=>Yii::app()->createUrl('salestable/down')));
+            'submit'=>Yii::app()->createUrl('salestable/down',array('index'=>$model->id))));
         ?>
 	</div>
 	</div></div>
