@@ -1,0 +1,28 @@
+select a.id, b.data_value, c.lcu
+from workflow.wf_request a, workflow.wf_request_data b, account.acc_request c
+where a.id=b.request_id and b.data_name='REQ_USER' and b.data_value<>c.lcu
+and a.doc_id=c.id and c.lcd >= '2020-05-01 00:00:00';
+
+select x.*
+from workflow.wf_request_resp_user x, workflow.wf_request y, account.acc_request z
+where x.request_id in 
+(select a.id
+from workflow.wf_request a, workflow.wf_request_data b, account.acc_request c
+where a.id=b.request_id and b.data_name='REQ_USER' and b.data_value<>c.lcu
+and a.doc_id=c.id and c.lcd >= '2020-05-01 00:00:00')
+and x.current_state=113 and x.request_id=y.id and y.doc_id=z.id and z.lcu<>x.username;
+
+
+update workflow.wf_request_resp_user x, workflow.wf_request y, account.acc_request z
+set x.username = z.lcu
+where x.request_id in 
+(select a.id
+from workflow.wf_request a, workflow.wf_request_data b, account.acc_request c
+where a.id=b.request_id and b.data_name='REQ_USER' and b.data_value<>c.lcu
+and a.doc_id=c.id and c.lcd >= '2020-05-01 00:00:00')
+and x.current_state=113 and x.request_id=y.id and y.doc_id=z.id and z.lcu<>x.username;
+
+update workflow.wf_request a, workflow.wf_request_data b, account.acc_request c
+set b.data_value = c.lcu
+where a.id=b.request_id and b.data_name='REQ_USER' and b.data_value<>c.lcu
+and a.doc_id=c.id and c.lcd >= '2020-05-01 00:00:00';

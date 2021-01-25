@@ -50,7 +50,7 @@ class PayrollList extends CListPageModel
 					break;
 			}
 		}
-		$clause .= $this->getDateRangeCondition('a.lcd');
+//		$clause .= $this->getDateRangeCondition('a.lcd');
 		
 		$order = "";
 		if (!empty($this->orderField)) {

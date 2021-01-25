@@ -70,7 +70,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS ShowActionTask //
 CREATE PROCEDURE ShowActionTask(p_ver_id int unsigned)
 BEGIN
-  SELECT b.code, b.name, a.seq_no, c.name, c.function_call, c.param
+  SELECT b.id, b.code, b.name, a.seq_no, c.id, c.name, c.function_call, c.param
   FROM wf_action_task a, wf_action b, wf_task c
   WHERE a.action_id = b.id AND b.proc_ver_id = p_ver_id
   AND a.task_id = c.id AND c.proc_ver_id = p_ver_id
