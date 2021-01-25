@@ -13,7 +13,7 @@ class SalesTableList extends CListPageModel
             'examine'=>Yii::t('app','Examine'),
 		);
 	}
-	
+
 	public function searchColumns() {
 		$search = array(
 				'employee_code'=>"a.employee_code",
@@ -21,6 +21,7 @@ class SalesTableList extends CListPageModel
 				'city'=>'e.name',
 				'user_name'=>'c.name',
                 'time'=>'concat_ws(\'/\',a.year_no,a.month_no)',
+                'examine'=>'f.examine',
 		);
 		return $search;
 	}
@@ -65,6 +66,10 @@ class SalesTableList extends CListPageModel
                     break;
                 case 'time':
                     $clause .= General::getSqlConditionClause("concat_ws('/',a.year_no,a.month_no)",$svalue);
+                    break;
+                case 'examine':
+                    $examine=$this->examines($svalue);
+                    $clause .= General::getSqlConditionClause("f.examine",$examine);
                     break;
             }
         }
@@ -124,6 +129,20 @@ class SalesTableList extends CListPageModel
         if($examine=='Y')$a=Yii::t('salestable','Reviewed');
         if($examine=='')$a=Yii::t('salestable','Not reviewed');
 	    return $a;
+    }
+
+    public function examines($examine){
+	    $a=0;
+	    $b1=Yii::t('salestable','Not reviewed');
+	    $b2=Yii::t('salestable','Adopt');
+        $b3=Yii::t('salestable','Rejected');
+        $b4=Yii::t('salestable','Reviewed');
+        $b5=Yii::t('salestable','Not reviewed');
+        if($examine==$b1)$a='N';
+        if($examine==$b2)$a='A';
+        if($examine==$b3)$a='S';
+        if($examine==$b4)$a='Y';
+        return $a;
     }
 
 }
