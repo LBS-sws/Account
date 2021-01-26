@@ -86,9 +86,9 @@ class Counter {
 
     public static function countSalesTable() {
         $rtn = 0;
-        $city=Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         if(Yii::app()->user->validFunction('CN12')){
-            $sql="select * from acc_product where city='$city' and examine='Y'";
+            $sql="select * from acc_product where city in ($city) and examine='Y'";
             $rows = Yii::app()->db->createCommand($sql)->queryAll();
         }
         empty($rows)?$rtn=0:$rtn=count($rows);
