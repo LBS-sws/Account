@@ -97,7 +97,6 @@ class Counter {
 //        $list = $wf->getPendingRequestIdList('PAYROLL', 'PS', Yii::app()->user->id);
 //        $items = empty($list) ? array() : explode(',',$list);
 //        $rtn = count($items);
-        $rtn=4;
         return $rtn;
     }
 }
