@@ -741,7 +741,7 @@ class SalesTableForm extends CFormModel
         $this->amt_paid_royalty=($new_calc+$point['point'])*100;//提成点数 焗雾
         $this->ic_royalty=($new_calc+$point['point'])*100;//提成点数 租机
         $this->xuyue_royalty=1;//提成点数 续约
-        $amt_install_royalty=$this->getAmount($city,'paper','paper',$start,$this->abc_money);//装机提成比例
+        $amt_install_royalty=$this->getAmount($city,'paper','paper',$start,$money);//装机提成比例
         $this->amt_install_royalty=$amt_install_royalty+$point['point'];//提成点数 装机
         $this->sale_royalty="/";//提成点数 销售
         $this->huaxueji_royalty=(0.1+$point['point'])*100;//提成点数 化学剂

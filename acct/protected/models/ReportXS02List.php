@@ -778,7 +778,7 @@ class ReportXS02List extends CListPageModel
     {
         $suffix = Yii::app()->params['envSuffix'];
         $citys = "'BJ','SH','GZ','SZ'";
-        $city = Yii::app()->user->city_allow();
+        $city=Yii::app()->user->city();
         if(strstr($citys, $city)){
             $amt_paid_money=2000;
         }else{
@@ -795,8 +795,7 @@ class ReportXS02List extends CListPageModel
 				inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				where  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=2 
-				and a.city in ($city) and (((a.amt_paid>='$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid>='$amt_paid_money') and  a.paid_type='M'))
-			  
+				and a.city ='$city' and (((a.amt_paid>='$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid>='$amt_paid_money') and  a.paid_type='M'))			
 			";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -842,10 +841,19 @@ class ReportXS02List extends CListPageModel
 				from swoper$suffix.swo_service a 
 				inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end'
+				where a.city ='$city'  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end'
 				 and a.nature_type=2 and  (((a.amt_paid<'$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid<'$amt_paid_money') and  a.paid_type='M'))			
 			";
         $ou = Yii::app()->db->createCommand($sql_ou)->queryAll();
+        //判断已经需要计算的门店
+        $sql2 = "select a.company_name					
+				from swoper$suffix.swo_service a 
+				inner join security$suffix.sec_city d on a.city=d.code 			  
+				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
+				where  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=2 
+				and a.city ='$city' and (((a.amt_paid>='$amt_paid_money'*12) and (a.paid_type=1 or a.paid_type='Y')) or((a.amt_paid>='$amt_paid_money') and  a.paid_type='M'))			
+			";
+        $company_name = Yii::app()->db->createCommand($sql2)->queryColumn();
 //判断续约金额加起来有2000/1000的
         foreach ($ou as &$v){
             if($v['paid_type']=='M'){
@@ -867,7 +875,7 @@ class ReportXS02List extends CListPageModel
             }
         }
         foreach($ou as $k=>&$v){
-            if(in_array($v['company_name'],$ids)){
+            if(in_array($v['company_name'],$ids)||in_array($v['company_name'],$company_name)){
 
             }else{
                 unset($ou[$k]);
@@ -880,12 +888,10 @@ class ReportXS02List extends CListPageModel
         from swoper$suffix.swo_service a
         left outer join security$suffix.sec_city d on a.city=d.code 			  
 		left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-		left outer join swoper$suffix.swo_company b on a.company_name=concat_ws(' ',b.code,b.name) 
-		where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=1	  
+		left outer join swoper$suffix.swo_company b on a.company_name=concat_ws('',b.code,b.name) 
+		where a.city ='$city'  and  a.salesman ='".$name['name']."' and a.status='C' and a.status_dt>='$start' and a.status_dt<='$end' and a.nature_type=1	  
         ";
         $eat = Yii::app()->db->createCommand($sql_eat)->queryAll();
-//                print_r('<pre>');
-//        print_r($eat);
         foreach ($eat as $k=>&$v){
             $sql="select count(id) from  swoper$suffix.swo_company where group_id='".$v['group_id']."' and status=1 and group_id<>''";
             $sum = Yii::app()->db->createCommand($sql)->queryScalar();
@@ -916,7 +922,7 @@ class ReportXS02List extends CListPageModel
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$record['amt_install'],           //安装金额
                     'othersalesman'=>$record['othersalesman'],           //跨区业务员
-                    'royalty'=>$record['royaltys'],           //提成比例
+                    'royalty'=>$record['royalty'],           //提成比例
                 );
             }
         }
@@ -1016,7 +1022,7 @@ class ReportXS02List extends CListPageModel
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$record['amt_install'],           //安装金额
                     'othersalesman'=>$record['othersalesman'],           //跨区业务员
-                    'royalty'=>$record['royaltys'],           //提成比例
+                    'royalty'=>$record['royalty'],           //提成比例
                 );
             }
         }
