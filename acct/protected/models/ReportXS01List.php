@@ -2079,6 +2079,7 @@ class ReportXS01List extends CListPageModel
 							order by sales_amount limit 1
 						";
                 $row = Yii::app()->db->createCommand($sql)->queryRow();
+                print_r($sql);exit();
                 if ($row!==false) {
                     $rtn =$row['rate'];
                 }
