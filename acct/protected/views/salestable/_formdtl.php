@@ -13,7 +13,7 @@
         ); ?>
     </td>
 	<td>
-		<?php echo TbHtml::dropDownList($this->getFieldName('type'),  $this->record['type'], array('ia'=>'IA','ib'=>'IB','ic'=>'IC'),
+		<?php echo TbHtml::dropDownList($this->getFieldName('type'),  $this->record['type'], array('ia'=>'IA','ib'=>'IB','ic'=>'IC','other'=>'其他'),
 								array('disabled'=>$this->record['examine']=='Y'||$this->record['examine']=='A')
 		); ?>
 	</td>
