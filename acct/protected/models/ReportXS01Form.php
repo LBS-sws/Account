@@ -160,6 +160,7 @@ class ReportXS01Form extends CReportForm
               where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name' and d.city='".$records['city']."'
 ";
             $arr = Yii::app()->db->createCommand($sql1)->queryRow();
+            print_r($sql1);print_r($arr);
             if($employee==1){
                 $months=$records['month_no']-1;
                 $years=$records['year_no'];
