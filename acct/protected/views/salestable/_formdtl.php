@@ -33,9 +33,9 @@
     </td>
 	<td>
 		<?php 
-			echo Yii::app()->user->validRWFunction('E01')
-				? TbHtml::Button('-',array('id'=>'btnDelRow','title'=>Yii::t('misc','Delete'),'size'=>TbHtml::BUTTON_SIZE_SMALL))
-				: '&nbsp;';
+			echo
+				 TbHtml::Button('-',array('id'=>'btnDelRow','title'=>Yii::t('misc','Delete'),'size'=>TbHtml::BUTTON_SIZE_SMALL))
+				;
 		?>
 		<?php echo CHtml::hiddenField($this->getFieldName('uflag'),$this->record['uflag']); ?>
 		<?php echo CHtml::hiddenField($this->getFieldName('id'),$this->record['id']); ?>

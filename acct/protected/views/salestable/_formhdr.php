@@ -15,9 +15,9 @@
 		<?php echo TbHtml::label($this->getLabelName('commission'), false); ?>
 	</th>
 	<th>
-		<?php echo Yii::app()->user->validRWFunction('E01') ?
+		<?php echo
 				TbHtml::Button('+',array('id'=>'btnAddRow','title'=>Yii::t('misc','Add'),'size'=>TbHtml::BUTTON_SIZE_SMALL))
-				: '&nbsp;';
+				;
 		?>
 	</th>
 </tr>
