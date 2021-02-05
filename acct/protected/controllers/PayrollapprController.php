@@ -40,11 +40,11 @@ class PayrollapprController extends Controller
 	public function actionIndex($pageNum=0) 
 	{
         $city=Yii::app()->user->city();
-        if(Yii::app()->user->validFunction('CN12')){
-            $sql="select * from acc_product where city='$city' and examine='Y'";
-            $rows = Yii::app()->db->createCommand($sql)->queryAll();
-        }
-        if(empty($rows)){
+//        if(Yii::app()->user->validFunction('CN12')){
+//            $sql="select * from acc_product where city='$city' and examine='Y'";
+//            $rows = Yii::app()->db->createCommand($sql)->queryAll();
+//        }
+//        if(empty($rows)){
             $model = new PayrollApprList;
             if (isset($_POST['PayrollApprList'])) {
                 $model->attributes = $_POST['PayrollApprList'];
@@ -58,9 +58,9 @@ class PayrollapprController extends Controller
             $model->determinePageNum($pageNum);
             $model->retrieveDataByPage($model->pageNum);
             $this->render('index',array('model'=>$model));
-        }else{
-            throw new CHttpException(404,Yii::t('dialog','Please complete the sales commission form audit first'));
-        }
+//        }else{
+//            throw new CHttpException(404,Yii::t('dialog','Please complete the sales commission form audit first'));
+//        }
 
 	}
 
