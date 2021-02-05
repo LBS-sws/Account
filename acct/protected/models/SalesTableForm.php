@@ -215,7 +215,7 @@ class SalesTableForm extends CFormModel
             $money=$arr['new_money']+$arr['edit_money'];
         }
         //之前月份业绩↑
-        print_r('<pre>'); print_r($rows);
+        //print_r('<pre>'); print_r($rows);
         //exit();
         if (count($rows) > 0) {
             $this->group = array();
@@ -264,6 +264,8 @@ class SalesTableForm extends CFormModel
 //                    $temp['amt_paid'] = $row['amt_paid'];//焗雾白蚁甲醛雾化
                     if($row['status']=='T'){
                         $temp['amt_paid'] = -$amt_paid_a;//焗雾白蚁甲醛雾化
+                    }elseif($row['status']=='N'){
+                        $temp['amt_paid'] = $amt_paid_a;//焗雾白蚁甲醛雾化
                     }else{
                         $temp['amt_paid'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_a:'';//焗雾白蚁甲醛雾化
                     }
