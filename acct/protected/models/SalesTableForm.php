@@ -215,8 +215,8 @@ class SalesTableForm extends CFormModel
             $money=$arr['new_money']+$arr['edit_money'];
         }
         //之前月份业绩↑
-//        print_r('<pre>'); print_r($arr);
-//        exit();
+        print_r('<pre>'); print_r($rows);
+        //exit();
         if (count($rows) > 0) {
             $this->group = array();
             foreach ($rows as $row) {

@@ -2243,7 +2243,7 @@ class ReportXS01List extends CListPageModel
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
         foreach ($id as $ai) {
-            $sqlct="update swoper$suffix.swo_service set commission=0  where id='$ai'";
+            $sqlct="update swoper$suffix.swo_service set commission=0,other_commission=0  where id='$ai'";
             $model = Yii::app()->db->createCommand($sqlct)->execute();
         }
     }
