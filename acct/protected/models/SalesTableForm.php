@@ -157,8 +157,8 @@ class SalesTableForm extends CFormModel
         $new_calc=$this->getCalc($index,$a);
         $start=$salerow['year_no'].'-'. $salerow['month_no'].'-01';
         $end=$salerow['year_no'].'-'. $salerow['month_no'].'-31';
-        $a=$salerow['employee_name']." (".$salerow['employee_code'].")";
-        $sql1 = "select * from swoper$suffix.swo_service where  ((commission!=' ' and commission!=0) or (other_commission!=0 and other_commission!=' ')) and ((status_dt<='$end' and  status_dt>='$start') or (first_dt<='$end' and  first_dt>='$start')) and (salesman='$a' or  othersalesman='$a')";
+        $a1=$salerow['employee_name']." (".$salerow['employee_code'].")";
+        $sql1 = "select * from swoper$suffix.swo_service where  ((commission!=' ' and commission!=0) or (other_commission!=0 and other_commission!=' ')) and ((status_dt<='$end' and  status_dt>='$start') or (first_dt<='$end' and  first_dt>='$start')) and (salesman='$a1' or  othersalesman='$a1')";
         $rows = Yii::app()->db->createCommand($sql1)->queryAll();
         $sql1 = "select * from acc_product where  service_hdr_id='$index'";
         $product = Yii::app()->db->createCommand($sql1)->queryRow();
@@ -175,9 +175,9 @@ class SalesTableForm extends CFormModel
         ";
         $position = Yii::app()->db->createCommand($sql)->queryRow();
         if(empty($position)){
-            $dcxj=1;//不加入东成西就
+            $position_a=1;//不加入东成西就
         }else{
-            $records=2;
+            $position_a=2;
         }
         $sql="select a.*,b.*,c.name as city_name ,d.group_type from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
@@ -192,7 +192,7 @@ class SalesTableForm extends CFormModel
             $date1 = '2020/07/01';
             $employee = $this->getEmployee($records['employee_code'], $records['year_no'], $records['month_no']);
             // print_r($a);print_r($employee);
-            if ($records['city'] == 'CD' || $records['city'] == 'FS' || $records['city'] == 'NJ' || $records['city'] == 'TJ' || $a == 1 || strtotime($date) < strtotime($date1) || $employee == 1) {
+            if ($records['city'] == 'CD' || $records['city'] == 'FS' || $records['city'] == 'NJ' || $records['city'] == 'TJ' || $position_a == 1 || strtotime($date) < strtotime($date1) || $employee == 1) {
                 $month = $records['month_no'];
                 $year = $records['year_no'];
             } else {
@@ -643,7 +643,7 @@ class SalesTableForm extends CFormModel
         $sql = "select b.log_dt,b.company_name,a.money,a.qty,c.description,c.sales_products,c.id from swoper$suffix.swo_logistic_dtl a
                 left outer join swoper$suffix.swo_logistic b on b.id=a.log_id		
                	left outer join swoper$suffix.swo_task c on a.task=c.	id
-                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$a."' and b.city ='$city' and a.money>0";
+                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$a1."' and b.city ='$city' and a.money>0";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
         //print_r('<pre>');print_r($rows);exit();
         if(count($rows)>0){
