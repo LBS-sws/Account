@@ -24,7 +24,7 @@ class CommissionController extends Controller
     {
         return array(
             array('allow',
-                'actions'=>array('save','new','add','newsave','performance','performanceedit','performanceend','editsave','endsave','performancesave','position',
+                'actions'=>array('save','new','add','newsave','performance','performanceedit','performanceend','editsave','endsave','performancesave','position','product','productsave',
                     'performanceeditsave','performanceendsave','renewal','renewalend','renewalsave','renewalendsave','clear'),
                 'expression'=>array('CommissionController','allowReadWrite'),
             ),
@@ -237,6 +237,23 @@ class CommissionController extends Controller
         $model->determinePageNum($pageNum);
         $model->renewalendDataByPage($model->pageNum,$year,$month,$index);
         $this->render('renewalend',array('model'=>$model,'index'=>$index,'year'=>$year,'month'=>$month,));
+    }
+
+    public function actionProduct($pageNum=0,$year,$month,$index)
+    {
+        $model = new ReportXS01List;
+        if (isset($_POST['ReportXS01List'])) {
+            $model->attributes = $_POST['ReportXS01List'];
+        } else {
+            $session = Yii::app()->session;
+            if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+                $criteria = $session[$model->criteriaName()];
+                $model->setCriteria($criteria);
+            }
+        }
+        $model->determinePageNum($pageNum);
+        $model->productDataByPage($model->pageNum,$year,$month,$index);
+        $this->render('product',array('model'=>$model,'index'=>$index,'year'=>$year,'month'=>$month,));
     }
 
     public function actionAdd($year,$month,$index)
@@ -530,6 +547,33 @@ class CommissionController extends Controller
             $model = Yii::app()->db->createCommand($sql1)->execute();
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
             $this->redirect(Yii::app()->createUrl('commission/renewalend',array('year'=>$year,'month'=>$month,'index'=>$index)));
+        }
+    }
+
+    public function actionProductSave($year,$month,$index)
+    {
+        $city=Yii::app()->user->city();
+        $model = new ReportXS01List;
+        //print_r($_POST['ReportXS01List']['id']);
+        if (isset($_POST['ReportXS01List']['id'])) {
+            $model->productSale($_POST['ReportXS01List']['id'],$index,$year,$month);
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
+            $this->redirect(Yii::app()->createUrl('commission/product',array('year'=>$year,'month'=>$month,'index'=>$index)));
+        }else{
+            $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
+            $records = Yii::app()->db->createCommand($sql)->queryRow();
+            if(empty($records)){
+                $sql1 = "insert into acc_service_comm_dtl(
+					hdr_id, product_amount
+				) values (
+					'".$index."','0'
+				)";
+            }else{
+                $sql1="update acc_service_comm_dtl set product_amount='0'  where hdr_id='$index'";
+            }
+            $model = Yii::app()->db->createCommand($sql1)->execute();
+            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
+            $this->redirect(Yii::app()->createUrl('commission/product',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }
     }
 

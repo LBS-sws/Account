@@ -72,6 +72,9 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
             <li  class="">
                 <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/renewalend',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','RenewalEnd'); ?></a>
             </li>
+            <li  class="">
+                <a  tabindex="-1" href="<?php echo Yii::app()->createUrl('commission/product',array('year'=>$year,'month'=>$month,'index'=>$index));?>" ><?php echo Yii::t('commission','Prodcct'); ?></a>
+            </li>
         </ul>
         <div class="box-info" style="height: 1000px;" >
             <div class="box-body" >

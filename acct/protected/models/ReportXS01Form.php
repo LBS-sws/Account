@@ -41,6 +41,7 @@ class ReportXS01Form extends CReportForm
     public $renewal_amount;
     public $renewalend_amount;
     public $renewal_money;
+    public $product_amount;
 
     protected function labelsEx() {
         return array(
@@ -190,7 +191,7 @@ class ReportXS01Form extends CReportForm
             $this->new_amount=$records['new_amount'];
             $this->edit_amount=$records['edit_amount'];
             $this->end_amount=$records['end_amount'];
-            $num=$records['new_amount']+$records['edit_amount']+$records['end_amount']+$records['performance_amount']+$records['performanceedit_amount']+$records['performanceend_amount']+$records['renewal_amount']+$records['renewalend_amount'];
+            $num=$records['new_amount']+$records['edit_amount']+$records['end_amount']+$records['performance_amount']+$records['performanceedit_amount']+$records['performanceend_amount']+$records['renewal_amount']+$records['renewalend_amount']+$records['product_amount'];
             $this->all_amount=number_format($num,2);
             $this->performance_amount=$records['performance_amount'];
             $this->year=$records['year_no'];
@@ -206,6 +207,7 @@ class ReportXS01Form extends CReportForm
             $this->renewal_amount=$records['renewal_amount'];
             $this->renewalend_amount=$records['renewalend_amount'];
             $this->renewal_money=$records['renewal_money'];
+            $this->product_amount=$records['product_amount'];
             $this->group_type=$this->getGroupType($records['group_type']);
             if($records['performance']==1){
                 $a='是';

@@ -1011,6 +1011,50 @@ class ReportXS01List extends CListPageModel
         return true;
     }
 
+    public function productDataByPage($pageNum=1,$year,$month,$index){
+        $suffix = Yii::app()->params['envSuffix'];
+        $city=Yii::app()->user->city();
+        $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
+        $name = Yii::app()->db->createCommand($sqlm)->queryRow();
+        $name['name']=str_replace(' ',' (',$name['name']);
+        $name['name'].=")";
+        $start=$year."-".$month."-01";
+        $end=$year."-".$month."-31";
+        $sql = "select b.log_dt,b.company_name,a.money,a.qty,c.description,c.sales_products,a.id,d.name as city_name ,(a.money*a.qty) as moneys from swoper$suffix.swo_logistic_dtl a
+                left outer join swoper$suffix.swo_logistic b on b.id=a.log_id		
+               	left outer join swoper$suffix.swo_task c on a.task=c.	id
+             	left outer join security$suffix.sec_city d on a.city=d.code 			  
+                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$name['name']."' and b.city ='$city' and a.money>0";
+        $rows = Yii::app()->db->createCommand($sql)->queryAll();
+        $sql1 = "select count(a.id) from swoper$suffix.swo_logistic_dtl a
+                left outer join swoper$suffix.swo_logistic b on b.id=a.log_id		
+               	left outer join swoper$suffix.swo_task c on a.task=c.	id
+             	left outer join security$suffix.sec_city d on a.city=d.code 			  
+                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$name['name']."' and b.city ='$city' and a.money>0";
+        $this->totalRow = Yii::app()->db->createCommand($sql1)->queryScalar();
+        if (count($rows) > 0) {
+            foreach ($rows as $record) {
+
+                $this->attr[] = array(
+                    'id'=>$record['id'],
+                    'city_name'=>$record['city_name'],               //地区
+                    'log_dt'=>General::toDate($record['log_dt']),    //出单日期
+                    'company_name'=>$record['company_name'],              //客户编号及名称
+                    'description'=>$record['description'],                 //产品名称
+                    'qty'=>$record['qty'],                          //数量
+                    'money'=>$record['money'],                      //金额
+                    'moneys'=>$record['moneys'],                    //总金额
+
+                );
+            }
+        }
+        $session = Yii::app()->session;
+        $session['criteria_XS01'] = $this->getCriteria();
+//        print_r('<pre>');
+//        print_r($this);
+        return true;
+    }
+
     public function copy(){
         $suffix = Yii::app()->params['envSuffix'];
         $start=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
@@ -2055,6 +2099,140 @@ class ReportXS01List extends CListPageModel
 //        print_r('<pre>');
 //        print_r($sql1);  exit();
 
+    }
+
+    public function productSale($id,$index,$years,$months){
+        $city = Yii::app()->user->city();
+        $suffix = Yii::app()->params['envSuffix'];
+        $money=array();
+        //之前月份业绩↓
+        $sql="select * from hr$suffix.hr_employee a
+            left outer join  acc_service_comm_hdr b on a.code=b.employee_code
+            inner join hr$suffix.hr_dept c on a.position=c.id 
+            where  b.id='$index' and (c.manager_type ='1' or c.manager_type ='2')
+        ";
+        $position = Yii::app()->db->createCommand($sql)->queryRow();
+        if(empty($position)){
+            $position_a=1;//不加入东成西就
+        }else{
+            $position_a=2;
+        }
+        $sql="select a.*,b.*,c.name as city_name ,d.group_type from acc_service_comm_hdr a
+              left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
+              left outer join security$suffix.sec_city c on  a.city=c.code 
+              left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
+              where a.id='$index'
+";
+        $records = Yii::app()->db->createCommand($sql)->queryRow();
+        if(!empty($records)) {
+            $city = Yii::app()->user->city();
+            $date = $records['year_no'] . "/" . $records['month_no'] . '/' . "01";
+            $date1 = '2020/07/01';
+            $employee = $this->getEmployee($records['employee_code'], $records['year_no'], $records['month_no']);
+            // print_r($a);print_r($employee);
+            if ($records['city'] == 'CD' || $records['city'] == 'FS' || $records['city'] == 'NJ' || $records['city'] == 'TJ' || $position_a == 1 || strtotime($date) < strtotime($date1) || $employee == 1) {
+                $month = $records['month_no'];
+                $year = $records['year_no'];
+            } else {
+                $month = $records['month_no'] - 1;
+                $year = $records['year_no'];
+                if ($month == 0) {
+                    $month = 12;
+                    $year = $records['year_no'] - 1;
+                }
+            }
+            $sql = "select employee_name from acc_service_comm_hdr where id=$index";
+            $name = Yii::app()->db->createCommand($sql)->queryScalar();
+            $sql1 = "select a.*, b.new_calc ,b.new_money ,b.edit_money ,e.user_id from acc_service_comm_hdr a
+              left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
+              left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
+              left outer join hr$suffix.hr_binding e on  d.id=e.employee_id            
+              where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name' and d.city='" . $records['city'] . "'
+";
+            $arr = Yii::app()->db->createCommand($sql1)->queryRow();
+            $money=$arr['new_money']+$arr['edit_money'];
+        }
+        //之前月份业绩↑
+//        print_r('<pre>');
+//        print_r($years);  exit();
+        $sql_point="select * from sales$suffix.sal_integral where hdr_id='$index' ";
+        $point = Yii::app()->db->createCommand($sql_point)->queryRow();
+        if(empty($point)){
+            $point['point']=0;
+        }
+        $mons=0;
+        foreach ($id as $ai){
+            $sql="select * from swoper$suffix.swo_logistic_dtl  a
+                   left outer join swoper$suffix.swo_task  b on  b.id=a.task
+            where a.id='$ai'";
+            $records = Yii::app()->db->createCommand($sql)->queryRow();
+            $fuwu=$this->getProductctAmount($city,$records['task'],$records['sales_products'],$date,$money);//本单产品提成比例
+            $fuwu=$fuwu+$point['point'];
+            $mons+=$records['money']*$fuwu*$records['qty'];
+        }
+        $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
+        $records = Yii::app()->db->createCommand($sql)->queryRow();
+        if(empty($records)){
+            $sql1 = "insert into acc_service_comm_dtl(
+					hdr_id, product_amount
+				) values (
+					'".$index."','".$mons."'
+				)";
+        }else{
+            $sql1="update acc_service_comm_dtl set product_amount='$mons'  where hdr_id='$index'";
+        }
+        $model = Yii::app()->db->createCommand($sql1)->execute();
+    }
+
+
+    public  function getProductctAmount($city, $cust_type,$sales_products, $start_dt, $sales_amt) {
+        //城市，类别，时间，总金额
+        $rtn = 0;
+        if (!empty($city) && !empty($cust_type) && !empty($start_dt) && !empty($sales_amt)) {
+            $suffix = Yii::app()->params['envSuffix'];
+            //客户类别
+            //  $sql = "select rpt_cat from swoper$suffix.swo_customer_type where id=$cust_type";
+            //   $row = Yii::app()->db->createCommand($sql)->queryRow();
+            //   if ($row!==false) {
+            //  $type = $row['rpt_cat'];
+            $sdate = General::toMyDate($start_dt);
+            $sql = "select id from acc_product_rate_hdr where city='$city' and start_dt<'$sdate'   order by start_dt desc limit 1";
+            $row = Yii::app()->db->createCommand($sql)->queryRow();
+            if ($row!==false) {
+                $id = $row['id'];
+                $sql = "select id, rate from acc_product_rate_dtl
+							where hdr_id='$id' and name='$cust_type' 
+							order by sales_amount limit 1
+						";
+                $row = Yii::app()->db->createCommand($sql)->queryRow();
+                if ($row!==false) {
+                    $sql = "select id, rate from acc_product_rate_dtl
+							where hdr_id='$id' and name='$cust_type' and ((sales_amount>=$sales_amt and operator='LE')
+							or (sales_amount<$sales_amt and operator='GT'))
+							order by sales_amount limit 1
+						";
+                    $row = Yii::app()->db->createCommand($sql)->queryRow();
+                    if ($row!==false) {
+                        $rtn =$row['rate'];
+                    }
+                }else{
+                    $sql = "select id, rate from acc_product_rate_dtl
+							where hdr_id='$id' and name='$sales_products' and ((sales_amount>=$sales_amt and operator='LE')
+							or (sales_amount<$sales_amt and operator='GT'))
+							order by sales_amount limit 1
+						";
+                    $row = Yii::app()->db->createCommand($sql)->queryRow();
+                    if ($row!==false) {
+                        $rtn =$row['rate'];
+                    }
+                }
+
+            }
+        }
+        // }
+//                        print_r('<pre>');
+//                print_r($row);
+        return $rtn;
     }
 
     public  function getAmount($city, $cust_type, $start_dt, $sales_amt) {

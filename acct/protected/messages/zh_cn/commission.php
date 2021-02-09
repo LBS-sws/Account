@@ -32,6 +32,8 @@ return array(
     'point'=>'销售提成激励点',
     'Renewal'=>'续约生意额',
     'RenewalEnd'=>'续约终止生意额',
+    'Prodcct'=>'产品生意额',
+    'product_amount'=>'产品提成',
 
 );
 ?>
