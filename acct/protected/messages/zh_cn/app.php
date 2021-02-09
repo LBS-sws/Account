@@ -166,6 +166,10 @@ return array(
 
 	'Sales commission table'=>'销售提成表',
     'Time'=>'日期',
-	'Examine'=>'状态'
+	'Log Dt'=>'出单日期',
+	'Description'=>'产品名称',
+	'Qty'=>'数量',
+	'Qty Money'=>'单价',
+
 );
 ?>

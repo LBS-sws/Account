@@ -24,6 +24,11 @@ class ReportXS01List extends CListPageModel
             'city'=>Yii::t('app','city'),
             'user_name'=>Yii::t('app','user_name'),
             'comm_total_amount'=>Yii::t('app','comm_total_amount'),
+            'log_dt'=>Yii::t('app','Log Dt'),
+            'description'=>Yii::t('app','Description'),
+            'qty'=>Yii::t('app','Qty'),
+            'money'=>Yii::t('app','Qty Money'),
+            'moneys'=>Yii::t('app','Money'),
         );
     }
 
