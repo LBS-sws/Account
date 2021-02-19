@@ -797,10 +797,14 @@ class ReportXS01SList extends CListPageModel
                     $money+=$a;
                     $cust_type='fw';
                     if(!empty($records['othersalesman'])){
-                        $moneys+=$a*$spanning;
+                        $commission=$a*$spanning;
+                        $moneys+=$commission;
                     }else{
-                        $moneys+=$a;
+                        $commission=$a;
+                        $moneys+=$commission;
                     }
+                    $sqlct="update acc_service_comm_copy set commission='".$commission."'  where id='$ai'";
+                    $model = Yii::app()->db->createCommand($sqlct)->execute();
                 }elseif ($records['cust_type']=='4'){
                     $money1+=$a;
                     $cust_type1='inv';
@@ -1294,9 +1298,12 @@ class ReportXS01SList extends CListPageModel
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     if (!empty($a)) {
                         $moneys += $a * $otherspanning;
-                        $a = $a * $fuwu_last;
                         if ($records['cust_type'] == '1' || $records['cust_type'] == '2' || $records['cust_type'] == '3' || $records['cust_type'] == '5' || $records['cust_type'] == '6' || $records['cust_type'] == '7') {
-                            $money += $a * $otherspanning;
+                            $commission=$a * $otherspanning;
+                            $comm= $commission* $fuwu_last;
+                            $money += $comm;
+                            $sqlct="update acc_service_comm_copy set  other_commission='".$commission."',royaltys='$fuwu_last'  where id='$ai'";
+                            $model = Yii::app()->db->createCommand($sqlct)->execute();
                         }
                     }
                    // $zhuangji += $records['amt_install'];
