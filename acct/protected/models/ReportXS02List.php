@@ -24,6 +24,11 @@ class ReportXS02List extends CListPageModel
             'city'=>Yii::t('app','city'),
             'user_name'=>Yii::t('app','user_name'),
             'comm_total_amount'=>Yii::t('app','comm_total_amount'),
+            'log_dt'=>Yii::t('app','Log Dt'),
+            'description'=>Yii::t('app','Description'),
+            'qty'=>Yii::t('app','Qty'),
+            'money'=>Yii::t('app','Qty Money'),
+            'moneys'=>Yii::t('app','Money'),
 		);
 	}
 	
@@ -1033,6 +1038,50 @@ class ReportXS02List extends CListPageModel
         return true;
     }
 
+    public function productDataByPage($pageNum=1,$year,$month,$index){
+        $suffix = Yii::app()->params['envSuffix'];
+        $city=Yii::app()->user->city();
+        $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
+        $name = Yii::app()->db->createCommand($sqlm)->queryRow();
+        $name['name']=str_replace(' ',' (',$name['name']);
+        $name['name'].=")";
+        $start=$year."-".$month."-01";
+        $end=$year."-".$month."-31";
+        $sql = "select b.log_dt,b.company_name,a.money,a.qty,c.description,c.sales_products,a.id,d.name as city_name ,(a.money*a.qty) as moneys from swoper$suffix.swo_logistic_dtl a
+                left outer join swoper$suffix.swo_logistic b on b.id=a.log_id		
+               	left outer join swoper$suffix.swo_task c on a.task=c.	id
+             	left outer join security$suffix.sec_city d on a.city=d.code 			  
+                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$name['name']."' and b.city ='$city' and a.money>0";
+        $rows = Yii::app()->db->createCommand($sql)->queryAll();
+        $sql1 = "select count(a.id) from swoper$suffix.swo_logistic_dtl a
+                left outer join swoper$suffix.swo_logistic b on b.id=a.log_id		
+               	left outer join swoper$suffix.swo_task c on a.task=c.	id
+             	left outer join security$suffix.sec_city d on a.city=d.code 			  
+                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$name['name']."' and b.city ='$city' and a.money>0";
+        $this->totalRow = Yii::app()->db->createCommand($sql1)->queryScalar();
+        if (count($rows) > 0) {
+            foreach ($rows as $record) {
+
+                $this->attr[] = array(
+                    'id'=>$record['id'],
+                    'city_name'=>$record['city_name'],               //地区
+                    'log_dt'=>General::toDate($record['log_dt']),    //出单日期
+                    'company_name'=>$record['company_name'],              //客户编号及名称
+                    'description'=>$record['description'],                 //产品名称
+                    'qty'=>$record['qty'],                          //数量
+                    'money'=>$record['money'],                      //金额
+                    'moneys'=>$record['moneys'],                    //总金额
+
+                );
+            }
+        }
+        $session = Yii::app()->session;
+        $session['criteria_XS01'] = $this->getCriteria();
+//        print_r('<pre>');
+//        print_r($this);
+        return true;
+    }
+
     public function copy(){
         $suffix = Yii::app()->params['envSuffix'];
         $start=date('Y-m-d', strtotime(date('Y-m-01') . ' -1 month'));
@@ -1073,7 +1122,8 @@ class ReportXS02List extends CListPageModel
         $objPHPExcel->getActiveSheet()->setCellValue('A11','跨区终止提成 : '.$view['performanceend_amount']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('A12','续约生意提成 : '.$view['renewal_amount']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('A13','续约终止提成 : '.$view['renewalend_amount']) ;
-        $objPHPExcel->getActiveSheet()->setCellValue('A14','总额 : '.$view['all_amount']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('A14','产品提成 : '.$view['product_amount']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('A15','总额 : '.$view['all_amount']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('B4','跨区提成是否计算 : '.$view['performance']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('B5','销售提成激励点 : '.$view['point']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('B6','新增业绩 : '.$view['new_money']) ;
@@ -1082,17 +1132,17 @@ class ReportXS02List extends CListPageModel
         $objPHPExcel->getActiveSheet()->setCellValue('B10','跨区更改新增业绩 : '.$view['performanceedit_money']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('B12','续约业绩 : '.$view['renewal_money']) ;
 
-        $objPHPExcel->getActiveSheet()->getStyle('A16:H16')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-        $objPHPExcel->getActiveSheet()->getStyle('A16:H16')->getFill()->getStartColor()->setARGB('99FFFF');
+        $objPHPExcel->getActiveSheet()->getStyle('A17:H17')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+        $objPHPExcel->getActiveSheet()->getStyle('A17:H17')->getFill()->getStartColor()->setARGB('99FFFF');
 
         $new=$this->Newdown($year,$month,$index);
-        $objPHPExcel->getActiveSheet()->setCellValue('A18','类别 : 新生意额') ;
-        $objPHPExcel->getActiveSheet()->mergeCells('A18:H18');
-        $objPHPExcel->getActiveSheet()->getStyle('A18')->getFont()->setBold(true);
-        $objPHPExcel->getActiveSheet()->getStyle('A18')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-        $objPHPExcel->getActiveSheet()->getStyle('A18')->getFill()->getStartColor()->setARGB('99FFFF');
+        $objPHPExcel->getActiveSheet()->setCellValue('A19','类别 : 新生意额') ;
+        $objPHPExcel->getActiveSheet()->mergeCells('A19:H19');
+        $objPHPExcel->getActiveSheet()->getStyle('A19')->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('A19')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+        $objPHPExcel->getActiveSheet()->getStyle('A19')->getFill()->getStartColor()->setARGB('99FFFF');
 
-        $i=19;
+        $i=20;
         for($o=0;$o<count($new);$o++){
             $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$new[$o]['first_dt']) ;
             $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$new[$o]['sign_dt']) ;
@@ -1243,6 +1293,33 @@ class ReportXS02List extends CListPageModel
             $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,$end[$o]['service']) ;
             $objPHPExcel->getActiveSheet()->setCellValue('G'.$i,$end[$o]['amt_paid']) ;
             $objPHPExcel->getActiveSheet()->setCellValue('H'.$i,$end[$o]['amt_install']) ;
+            //   $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,$this[$o]['status_copy']) ;
+            $i=$i+1;
+        }
+        $i=$i+1;
+        $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'出单日期') ;
+        $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,'客户名称') ;
+        $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,'产品名称') ;
+        $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,'数量') ;
+        $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,'单价') ;
+        $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,'总金额') ;
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':H'.$i)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':H'.$i)->getFill()->getStartColor()->setARGB('99FFFF');
+        $i=$i+1;
+        $end=$this->productdown($year,$month,$index);
+        $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,'类别 : 产品生意额') ;
+        $objPHPExcel->getActiveSheet()->mergeCells('A'.$i.':H'.$i);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$i)->getFill()->getStartColor()->setARGB('99FFFF');
+        $i=$i+1;
+        for($o=0;$o<count($end);$o++){
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$i,$end[$o]['log_dt']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$i,$end[$o]['company_name']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$i,$end[$o]['description']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$i,$end[$o]['qty']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$i,$end[$o]['money']) ;
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$i,$end[$o]['moneys']) ;;
             //   $objPHPExcel->getActiveSheet()->setCellValue('I'.$i,$this[$o]['status_copy']) ;
             $i=$i+1;
         }
@@ -1741,5 +1818,38 @@ class ReportXS02List extends CListPageModel
         return $renewalend;
     }
 
+    public function productdown($year,$month,$index){
+        $suffix = Yii::app()->params['envSuffix'];
+        $city=Yii::app()->user->city();
+        $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
+        $name = Yii::app()->db->createCommand($sqlm)->queryRow();
+        $name['name']=str_replace(' ',' (',$name['name']);
+        $name['name'].=")";
+        $start=$year."-".$month."-01";
+        $end=$year."-".$month."-31";
+        $sql = "select b.log_dt,b.company_name,a.money,a.qty,c.description,c.sales_products,a.id,d.name as city_name ,(a.money*a.qty) as moneys from swoper$suffix.swo_logistic_dtl a
+                left outer join swoper$suffix.swo_logistic b on b.id=a.log_id		
+               	left outer join swoper$suffix.swo_task c on a.task=c.	id
+             	left outer join security$suffix.sec_city d on a.city=d.code 			  
+                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$name['name']."' and b.city ='$city' and a.money>0";
+        $rows = Yii::app()->db->createCommand($sql)->queryAll();
+        $product = array();
+        if (count($rows) > 0) {
+            foreach ($rows as $record) {
+                $product[] = array(
+                    'id'=>$record['id'],
+                    'city_name'=>$record['city_name'],               //地区
+                    'log_dt'=>date_format(date_create($record['log_dt']),"Y/m/d"),   //出单日期
+                    'company_name'=>$record['company_name'],              //客户编号及名称
+                    'description'=>$record['description'],                 //产品名称
+                    'qty'=>$record['qty'],                          //数量
+                    'money'=>$record['money'],                      //金额
+                    'moneys'=>$record['moneys'],                    //总金额
+
+                );
+            }
+        }
+        return $product;
+    }
 
 }

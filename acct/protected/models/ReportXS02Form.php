@@ -3,19 +3,17 @@
 
 class ReportXS02Form extends CReportForm
 {
-	public $staffs;
+    public $staffs;
     public $status_dt;
     public $company_name;
-    public $group_type;
     public $status;
     public $cust_type;
     public $service;
     public $product_id;
     public $amt_paid;
     public $paid_type;
-    public $point;
     public $amt_install;
-	public $staffs_desc;
+    public $staffs_desc;
     public $first_dt;
     public $sign_dt;
     public $all_number;
@@ -28,6 +26,7 @@ class ReportXS02Form extends CReportForm
     public $all_amount;
     public $saleyear;
     public $othersalesman;
+    public $salesman;
     public $performance_amount;
     public $new_money;
     public $edit_money;
@@ -36,13 +35,17 @@ class ReportXS02Form extends CReportForm
     public $performanceedit_amount;
     public $performanceend_amount;
     public $performanceedit_money;
+    public $group_type;
+    public $ctrt_period;
+    public $point;
     public $renewal_amount;
     public $renewalend_amount;
     public $renewal_money;
+    public $product_amount;
 
-	protected function labelsEx() {
-		return array(
-		    'staffs'=>Yii::t('report','Staffs'),
+    protected function labelsEx() {
+        return array(
+            'staffs'=>Yii::t('report','Staffs'),
             'city_name'=>Yii::t('app','city'),
             'first_dt'=>Yii::t('app','first_dt'),
             'sign_dt'=>Yii::t('app','sign_dt'),
@@ -55,29 +58,31 @@ class ReportXS02Form extends CReportForm
             'all_number'=>Yii::t('app','Number'),
             'surplus'=>Yii::t('app','Surplus'),
             'othersalesman'=>Yii::t('app','Othersalesman'),
-			);
-	}
+            'salesman'=>Yii::t('app','Salesman'),
+            'ctrt_period'=>Yii::t('app','Ctrt_period'),
+        );
+    }
 
-	protected function rulesEx() {
+    protected function rulesEx() {
         return array(
             array('staffs, staffs_desc','safe'),
         );
-	}
+    }
 
-	protected function queueItemEx() {
-		return array(
-				'STAFFS'=>$this->staffs,
-				'STAFFSDESC'=>$this->staffs_desc,
-			);
-	}
+    protected function queueItemEx() {
+        return array(
+            'STAFFS'=>$this->staffs,
+            'STAFFSDESC'=>$this->staffs_desc,
+        );
+    }
 
-	public function init() {
-		$this->id = 'RptFive';
-		$this->name = Yii::t('app','Five Steps');
-		$this->format = 'EXCEL';
-		$this->city =Yii::app()->user->city();
-		$this->fields = 'start_dt,end_dt,staffs,staffs_desc';
-		$this->start_dt = date("Y/m/d");
+    public function init() {
+        $this->id = 'RptFive';
+        $this->name = Yii::t('app','Five Steps');
+        $this->format = 'EXCEL';
+        $this->city =Yii::app()->user->city();
+        $this->fields = 'start_dt,end_dt,staffs,staffs_desc';
+        $this->start_dt = date("Y/m/d");
         $this->end_dt = date("Y/m/d");
         $this->first_dt = date("Y/m/d");
         $this->sign_dt = date("Y/m/d");
@@ -85,8 +90,8 @@ class ReportXS02Form extends CReportForm
         $this->date="";
         $this->month=date("m");
         $this->year=date("Y");
-		$this->staffs_desc = Yii::t('misc','All');
-	}
+        $this->staffs_desc = Yii::t('misc','All');
+    }
 
 //    public function retrieveDatas($model){
 //        $start_date = '2017-01-01'; // 自动为00:00:00 时分秒
@@ -135,6 +140,7 @@ class ReportXS02Form extends CReportForm
             $date=$records['year_no']."/".$records['month_no'].'/'."01";
             $date1='2020/07/01';
             $employee=$this->getEmployee($records['employee_code'],$records['year_no'],$records['month_no']);
+            // print_r($a);print_r($employee);
             if($records['city']=='CD'||$records['city']=='NJ'||$records['city']=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1){
                 $month=$records['month_no'];
                 $year=$records['year_no'];
@@ -151,7 +157,7 @@ class ReportXS02Form extends CReportForm
             $sql1="select a.*, b.new_calc ,e.user_id from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
               left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
-                left outer join hr$suffix.hr_binding e on  d.id=e.employee_id           
+              left outer join hr$suffix.hr_binding e on  d.id=e.employee_id            
               where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name' and d.city='".$records['city']."'
 ";
             $arr = Yii::app()->db->createCommand($sql1)->queryRow();
@@ -168,6 +174,12 @@ class ReportXS02Form extends CReportForm
             }
             $sql_point="select * from sales$suffix.sal_integral where year='$years' and month='$months' and username='".$arr['user_id']."' and city='".$records['city']."'";
             $point = Yii::app()->db->createCommand($sql_point)->queryRow();
+            if(empty($point)){
+                $point['point']=0;
+                $point['id']=0;
+            }
+            $sql_points="update sales$suffix.sal_integral set hdr_id='$index' where id='".$point['id']."'";
+            $record = Yii::app()->db->createCommand($sql_points)->execute();
             $this->city=$records['city_name'];
             $this->employee_name=$records['employee_name'];
             $this->saleyear=$records['year_no']."/".$records['month_no'];
@@ -179,7 +191,7 @@ class ReportXS02Form extends CReportForm
             $this->new_amount=$records['new_amount'];
             $this->edit_amount=$records['edit_amount'];
             $this->end_amount=$records['end_amount'];
-            $num=$records['new_amount']+$records['edit_amount']+$records['end_amount']+$records['performance_amount']+$records['performanceedit_amount']+$records['performanceend_amount']+$records['renewal_amount']+$records['renewalend_amount'];
+            $num=$records['new_amount']+$records['edit_amount']+$records['end_amount']+$records['performance_amount']+$records['performanceedit_amount']+$records['performanceend_amount']+$records['renewal_amount']+$records['renewalend_amount']+$records['product_amount'];
             $this->all_amount=number_format($num,2);
             $this->performance_amount=$records['performance_amount'];
             $this->year=$records['year_no'];
@@ -187,9 +199,6 @@ class ReportXS02Form extends CReportForm
             $this->new_money=$records['new_money'];
             $this->edit_money=$records['edit_money'];
             $this->out_money=$records['out_money'];
-            if(empty($point)){
-                $point['point']=0;
-            }
             $point=$point['point']*100;
             $this->point=$point."%";
             $this->performanceedit_amount=$records['performanceedit_amount'];
@@ -198,6 +207,7 @@ class ReportXS02Form extends CReportForm
             $this->renewal_amount=$records['renewal_amount'];
             $this->renewalend_amount=$records['renewalend_amount'];
             $this->renewal_money=$records['renewal_money'];
+            $this->product_amount=$records['product_amount'];
             $this->group_type=$this->getGroupType($records['group_type']);
             if($records['performance']==1){
                 $a='是';
@@ -213,15 +223,16 @@ class ReportXS02Form extends CReportForm
     }
 
     public function saveData($add,$index){
-	    $city=Yii::app()->user->city();
+        $city=Yii::app()->user->city();
         $add['amt_paid']=$add['amt_paid']==""?0:$add['amt_paid'];
         $add['amt_install']=$add['amt_install']==""?0:$add['amt_install'];
         $add['all_number']=$add['all_number']==""?0:$add['all_number'];
         $add['surplus']=$add['surplus']==""?0:$add['surplus'];
+        $add['ctrt_period']=$add['ctrt_period']==""?12:$add['ctrt_period'];
         $sql = "insert into acc_service_comm_copy(
-					hdr_id, first_dt, sign_dt, cust_type, service, paid_type,amt_paid,amt_install,company_name,city,all_number,surplus,othersalesman
+					hdr_id, first_dt, sign_dt, cust_type, service, paid_type,amt_paid,amt_install,company_name,city,all_number,surplus,othersalesman,ctrt_period,salesman
 				) values (
-					'".$index."','".$add['first_dt']."','".$add['sign_dt']."','".$add['cust_type']."','".$add['service']."','".$add['paid_type']."','".$add['amt_paid']."','".$add['amt_install']."','".$add['company_name']."','".$city."','".$add['all_number']."','".$add['surplus']."','".$add['othersalesman']."'
+					'".$index."','".$add['first_dt']."','".$add['sign_dt']."','".$add['cust_type']."','".$add['service']."','".$add['paid_type']."','".$add['amt_paid']."','".$add['amt_install']."','".$add['company_name']."','".$city."','".$add['all_number']."','".$add['surplus']."','".$add['othersalesman']."','".$add['ctrt_period']."','".$add['salesman']."'
 				)";
         $record = Yii::app()->db->createCommand($sql)->execute();
     }
