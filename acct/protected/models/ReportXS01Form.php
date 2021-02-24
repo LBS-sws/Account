@@ -267,7 +267,7 @@ class ReportXS01Form extends CReportForm
             $timestrap=strtotime($record['visit_dt']);
             $years=date('Y',$timestrap);
             $months=date('m',$timestrap);
-            if($years==$year&&$months==$month){
+            if($years==$year&&$months==$month&&date('d',$timestrap)>1){
                 $a=1;
             }else{
                 $a=2;
