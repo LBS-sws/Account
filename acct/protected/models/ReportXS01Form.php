@@ -141,7 +141,7 @@ class ReportXS01Form extends CReportForm
             $date1='2020/07/01';
             $employee=$this->getEmployee($records['employee_code'],$records['year_no'],$records['month_no']);
            // print_r($a);print_r($employee);
-            if($records['city']=='CD'||$records['city']=='NJ'||$records['city']=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1){
+            if($records['city']=='CD'||$records['city']=='NJ'||$records['city']=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||($records['city']=='FS'&&strtotime($date)<strtotime('2021/02/01'))){
                 $month=$records['month_no'];
                 $year=$records['year_no'];
             }else{
