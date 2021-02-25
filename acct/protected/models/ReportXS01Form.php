@@ -87,7 +87,6 @@ class ReportXS01Form extends CReportForm
         $this->first_dt = date("Y/m/d");
         $this->sign_dt = date("Y/m/d");
         $this->staffs = '';
-        $this->date="";
         $this->month=date("m");
         $this->year=date("Y");
         $this->staffs_desc = Yii::t('misc','All');

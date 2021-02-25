@@ -27,6 +27,7 @@ class ReportXS02List extends CListPageModel
             'log_dt'=>Yii::t('app','Log Dt'),
             'description'=>Yii::t('app','Description'),
             'qty'=>Yii::t('app','Qty'),
+
             'money'=>Yii::t('app','Qty Money'),
             'moneys'=>Yii::t('app','Money'),
 		);

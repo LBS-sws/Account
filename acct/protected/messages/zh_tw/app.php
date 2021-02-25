@@ -35,6 +35,7 @@ return array(
 'Spanning Sales End Commission'=>'跨區終止生意額計算',
 'Sales Renewal Commission'=>'續約生意額計算',
 'Sales RenewalEnd Commission'=>'續約終止生意額計算',
+'Sales Product Commission'=>'產品生意額計算',
 
 'Sales New Query'=>'銷售新生意額查詢',
 'Sales Edit Query'=>'銷售更改生意額查詢',
@@ -42,6 +43,7 @@ return array(
 'Spanning Sales New Query'=>'跨區新生意額查詢',
 'Spanning Sales Edit Query'=>'跨區更改生意額查詢',
 'Spanning Sales End Query'=>'跨區終止生意額查詢',
+'Sales Product Query'=>'產品生意額查詢',
 
 'Import'=>'數據導入',
 'Import Manager'=>'數據導入管理員',

@@ -35,6 +35,7 @@ return array(
     'Spanning Sales End Commission'=>'跨区终止生意额计算',
     'Sales Renewal Commission'=>'续约生意额计算',
     'Sales RenewalEnd Commission'=>'续约终止生意额计算',
+    'Sales Product Commission'=>'产品生意额计算',
 
     'Sales New Query'=>'销售新生意额查询',
     'Sales Edit Query'=>'销售更改生意额查询',
@@ -42,6 +43,7 @@ return array(
     'Spanning Sales New Query'=>'跨区新生意额查询',
     'Spanning Sales Edit Query'=>'跨区更改生意额查询',
     'Spanning Sales End Query'=>'跨区终止生意额查询',
+	'Sales Product Query'=>'产品生意额查询',
 
 	'Import'=>'数据导入',
 	'Import Manager'=>'数据导入管理员',
