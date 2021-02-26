@@ -158,9 +158,11 @@ class SalesTableForm extends CFormModel
         $start=$salerow['year_no'].'-'. $salerow['month_no'].'-01';
         $end=$salerow['year_no'].'-'. $salerow['month_no'].'-31';
         $a1=$salerow['employee_name']." (".$salerow['employee_code'].")";
-        $sql1 = "select * from swoper$suffix.swo_service where  ((commission!=' ' and commission!=0) or (other_commission!=0 and other_commission!=' ')) and ((status_dt<='$end' and  status_dt>='$start') or (first_dt<='$end' and  first_dt>='$start')) and (salesman='$a1' or  othersalesman='$a1')
+        $sql1 = "select paid_type,amt_paid,ctrt_period,b4_amt_paid,cust_type_name,status_dt,company_name,status,commission,other_commission,amt_install,othersalesman,cust_type,service
+                  from swoper$suffix.swo_service where  ((commission!=' ' and commission!=0) or (other_commission!=0 and other_commission!=' ')) and ((status_dt<='$end' and  status_dt>='$start') or (first_dt<='$end' and  first_dt>='$start')) and (salesman='$a1' or  othersalesman='$a1')
                   union
-                  select * from acc_service_comm_copy where  ((commission!=' ' and commission!=0) or (other_commission!=0 and other_commission!=' ')) and ((status_dt<='$end' and  status_dt>='$start') or (first_dt<='$end' and  first_dt>='$start')) and (salesman='$a1' or  othersalesman='$a1')
+                  select paid_type,amt_paid,ctrt_period,b4_amt_paid,cust_type_name,status_dt,company_name,status,commission,other_commission,amt_install,othersalesman,cust_type,service 
+                  from acc_service_comm_copy where  ((commission!=' ' and commission!=0) or (other_commission!=0 and other_commission!=' ')) and ((status_dt<='$end' and  status_dt>='$start') or (first_dt<='$end' and  first_dt>='$start')) and (salesman='$a1' or  othersalesman='$a1')
 ";
         $rows = Yii::app()->db->createCommand($sql1)->queryAll();
         $sql1 = "select * from acc_product where  service_hdr_id='$index'";
