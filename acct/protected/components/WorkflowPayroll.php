@@ -208,6 +208,9 @@ class WorkflowPayroll extends WorkflowDMS {
 		$month = $this->getRequestData('MONTH');
 		$cityname = $this->getRequestData('CITYNAME');
 
+		$this->approvers = $this->getApprovers();
+		$this->approver_list = $this->getApproverList();
+
 		$name = 'mail'.(empty($state) ? 'PendingState' : $state);
 		if (method_exists($this, $name)) {
 			$record = call_user_func_array(array($this, $name), array($docId, $year, $month, $cityname));
@@ -287,6 +290,20 @@ class WorkflowPayroll extends WorkflowDMS {
 		$username[] = $user;
 		$to_addr[] = $this->getEmail($user);
 
+		foreach ($this->approver_list[2] as $user) {
+			if (!in_array($user, $username)) {
+				$username[] = $user;
+				$to_addr[] = $this->getEmail($user);
+			}
+		}
+
+		foreach ($this->approver_list[1] as $user) {
+			if (!in_array($user, $username)) {
+				$username[] = $user;
+				$to_addr[] = $this->getEmail($user);
+			}
+		}
+
 		$msg1 = Yii::t('workflow','Payroll File Approved');
 		$msg2 = $this->requestDetail();
 		$reason = $this->getCurrentStateRemarks(Yii::app()->user->id);
@@ -347,6 +364,13 @@ class WorkflowPayroll extends WorkflowDMS {
 		$username[] = $user;
 		$to_addr[] = $this->getEmail($user);
 
+		foreach ($this->approver_list[1] as $user) {
+			if (!in_array($user, $username)) {
+				$username[] = $user;
+				$to_addr[] = $this->getEmail($user);
+			}
+		}
+
 		$msg1 = Yii::t('workflow','Payroll File Approved');
 		$msg2 = $this->requestDetail();
 		$reason = $this->getCurrentStateRemarks(Yii::app()->user->id);
@@ -375,6 +399,20 @@ class WorkflowPayroll extends WorkflowDMS {
 		$user = $this->getRequestData('REQ_USER');
 		$username[] = $user;
 		$to_addr[] = $this->getEmail($user);
+
+		foreach ($this->approver_list[2] as $user) {
+			if (!in_array($user, $username)) {
+				$username[] = $user;
+				$to_addr[] = $this->getEmail($user);
+			}
+		}
+
+		foreach ($this->approver_list[1] as $user) {
+			if (!in_array($user, $username)) {
+				$username[] = $user;
+				$to_addr[] = $this->getEmail($user);
+			}
+		}
 
 		$msg1 = Yii::t('workflow','Payroll File Denied');
 		$msg2 = $this->requestDetail();
@@ -433,6 +471,13 @@ class WorkflowPayroll extends WorkflowDMS {
 		$user = $this->getRequestData('REQ_USER');
 		$username[] = $user;
 		$to_addr[] = $this->getEmail($user);
+
+		foreach ($this->approver_list[1] as $user) {
+			if (!in_array($user, $username)) {
+				$username[] = $user;
+				$to_addr[] = $this->getEmail($user);
+			}
+		}
 
 		$msg1 = Yii::t('workflow','Payroll File Denied');
 		$msg2 = $this->requestDetail();
