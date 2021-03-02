@@ -40,6 +40,8 @@ return array(
 	'Payroll file has been approved by Manager'=>'工资表已經总经理审核',
 	'Payroll file has been denied by Director'=>'工资表已被总监拒绝',
 	'Payroll file has been denied by Manager'=>'工资表已被总经理拒绝',
+	'Payroll file has been denied by A.Director'=>'工资表已被副总监拒绝',
+	'Payroll file has been approved by A.Director'=>'工资表已經副总监审核',
 	'Year/Month'=>'年/月',
 	
 );
