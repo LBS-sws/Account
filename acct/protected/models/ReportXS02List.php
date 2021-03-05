@@ -253,13 +253,13 @@ class ReportXS02List extends CListPageModel
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end' and surplus!=0 and surplus_edit0!=0 and surplus_edit1!=0 and surplus_edit2!=0 and surplus_edit3!=0 
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end' and (surplus!=0 or surplus_edit0!=0 or surplus_edit1!=0 or surplus_edit2!=0 or surplus_edit3!=0) 
 			";
         $sql2 = "select count(a.id)
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end' and surplus!=0 and surplus_edit0!=0 and surplus_edit1!=0 and surplus_edit2!=0 and surplus_edit3!=0 
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end' and (surplus!=0 or surplus_edit0!=0 or surplus_edit1!=0 or surplus_edit2!=0 or surplus_edit3!=0) 
 			";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -953,7 +953,7 @@ class ReportXS02List extends CListPageModel
 				from swoper$suffix.swo_service a 
 				inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city in ($city)  and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'  and  a.salesman ='".$name['name']."' and surplus!=0 and surplus_edit0!=0 and surplus_edit1!=0 and surplus_edit2!=0 and surplus_edit3!=0 
+				where a.city in ($city)  and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'  and  a.salesman ='".$name['name']."' and (surplus!=0 or surplus_edit0!=0 or surplus_edit1!=0 or surplus_edit2!=0 or surplus_edit3!=0) 
 ";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -1468,7 +1468,7 @@ class ReportXS02List extends CListPageModel
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end' and surplus!=0 and surplus_edit0!=0 and surplus_edit1!=0 and surplus_edit2!=0 and surplus_edit3!=0 
+				where a.city in ($city)  and  a.salesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end' and (surplus!=0 or surplus_edit0!=0 or surplus_edit1!=0 or surplus_edit2!=0 or surplus_edit3!=0) 
 			";
         $records = Yii::app()->db->createCommand($sql)->queryAll();
         if (count($records) > 0) {
@@ -1625,7 +1625,7 @@ class ReportXS02List extends CListPageModel
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
 				inner join  acc_service_comm_hdr b on b.id=$index
-				where a.city in ($city)  and  a.othersalesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end' and surplus!=0 and surplus_edit0!=0 and surplus_edit1!=0 and surplus_edit2!=0 and surplus_edit3!=0 
+				where a.city in ($city)  and  a.othersalesman ='".$name['name']."' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end' and (surplus!=0 or surplus_edit0!=0 or surplus_edit1!=0 or surplus_edit2!=0 or surplus_edit3!=0) 
 			";
         $records = Yii::app()->db->createCommand($sql)->queryAll();
         if (count($records) > 0) {
@@ -1777,7 +1777,7 @@ class ReportXS02List extends CListPageModel
 				from swoper$suffix.swo_service a 
 				inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city in ($city)   and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'  and  a.salesman ='".$name['name']."' and surplus!=0 and surplus_edit0!=0 and surplus_edit1!=0 and surplus_edit2!=0 and surplus_edit3!=0 
+				where a.city in ($city)   and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'  and  a.salesman ='".$name['name']."' and (surplus!=0 or surplus_edit0!=0 or surplus_edit1!=0 or surplus_edit2!=0 or surplus_edit3!=0) 
 ";
         $records = Yii::app()->db->createCommand($sql1)->queryAll();
         foreach ($records as $k=>&$record){

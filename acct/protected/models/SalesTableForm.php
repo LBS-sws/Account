@@ -225,390 +225,396 @@ class SalesTableForm extends CFormModel
         if (count($rows) > 0) {
             $this->group = array();
             foreach ($rows as $row) {
-                $temp = array();
-                if($row['paid_type']=='M'){
-                    $amt_paid_a=$row['amt_paid'];//月金额
-                    $amt_paid_year_a=$amt_paid_a*$row['ctrt_period'];
-                }elseif ($row['paid_type']=='Y'){
-                    $amt_paid_a=$row['amt_paid'];//月金额
-                    $amt_paid_year_a= $amt_paid_a;
+                if($a1==$row['othersalesman']&&$salerow['performance']==2){
+
                 }else{
-                    $amt_paid_a=$row['amt_paid'];//月金额
-                    $amt_paid_year_a=  $amt_paid_a;
-                }
-                if($row['status']=='A'){
+                    $temp = array();
                     if($row['paid_type']=='M'){
-                        $amt_paid_a=$row['amt_paid']-$row['b4_amt_paid'];//月金额
+                        $amt_paid_a=$row['amt_paid'];//月金额
                         $amt_paid_year_a=$amt_paid_a*$row['ctrt_period'];
                     }elseif ($row['paid_type']=='Y'){
-                        $amt_paid_a=$row['amt_paid']-$row['b4_amt_paid'];//月金额
+                        $amt_paid_a=$row['amt_paid'];//月金额
                         $amt_paid_year_a= $amt_paid_a;
                     }else{
                         $amt_paid_a=$row['amt_paid'];//月金额
                         $amt_paid_year_a=  $amt_paid_a;
                     }
-                }
-
-                if($row['cust_type_name']==59||$row['cust_type_name']==55||$row['cust_type_name']==57||$row['cust_type_name']==58||$row['cust_type']==6){
-                    $temp['status_dt'] = General::toDate($row['status_dt']);//日期
-                    $temp['company_name'] = $row['company_name'];//客户名称
-                    $temp['ia'] = '';//IA费
-                    $temp['ia_c'] = '';//续约IA费
-                    $temp['ia_c_end'] = '';//终止续约IA费
-                    $temp['ia_end'] = '';//终止IA费
-                    $temp['ia_service'] = '';//IA次数月
-                    $temp['ib'] = '';//IB费
-                    $temp['ib_c'] = '';//续约IB费
-                    $temp['ib_c_end'] = '';//终止续约IB费
-                    $temp['ib_end'] = '';//终止IB费
-                    $temp['ib_service'] = '';//IB次数月
-                    $temp['ic'] = '';//IC费
-                    $temp['ic_c'] = '';//续约IC费
-                    $temp['ic_c_end'] = '';//终止续约IC费
-                    $temp['ic_end'] = '';//终止IC费
-//                    $temp['amt_paid'] = $row['amt_paid'];//焗雾白蚁甲醛雾化
-                    if($row['status']=='T'){
-                        $temp['amt_paid'] = -$amt_paid_a;//焗雾白蚁甲醛雾化
-                    }elseif($row['status']=='N'){
-                        $temp['amt_paid'] = $amt_paid_a;//焗雾白蚁甲醛雾化
-                    }else{
-                        $temp['amt_paid'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_a:'';//焗雾白蚁甲醛雾化
+                    if($row['status']=='A'){
+                        if($row['paid_type']=='M'){
+                            $amt_paid_a=$row['amt_paid']-$row['b4_amt_paid'];//月金额
+                            $amt_paid_year_a=$amt_paid_a*$row['ctrt_period'];
+                        }elseif ($row['paid_type']=='Y'){
+                            $amt_paid_a=$row['amt_paid']-$row['b4_amt_paid'];//月金额
+                            $amt_paid_year_a= $amt_paid_a;
+                        }else{
+                            $amt_paid_a=$row['amt_paid'];//月金额
+                            $amt_paid_year_a=  $amt_paid_a;
+                        }
                     }
-                    if(!empty($row['othersalesman'])) {
-                        if ($a == $row['othersalesman']) {
-                            $temp['amt_install'] ='';//I装机费
+
+                    if($row['cust_type_name']==59||$row['cust_type_name']==55||$row['cust_type_name']==57||$row['cust_type_name']==58||$row['cust_type']==6){
+                        $temp['status_dt'] = General::toDate($row['status_dt']);//日期
+                        $temp['company_name'] = $row['company_name'];//客户名称
+                        $temp['ia'] = '';//IA费
+                        $temp['ia_c'] = '';//续约IA费
+                        $temp['ia_c_end'] = '';//终止续约IA费
+                        $temp['ia_end'] = '';//终止IA费
+                        $temp['ia_service'] = '';//IA次数月
+                        $temp['ib'] = '';//IB费
+                        $temp['ib_c'] = '';//续约IB费
+                        $temp['ib_c_end'] = '';//终止续约IB费
+                        $temp['ib_end'] = '';//终止IB费
+                        $temp['ib_service'] = '';//IB次数月
+                        $temp['ic'] = '';//IC费
+                        $temp['ic_c'] = '';//续约IC费
+                        $temp['ic_c_end'] = '';//终止续约IC费
+                        $temp['ic_end'] = '';//终止IC费
+//                    $temp['amt_paid'] = $row['amt_paid'];//焗雾白蚁甲醛雾化
+                        if($row['status']=='T'){
+                            $temp['amt_paid'] = -$amt_paid_a;//焗雾白蚁甲醛雾化
+                        }elseif($row['status']=='N'){
+                            $temp['amt_paid'] = $amt_paid_a;//焗雾白蚁甲醛雾化
+                        }else{
+                            $temp['amt_paid'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_a:'';//焗雾白蚁甲醛雾化
+                        }
+                        if(!empty($row['othersalesman'])) {
+                            if ($a == $row['othersalesman']) {
+                                $temp['amt_install'] ='';//I装机费
+                            }else{
+                                $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
+                            }
                         }else{
                             $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
                         }
-                    }else{
-                        $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
-                    }
-                    $temp['paper'] = '';//纸
-                    $temp['disinfectant'] = '';//消毒液
-                    $temp['purification'] = '';//空气净化
-                    $temp['chemical'] = '';//化学剂
-                    $temp['aromatherapy'] = '';//香薰
-                    $temp['pestcontrol'] = '';//虫控
-                    $temp['other'] = '';//其他
-                    $temp['othersalesman'] = $row['othersalesman'];//其他
-                    $temp['paper_money'] = '';//纸提成
-                    $temp['disinfectant_money'] = '';//消毒液提成
-                    $temp['purification_money'] = '';//空气净化提成
-                    $temp['chemical_money'] ='';//化学剂提成
-                    $temp['aromatherapy_money'] = '';//香薰提成
-                    $temp['pestcontrol_money'] = '';//虫控提成
-                    $temp['other_money'] = '';//其他提成
+                        $temp['paper'] = '';//纸
+                        $temp['disinfectant'] = '';//消毒液
+                        $temp['purification'] = '';//空气净化
+                        $temp['chemical'] = '';//化学剂
+                        $temp['aromatherapy'] = '';//香薰
+                        $temp['pestcontrol'] = '';//虫控
+                        $temp['other'] = '';//其他
+                        $temp['othersalesman'] = $row['othersalesman'];//其他
+                        $temp['paper_money'] = '';//纸提成
+                        $temp['disinfectant_money'] = '';//消毒液提成
+                        $temp['purification_money'] = '';//空气净化提成
+                        $temp['chemical_money'] ='';//化学剂提成
+                        $temp['aromatherapy_money'] = '';//香薰提成
+                        $temp['pestcontrol_money'] = '';//虫控提成
+                        $temp['other_money'] = '';//其他提成
 //                    $temp['commission'] = '';//提成金额
-                    //年金额
-                    $temp['y_ia'] = '';//IA费
-                    $temp['y_ia_c'] = '';//续约IA费
-                    $temp['y_ia_c_end'] = '';//终止续约IA费
-                    $temp['y_ia_end'] = '';//终止IA费
-                    $temp['y_ib'] = '';//IB费
-                    $temp['y_ib_c'] = '';//续约IB费
-                    $temp['y_ib_c_end'] = '';//终止续约IB费
-                    $temp['y_ib_end'] = '';//终止IB费
-                    $temp['y_ic'] = '';//IC费
-                    $temp['y_ic_c'] = '';//续约IC费
-                    $temp['y_ic_c_end'] = '';//终止续约IC费
-                    $temp['y_ic_end'] = '';//终止IC费
-                    $temp['y_amt_paid'] = $amt_paid_year_a;//焗雾白蚁甲醛雾化
-                    $temp['ia_money'] = '';//扣除IA提成
-                    $temp['ib_money'] = '';//扣除IB提成
-                    $temp['ic_money'] = '';//扣除IC提成
-                    $temp['new_ia_money'] = '';//新增IA提成
-                    $temp['new_ib_money'] = '';//新增IB提成
-                    $temp['new_ic_money'] = '';//新增IC提成
-                    if(!empty($row['othersalesman'])){
-                        if($a==$row['othersalesman']){
-                            $temp['new_amt_paid'] = $row['status']=='N'||($row['status']=='A'&&$row['other_commission']>0)?$row['other_commission']:'';//新增焗雾白蚁甲醛雾化
+                        //年金额
+                        $temp['y_ia'] = '';//IA费
+                        $temp['y_ia_c'] = '';//续约IA费
+                        $temp['y_ia_c_end'] = '';//终止续约IA费
+                        $temp['y_ia_end'] = '';//终止IA费
+                        $temp['y_ib'] = '';//IB费
+                        $temp['y_ib_c'] = '';//续约IB费
+                        $temp['y_ib_c_end'] = '';//终止续约IB费
+                        $temp['y_ib_end'] = '';//终止IB费
+                        $temp['y_ic'] = '';//IC费
+                        $temp['y_ic_c'] = '';//续约IC费
+                        $temp['y_ic_c_end'] = '';//终止续约IC费
+                        $temp['y_ic_end'] = '';//终止IC费
+                        $temp['y_amt_paid'] = $amt_paid_year_a;//焗雾白蚁甲醛雾化
+                        $temp['ia_money'] = '';//扣除IA提成
+                        $temp['ib_money'] = '';//扣除IB提成
+                        $temp['ic_money'] = '';//扣除IC提成
+                        $temp['new_ia_money'] = '';//新增IA提成
+                        $temp['new_ib_money'] = '';//新增IB提成
+                        $temp['new_ic_money'] = '';//新增IC提成
+                        if(!empty($row['othersalesman'])){
+                            if($a==$row['othersalesman']){
+                                $temp['new_amt_paid'] = $row['status']=='N'||($row['status']=='A'&&$row['other_commission']>0)?$row['other_commission']:'';//新增焗雾白蚁甲醛雾化
+                            }else{
+                                $temp['new_amt_paid'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增焗雾白蚁甲醛雾化
+                            }
                         }else{
                             $temp['new_amt_paid'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增焗雾白蚁甲醛雾化
                         }
-                    }else{
-                        $temp['new_amt_paid'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增焗雾白蚁甲醛雾化
-                    }
-                    if(!empty($row['othersalesman'])){
-                        if($a==$row['othersalesman']){
-                            $temp['end_amt_paid'] = $row['status']=='T'||($row['status']=='A'&&$row['other_commission']<0)?$row['other_commission']:'';//终止焗雾白蚁甲醛雾化
+                        if(!empty($row['othersalesman'])){
+                            if($a==$row['othersalesman']){
+                                $temp['end_amt_paid'] = $row['status']=='T'||($row['status']=='A'&&$row['other_commission']<0)?$row['other_commission']:'';//终止焗雾白蚁甲醛雾化
+                            }else{
+                                $temp['end_amt_paid'] = $row['status']=='T'||($row['status']=='A'&&$row['commission']<0)?$row['commission']:'';//终止焗雾白蚁甲醛雾化
+                            }
                         }else{
                             $temp['end_amt_paid'] = $row['status']=='T'||($row['status']=='A'&&$row['commission']<0)?$row['commission']:'';//终止焗雾白蚁甲醛雾化
                         }
                     }else{
-                        $temp['end_amt_paid'] = $row['status']=='T'||($row['status']=='A'&&$row['commission']<0)?$row['commission']:'';//终止焗雾白蚁甲醛雾化
-                    }
-                }else{
-                    if($row['cust_type']==1){
-                        $temp['status_dt'] = General::toDate($row['status_dt']);//日期
-                        $temp['company_name'] = $row['company_name'];//客户名称
-                        $temp['ia'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_a:'';//IA费
-                        $temp['ia_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_a:'';//续约IA费
-                        $temp['ia_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_a:'';//终止续约IA费
-                        if($row['status']=='T'){
-                            $temp['ia_end'] = -$amt_paid_a;//终止IA费
-                        }else{
-                            $temp['ia_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_a:'';//终止IA费
-                        }
-                        $temp['ia_service'] = $row['service'];//IA次数月
-                        $temp['ib'] = '';//IB费
-                        $temp['ib_c'] = '';//续约IB费
-                        $temp['ib_c_end'] = '';//终止续约IB费
-                        $temp['ib_end'] = '';//终止IB费
-                        $temp['ib_service'] = '';//IB次数月
-                        $temp['ic'] = '';//IC费
-                        $temp['ic_c'] = '';//续约IC费
-                        $temp['ic_c_end'] = '';//终止续约IC费
-                        $temp['ic_end'] = '';//终止IC费
-                        $temp['amt_paid'] = '';//焗雾白蚁甲醛雾化
-                        if(!empty($row['othersalesman'])) {
-                            if ($a == $row['othersalesman']) {
-                                $temp['amt_install'] ='';//I装机费
+                        if($row['cust_type']==1){
+                            $temp['status_dt'] = General::toDate($row['status_dt']);//日期
+                            $temp['company_name'] = $row['company_name'];//客户名称
+                            $temp['ia'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_a:'';//IA费
+                            $temp['ia_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_a:'';//续约IA费
+                            $temp['ia_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_a:'';//终止续约IA费
+                            if($row['status']=='T'){
+                                $temp['ia_end'] = -$amt_paid_a;//终止IA费
+                            }else{
+                                $temp['ia_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_a:'';//终止IA费
+                            }
+                            $temp['ia_service'] = $row['service'];//IA次数月
+                            $temp['ib'] = '';//IB费
+                            $temp['ib_c'] = '';//续约IB费
+                            $temp['ib_c_end'] = '';//终止续约IB费
+                            $temp['ib_end'] = '';//终止IB费
+                            $temp['ib_service'] = '';//IB次数月
+                            $temp['ic'] = '';//IC费
+                            $temp['ic_c'] = '';//续约IC费
+                            $temp['ic_c_end'] = '';//终止续约IC费
+                            $temp['ic_end'] = '';//终止IC费
+                            $temp['amt_paid'] = '';//焗雾白蚁甲醛雾化
+                            if(!empty($row['othersalesman'])) {
+                                if ($a == $row['othersalesman']) {
+                                    $temp['amt_install'] ='';//I装机费
+                                }else{
+                                    $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
+                                }
                             }else{
                                 $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
                             }
-                        }else{
-                            $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
-                        }
-                        $temp['paper'] = '';//纸
-                        $temp['disinfectant'] = '';//消毒液
-                        $temp['purification'] = '';//空气净化
-                        $temp['chemical'] = '';//化学剂
-                        $temp['aromatherapy'] = '';//香薰
-                        $temp['pestcontrol'] = '';//虫控
-                        $temp['other'] = '';//其他
-                        $temp['othersalesman'] = $row['othersalesman'];//其他
-                        $temp['paper_money'] = '';//纸提成
-                        $temp['disinfectant_money'] = '';//消毒液提成
-                        $temp['purification_money'] = '';//空气净化提成
-                        $temp['chemical_money'] ='';//化学剂提成
-                        $temp['aromatherapy_money'] = '';//香薰提成
-                        $temp['pestcontrol_money'] = '';//虫控提成
-                        $temp['other_money'] = '';//其他提成
-                     //   $temp['commission'] = $row['commission']<0?$row['commission']:$row['commission']*(empty($row['othersalesman'])?$row['royalty']:$row['royaltys']);//提成金额
-                        //年金额
-                        $temp['y_ia'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a:'';//IA费
-                        $temp['y_ia_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_year_a:'';//续约IA费
-                        $temp['y_ia_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IA费
-                        if($row['status']=='T'){
-                            $temp['y_ia_end'] = -$amt_paid_year_a;//终止IA费
-                        }else{
-                            $temp['y_ia_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_year_a:'';//终止IA费
-                        }
-                        $temp['y_ib'] = '';//IB费
-                        $temp['y_ib_c'] = '';//续约IB费
-                        $temp['y_ib_c_end'] = '';//终止续约IB费
-                        $temp['y_ib_end'] = '';//终止IB费
-                        $temp['y_ic'] = '';//IC费
-                        $temp['y_ic_c'] = '';//续约IC费
-                        $temp['y_ic_c_end'] = '';//终止续约IC费
-                        $temp['y_ic_end'] = '';//终止IC费
-                        $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
-                        if(!empty($row['othersalesman'])){
-                            if($a==$row['othersalesman']){
-                                $temp['ia_money'] = $row['other_commission']<0?$row['other_commission']:'';//扣除IA提成
+                            $temp['paper'] = '';//纸
+                            $temp['disinfectant'] = '';//消毒液
+                            $temp['purification'] = '';//空气净化
+                            $temp['chemical'] = '';//化学剂
+                            $temp['aromatherapy'] = '';//香薰
+                            $temp['pestcontrol'] = '';//虫控
+                            $temp['other'] = '';//其他
+                            $temp['othersalesman'] = $row['othersalesman'];//其他
+                            $temp['paper_money'] = '';//纸提成
+                            $temp['disinfectant_money'] = '';//消毒液提成
+                            $temp['purification_money'] = '';//空气净化提成
+                            $temp['chemical_money'] ='';//化学剂提成
+                            $temp['aromatherapy_money'] = '';//香薰提成
+                            $temp['pestcontrol_money'] = '';//虫控提成
+                            $temp['other_money'] = '';//其他提成
+                            //   $temp['commission'] = $row['commission']<0?$row['commission']:$row['commission']*(empty($row['othersalesman'])?$row['royalty']:$row['royaltys']);//提成金额
+                            //年金额
+                            $temp['y_ia'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a:'';//IA费
+                            $temp['y_ia_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_year_a:'';//续约IA费
+                            $temp['y_ia_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IA费
+                            if($row['status']=='T'){
+                                $temp['y_ia_end'] = -$amt_paid_year_a;//终止IA费
+                            }else{
+                                $temp['y_ia_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_year_a:'';//终止IA费
+                            }
+                            $temp['y_ib'] = '';//IB费
+                            $temp['y_ib_c'] = '';//续约IB费
+                            $temp['y_ib_c_end'] = '';//终止续约IB费
+                            $temp['y_ib_end'] = '';//终止IB费
+                            $temp['y_ic'] = '';//IC费
+                            $temp['y_ic_c'] = '';//续约IC费
+                            $temp['y_ic_c_end'] = '';//终止续约IC费
+                            $temp['y_ic_end'] = '';//终止IC费
+                            $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
+                            if(!empty($row['othersalesman'])){
+                                if($a==$row['othersalesman']){
+                                    $temp['ia_money'] = $row['other_commission']<0?$row['other_commission']:'';//扣除IA提成
+                                }else{
+                                    $temp['ia_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
+                                }
                             }else{
                                 $temp['ia_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
                             }
-                        }else{
-                            $temp['ia_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
-                        }
-                        $temp['ib_money'] = '';//扣除IB提成
-                        $temp['ic_money'] = '';//扣除IC提成
-                        if(!empty($row['othersalesman'])){
-                            if($a==$row['othersalesman']){
-                                $temp['new_ia_money'] = $row['status']=='N'||($row['status']=='A'&&$row['other_commission']>0)?$row['other_commission']:'';//新增IA提成
+                            $temp['ib_money'] = '';//扣除IB提成
+                            $temp['ic_money'] = '';//扣除IC提成
+                            if(!empty($row['othersalesman'])){
+                                if($a==$row['othersalesman']){
+                                    $temp['new_ia_money'] = $row['status']=='N'||($row['status']=='A'&&$row['other_commission']>0)?$row['other_commission']:'';//新增IA提成
+                                }else{
+                                    $temp['new_ia_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IA提成
+                                }
                             }else{
                                 $temp['new_ia_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IA提成
                             }
-                        }else{
-                            $temp['new_ia_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IA提成
-                        }
-                        $temp['new_ib_money'] = '';//新增IB提成
-                        $temp['new_ic_money'] = '';//新增IC提成
-                        $temp['new_amt_paid'] = '';//新增焗雾白蚁甲醛雾化
-                        $temp['end_amt_paid'] = '';//终止焗雾白蚁甲醛雾化
-                    }elseif($row['cust_type']==2){
-                        $temp['status_dt'] = General::toDate($row['status_dt']);//日期
-                        $temp['company_name'] = $row['company_name'];//客户名称
-                        $temp['ia'] = '';//IA费
-                        $temp['ia_c'] = '';//续约IA费
-                        $temp['ia_c_end'] = '';//终止续约IA费
-                        $temp['ia_end'] = '';//终止IA费
-                        $temp['ia_service'] = '';//IA次数月
-                        $temp['ib'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_a:'';//IB费
-                        $temp['ib_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_a:'';//续约IB费
-                        $temp['ib_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_a:'';//终止续约IB费
-                        if($row['status']=='T'){
-                            $temp['ib_end'] = -$amt_paid_a;//终止IA费
-                        }else{
-                            $temp['ib_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_a:'';//终止IB费
-                        }
-                        $temp['ib_service'] = $row['service'];//IB次数月
-                        $temp['ic'] = '';//IC费
-                        $temp['ic_c'] = '';//续约IC费
-                        $temp['ic_c_end'] = '';//终止续约IC费
-                        $temp['ic_end'] = '';//终止IC费
-                        $temp['amt_paid'] = '';//焗雾白蚁甲醛雾化
-                        if(!empty($row['othersalesman'])) {
-                            if ($a == $row['othersalesman']) {
-                                $temp['amt_install'] ='';//I装机费
+                            $temp['new_ib_money'] = '';//新增IB提成
+                            $temp['new_ic_money'] = '';//新增IC提成
+                            $temp['new_amt_paid'] = '';//新增焗雾白蚁甲醛雾化
+                            $temp['end_amt_paid'] = '';//终止焗雾白蚁甲醛雾化
+                        }elseif($row['cust_type']==2){
+                            $temp['status_dt'] = General::toDate($row['status_dt']);//日期
+                            $temp['company_name'] = $row['company_name'];//客户名称
+                            $temp['ia'] = '';//IA费
+                            $temp['ia_c'] = '';//续约IA费
+                            $temp['ia_c_end'] = '';//终止续约IA费
+                            $temp['ia_end'] = '';//终止IA费
+                            $temp['ia_service'] = '';//IA次数月
+                            $temp['ib'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_a:'';//IB费
+                            $temp['ib_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_a:'';//续约IB费
+                            $temp['ib_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_a:'';//终止续约IB费
+                            if($row['status']=='T'){
+                                $temp['ib_end'] = -$amt_paid_a;//终止IA费
+                            }else{
+                                $temp['ib_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_a:'';//终止IB费
+                            }
+                            $temp['ib_service'] = $row['service'];//IB次数月
+                            $temp['ic'] = '';//IC费
+                            $temp['ic_c'] = '';//续约IC费
+                            $temp['ic_c_end'] = '';//终止续约IC费
+                            $temp['ic_end'] = '';//终止IC费
+                            $temp['amt_paid'] = '';//焗雾白蚁甲醛雾化
+                            if(!empty($row['othersalesman'])) {
+                                if ($a == $row['othersalesman']) {
+                                    $temp['amt_install'] ='';//I装机费
+                                }else{
+                                    $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
+                                }
                             }else{
                                 $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
                             }
-                        }else{
-                            $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
-                        }
-                        $temp['paper'] = '';//纸
-                        $temp['disinfectant'] = '';//消毒液
-                        $temp['purification'] = '';//空气净化
-                        $temp['chemical'] = '';//化学剂
-                        $temp['aromatherapy'] = '';//香薰
-                        $temp['pestcontrol'] = '';//虫控
-                        $temp['other'] = '';//其他
-                        $temp['othersalesman'] = $row['othersalesman'];//其他
-                        $temp['paper_money'] = '';//纸提成
-                        $temp['disinfectant_money'] = '';//消毒液提成
-                        $temp['purification_money'] = '';//空气净化提成
-                        $temp['chemical_money'] ='';//化学剂提成
-                        $temp['aromatherapy_money'] = '';//香薰提成
-                        $temp['pestcontrol_money'] = '';//虫控提成
-                        $temp['other_money'] = '';//其他提成
-                      //  $temp['commission'] = $row['commission']<0?$row['commission']:$row['commission']*(empty($row['othersalesman'])?$row['royalty']:$row['royaltys']);//提成金额
-                        //年金额
-                        $temp['y_ia'] = '';//IA费
-                        $temp['y_ia_c'] = '';//续约IA费
-                        $temp['y_ia_c_end'] = '';//终止续约IA费
-                        $temp['y_ia_end'] = '';//终止IA费
-                        $temp['y_ib'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a:'';//IB费
-                        $temp['y_ib_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_year_a:'';//续约IB费
-                        $temp['y_ib_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IB费
-                        if($row['status']=='T'){
-                            $temp['y_ib_end'] = -$amt_paid_year_a;//终止IA费
-                        }else{
-                            $temp['y_ib_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_year_a:'';//终止IB费
-                        }
-                        $temp['y_ic'] = '';//IC费
-                        $temp['y_ic_c'] = '';//续约IC费
-                        $temp['y_ic_c_end'] = '';//终止续约IC费
-                        $temp['y_ic_end'] = '';//终止IC费
-                        $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
-                        $temp['ia_money'] = '';//扣除IA提成
-                        if(!empty($row['othersalesman'])){
-                            if($a==$row['othersalesman']){
-                                $temp['ib_money'] = $row['other_commission']<0?$row['other_commission']:'';//扣除IB提成
+                            $temp['paper'] = '';//纸
+                            $temp['disinfectant'] = '';//消毒液
+                            $temp['purification'] = '';//空气净化
+                            $temp['chemical'] = '';//化学剂
+                            $temp['aromatherapy'] = '';//香薰
+                            $temp['pestcontrol'] = '';//虫控
+                            $temp['other'] = '';//其他
+                            $temp['othersalesman'] = $row['othersalesman'];//其他
+                            $temp['paper_money'] = '';//纸提成
+                            $temp['disinfectant_money'] = '';//消毒液提成
+                            $temp['purification_money'] = '';//空气净化提成
+                            $temp['chemical_money'] ='';//化学剂提成
+                            $temp['aromatherapy_money'] = '';//香薰提成
+                            $temp['pestcontrol_money'] = '';//虫控提成
+                            $temp['other_money'] = '';//其他提成
+                            //  $temp['commission'] = $row['commission']<0?$row['commission']:$row['commission']*(empty($row['othersalesman'])?$row['royalty']:$row['royaltys']);//提成金额
+                            //年金额
+                            $temp['y_ia'] = '';//IA费
+                            $temp['y_ia_c'] = '';//续约IA费
+                            $temp['y_ia_c_end'] = '';//终止续约IA费
+                            $temp['y_ia_end'] = '';//终止IA费
+                            $temp['y_ib'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a:'';//IB费
+                            $temp['y_ib_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_year_a:'';//续约IB费
+                            $temp['y_ib_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IB费
+                            if($row['status']=='T'){
+                                $temp['y_ib_end'] = -$amt_paid_year_a;//终止IA费
+                            }else{
+                                $temp['y_ib_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_year_a:'';//终止IB费
+                            }
+                            $temp['y_ic'] = '';//IC费
+                            $temp['y_ic_c'] = '';//续约IC费
+                            $temp['y_ic_c_end'] = '';//终止续约IC费
+                            $temp['y_ic_end'] = '';//终止IC费
+                            $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
+                            $temp['ia_money'] = '';//扣除IA提成
+                            if(!empty($row['othersalesman'])){
+                                if($a==$row['othersalesman']){
+                                    $temp['ib_money'] = $row['other_commission']<0?$row['other_commission']:'';//扣除IB提成
+                                }else{
+                                    $temp['ib_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
+                                }
                             }else{
                                 $temp['ib_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
                             }
-                        }else{
-                            $temp['ib_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
-                        }
-                        $temp['ic_money'] = '';//扣除IC提成
-                        $temp['new_ia_money'] = '';//新增IA提成
-                        if(!empty($row['othersalesman'])){
-                            if($a==$row['othersalesman']){
-                                $temp['new_ib_money'] = $row['status']=='N'||($row['status']=='A'&&$row['other_commission']>0)?$row['other_commission']:'';//新增IB提成
+                            $temp['ic_money'] = '';//扣除IC提成
+                            $temp['new_ia_money'] = '';//新增IA提成
+                            if(!empty($row['othersalesman'])){
+                                if($a==$row['othersalesman']){
+                                    $temp['new_ib_money'] = $row['status']=='N'||($row['status']=='A'&&$row['other_commission']>0)?$row['other_commission']:'';//新增IB提成
+                                }else{
+                                    $temp['new_ib_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IB提成
+                                }
                             }else{
                                 $temp['new_ib_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IB提成
                             }
-                        }else{
-                            $temp['new_ib_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IB提成
-                        }
-                        $temp['new_ic_money'] = '';//新增IC提成
-                        $temp['new_amt_paid'] = '';//新增焗雾白蚁甲醛雾化
-                        $temp['end_amt_paid'] = '';//终止焗雾白蚁甲醛雾化
-                    }elseif($row['cust_type']==3||$row['cust_type']==5){
-                        $temp['status_dt'] = General::toDate($row['status_dt']);//日期
-                        $temp['company_name'] = $row['company_name'];//客户名称
-                        $temp['ia'] = '';//IA费
-                        $temp['ia_c'] = '';//续约IA费
-                        $temp['ia_c_end'] = '';//终止续约IA费
-                        $temp['ia_end'] = '';//终止IA费
-                        $temp['ia_service'] = '';//IA次数月
-                        $temp['ib'] = '';//IB费
-                        $temp['ib_c'] = '';//续约IB费
-                        $temp['ib_c_end'] = '';//终止续约IB费
-                        $temp['ib_end'] = '';//终止IB费
-                        $temp['ib_service'] = '';//IB次数月
-                        $temp['ic'] =($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_a: '';//IC费
-                        $temp['ic_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_a:'';//续约IC费
-                        $temp['ic_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_a:'';//终止续约IC费
-                        if($row['status']=='T'){
-                            $temp['ic_end'] = -$amt_paid_a;//终止IA费
-                        }else{
-                            $temp['ic_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_a:'';//终止IC费
-                        }
-                        $temp['amt_paid'] = '';//焗雾白蚁甲醛雾化
-                        if(!empty($row['othersalesman'])) {
-                            if ($a == $row['othersalesman']) {
-                                $temp['amt_install'] ='';//I装机费
+                            $temp['new_ic_money'] = '';//新增IC提成
+                            $temp['new_amt_paid'] = '';//新增焗雾白蚁甲醛雾化
+                            $temp['end_amt_paid'] = '';//终止焗雾白蚁甲醛雾化
+                        }elseif($row['cust_type']==3||$row['cust_type']==5){
+                            $temp['status_dt'] = General::toDate($row['status_dt']);//日期
+                            $temp['company_name'] = $row['company_name'];//客户名称
+                            $temp['ia'] = '';//IA费
+                            $temp['ia_c'] = '';//续约IA费
+                            $temp['ia_c_end'] = '';//终止续约IA费
+                            $temp['ia_end'] = '';//终止IA费
+                            $temp['ia_service'] = '';//IA次数月
+                            $temp['ib'] = '';//IB费
+                            $temp['ib_c'] = '';//续约IB费
+                            $temp['ib_c_end'] = '';//终止续约IB费
+                            $temp['ib_end'] = '';//终止IB费
+                            $temp['ib_service'] = '';//IB次数月
+                            $temp['ic'] =($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_a: '';//IC费
+                            $temp['ic_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_a:'';//续约IC费
+                            $temp['ic_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_a:'';//终止续约IC费
+                            if($row['status']=='T'){
+                                $temp['ic_end'] = -$amt_paid_a;//终止IA费
+                            }else{
+                                $temp['ic_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_a:'';//终止IC费
+                            }
+                            $temp['amt_paid'] = '';//焗雾白蚁甲醛雾化
+                            if(!empty($row['othersalesman'])) {
+                                if ($a == $row['othersalesman']) {
+                                    $temp['amt_install'] ='';//I装机费
+                                }else{
+                                    $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
+                                }
                             }else{
                                 $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
                             }
-                        }else{
-                            $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
-                        }
-                        $temp['paper'] = '';//纸
-                        $temp['disinfectant'] = '';//消毒液
-                        $temp['purification'] = '';//空气净化
-                        $temp['chemical'] = '';//化学剂
-                        $temp['aromatherapy'] = '';//香薰
-                        $temp['pestcontrol'] = '';//虫控
-                        $temp['other'] = '';//其他
-                        $temp['othersalesman'] = $row['othersalesman'];//其他
-                        $temp['paper_money'] = '';//纸提成
-                        $temp['disinfectant_money'] = '';//消毒液提成
-                        $temp['purification_money'] = '';//空气净化提成
-                        $temp['chemical_money'] ='';//化学剂提成
-                        $temp['aromatherapy_money'] = '';//香薰提成
-                        $temp['pestcontrol_money'] = '';//虫控提成
-                        $temp['other_money'] = '';//其他提成
-                        //$temp['commission'] = $row['commission']<0?$row['commission']:$row['commission']*(empty($row['othersalesman'])?$row['royalty']:$row['royaltys']);//提成金额
-                        //年金额
-                        $temp['y_ia'] = '';//IA费
-                        $temp['y_ia_c'] = '';//续约IA费
-                        $temp['y_ia_c_end'] = '';//终止续约IA费
-                        $temp['y_ia_end'] = '';//终止IA费
-                        $temp['y_ib'] = '';//IB费
-                        $temp['y_ib_c'] = '';//续约IB费
-                        $temp['y_ib_c_end'] = '';//终止续约IB费
-                        $temp['y_ib_end'] = '';//终止IB费
-                        $temp['y_ic'] =($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a: '';//IC费
-                        $temp['y_ic_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_year_a:'';//续约IC费
-                        $temp['y_ic_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IC费
-                        if($row['status']=='T'){
-                            $temp['y_ic_end'] = -$amt_paid_year_a;//终止IA费
-                        }else{
-                            $temp['y_ic_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_year_a:'';//终止IC费
-                        }
-                        $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
-                        $temp['ia_money'] = '';//扣除IA提成
-                        $temp['ib_money'] = '';//扣除IB提成
-                        if(!empty($row['othersalesman'])){
-                            if($a==$row['othersalesman']){
-                                $temp['ic_money'] = $row['other_commission']<0?$row['other_commission']:'';//扣除IC提成
+                            $temp['paper'] = '';//纸
+                            $temp['disinfectant'] = '';//消毒液
+                            $temp['purification'] = '';//空气净化
+                            $temp['chemical'] = '';//化学剂
+                            $temp['aromatherapy'] = '';//香薰
+                            $temp['pestcontrol'] = '';//虫控
+                            $temp['other'] = '';//其他
+                            $temp['othersalesman'] = $row['othersalesman'];//其他
+                            $temp['paper_money'] = '';//纸提成
+                            $temp['disinfectant_money'] = '';//消毒液提成
+                            $temp['purification_money'] = '';//空气净化提成
+                            $temp['chemical_money'] ='';//化学剂提成
+                            $temp['aromatherapy_money'] = '';//香薰提成
+                            $temp['pestcontrol_money'] = '';//虫控提成
+                            $temp['other_money'] = '';//其他提成
+                            //$temp['commission'] = $row['commission']<0?$row['commission']:$row['commission']*(empty($row['othersalesman'])?$row['royalty']:$row['royaltys']);//提成金额
+                            //年金额
+                            $temp['y_ia'] = '';//IA费
+                            $temp['y_ia_c'] = '';//续约IA费
+                            $temp['y_ia_c_end'] = '';//终止续约IA费
+                            $temp['y_ia_end'] = '';//终止IA费
+                            $temp['y_ib'] = '';//IB费
+                            $temp['y_ib_c'] = '';//续约IB费
+                            $temp['y_ib_c_end'] = '';//终止续约IB费
+                            $temp['y_ib_end'] = '';//终止IB费
+                            $temp['y_ic'] =($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a: '';//IC费
+                            $temp['y_ic_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_year_a:'';//续约IC费
+                            $temp['y_ic_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IC费
+                            if($row['status']=='T'){
+                                $temp['y_ic_end'] = -$amt_paid_year_a;//终止IA费
+                            }else{
+                                $temp['y_ic_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_year_a:'';//终止IC费
+                            }
+                            $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
+                            $temp['ia_money'] = '';//扣除IA提成
+                            $temp['ib_money'] = '';//扣除IB提成
+                            if(!empty($row['othersalesman'])){
+                                if($a==$row['othersalesman']){
+                                    $temp['ic_money'] = $row['other_commission']<0?$row['other_commission']:'';//扣除IC提成
+                                }else{
+                                    $temp['ic_money'] = $row['commission']<0?$row['commission']:'';//扣除IC提成
+                                }
                             }else{
                                 $temp['ic_money'] = $row['commission']<0?$row['commission']:'';//扣除IC提成
                             }
-                        }else{
-                            $temp['ic_money'] = $row['commission']<0?$row['commission']:'';//扣除IC提成
-                        }
-                        $temp['new_ia_money'] = '';//新增IA提成
-                        $temp['new_ib_money'] = '';//新增IB提成
-                        if(!empty($row['othersalesman'])){
-                            if($a==$row['othersalesman']){
-                                $temp['new_ic_money'] = $row['status']=='N'||($row['status']=='A'&&$row['other_commission']>0)?$row['other_commission']:'';//新增IC提成
+                            $temp['new_ia_money'] = '';//新增IA提成
+                            $temp['new_ib_money'] = '';//新增IB提成
+                            if(!empty($row['othersalesman'])){
+                                if($a==$row['othersalesman']){
+                                    $temp['new_ic_money'] = $row['status']=='N'||($row['status']=='A'&&$row['other_commission']>0)?$row['other_commission']:'';//新增IC提成
+                                }else{
+                                    $temp['new_ic_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IC提成
+                                }
                             }else{
                                 $temp['new_ic_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IC提成
                             }
-                        }else{
-                            $temp['new_ic_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IC提成
+                            $temp['new_amt_paid'] = '';//新增焗雾白蚁甲醛雾化
+                            $temp['end_amt_paid'] = '';//终止焗雾白蚁甲醛雾化
                         }
-                        $temp['new_amt_paid'] = '';//新增焗雾白蚁甲醛雾化
-                        $temp['end_amt_paid'] = '';//终止焗雾白蚁甲醛雾化
                     }
+                    $this->group[] = $temp;
                 }
-                $this->group[] = $temp;
-            }
+                }
+
+
         }
         //月金额
       //  print_r('<pre>'); print_r($this->group);exit();
@@ -760,6 +766,9 @@ class SalesTableForm extends CFormModel
         $this->ic_money=round($new_ic_money*($new_calc+$point['point']),2);//金额 租机
         $this->xuyue_money= ($this->y_ia_c+ $this->y_ib_c+ $this->y_ic_c)*0.01;//金额 续约
         $this->amt_install_money=round($this->amt_install*$this->amt_install_royalty,2);//金额 装机
+        if( $this->amt_install_money<0){
+            $this->amt_install_money=0;
+        }
         $sale_money=$paper_money+$disinfectant_money+$purification_money+$aromatherapy_money+$pestcontrol_money+$other_money;
         if($sale_money<0){
             $sale_money=0;

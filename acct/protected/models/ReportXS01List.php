@@ -2348,7 +2348,7 @@ class ReportXS01List extends CListPageModel
             $ohersaleman=str_replace('(','',$ohersaleman);
             $ohersaleman=str_replace(')','',$ohersaleman);
             $sql1="select group_type from hr$suffix.hr_employee where  concat_ws(' ',name,code)= '".$ohersaleman."' ";
-            $record = Yii::app()->db->createCommand($sql)->queryScalar();
+            $record = Yii::app()->db->createCommand($sql1)->queryScalar();
             if($record!=$records){
                 $proportion=0.5;
             }
