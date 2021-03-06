@@ -44,7 +44,7 @@ class ReportXS01List extends CListPageModel
             $month=12;
             $year=$year-1;
         }
-        $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,d.performance_amount,d.performanceedit_amount,d.performanceend_amount,d.renewal_amount,d.renewalend_amount,e.name as cityname from acc_service_comm_hdr a
+        $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,d.performance_amount,d.performanceedit_amount,d.performanceend_amount,d.renewal_amount,d.renewalend_amount,d.product_amount,e.name as cityname from acc_service_comm_hdr a
                  inner join  hr$suffix.hr_employee b  on b.code=a.employee_code
                  inner join  hr$suffix.hr_dept c on b.position=c.id      
                  inner join security$suffix.sec_city e on a.city=e.code 		  
