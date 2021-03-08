@@ -290,7 +290,7 @@ class CommissionController extends Controller
         $date=$year."/".$month.'/'."01";
         $date1='2020/07/01';
         $employee=$this->getEmployee($index,$year,$month);
-        if($city=='CD'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||($city=='FS'&&strtotime($date)<strtotime('2021/02/01'))){
+        if($city=='CD'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||(($city=='FS'||$city=='NJ')&&strtotime($date)<strtotime('2021/02/01'))){
           $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -328,7 +328,7 @@ class CommissionController extends Controller
         $date=$year."/".$month.'/'."01";
         $date1='2020/07/01';
         $employee=$this->getEmployee($index,$year,$month);
-        if($city=='CD'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||($city=='FS'&&strtotime($date)<strtotime('2021/02/01'))){
+        if($city=='CD'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||(($city=='FS'||$city=='NJ')&&strtotime($date)<strtotime('2021/02/01'))){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -363,7 +363,7 @@ class CommissionController extends Controller
         $date=$year."/".$month.'/'."01";
         $date1='2020/07/01';
         $employee=$this->getEmployee($index,$year,$month);
-        if($city=='CD'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||($city=='FS'&&strtotime($date)<strtotime('2021/02/01'))){
+        if($city=='CD'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||(($city=='FS'||$city=='NJ')&&strtotime($date)<strtotime('2021/02/01'))){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -398,7 +398,7 @@ class CommissionController extends Controller
         $date=$year."/".$month.'/'."01";
         $date1='2020/07/01';
         $employee=$this->getEmployee($index,$year,$month);
-        if($city=='CD'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||($city=='FS'&&strtotime($date)<strtotime('2021/02/01'))){
+        if($city=='CD'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||(($city=='FS'||$city=='NJ')&&strtotime($date)<strtotime('2021/02/01'))){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -433,7 +433,7 @@ class CommissionController extends Controller
         $date=$year."/".$month.'/'."01";
         $date1='2020/07/01';
         $employee=$this->getEmployee($index,$year,$month);
-        if($city=='CD'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||($city=='FS'&&strtotime($date)<strtotime('2021/02/01'))){
+        if($city=='CD'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||(($city=='FS'||$city=='NJ')&&strtotime($date)<strtotime('2021/02/01'))){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
@@ -468,7 +468,7 @@ class CommissionController extends Controller
         $date=$year."/".$month.'/'."01";
         $date1='2020/07/01';
         $employee=$this->getEmployee($index,$year,$month);
-        if($city=='CD'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||($city=='FS'&&strtotime($date)<strtotime('2021/02/01'))){
+        if($city=='CD'||$city=='NJ'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||(($city=='FS'||$city=='NJ')&&strtotime($date)<strtotime('2021/02/01'))){
             $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
