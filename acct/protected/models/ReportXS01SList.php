@@ -1868,7 +1868,7 @@ class ReportXS01SList extends CListPageModel
             $timestrap=strtotime($record['visit_dt']);
             $years=date('Y',$timestrap);
             $months=date('m',$timestrap);
-            if($years==$year&&$months==$month&&date('d',$timestrap)>1){
+            if($years==$year&&$months==$month&&date('d',$timestrap)=='01'){
                 $a=1;
             }else{
                 $a=2;
