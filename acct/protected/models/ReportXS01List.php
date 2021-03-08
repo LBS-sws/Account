@@ -1295,7 +1295,7 @@ class ReportXS01List extends CListPageModel
                     Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Some records cannot be calculated') );
                     Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/edit',array('year'=>$years,'month'=>$months,'index'=>$index)));
                 }
-                if($date<'2021/02/01'){
+                if($date<'2021/02/01'&&($records['city']=='FS'||$records['city']=='NJ')){
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
@@ -1778,7 +1778,7 @@ class ReportXS01List extends CListPageModel
                 $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                 $sql1="select * from acc_service_comm_hdr where year_no='".$years."' and month_no='".$months."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
-                if($date<'2021/02/01'){
+                if($date<'2021/02/01'&&($records['city']=='FS'||$records['city']=='NJ')){
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     $otherspanning=$this->getRoyalty($index,$city,$year,$month,$recordss['othersalesman']);
@@ -1895,7 +1895,7 @@ class ReportXS01List extends CListPageModel
                         Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Some records cannot be calculated') );
                         Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/performanceend',array('year'=>$years,'month'=>$months,'index'=>$index)));
                     }
-                    if($date<'2021/02/01'){
+                    if($date<'2021/02/01'&&($records['city']=='FS'||$records['city']=='NJ')){
                         $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                         $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                         $otherspanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
