@@ -755,6 +755,8 @@ class SalesTableForm extends CFormModel
         $this->ic_royalty=($new_calc+$point['point'])*100;//提成点数 租机
         $this->xuyue_royalty=1;//提成点数 续约
         $amt_install_royalty=$this->getAmount($city,'paper','paper',$start,$money);//装机提成比例
+       // print_r($amt_install_royalty);  print_r($city);  print_r($money);  print_r('**');print_r($start);
+
         $this->amt_install_royalty=$amt_install_royalty+$point['point'];//提成点数 装机
         $this->sale_royalty="/";//提成点数 销售
         $this->huaxueji_royalty=(0.1+$point['point'])*100;//提成点数 化学剂
@@ -899,7 +901,7 @@ class SalesTableForm extends CFormModel
     public  function getAmount($city, $cust_type,$sales_products, $start_dt, $sales_amt) {
         //城市，类别，时间，总金额
         $rtn = 0;
-        if (!empty($city) && !empty($cust_type) && !empty($start_dt) && !empty($sales_amt)) {
+        if (!empty($city) && !empty($cust_type) && !empty($start_dt) && isset($sales_amt)) {
             $suffix = Yii::app()->params['envSuffix'];
             //客户类别
             //  $sql = "select rpt_cat from swoper$suffix.swo_customer_type where id=$cust_type";
@@ -942,7 +944,7 @@ class SalesTableForm extends CFormModel
         }
         // }
 //                        print_r('<pre>');
-//                print_r($row);
+//                print_r($rtn);
         return $rtn;
     }
 
