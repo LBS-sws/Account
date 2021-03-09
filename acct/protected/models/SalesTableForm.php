@@ -875,25 +875,25 @@ class SalesTableForm extends CFormModel
               where d.code='$employee'
 ";
         $records = Yii::app()->db->createCommand($sql)->queryScalar();
-        $sql="select entry_time from hr$suffix.hr_employee where code= '".$employee."' ";
-        $record = Yii::app()->db->createCommand($sql)->queryScalar();
-        $timestraps=strtotime($record);
-        $entry_time_year=date('Y',$timestraps);
-        $entry_time_month=date('m',$timestraps);
-        if($entry_time_year==$year&&$entry_time_month==$month){
-            $sql1="select visit_dt from sales$suffix.sal_visit   where username='$records' order by visit_dt
+        $sql1="select visit_dt from sales$suffix.sal_visit   where username='$records' order by visit_dt
 ";
-            $record = Yii::app()->db->createCommand($sql1)->queryRow();
-            $timestrap=strtotime($record['visit_dt']);
-            $years=date('Y',$timestrap);
-            $months=date('m',$timestrap);
-            if($years==$year&&$months==$month&&date('d',$timestrap)=='01'){
-                $a=1;
+        $record = Yii::app()->db->createCommand($sql1)->queryRow();
+        $timestrap=strtotime($record['visit_dt']);
+        $years=date('Y',$timestrap);
+        $months=date('m',$timestrap);
+        if(date('d',$timestrap)=='01'){
+            if($years==$year&&$months==$month){
+                $a=1;//不加入东成西就
             }else{
                 $a=2;
             }
         }else{
-            $a=2;
+            $next=$months-1;
+            if(($years==$year&&$months==$month)||($years==$year&&$next==$month)){
+                $a=1;//不加入东成西就
+            }else{
+                $a=2;
+            }
         }
         return $a;
     }
