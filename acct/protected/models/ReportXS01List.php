@@ -1440,7 +1440,6 @@ class ReportXS01List extends CListPageModel
                     $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
                     $point=$this->getPoint($year,$month,$index);//积分激励点
                     $fuwu_last=$point+$records2['new_calc'];
-                    print_r($fuwu_last);exit();
                 }else{
                     $fuwu_last=$this->getAmountLast($year,$month,$records1['id']);//上月提成比例服务
                     $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
