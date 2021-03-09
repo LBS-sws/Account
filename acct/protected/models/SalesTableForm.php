@@ -197,7 +197,7 @@ class SalesTableForm extends CFormModel
             $date1 = '2020/07/01';
             $employee = $this->getEmployee($records['employee_code'], $records['year_no'], $records['month_no']);
             // print_r($a);print_r($employee);
-            if ($records['city'] == 'CD' || $records['city'] == 'FS' || $records['city'] == 'NJ' || $records['city'] == 'TJ' || $position_a == 1 || strtotime($date) < strtotime($date1) || $employee == 1) {
+            if ($records['city'] == 'CD' || $records['city'] == 'TJ' || $position_a == 1 || strtotime($date) < strtotime($date1) || $employee == 1||(($records['city']=='FS'||$records['city']=='NJ')&&strtotime($date)<strtotime('2021/02/01'))) {
                 $month = $records['month_no'];
                 $year = $records['year_no'];
             } else {
@@ -222,6 +222,7 @@ class SalesTableForm extends CFormModel
         //之前月份业绩↑
         //print_r('<pre>'); print_r($rows);
         //exit();
+        $color=0;
         if (count($rows) > 0) {
             $this->group = array();
             foreach ($rows as $row) {
@@ -278,9 +279,11 @@ class SalesTableForm extends CFormModel
                             $temp['amt_paid'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_a:'';//焗雾白蚁甲醛雾化
                         }
                         if(!empty($row['othersalesman'])) {
-                            if ($a == $row['othersalesman']) {
+                            if ($a1 == $row['othersalesman']) {
+                                $color=2;
                                 $temp['amt_install'] ='';//I装机费
                             }else{
+                                $color=1;
                                 $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
                             }
                         }else{
@@ -293,7 +296,7 @@ class SalesTableForm extends CFormModel
                         $temp['aromatherapy'] = '';//香薰
                         $temp['pestcontrol'] = '';//虫控
                         $temp['other'] = '';//其他
-                        $temp['othersalesman'] = $row['othersalesman'];//其他
+                        $temp['othersalesman'] =  $color;//其他
                         $temp['paper_money'] = '';//纸提成
                         $temp['disinfectant_money'] = '';//消毒液提成
                         $temp['purification_money'] = '';//空气净化提成
@@ -323,7 +326,7 @@ class SalesTableForm extends CFormModel
                         $temp['new_ib_money'] = '';//新增IB提成
                         $temp['new_ic_money'] = '';//新增IC提成
                         if(!empty($row['othersalesman'])){
-                            if($a==$row['othersalesman']){
+                            if($a1==$row['othersalesman']){
                                 $temp['new_amt_paid'] = $row['status']=='N'||($row['status']=='A'&&$row['other_commission']>0)?$row['other_commission']:'';//新增焗雾白蚁甲醛雾化
                             }else{
                                 $temp['new_amt_paid'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增焗雾白蚁甲醛雾化
@@ -332,7 +335,7 @@ class SalesTableForm extends CFormModel
                             $temp['new_amt_paid'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增焗雾白蚁甲醛雾化
                         }
                         if(!empty($row['othersalesman'])){
-                            if($a==$row['othersalesman']){
+                            if($a1==$row['othersalesman']){
                                 $temp['end_amt_paid'] = $row['status']=='T'||($row['status']=='A'&&$row['other_commission']<0)?$row['other_commission']:'';//终止焗雾白蚁甲醛雾化
                             }else{
                                 $temp['end_amt_paid'] = $row['status']=='T'||($row['status']=='A'&&$row['commission']<0)?$row['commission']:'';//终止焗雾白蚁甲醛雾化
@@ -364,9 +367,11 @@ class SalesTableForm extends CFormModel
                             $temp['ic_end'] = '';//终止IC费
                             $temp['amt_paid'] = '';//焗雾白蚁甲醛雾化
                             if(!empty($row['othersalesman'])) {
-                                if ($a == $row['othersalesman']) {
+                                if ($a1 == $row['othersalesman']) {
+                                    $color=2;
                                     $temp['amt_install'] ='';//I装机费
                                 }else{
+                                    $color=1;
                                     $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
                                 }
                             }else{
@@ -379,7 +384,7 @@ class SalesTableForm extends CFormModel
                             $temp['aromatherapy'] = '';//香薰
                             $temp['pestcontrol'] = '';//虫控
                             $temp['other'] = '';//其他
-                            $temp['othersalesman'] = $row['othersalesman'];//其他
+                            $temp['othersalesman'] =  $color;//其他
                             $temp['paper_money'] = '';//纸提成
                             $temp['disinfectant_money'] = '';//消毒液提成
                             $temp['purification_money'] = '';//空气净化提成
@@ -389,13 +394,13 @@ class SalesTableForm extends CFormModel
                             $temp['other_money'] = '';//其他提成
                             //   $temp['commission'] = $row['commission']<0?$row['commission']:$row['commission']*(empty($row['othersalesman'])?$row['royalty']:$row['royaltys']);//提成金额
                             //年金额
-                            $temp['y_ia'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a:'';//IA费
-                            $temp['y_ia_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_year_a:'';//续约IA费
-                            $temp['y_ia_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IA费
-                            if($row['status']=='T'){
+                            $temp['y_ia'] = $color!=2&&($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a:'';//IA费
+                            $temp['y_ia_c'] = $color!=2&&($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_year_a:'';//续约IA费
+                            $temp['y_ia_c_end'] = $color!=2&&($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IA费
+                            if($color!=2&&$row['status']=='T'){
                                 $temp['y_ia_end'] = -$amt_paid_year_a;//终止IA费
                             }else{
-                                $temp['y_ia_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_year_a:'';//终止IA费
+                                $temp['y_ia_end'] = $color!=2&&($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_year_a:'';//终止IA费
                             }
                             $temp['y_ib'] = '';//IB费
                             $temp['y_ib_c'] = '';//续约IB费
@@ -407,7 +412,7 @@ class SalesTableForm extends CFormModel
                             $temp['y_ic_end'] = '';//终止IC费
                             $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
                             if(!empty($row['othersalesman'])){
-                                if($a==$row['othersalesman']){
+                                if($a1==$row['othersalesman']){
                                     $temp['ia_money'] = $row['other_commission']<0?$row['other_commission']:'';//扣除IA提成
                                 }else{
                                     $temp['ia_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
@@ -418,7 +423,7 @@ class SalesTableForm extends CFormModel
                             $temp['ib_money'] = '';//扣除IB提成
                             $temp['ic_money'] = '';//扣除IC提成
                             if(!empty($row['othersalesman'])){
-                                if($a==$row['othersalesman']){
+                                if($a1==$row['othersalesman']){
                                     $temp['new_ia_money'] = $row['status']=='N'||($row['status']=='A'&&$row['other_commission']>0)?$row['other_commission']:'';//新增IA提成
                                 }else{
                                     $temp['new_ia_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IA提成
@@ -453,9 +458,11 @@ class SalesTableForm extends CFormModel
                             $temp['ic_end'] = '';//终止IC费
                             $temp['amt_paid'] = '';//焗雾白蚁甲醛雾化
                             if(!empty($row['othersalesman'])) {
-                                if ($a == $row['othersalesman']) {
+                                if ($a1 == $row['othersalesman']) {
+                                    $color=2;
                                     $temp['amt_install'] ='';//I装机费
                                 }else{
+                                    $color=1;
                                     $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
                                 }
                             }else{
@@ -468,7 +475,7 @@ class SalesTableForm extends CFormModel
                             $temp['aromatherapy'] = '';//香薰
                             $temp['pestcontrol'] = '';//虫控
                             $temp['other'] = '';//其他
-                            $temp['othersalesman'] = $row['othersalesman'];//其他
+                            $temp['othersalesman'] =  $color;//其他
                             $temp['paper_money'] = '';//纸提成
                             $temp['disinfectant_money'] = '';//消毒液提成
                             $temp['purification_money'] = '';//空气净化提成
@@ -482,13 +489,13 @@ class SalesTableForm extends CFormModel
                             $temp['y_ia_c'] = '';//续约IA费
                             $temp['y_ia_c_end'] = '';//终止续约IA费
                             $temp['y_ia_end'] = '';//终止IA费
-                            $temp['y_ib'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a:'';//IB费
-                            $temp['y_ib_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_year_a:'';//续约IB费
-                            $temp['y_ib_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IB费
-                            if($row['status']=='T'){
+                            $temp['y_ib'] = $color!=2&&($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a:'';//IB费
+                            $temp['y_ib_c'] = $color!=2&&($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_year_a:'';//续约IB费
+                            $temp['y_ib_c_end'] = $color!=2&&($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IB费
+                            if($color!=2&&$row['status']=='T'){
                                 $temp['y_ib_end'] = -$amt_paid_year_a;//终止IA费
                             }else{
-                                $temp['y_ib_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_year_a:'';//终止IB费
+                                $temp['y_ib_end'] = $color!=2&&($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_year_a:'';//终止IB费
                             }
                             $temp['y_ic'] = '';//IC费
                             $temp['y_ic_c'] = '';//续约IC费
@@ -497,7 +504,7 @@ class SalesTableForm extends CFormModel
                             $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
                             $temp['ia_money'] = '';//扣除IA提成
                             if(!empty($row['othersalesman'])){
-                                if($a==$row['othersalesman']){
+                                if($a1==$row['othersalesman']){
                                     $temp['ib_money'] = $row['other_commission']<0?$row['other_commission']:'';//扣除IB提成
                                 }else{
                                     $temp['ib_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
@@ -508,7 +515,7 @@ class SalesTableForm extends CFormModel
                             $temp['ic_money'] = '';//扣除IC提成
                             $temp['new_ia_money'] = '';//新增IA提成
                             if(!empty($row['othersalesman'])){
-                                if($a==$row['othersalesman']){
+                                if($a1==$row['othersalesman']){
                                     $temp['new_ib_money'] = $row['status']=='N'||($row['status']=='A'&&$row['other_commission']>0)?$row['other_commission']:'';//新增IB提成
                                 }else{
                                     $temp['new_ib_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IB提成
@@ -542,9 +549,11 @@ class SalesTableForm extends CFormModel
                             }
                             $temp['amt_paid'] = '';//焗雾白蚁甲醛雾化
                             if(!empty($row['othersalesman'])) {
-                                if ($a == $row['othersalesman']) {
+                                if ($a1 == $row['othersalesman']) {
+                                    $color=2;
                                     $temp['amt_install'] ='';//I装机费
                                 }else{
+                                    $color=1;
                                     $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
                                 }
                             }else{
@@ -557,7 +566,7 @@ class SalesTableForm extends CFormModel
                             $temp['aromatherapy'] = '';//香薰
                             $temp['pestcontrol'] = '';//虫控
                             $temp['other'] = '';//其他
-                            $temp['othersalesman'] = $row['othersalesman'];//其他
+                            $temp['othersalesman'] = $color;//其他
                             $temp['paper_money'] = '';//纸提成
                             $temp['disinfectant_money'] = '';//消毒液提成
                             $temp['purification_money'] = '';//空气净化提成
@@ -575,19 +584,19 @@ class SalesTableForm extends CFormModel
                             $temp['y_ib_c'] = '';//续约IB费
                             $temp['y_ib_c_end'] = '';//终止续约IB费
                             $temp['y_ib_end'] = '';//终止IB费
-                            $temp['y_ic'] =($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a: '';//IC费
-                            $temp['y_ic_c'] = ($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_year_a:'';//续约IC费
-                            $temp['y_ic_c_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IC费
-                            if($row['status']=='T'){
+                            $temp['y_ic'] =$color!=2&&($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a: '';//IC费
+                            $temp['y_ic_c'] = $color!=2&&($row['commission']>0||$row['other_commission']>0)&&$row['status']=='C'?$amt_paid_year_a:'';//续约IC费
+                            $temp['y_ic_c_end'] = $color!=2&&($row['commission']<0||$row['other_commission']<0)&&$row['status']=='C'?$amt_paid_year_a:'';//终止续约IC费
+                            if($color!=2&&$row['status']=='T'){
                                 $temp['y_ic_end'] = -$amt_paid_year_a;//终止IA费
                             }else{
-                                $temp['y_ic_end'] = ($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_year_a:'';//终止IC费
+                                $temp['y_ic_end'] = $color!=2&&($row['commission']<0||$row['other_commission']<0)&&$row['status']!='C'?$amt_paid_year_a:'';//终止IC费
                             }
                             $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
                             $temp['ia_money'] = '';//扣除IA提成
                             $temp['ib_money'] = '';//扣除IB提成
                             if(!empty($row['othersalesman'])){
-                                if($a==$row['othersalesman']){
+                                if($a1==$row['othersalesman']){
                                     $temp['ic_money'] = $row['other_commission']<0?$row['other_commission']:'';//扣除IC提成
                                 }else{
                                     $temp['ic_money'] = $row['commission']<0?$row['commission']:'';//扣除IC提成
@@ -598,7 +607,7 @@ class SalesTableForm extends CFormModel
                             $temp['new_ia_money'] = '';//新增IA提成
                             $temp['new_ib_money'] = '';//新增IB提成
                             if(!empty($row['othersalesman'])){
-                                if($a==$row['othersalesman']){
+                                if($a1==$row['othersalesman']){
                                     $temp['new_ic_money'] = $row['status']=='N'||($row['status']=='A'&&$row['other_commission']>0)?$row['other_commission']:'';//新增IC提成
                                 }else{
                                     $temp['new_ic_money'] = $row['status']=='N'||($row['status']=='A'&&$row['commission']>0)?$row['commission']:'';//新增IC提成
@@ -654,7 +663,7 @@ class SalesTableForm extends CFormModel
         $sql = "select b.log_dt,b.company_name,a.money,a.qty,c.description,c.sales_products,c.id from swoper$suffix.swo_logistic_dtl a
                 left outer join swoper$suffix.swo_logistic b on b.id=a.log_id		
                	left outer join swoper$suffix.swo_task c on a.task=c.	id
-                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$a1."' and b.city ='$city' and a.money>0";
+                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$a1."' and b.city ='$city' and a.money>0 and c.sales_products!=' '";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
         //print_r('<pre>');print_r($rows);exit();
         if(count($rows)>0){
@@ -825,7 +834,7 @@ class SalesTableForm extends CFormModel
             $date1='2020/07/01';
             $employee=$this->getEmployee($records['employee_code'],$records['year_no'],$records['month_no']);
             // print_r($a);print_r($employee);
-            if($records['city']=='CD'||$records['city']=='NJ'||$records['city']=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||(($records['city']=='FS'||$records['city']=='NJ')&&strtotime($date)<strtotime('2021/02/01'))){
+            if($records['city']=='CD'||$records['city']=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||(($records['city']=='FS'||$records['city']=='NJ')&&strtotime($date)<strtotime('2021/02/01'))){
                 $month=$records['month_no'];
                 $year=$records['year_no'];
 
