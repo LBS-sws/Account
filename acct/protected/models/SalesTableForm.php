@@ -222,10 +222,10 @@ class SalesTableForm extends CFormModel
         //之前月份业绩↑
         //print_r('<pre>'); print_r($rows);
         //exit();
-        $color=0;
         if (count($rows) > 0) {
             $this->group = array();
             foreach ($rows as $row) {
+                $color=0;
                 if($a1==$row['othersalesman']&&$salerow['performance']==2){
 
                 }else{
@@ -663,7 +663,7 @@ class SalesTableForm extends CFormModel
         $sql = "select b.log_dt,b.company_name,a.money,a.qty,c.description,c.sales_products,c.id from swoper$suffix.swo_logistic_dtl a
                 left outer join swoper$suffix.swo_logistic b on b.id=a.log_id		
                	left outer join swoper$suffix.swo_task c on a.task=c.	id
-                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$a1."' and b.city ='$city' and a.money>0 and c.sales_products!=' '";
+                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$a1."' and b.city ='$city' and a.money>0 and c.sales_products!='wu' ";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
         //print_r('<pre>');print_r($rows);exit();
         if(count($rows)>0){
@@ -765,7 +765,7 @@ class SalesTableForm extends CFormModel
         $this->xuyue_royalty=1;//提成点数 续约
         $amt_install_royalty=$this->getAmount($city,'paper','paper',$start,$money);//装机提成比例
        // print_r($amt_install_royalty);  print_r($city);  print_r($money);  print_r('**');print_r($start);
-
+        print_r($amt_install_royalty);print_r('***'); print_r($point['point']);print_r('***');   print_r($start);print_r('***'); print_r($money);
         $this->amt_install_royalty=$amt_install_royalty+$point['point'];//提成点数 装机
         $this->sale_royalty="/";//提成点数 销售
         $this->huaxueji_royalty=(0.1+$point['point'])*100;//提成点数 化学剂
@@ -897,7 +897,7 @@ class SalesTableForm extends CFormModel
                 $a=2;
             }
         }else{
-            $next=$months-1;
+            $next=$months+1;
             if(($years==$year&&$months==$month)||($years==$year&&$next==$month)){
                 $a=1;//不加入东成西就
             }else{

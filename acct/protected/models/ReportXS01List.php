@@ -2451,7 +2451,7 @@ class ReportXS01List extends CListPageModel
                 $a=2;
             }
         }else{
-            $next=$months-1;
+            $next=$months+1;
             if(($years==$year&&$months==$month)||($years==$year&&$next==$month)){
                 $a=1;//不加入东成西就
             }else{

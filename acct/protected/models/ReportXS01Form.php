@@ -254,9 +254,10 @@ class ReportXS01Form extends CReportForm
               where d.code='$employee'
 ";
         $records = Yii::app()->db->createCommand($sql)->queryScalar();
-        $sql1="select visit_dt from sales$suffix.sal_visit   where username='$records' order by visit_dt
+        $sql1="select visit_dt from sales$suffix.sal_visit   where username='$records'  order by visit_dt 
 ";
         $record = Yii::app()->db->createCommand($sql1)->queryRow();
+
         $timestrap=strtotime($record['visit_dt']);
         $years=date('Y',$timestrap);
         $months=date('m',$timestrap);
@@ -267,7 +268,7 @@ class ReportXS01Form extends CReportForm
                 $a=2;
             }
         }else{
-            $next=$months-1;
+            $next=$months+1;
             if(($years==$year&&$months==$month)||($years==$year&&$next==$month)){
                 $a=1;//不加入东成西就
             }else{
