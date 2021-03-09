@@ -1434,12 +1434,13 @@ class ReportXS01List extends CListPageModel
                     Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Some records cannot be calculated') );
                     Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/end',array('year'=>$years,'month'=>$months,'index'=>$index)));
                 }
-                if($records['first_dt']<'2021/02/01'){
+                if($records['first_dt']<'2021/02/01'&&($records['city']=='FS'||$records['city']=='NJ')){
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
                     $point=$this->getPoint($year,$month,$index);//积分激励点
                     $fuwu_last=$point+$records2['new_calc'];
+                    print_r($fuwu_last);exit();
                 }else{
                     $fuwu_last=$this->getAmountLast($year,$month,$records1['id']);//上月提成比例服务
                     $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
