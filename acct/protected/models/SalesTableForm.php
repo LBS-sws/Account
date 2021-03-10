@@ -1164,6 +1164,13 @@ class SalesTableForm extends CFormModel
             $objActSheet->setCellValue('U'.$i, $value['aromatherapy']) ;
             $objActSheet->setCellValue('V'.$i, $value['pestcontrol']) ;
             $objActSheet->setCellValue('W'.$i, $value['other']) ;
+            if($value['othersalesman']==1){
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':W'.$i)->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+            }elseif($value['othersalesman']==2){
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':W'.$i)->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_BLUE);
+            }else{
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$i.':W'.$i)->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_BLACK);
+            }
         }
         $i=$i+1;
         $objPHPExcel->getActiveSheet()->removeRow($i);
