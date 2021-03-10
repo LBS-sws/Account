@@ -269,6 +269,10 @@ class ReportXS01Form extends CReportForm
             }
         }else{
             $next=$months+1;
+            if($next==13){
+                $next=1;
+                $years=$years+1;
+            }
             if(($years==$year&&$months==$month)||($years==$year&&$next==$month)){
                 $a=1;//不加入东成西就
             }else{

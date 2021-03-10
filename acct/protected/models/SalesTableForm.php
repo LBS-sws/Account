@@ -226,7 +226,7 @@ class SalesTableForm extends CFormModel
             $this->group = array();
             foreach ($rows as $row) {
                 $color=0;
-                if($a1==$row['othersalesman']&&$salerow['performance']==2){
+                if($a1==$row['othersalesman']&&$salerow['performance']==2&&$row['status']=='N'){
 
                 }else{
                     $temp = array();
@@ -765,7 +765,6 @@ class SalesTableForm extends CFormModel
         $this->xuyue_royalty=1;//提成点数 续约
         $amt_install_royalty=$this->getAmount($city,'paper','paper',$start,$money);//装机提成比例
        // print_r($amt_install_royalty);  print_r($city);  print_r($money);  print_r('**');print_r($start);
-        print_r($amt_install_royalty);print_r('***'); print_r($point['point']);print_r('***');   print_r($start);print_r('***'); print_r($money);
         $this->amt_install_royalty=$amt_install_royalty+$point['point'];//提成点数 装机
         $this->sale_royalty="/";//提成点数 销售
         $this->huaxueji_royalty=(0.1+$point['point'])*100;//提成点数 化学剂
@@ -884,7 +883,7 @@ class SalesTableForm extends CFormModel
               where d.code='$employee'
 ";
         $records = Yii::app()->db->createCommand($sql)->queryScalar();
-        $sql1="select visit_dt from sales$suffix.sal_visit   where username='$records' order by visit_dt
+        $sql1="select visit_dt from sales$suffix.sal_visit   where username='$records'  order by visit_dt
 ";
         $record = Yii::app()->db->createCommand($sql1)->queryRow();
         $timestrap=strtotime($record['visit_dt']);
@@ -898,6 +897,10 @@ class SalesTableForm extends CFormModel
             }
         }else{
             $next=$months+1;
+            if($next==13){
+                $next=1;
+                $years=$years+1;
+            }
             if(($years==$year&&$months==$month)||($years==$year&&$next==$month)){
                 $a=1;//不加入东成西就
             }else{
