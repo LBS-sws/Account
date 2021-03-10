@@ -143,6 +143,7 @@ class ReportXS01Form extends CReportForm
             if($records['city']=='CD'||$records['city']=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||(($records['city']=='FS'||$records['city']=='NJ')&&strtotime($date)<strtotime('2021/02/01'))){
                 $month=$records['month_no'];
                 $year=$records['year_no'];
+
             }else{
                 $month=$records['month_no']-1;
                 $year=$records['year_no'];
@@ -160,7 +161,7 @@ class ReportXS01Form extends CReportForm
               where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name' and d.city='".$records['city']."'
 ";
             $arr = Yii::app()->db->createCommand($sql1)->queryRow();
-            if($employee==1){
+            if($employee==2){
                 $months=$records['month_no']-1;
                 $years=$records['year_no'];
                 if($months==0){
@@ -173,7 +174,7 @@ class ReportXS01Form extends CReportForm
             }
             $sql_point="select * from sales$suffix.sal_integral where year='$years' and month='$months' and username='".$arr['user_id']."' and city='".$records['city']."'";
             $point = Yii::app()->db->createCommand($sql_point)->queryRow();
-            print_r($employee);print_r($sql_point);print_r($point);
+          //  print_r($employee);print_r($sql_point);print_r($point);
             if(empty($point)){
                 $point['point']=0;
                 $point['id']=0;
