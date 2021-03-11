@@ -2175,7 +2175,7 @@ class ReportXS01List extends CListPageModel
             $date1 = '2020/07/01';
             $employee = $this->getEmployee($records['employee_code'], $records['year_no'], $records['month_no']);
             // print_r($a);print_r($employee);
-            if ($records['city'] == 'CD' || $records['city'] == 'FS' || $records['city'] == 'NJ' || $records['city'] == 'TJ' || $position_a == 1 || strtotime($date) < strtotime($date1) || $employee == 1) {
+            if ($records['city'] == 'CD'  || $records['city'] == 'TJ' || $position_a == 1 || strtotime($date) < strtotime($date1) || $employee == 1||(($records['city']=='FS'||$records['city']=='NJ')&&strtotime($date)<strtotime('2021/02/01'))) {
                 $month = $records['month_no'];
                 $year = $records['year_no'];
             } else {
@@ -2206,6 +2206,9 @@ class ReportXS01List extends CListPageModel
             $point['point']=0;
         }
         $mons=0;
+        print_r('<pre>');
+        print_r($sql1);
+        print_r($sql_point); print_r($point);exit();
         foreach ($id as $ai){
             $sql="select * from swoper$suffix.swo_logistic_dtl  a
                    left outer join swoper$suffix.swo_task  b on  b.id=a.task
