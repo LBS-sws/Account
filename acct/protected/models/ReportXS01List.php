@@ -2206,9 +2206,6 @@ class ReportXS01List extends CListPageModel
             $point['point']=0;
         }
         $mons=0;
-        print_r('<pre>');
-        print_r($sql1);
-        print_r($sql_point); print_r($point);exit();
         foreach ($id as $ai){
             $sql="select * from swoper$suffix.swo_logistic_dtl  a
                    left outer join swoper$suffix.swo_task  b on  b.id=a.task
