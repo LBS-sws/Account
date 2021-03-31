@@ -16,22 +16,24 @@ class RankiconWidget extends CWidget
 
 	protected function renderContent($level) {
 		$title = Yii::t('misc','Your ranking is:');
-		$image = CHtml::image(Yii::app()->baseUrl."/images/rank/$level.png",'image',array('width'=>167*0.5,'height'=>214*0.5));
+		$image = CHtml::image(Yii::app()->baseUrl."/images/rank/$level.png",'image',array('width'=>140,'height'=>160));
 		
 		$out = <<<EOF
 <div class="modal fade" id="modal-ranking">
-	<div class="modal-dialog modal-sm">
+	<div class="modal-dialog modal-dialog-centered modal-md">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-				<h4 class="modal-title">$title</h4>
+				<h3 class="modal-title">$title</h3>
 			</div>
 			<div class="modal-body">
 				<table width="100%"><tr>
-				<td align="center">$image</td>
-				<td align="center"><h3>$level</h3></td>
+					<td width="10%">&nbsp;</td>
+					<td align="center">$image</td>
+					<td align="center"><h2><strong>$level</strong></h2></td>
+					<td width="10%">&nbsp;</td>
 				</tr></table>
 			</div>
 		</div>
