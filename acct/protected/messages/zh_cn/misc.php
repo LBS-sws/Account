@@ -97,6 +97,7 @@ return array(
 	'6 months'=>'6个月內',
 	'1 year'=>'1年內',
 	'Rollback'=>'退回',
+	'Your ranking is:'=>'你当前的段位为:',
 );
 
 ?>
