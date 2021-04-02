@@ -1853,7 +1853,7 @@ class ReportXS01SList extends CListPageModel
         $suffix = Yii::app()->params['envSuffix'];
         $sql="select e.user_id from  hr$suffix.hr_employee d                  
               left outer join hr$suffix.hr_binding e on  d.id=e.employee_id
-              where d.name='$employee'
+              where concat_ws(' ',d.name,d.code)=='$employee'
 ";
         $records = Yii::app()->db->createCommand($sql)->queryScalar();
         $sql1="select visit_dt from sales$suffix.sal_visit   where username='$records' order by visit_dt
