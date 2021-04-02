@@ -856,6 +856,8 @@ class ReportXS01SList extends CListPageModel
             }
             $fuwu=$this->getAmount($city,$cust_type,$start_dt,$money_all);//提成比例服务
             $point=$this->getPoint($year,$month,$index);//积分激励点      print_r($months);
+            $records['salesman']=str_replace('(','',$records['salesman']);
+            $records['salesman']=str_replace(')','',$records['salesman']);
             $new_employee=$this->getEmployee($records['salesman'],$year,$month);
             $a=$this->position($index);
             if($new_employee==1&&$a==2){
