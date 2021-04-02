@@ -656,7 +656,7 @@ class SalesTableForm extends CFormModel
         $this->abc_money=$this->y_ia+ $this->y_ib+$this->y_ic+$this->y_amt_paid;//iaibic营业额
         $sql_point="select * from sales$suffix.sal_integral where hdr_id='$index' ";
         $point = Yii::app()->db->createCommand($sql_point)->queryRow();
-        if(empty($point)){
+        if(empty($point)||$employee==1){
             $point['point']=0;
         }
         //来源于物流配送的销售的单
