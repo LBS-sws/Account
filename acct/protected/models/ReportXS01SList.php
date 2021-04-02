@@ -1853,7 +1853,7 @@ class ReportXS01SList extends CListPageModel
         $suffix = Yii::app()->params['envSuffix'];
         $sql="select e.user_id from  hr$suffix.hr_employee d                  
               left outer join hr$suffix.hr_binding e on  d.id=e.employee_id
-              where d.code='$employee'
+              where d.name='$employee'
 ";
         $records = Yii::app()->db->createCommand($sql)->queryScalar();
         $sql1="select visit_dt from sales$suffix.sal_visit   where username='$records' order by visit_dt
@@ -1862,19 +1862,20 @@ class ReportXS01SList extends CListPageModel
         $timestrap=strtotime($record['visit_dt']);
         $years=date('Y',$timestrap);
         $months=date('m',$timestrap);
+//        print_r($sql); print_r($sql1);
         if(date('d',$timestrap)=='01'){
             if($years==$year&&$months==$month){
                 $a=1;//不加入东成西就
             }else{
                 $a=2;
             }
+         //   print_r('--'); print_r($a);print_r($month);exit();
         }else{
             $next=$months+1;
             if($next==13){
                 $next=1;
                 $years=$years+1;
             }
-            print_r($years); print_r($months);print_r('--'); print_r($year);print_r($month);exit();
             if(($years==$year&&$months==$month)||($years==$year&&$next==$month)){
                 $a=1;//不加入东成西就
             }else{
