@@ -1168,7 +1168,6 @@ class ReportXS01List extends CListPageModel
             $fuwu_last=$this->getAmountLast($year,$month,$index);//上月提成比例服务
             $new_employee=$this->getEmployee($records['salesman'],$year,$month);
             if($new_employee==1){
-
                 $fuwumoney=$moneys*$fuwu;
             }else{
                 $fuwumoney=$moneys*$fuwu_last;
