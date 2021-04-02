@@ -858,7 +858,6 @@ class ReportXS01SList extends CListPageModel
             $point=$this->getPoint($year,$month,$index);//积分激励点      print_r($months);
             $new_employee=$this->getEmployee($records['salesman'],$year,$month);
             $a=$this->position($index);
-            print_r($year);print_r($month);exit();
             if($new_employee==1&&$a==2){
                 $point=0;
             }
@@ -1875,6 +1874,7 @@ class ReportXS01SList extends CListPageModel
                 $next=1;
                 $years=$years+1;
             }
+            print_r($years); print_r($months);print_r('--'); print_r($year);print_r($month);exit();
             if(($years==$year&&$months==$month)||($years==$year&&$next==$month)){
                 $a=1;//不加入东成西就
             }else{
