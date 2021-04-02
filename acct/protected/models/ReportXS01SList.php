@@ -858,6 +858,7 @@ class ReportXS01SList extends CListPageModel
             $point=$this->getPoint($year,$month,$index);//积分激励点      print_r($months);
             $new_employee=$this->getEmployee($records['salesman'],$year,$month);
             $a=$this->position($index);
+            print_r($new_employee);print_r($a);exit();
             if($new_employee==1&&$a==2){
                 $point=0;
             }
