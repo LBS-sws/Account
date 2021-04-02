@@ -1166,7 +1166,9 @@ class ReportXS01List extends CListPageModel
             }
             $fuwu=$this->getAmount($city,$cust_type,$start_dt,$money_all);//本月提成比例服务
             $fuwu_last=$this->getAmountLast($year,$month,$index);//上月提成比例服务
-            $new_employee=$this->getEmployee($records['salesman'],$year,$month);
+            $records['salesman']=str_replace('(','',$records['salesman']);
+            $records['salesman']=str_replace(')','',$records['salesman']);
+            $new_employee=$this->getEmployees($records['salesman'],$year,$month);
             if($new_employee==1){
                 $fuwumoney=$moneys*$fuwu;
             }else{
@@ -2429,6 +2431,40 @@ class ReportXS01List extends CListPageModel
             }
         }
         return $proportion;
+    }
+
+    public  function getEmployees($employee,$year,$month){
+        $suffix = Yii::app()->params['envSuffix'];
+        $sql="select e.user_id from  hr$suffix.hr_employee d                  
+              left outer join hr$suffix.hr_binding e on  d.id=e.employee_id
+                where concat_ws(' ',d.name,d.code)='$employee'
+";
+        $records = Yii::app()->db->createCommand($sql)->queryScalar();
+        $sql1="select visit_dt from sales$suffix.sal_visit   where username='$records' order by visit_dt
+";
+        $record = Yii::app()->db->createCommand($sql1)->queryRow();
+        $timestrap=strtotime($record['visit_dt']);
+        $years=date('Y',$timestrap);
+        $months=date('m',$timestrap);
+        if(date('d',$timestrap)=='01'){
+            if($years==$year&&$months==$month){
+                $a=1;//不加入东成西就
+            }else{
+                $a=2;
+            }
+        }else{
+            $next=$months+1;
+            if($next==13){
+                $next=1;
+                $years=$years+1;
+            }
+            if(($years==$year&&$months==$month)||($years==$year&&$next==$month)){
+                $a=1;//不加入东成西就
+            }else{
+                $a=2;
+            }
+        }
+        return $a;
     }
 
     public  function getEmployee($employee,$year,$month){
