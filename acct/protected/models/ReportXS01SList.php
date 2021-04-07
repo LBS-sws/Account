@@ -1092,7 +1092,7 @@ class ReportXS01SList extends CListPageModel
                 }
                 if($records['all_number']!=NULL){
                     if($records['all_number']==0){
-                        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding1') );
+                        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
                         Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/end',array('year'=>$years,'month'=>$months,'index'=>$index)));
                     }
                     $new=$a/$records['all_number'];
@@ -1105,6 +1105,7 @@ class ReportXS01SList extends CListPageModel
                 $records['company_name']=str_replace("'","''",$records['cust_type_name']);
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N' and salesman='".$records['salesman']."' and sign_dt='".$records['sign_dt']."' order by status_dt desc";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
+                print_r($sql);print_r($records);exit();
                 $date=$records['first_dt'];
                 $timestrap=strtotime($date);
                 $year=date('Y',$timestrap);
@@ -1112,7 +1113,7 @@ class ReportXS01SList extends CListPageModel
                 $records['salesman']=str_replace('(','',$records['salesman']);
                 $records['salesman']=str_replace(')','',$records['salesman']);
                 if(empty($records['city'])){
-                    Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding2') );
+                    Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
                     Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/end',array('year'=>$years,'month'=>$months,'index'=>$index)));
                 }
                 $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
@@ -1173,7 +1174,7 @@ class ReportXS01SList extends CListPageModel
                     }
                     if($records['all_number']!=NULL){
                         if($records['all_number']==0){
-                            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding3') );
+                            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
                             Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/end',array('year'=>$years,'month'=>$months,'index'=>$index)));
                         }
                         $new=$a/$records['all_number'];
@@ -1189,7 +1190,7 @@ class ReportXS01SList extends CListPageModel
                     }
 
                     if(!isset($m)){
-                        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding4') );
+                        Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
                         Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/end',array('year'=>$years,'month'=>$months,'index'=>$index)));
                     }
                     $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
@@ -1211,7 +1212,7 @@ class ReportXS01SList extends CListPageModel
                     if($b>0){
                         if($records[$all_number]!=NULL){
                             if($records['all_number']==0){
-                                Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding5') );
+                                Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
                                 Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/end',array('year'=>$years,'month'=>$months,'index'=>$index)));
                             }
                             $news=$b/$records[$all_number];
