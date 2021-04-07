@@ -1370,7 +1370,6 @@ class ReportXS01List extends CListPageModel
         $fuwu_last=$this->getAmountLast($years,$months,$index);//上月提成比例服务
         $money=$money*$fuwu_last;//更改新增提成
         $fuwumoney=$money+$money1;//更改总和
-        print_r($years);print_r($months);print_r('--');print_r($index);print_r('--');print_r($fuwu_last);exit();
         //新增补充修改
         $sql_new="update acc_service_comm_dtl set new_calc='$fuwu' where hdr_id='$index'";
         $model = Yii::app()->db->createCommand($sql_new)->execute();
