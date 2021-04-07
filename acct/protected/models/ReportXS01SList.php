@@ -1102,7 +1102,7 @@ class ReportXS01SList extends CListPageModel
                 }else{
                     $m=0;
                 }
-//                $records['company_name']=str_replace(' ','',$records['company_name']);
+                $records['company_name']=str_replace("'","''",$records['cust_type_name']);
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N' and salesman='".$records['salesman']."' and sign_dt='".$records['sign_dt']."' order by status_dt desc";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
                 $date=$records['first_dt'];
@@ -1152,7 +1152,7 @@ class ReportXS01SList extends CListPageModel
                     }
                 }
             }else{
-//                $records['company_name']=str_replace(' ','',$records['company_name']);
+                $records['company_name']=str_replace("'","''",$records['cust_type_name']);
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='A' and salesman='".$records['salesman']."' order by status_dt desc";//更改
                 $record = Yii::app()->db->createCommand($sql)->queryAll();
                 for ($i=0;$i<count($record);$i++){
