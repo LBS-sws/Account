@@ -1155,6 +1155,7 @@ class ReportXS01SList extends CListPageModel
                 $records['company_name']=str_replace("'","''",$records['company_name']);
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='A' and salesman='".$records['salesman']."' order by status_dt desc";//更改
                 $record = Yii::app()->db->createCommand($sql)->queryAll();
+                $royaltys=array();
                 for ($i=0;$i<count($record);$i++){
                     $sqlct="select royalty from swoper$suffix.swo_service  where id='".$record[$i]['id']."'";
                     $model = Yii::app()->db->createCommand($sqlct)->queryRow();
