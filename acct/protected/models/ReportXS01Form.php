@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /* Reimbursement Form */
 
 class ReportXS01Form extends CReportForm
@@ -199,8 +199,16 @@ class ReportXS01Form extends CReportForm
             $this->new_money=$records['new_money'];
             $this->edit_money=$records['edit_money'];
             $this->out_money=$records['out_money'];
-            $point=$point['point']*100;
-            $this->point=$point."%";
+            if($point['point']<0){
+                $point['point'] = abs($point['point']);
+                $point=$point['point']*100;
+                $this->point='-'.$point."%";
+            }else{
+                $point=$point['point']*100;
+                $this->point=$point."%";
+            }
+
+
             $this->performanceedit_amount=$records['performanceedit_amount'];
             $this->performanceend_amount=$records['performanceend_amount'];
             $this->performanceedit_money=$records['performanceedit_money'];
