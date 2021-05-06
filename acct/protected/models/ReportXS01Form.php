@@ -273,18 +273,18 @@ class ReportXS01Form extends CReportForm
         $timestrap=strtotime($record['visit_dt']);
         $years=date('Y',$timestrap);
         $months=date('m',$timestrap);
-//        var_dump($records);
-//        var_dump($timestrap);
-//        var_dump($employee);
-//        var_dump($year);
-//        var_dump($month);
-//
-//        var_dump($months);
-//        var_dump($years);
+
+
+
+
+        var_dump($month);
+        var_dump($months);
+
 //        die();
         if(date('d',$timestrap)=='01'){
             if($years==$year&&$months==$month){
                 $a=1;//不加入东成西就
+                var_dump('01');
             }else{
                 $a=2;
             }
@@ -294,12 +294,15 @@ class ReportXS01Form extends CReportForm
                 $next=1;
                 $years=$years+1;
             }
+            var_dump($next);
             if(($years==$year&&$months==$month)||($years==$year&&$next==$month)){
+                var_dump('02');
                 $a=1;//不加入东成西就
             }else{
                 $a=2;
             }
         }
+        die();
         return $a;
     }
 
