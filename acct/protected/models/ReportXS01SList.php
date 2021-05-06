@@ -875,6 +875,7 @@ class ReportXS01SList extends CListPageModel
                     $employee = 2;
                 }
             }
+            var_dump($point);
             $a=$this->position($index);
             if($new_employee==1&&$a==2){
                 $point=0;
