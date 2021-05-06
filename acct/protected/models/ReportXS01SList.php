@@ -875,19 +875,12 @@ class ReportXS01SList extends CListPageModel
                     $new_employee = 2;
                 }
             }
-//            var_dump($point);
             $a=$this->position($index);
             if($new_employee==1&&$a==2){
                 $point=0;
             }
             $fuwus=$fuwu+$point;
-//            $fuwumoney=$moneys*$fuwus;
-//            var_dump($fuwu);
-//            var_dump($point);
-//            var_dump($fuwus);
-//            var_dump($moneys);
-//            var_dump($fuwumoney);
-//            die();
+            $fuwumoney=$moneys*$fuwus;
         }else{
             if(empty($cust_type)){
                 Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
