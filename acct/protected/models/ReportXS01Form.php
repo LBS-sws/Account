@@ -173,7 +173,7 @@ class ReportXS01Form extends CReportForm
 //            }
             $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."' and city='".$records['city']."'";
             $point = Yii::app()->db->createCommand($sql_point)->queryRow();
-            //print_r($employee);
+
             if(empty($point)||$employee==1){
                 $point['point']=0;
                 $point['id']=0;
@@ -207,7 +207,8 @@ class ReportXS01Form extends CReportForm
                 $point=$point['point']*100;
                 $this->point=$point."%";
             }
-           // print_r($this->point);die();
+            var_dump($employee);    //print_r($employee);
+            var_dump($this->point);die();
 
             $this->performanceedit_amount=$records['performanceedit_amount'];
             $this->performanceend_amount=$records['performanceend_amount'];
