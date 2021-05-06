@@ -199,14 +199,16 @@ class ReportXS01Form extends CReportForm
             $this->new_money=$records['new_money'];
             $this->edit_money=$records['edit_money'];
             $this->out_money=$records['out_money'];
-            if($point['point']<0){
-                $point['point'] = abs($point['point']);
-                $point=$point['point']*100;
-                $this->point='-'.$point."%";
-            }else{
-                $point=$point['point']*100;
-                $this->point=$point."%";
-            }
+//            if($point['point']<0){
+//                $point['point'] = abs($point['point']);
+//                $point=$point['point']*100;
+//                $this->point='-'.$point."%";
+//            }else{
+//                $point=$point['point']*100;
+//                $this->point=$point."%";
+//            }
+            $point=$point['point']*100;
+            $this->point=$point."%";
             var_dump($employee);    //print_r($employee);
             var_dump($this->point);die();
 
@@ -271,6 +273,15 @@ class ReportXS01Form extends CReportForm
         $timestrap=strtotime($record['visit_dt']);
         $years=date('Y',$timestrap);
         $months=date('m',$timestrap);
+        var_dump($records);
+        var_dump($timestrap);
+        var_dump($employee);
+        var_dump($year);
+        var_dump($month);
+
+        var_dump($months);
+        var_dump($years);
+        die();
         if(date('d',$timestrap)=='01'){
             if($years==$year&&$months==$month){
                 $a=1;//不加入东成西就
