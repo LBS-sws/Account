@@ -873,6 +873,7 @@ class ReportXS01SList extends CListPageModel
         }
       if(!empty($cust_type1)){
           $inv=$this->getAmount($city,$cust_type1,$start_dt,$money1);//提成比例inv
+          var_dump($inv);die();
           $invmoney=$money1*$inv;
       }else{
           $invmoney=0;
