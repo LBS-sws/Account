@@ -913,6 +913,9 @@ class ReportXS01SList extends CListPageModel
         }
 
         $salemoney=$fuwumoney+$invmoney;
+        var_dump($fuwumoney);
+        var_dump($invmoney);
+        var_dump($salemoney);die();
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(empty($records)){
