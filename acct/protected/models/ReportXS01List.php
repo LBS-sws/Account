@@ -2213,16 +2213,16 @@ class ReportXS01List extends CListPageModel
             where a.id='$ai'";
             $records = Yii::app()->db->createCommand($sql)->queryRow();
             $fuwu=$this->getProductctAmount($city,$records['task'],$records['sales_products'],$date,$money);//本单产品提成比例
-            var_dump('-'.$fuwu);
+//            var_dump('-'.$fuwu);
             $fuwu=$fuwu+$point['point'];
             $mons+=$records['money']*$fuwu*$records['qty'];
 
-            var_dump('-'.$fuwu);
-            var_dump('-'.$mons);
-            var_dump($records['money']);
-            var_dump($records['qty']);
+//            var_dump('-'.$fuwu);
+//            var_dump('-'.$mons);
+//            var_dump($records['money']);
+//            var_dump($records['qty']);
         }
-        die();
+//        die();
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(empty($records)){
