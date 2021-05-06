@@ -859,6 +859,22 @@ class ReportXS01SList extends CListPageModel
             $records['salesman']=str_replace('(','',$records['salesman']);
             $records['salesman']=str_replace(')','',$records['salesman']);
             $new_employee=$this->getEmployee($records['salesman'],$year,$month);
+            //新增判断当月是否入职月
+            if($new_employee==1){
+                $employee_code = $records['employee_code'];
+                $sql_r="select e.user_id from  hr$suffix.hr_employee d                  
+              left outer join hr$suffix.hr_binding e on  d.id=e.employee_id
+              where d.code='$employee_code'";
+                $records_u = Yii::app()->db->createCommand($sql_r)->queryScalar();
+                $sql_c="select visit_dt from sales$suffix.sal_visit   where username='$records_u'  order by visit_dt ";
+                $record = Yii::app()->db->createCommand($sql_c)->queryRow();
+                $timestrap=strtotime($record['visit_dt']);
+                $year_rz=date('Y',$timestrap);
+                $month_rz=date('m',$timestrap);
+                if($year_rz==$year&&$month_rz==($month-1)){
+                    $employee = 2;
+                }
+            }
             $a=$this->position($index);
             if($new_employee==1&&$a==2){
                 $point=0;
@@ -873,7 +889,7 @@ class ReportXS01SList extends CListPageModel
         }
       if(!empty($cust_type1)){
           $inv=$this->getAmount($city,$cust_type1,$start_dt,$money1);//提成比例inv
-          var_dump($inv);die();
+
           $invmoney=$money1*$inv;
       }else{
           $invmoney=0;
