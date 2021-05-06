@@ -209,8 +209,8 @@ class ReportXS01Form extends CReportForm
 //            }
             $point=$point['point']*100;
             $this->point=$point."%";
-            var_dump($employee);    //print_r($employee);
-            var_dump($this->point);die();
+//            var_dump($employee);    //print_r($employee);
+//            var_dump($this->point);die();
 
             $this->performanceedit_amount=$records['performanceedit_amount'];
             $this->performanceend_amount=$records['performanceend_amount'];
@@ -273,15 +273,15 @@ class ReportXS01Form extends CReportForm
         $timestrap=strtotime($record['visit_dt']);
         $years=date('Y',$timestrap);
         $months=date('m',$timestrap);
-        var_dump($records);
-        var_dump($timestrap);
-        var_dump($employee);
-        var_dump($year);
-        var_dump($month);
-
-        var_dump($months);
-        var_dump($years);
-        die();
+//        var_dump($records);
+//        var_dump($timestrap);
+//        var_dump($employee);
+//        var_dump($year);
+//        var_dump($month);
+//
+//        var_dump($months);
+//        var_dump($years);
+//        die();
         if(date('d',$timestrap)=='01'){
             if($years==$year&&$months==$month){
                 $a=1;//不加入东成西就
