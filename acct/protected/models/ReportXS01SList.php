@@ -864,36 +864,27 @@ class ReportXS01SList extends CListPageModel
                 $employee_code = $records['salesman'];
                 $sql_r="select e.user_id from  hr$suffix.hr_employee d                  
               left outer join hr$suffix.hr_binding e on  d.id=e.employee_id
-              where d.code='$employee_code'";
-                $records_u = Yii::app()->db->createCommand($sql_r)->queryScalar();
-                $sql_c="select visit_dt from sales$suffix.sal_visit   where username='$records_u'  order by visit_dt ";
-                $record = Yii::app()->db->createCommand($sql_c)->queryRow();
-                $timestrap=strtotime($record['visit_dt']);
-                var_dump($records);
-                var_dump($records_u);
-                var_dump(data($timestrap));
+              where concat_ws(' ',d.name,d.code)='$employee_code'
+";
+                $records_r = Yii::app()->db->createCommand($sql_r)->queryScalar();
+                $sql1_r="select visit_dt from sales$suffix.sal_visit   where username='$records_r' order by visit_dt
+";
+                $record_r = Yii::app()->db->createCommand($sql1_r)->queryRow();
+                $timestrap=strtotime($record_r['visit_dt']);
                 $year_rz=date('Y',$timestrap);
                 $month_rz=date('m',$timestrap);
-                var_dump($year);
-                var_dump($year_rz);
-                var_dump($month-1);
-                var_dump($month_rz);
                 if($year_rz==$year&&$month_rz==($month-1)){
                     $new_employee = 2;
                 }
             }
             $a=$this->position($index);
-            var_dump($new_employee);
-            var_dump($point);
+
             if($new_employee==1&&$a==2){
                 $point=0;
             }
             $fuwus=$fuwu+$point;
             $fuwumoney=$moneys*$fuwus;
-            var_dump($point);
-            var_dump($moneys);
-            var_dump($fuwus);
-            var_dump($fuwumoney);die();
+
         }else{
             if(empty($cust_type)){
                 Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
