@@ -870,7 +870,7 @@ class ReportXS01SList extends CListPageModel
                 $record = Yii::app()->db->createCommand($sql_c)->queryRow();
                 $timestrap=strtotime($record['visit_dt']);
                 var_dump($records);
-                var_dump(data($records_u));
+                var_dump($records_u);
                 var_dump(data($timestrap));
                 $year_rz=date('Y',$timestrap);
                 $month_rz=date('m',$timestrap);
