@@ -174,6 +174,22 @@ class ReportXS02Form extends CReportForm
 //            }
             $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."' and city='".$records['city']."'";
             $point = Yii::app()->db->createCommand($sql_point)->queryRow();
+            //新增判断当月是否入职月
+            if($employee==1){
+                $employee_code = $records['employee_code'];
+                $sql_r="select e.user_id from  hr$suffix.hr_employee d                  
+              left outer join hr$suffix.hr_binding e on  d.id=e.employee_id
+              where d.code='$employee_code'";
+                $records_u = Yii::app()->db->createCommand($sql_r)->queryScalar();
+                $sql_c="select visit_dt from sales$suffix.sal_visit   where username='$records_u'  order by visit_dt ";
+                $record = Yii::app()->db->createCommand($sql_c)->queryRow();
+                $timestrap=strtotime($record['visit_dt']);
+                $year_rz=date('Y',$timestrap);
+                $month_rz=date('m',$timestrap);
+                if($year_rz==$year&&$month_rz==($month-1)){
+                    $employee = 2;
+                }
+            }
             if(empty($point)||$employee==1){
                 $point['point']=0;
                 $point['id']=0;
