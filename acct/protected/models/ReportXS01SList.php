@@ -881,6 +881,10 @@ class ReportXS01SList extends CListPageModel
             }
             $fuwus=$fuwu+$point;
             $fuwumoney=$moneys*$fuwus;
+            var_dump($point);
+            var_dump($moneys);
+            var_dump($fuwus);
+            var_dump($fuwumoney);die();
         }else{
             if(empty($cust_type)){
                 Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
@@ -913,9 +917,7 @@ class ReportXS01SList extends CListPageModel
         }
 
         $salemoney=$fuwumoney+$invmoney;
-        var_dump($fuwumoney);
-        var_dump($invmoney);
-        var_dump($salemoney);die();
+
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
         if(empty($records)){
