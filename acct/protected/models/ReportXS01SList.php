@@ -869,6 +869,7 @@ class ReportXS01SList extends CListPageModel
                 $sql_c="select visit_dt from sales$suffix.sal_visit   where username='$records_u'  order by visit_dt ";
                 $record = Yii::app()->db->createCommand($sql_c)->queryRow();
                 $timestrap=strtotime($record['visit_dt']);
+                var_dump(data($timestrap));
                 $year_rz=date('Y',$timestrap);
                 $month_rz=date('m',$timestrap);
                 var_dump($year);
