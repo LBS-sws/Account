@@ -285,7 +285,7 @@ $this->pageTitle = Yii::app()->name . ' - Salestable Form';
                     <tr style="background-color: #acc8cc">
                         <td>金额合计</td>
                         <td></td>
-                        <td colspan="14"><?php echo $model->add_money; ?></td>
+                        <td colspan="14"><?php echo  sprintf("%.2f",$model->add_money); ?></td>
                         <td colspan="8"><?php echo $model->reduce_money; ?></td>
                     </tr>
                 </table>
