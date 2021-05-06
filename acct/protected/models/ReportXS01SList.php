@@ -881,6 +881,12 @@ class ReportXS01SList extends CListPageModel
             }
             $fuwus=$fuwu+$point;
             $fuwumoney=$moneys*$fuwus;
+            var_dump($fuwu);
+            var_dump($point);
+            var_dump($fuwus);
+            var_dump($moneys);
+            var_dump($fuwumoney);
+            die();
         }else{
             if(empty($cust_type)){
                 Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
