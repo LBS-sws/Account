@@ -861,7 +861,7 @@ class ReportXS01SList extends CListPageModel
             $new_employee=$this->getEmployee($records['salesman'],$year,$month);
             //新增判断当月是否入职月
             if($new_employee==1){
-                $employee_code = $records['employee_code'];
+                $employee_code = $records['salesman'];
                 $sql_r="select e.user_id from  hr$suffix.hr_employee d                  
               left outer join hr$suffix.hr_binding e on  d.id=e.employee_id
               where d.code='$employee_code'";
