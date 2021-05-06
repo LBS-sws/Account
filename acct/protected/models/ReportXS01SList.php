@@ -871,6 +871,10 @@ class ReportXS01SList extends CListPageModel
                 $timestrap=strtotime($record['visit_dt']);
                 $year_rz=date('Y',$timestrap);
                 $month_rz=date('m',$timestrap);
+                var_dump($year);
+                var_dump($year_rz);
+                var_dump($month-1);
+                var_dump($month_rz);
                 if($year_rz==$year&&$month_rz==($month-1)){
                     $new_employee = 2;
                 }
