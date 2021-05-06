@@ -173,7 +173,22 @@ class ReportXS01Form extends CReportForm
 //            }
             $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."' and city='".$records['city']."'";
             $point = Yii::app()->db->createCommand($sql_point)->queryRow();
-
+            //新增判断当月是否入职月
+            if($employee==1){
+                $employee_code = $records['employee_code'];
+                $sql_r="select e.user_id from  hr$suffix.hr_employee d                  
+              left outer join hr$suffix.hr_binding e on  d.id=e.employee_id
+              where d.code='$employee_code'";
+                $records_u = Yii::app()->db->createCommand($sql_r)->queryScalar();
+                $sql_c="select visit_dt from sales$suffix.sal_visit   where username='$records_u'  order by visit_dt ";
+                $record = Yii::app()->db->createCommand($sql_c)->queryRow();
+                $timestrap=strtotime($record['visit_dt']);
+                $year_rz=date('Y',$timestrap);
+                $month_rz=date('m',$timestrap);
+                if($year_rz==$year&&$month_rz==($month-1)){
+                    $employee = 2;
+                }
+            }
             if(empty($point)||$employee==1){
                 $point['point']=0;
                 $point['id']=0;
@@ -209,8 +224,7 @@ class ReportXS01Form extends CReportForm
 //            }
             $point=$point['point']*100;
             $this->point=$point."%";
-//            var_dump($employee);    //print_r($employee);
-//            var_dump($this->point);die();
+
 
             $this->performanceedit_amount=$records['performanceedit_amount'];
             $this->performanceend_amount=$records['performanceend_amount'];
@@ -227,9 +241,6 @@ class ReportXS01Form extends CReportForm
             }
             $this->performance=$a;
         }
-
-//        print_r('<pre>');
-//        print_r($records);
         return true;
     }
 
@@ -274,17 +285,9 @@ class ReportXS01Form extends CReportForm
         $years=date('Y',$timestrap);
         $months=date('m',$timestrap);
 
-
-
-
-        var_dump($month);
-        var_dump($months);
-
-//        die();
         if(date('d',$timestrap)=='01'){
             if($years==$year&&$months==$month){
                 $a=1;//不加入东成西就
-                var_dump('01');
             }else{
                 $a=2;
             }
@@ -294,15 +297,12 @@ class ReportXS01Form extends CReportForm
                 $next=1;
                 $years=$years+1;
             }
-            var_dump($next);
             if(($years==$year&&$months==$month)||($years==$year&&$next==$month)){
-                var_dump('02');
                 $a=1;//不加入东成西就
             }else{
                 $a=2;
             }
         }
-        die();
         return $a;
     }
 
