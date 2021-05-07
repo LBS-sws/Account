@@ -2213,23 +2213,12 @@ class ReportXS01List extends CListPageModel
             where a.id='$ai'";
             $records = Yii::app()->db->createCommand($sql)->queryRow();
             $fuwu=$this->getProductctAmount($city,$records['task'],$records['sales_products'],$date,$money);//本单产品提成比例
-            var_dump('fuwu01'.$fuwu);
             $fuwu=$fuwu+$point['point'];
             $mons+=$records['money']*$fuwu*$records['qty'];
-            var_dump('point'.$point['point']);
-            var_dump('fuwu02'.$fuwu);
-            var_dump('qty'.$records['qty']);
-            var_dump('money'.$records['money']);
-
-            var_dump('money+'.$records['money']*$fuwu*$records['qty']);
-            var_dump('-------------------------------');
-
         }
 
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
-        var_dump($records);
-        die();
         if(empty($records)){
             $sql1 = "insert into acc_service_comm_dtl(
 					hdr_id, product_amount
@@ -2245,6 +2234,12 @@ class ReportXS01List extends CListPageModel
 
     public  function getProductctAmount($city, $cust_type,$sales_products, $start_dt, $sales_amt) {
         //城市，类别，时间，总金额
+        var_dump($city);
+        var_dump($cust_type);
+        var_dump($start_dt);
+        var_dump($sales_amt);
+        var_dump($sales_products);
+        die();
         $rtn = 0;
         if (!empty($city) && !empty($cust_type) && !empty($start_dt) && !empty($sales_amt)) {
             $suffix = Yii::app()->params['envSuffix'];
