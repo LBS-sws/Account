@@ -2212,6 +2212,7 @@ class ReportXS01List extends CListPageModel
                    left outer join swoper$suffix.swo_task  b on  b.id=a.task
             where a.id='$ai'";
             $records = Yii::app()->db->createCommand($sql)->queryRow();
+            var_dump($money);
             $fuwu=$this->getProductctAmount($city,$records['task'],$records['sales_products'],$date,$money);//本单产品提成比例
             $fuwu=$fuwu+$point['point'];
             $mons+=$records['money']*$fuwu*$records['qty'];
@@ -2235,7 +2236,7 @@ class ReportXS01List extends CListPageModel
     public  function getProductctAmount($city, $cust_type,$sales_products, $start_dt, $sales_amt) {
         //城市，类别，时间，总金额
         $rtn = 0;
-        if (!empty($city) && !empty($cust_type) && !empty($start_dt) && $sales_amt) {//!empty($sales_amt)
+        if (!empty($city) && !empty($cust_type) && !empty($start_dt) && !empty($sales_amt)) {
             $suffix = Yii::app()->params['envSuffix'];
             //客户类别
             //  $sql = "select rpt_cat from swoper$suffix.swo_customer_type where id=$cust_type";
@@ -2245,7 +2246,6 @@ class ReportXS01List extends CListPageModel
             $sdate = General::toMyDate($start_dt);
             $sql = "select id from acc_product_rate_hdr where city='$city' and start_dt<'$sdate'   order by start_dt desc limit 1";
             $row = Yii::app()->db->createCommand($sql)->queryRow();
-            var_dump($row);
             if ($row!==false) {
                 $id = $row['id'];
                 $sql = "select id, rate from acc_product_rate_dtl
@@ -2276,10 +2276,7 @@ class ReportXS01List extends CListPageModel
                 }
 
             }
-            var_dump($sql);
-            var_dump($row);
-            var_dump($rtn );
-            die();
+
         }
         // }
 //                        print_r('<pre>');
