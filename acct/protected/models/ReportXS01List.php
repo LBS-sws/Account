@@ -2234,12 +2234,6 @@ class ReportXS01List extends CListPageModel
 
     public  function getProductctAmount($city, $cust_type,$sales_products, $start_dt, $sales_amt) {
         //城市，类别，时间，总金额
-        var_dump($city);
-        var_dump($cust_type);
-        var_dump($start_dt);
-        var_dump($sales_amt);
-        var_dump($sales_products);
-        die();
         $rtn = 0;
         if (!empty($city) && !empty($cust_type) && !empty($start_dt) && !empty($sales_amt)) {
             $suffix = Yii::app()->params['envSuffix'];
@@ -2251,6 +2245,7 @@ class ReportXS01List extends CListPageModel
             $sdate = General::toMyDate($start_dt);
             $sql = "select id from acc_product_rate_hdr where city='$city' and start_dt<'$sdate'   order by start_dt desc limit 1";
             $row = Yii::app()->db->createCommand($sql)->queryRow();
+            var_dump($row);
             if ($row!==false) {
                 $id = $row['id'];
                 $sql = "select id, rate from acc_product_rate_dtl
@@ -2281,6 +2276,10 @@ class ReportXS01List extends CListPageModel
                 }
 
             }
+            var_dump($sql);
+            var_dump($row);
+            var_dump($rtn );
+            die();
         }
         // }
 //                        print_r('<pre>');
