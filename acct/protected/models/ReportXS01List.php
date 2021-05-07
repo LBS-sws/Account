@@ -2235,7 +2235,7 @@ class ReportXS01List extends CListPageModel
     public  function getProductctAmount($city, $cust_type,$sales_products, $start_dt, $sales_amt) {
         //城市，类别，时间，总金额
         $rtn = 0;
-        if (!empty($city) && !empty($cust_type) && !empty($start_dt) && !empty($sales_amt)) {
+        if (!empty($city) && !empty($cust_type) && !empty($start_dt) && $sales_amt) {//!empty($sales_amt)
             $suffix = Yii::app()->params['envSuffix'];
             //客户类别
             //  $sql = "select rpt_cat from swoper$suffix.swo_customer_type where id=$cust_type";
