@@ -2213,18 +2213,23 @@ class ReportXS01List extends CListPageModel
             where a.id='$ai'";
             $records = Yii::app()->db->createCommand($sql)->queryRow();
             $fuwu=$this->getProductctAmount($city,$records['task'],$records['sales_products'],$date,$money);//本单产品提成比例
-//            var_dump('-'.$fuwu);
+            var_dump('fuwu01'.$fuwu);
             $fuwu=$fuwu+$point['point'];
             $mons+=$records['money']*$fuwu*$records['qty'];
+            var_dump('point'.$point['point']);
+            var_dump('fuwu02'.$fuwu);
+            var_dump('qty'.$records['qty']);
+            var_dump('money'.$records['money']);
 
-//            var_dump('-'.$fuwu);
-//            var_dump('-'.$mons);
-//            var_dump($records['money']);
-//            var_dump($records['qty']);
+            var_dump('money+'.$records['money']*$fuwu*$records['qty']);
+            var_dump('-------------------------------');
+
         }
-//        die();
+
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
         $records = Yii::app()->db->createCommand($sql)->queryRow();
+        var_dump($records);
+        die();
         if(empty($records)){
             $sql1 = "insert into acc_service_comm_dtl(
 					hdr_id, product_amount
