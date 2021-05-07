@@ -780,14 +780,14 @@ class SalesTableForm extends CFormModel
             $this->amt_install_money=0;
         }
         $sale_money=$paper_money+$disinfectant_money+$purification_money+$aromatherapy_money+$pestcontrol_money+$other_money;
-        var_dump($paper_money);
-        var_dump($disinfectant_money);
-        var_dump($purification_money);
-        var_dump($aromatherapy_money);
-        var_dump($pestcontrol_money);
-        var_dump($other_money);
-        var_dump($sale_money);
-        die();
+//        var_dump($paper_money);
+//        var_dump($disinfectant_money);
+//        var_dump($purification_money);
+//        var_dump($aromatherapy_money);
+//        var_dump($pestcontrol_money);
+//        var_dump($other_money);
+//        var_dump($sale_money);
+//        die();
         if($sale_money<0){
             $sale_money=0;
         }
