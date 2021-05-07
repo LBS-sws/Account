@@ -2212,7 +2212,6 @@ class ReportXS01List extends CListPageModel
                    left outer join swoper$suffix.swo_task  b on  b.id=a.task
             where a.id='$ai'";
             $records = Yii::app()->db->createCommand($sql)->queryRow();
-            //var_dump($money);die();
             $fuwu=$this->getProductctAmount($city,$records['task'],$records['sales_products'],$date,$records['money']);//本单产品提成比例
             $fuwu=$fuwu+$point['point'];
             $mons+=$records['money']*$fuwu*$records['qty'];
