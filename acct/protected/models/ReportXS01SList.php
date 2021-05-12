@@ -776,7 +776,9 @@ class ReportXS01SList extends CListPageModel
         $zhuangji=0;
         $moneys=0;
         $start_dt=$year."-".$month."-01";
+
         foreach ($id as $ai){
+
             if(strstr($ai,'+')){
                 $ai=rtrim($ai,'+');
                 $sql="select * from acc_service_comm_copy where id='$ai'";
@@ -793,6 +795,7 @@ class ReportXS01SList extends CListPageModel
                     Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
                     Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)));
                 }
+
                 if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                     $money+=$a;
                     $cust_type='fw';
@@ -813,6 +816,7 @@ class ReportXS01SList extends CListPageModel
             }else{
                 $sql="select * from swoper$suffix.swo_service where id='$ai'";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
+
                 if($records['paid_type']=='1'||$records['paid_type']=='Y'){
                     $a=$records['amt_paid'];
                 }else{
@@ -827,6 +831,7 @@ class ReportXS01SList extends CListPageModel
                     Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
                     Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)));
                 }
+
                 if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                     $money+=$a;
                     $cust_type='fw';
@@ -837,6 +842,9 @@ class ReportXS01SList extends CListPageModel
                         $commission=$a;
                         $moneys+=$commission;
                     }
+                    var_dump($records);
+                    var_dump('----------');
+                   var_dump($commission);
                     $sqlct="update swoper$suffix.swo_service set commission='".$commission."'  where id='$ai'";
                     $model = Yii::app()->db->createCommand($sqlct)->execute();
                 }elseif ($records['cust_type']=='4'){
@@ -846,6 +854,7 @@ class ReportXS01SList extends CListPageModel
            //     $zhuangji+=$records['amt_install'];
             }
         }
+        die();
         if(!empty($cust_type)){
             $sql_edit_money="select edit_money from acc_service_comm_dtl where hdr_id='$index'";
             $records_edit_money = Yii::app()->db->createCommand($sql_edit_money)->queryRow();
