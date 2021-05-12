@@ -855,7 +855,7 @@ class ReportXS01SList extends CListPageModel
            //     $zhuangji+=$records['amt_install'];
             }
         }
-        die();
+
         if(!empty($cust_type)){
             $sql_edit_money="select edit_money from acc_service_comm_dtl where hdr_id='$index'";
             $records_edit_money = Yii::app()->db->createCommand($sql_edit_money)->queryRow();
