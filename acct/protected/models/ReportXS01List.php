@@ -1113,6 +1113,10 @@ class ReportXS01List extends CListPageModel
                         $commission=$a;
                         $moneys+=$commission;
                     }
+                    //判断新增
+                    if($commission<=0){
+                        $commission = $records['amt_paid']*$records['service'];
+                    }
                     $sqlct="update acc_service_comm_copy set commission='".$commission."'  where id='$ai'";
                     $model = Yii::app()->db->createCommand($sqlct)->execute();
                 }elseif ($records['cust_type']=='4'){
@@ -1146,6 +1150,10 @@ class ReportXS01List extends CListPageModel
                     }else{
                         $commission=$a;
                         $moneys+=$commission;
+                    }
+                    //判断新增
+                    if($commission<=0){
+                        $commission = $records['amt_paid']*$records['service'];
                     }
                     $sqlct="update swoper$suffix.swo_service set commission='".$commission."'  where id='$ai'";
                     $model = Yii::app()->db->createCommand($sqlct)->execute();
