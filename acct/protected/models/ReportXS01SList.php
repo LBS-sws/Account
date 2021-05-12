@@ -842,13 +842,10 @@ class ReportXS01SList extends CListPageModel
                         $commission=$a;
                         $moneys+=$commission;
                     }
-                    var_dump('$money='.$money);
-                    var_dump('$a='.$a);
-                    var_dump('$records[\'othersalesman\']='.$records['othersalesman']);
-                    var_dump('$spanning='.$spanning);
-                    var_dump('$moneys='.$moneys);
-                    var_dump('----------');
-                   var_dump('$commission='.$commission);
+                   //判断新增
+                    if($commission<=0){
+                        $commission = $records['amt_paid']*$records['service'];
+                    }
                     $sqlct="update swoper$suffix.swo_service set commission='".$commission."'  where id='$ai'";
                     $model = Yii::app()->db->createCommand($sqlct)->execute();
                 }elseif ($records['cust_type']=='4'){
