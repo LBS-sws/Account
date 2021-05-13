@@ -714,7 +714,7 @@ class ReportXS01List extends CListPageModel
                     $a=$arrs['amt_paid']*$arrs['ctrt_period'];
                 }
                 $this->attr[] = array(
-                    'id'=>$arrs['id'].'+',
+                    'id'=>$arrs['id'],//.'+'
                     'company_name'=>$arrs['company_name'],        //客户名称
                     'city_name'=>$arrs['city_name'],               //城市
                     'type_desc'=>$arrs['type_desc'],               //类别
