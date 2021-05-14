@@ -50,8 +50,10 @@ class LookupController extends Controller
 		$sql = "select id, concat(left(concat(code,space(8)),8),if(full_name is null or full_name='',name,full_name)) as value from swoper$suffix.swo_company
 				where (code like '%$searchx%' or name like '$searchx%') and city='$city'";
 */
-		$sql = "select id, concat(code,' ',name,'/',full_name) as value from swoper$suffix.swo_company
-				where (code like '%$searchx%' or name like '$searchx%' or full_name like '%$searchx%') and city='$city'";
+//		$sql = "select id, concat(code,' ',name,'/',full_name) as value from swoper$suffix.swo_company
+//				where (code like '%$searchx%' or name like '$searchx%' or full_name like '%$searchx%') and city='$city'";
+        $sql = "select id, concat(code,name) as value from swoper$suffix.swo_company
+				where (code like '%$searchx%' or name like '%$searchx%') and city='$city'";
 		$result = Yii::app()->db->createCommand($sql)->queryAll();
 		$data = TbHtml::listData($result, 'id', 'value');
 		echo TbHtml::listBox('lstlookup', '', $data, array('size'=>'15', 'multiple'=>true));
@@ -72,7 +74,7 @@ class LookupController extends Controller
 						'id'=>$record['id'],
 					//	'value'=>substr($record['code'].str_repeat(' ',8),0,8).(empty($record['full_name'])?$record['name']:$record['full_name']),
 					//	'value'=>substr($record['code'].str_repeat(' ',8),0,8).$record['name'],
-						'value'=>$record['code'].' '.$record['name'].'/'.$record['full_name'],
+						'value'=>$record['code'].$record['name'],//'value'=>$record['code'].' '.$record['name'].'/'.$record['full_name'],
 						'contact'=>trim($record['cont_name']).'/'.trim($record['cont_phone']),
 						'address'=>$record['address'],
 					);
