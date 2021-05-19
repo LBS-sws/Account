@@ -714,7 +714,7 @@ class ReportXS01List extends CListPageModel
                     $a=$arrs['amt_paid']*$arrs['ctrt_period'];
                 }
                 $this->attr[] = array(
-                    'id'=>$arrs['id'],//.'+'
+                    'id'=>$arrs['id'].'+',
                     'company_name'=>$arrs['company_name'],        //客户名称
                     'city_name'=>$arrs['city_name'],               //城市
                     'type_desc'=>$arrs['type_desc'],               //类别
@@ -2532,8 +2532,31 @@ class ReportXS01List extends CListPageModel
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
         foreach ($id as $ai) {
-            $sqlct="update swoper$suffix.swo_service set commission=0,other_commission=0  where id='$ai'";
+            $fq_comm = 0;
+            //判断是否是在提成计算新增数据
+            if(strstr($ai,'+')){
+                $ai=rtrim($ai,'+');
+//                $sqljf = "select amt_paid,all_number from acc_service_comm_copy where id='$ai'";
+//                $fj_model =  Yii::app()->db->createCommand($sqljf)->queryRow();
+//                $fj = $fj_model['amt_paid']*$fj_model['all_number'];
+                $sqlct="update acc_service_comm_copy set commission=0,other_commission=0  where id='$ai'";
+
+            }else{
+                $sqlct="update swoper$suffix.swo_service set commission=0,other_commission=0  where id='$ai'";
+//                $sqljf = "select hdr_id from swoper$suffix.swo_service where id='$ai'";
+            }
+//            $fj =  Yii::app()->db->createCommand($sqljf)->queryRow();
             $model = Yii::app()->db->createCommand($sqlct)->execute();
+
+            //新增生意额减去清楚
+            //$fq_comm += ($fj['commission']+$fj['other_commission']);
+//            var_dump($fj['hdr_id']);
+//            die();
         }
+      //  var_dump($fq_comm);die();
+//        if ($fq_comm>0){
+//            $sql1="update acc_service_comm_dtl set new_calc='0' , new_amount='0',new_money='0' where hdr_id='$index'";
+//            $record = Yii::app()->db->createCommand($sql1)->execute();
+//        }
     }
 }
