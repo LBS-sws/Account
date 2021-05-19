@@ -78,7 +78,7 @@ class ProductsrateForm extends CFormModel
 			$this->city = $row['city'];
 			$this->start_dt = General::toDate($row['start_dt']);
 
-			$sql = "select * from acc_product_rate_dtl where hdr_id=$index order by operator desc, sales_amount";
+			$sql = "select * from acc_product_rate_dtl where hdr_id=$index order by name desc, sales_amount";//operator
 			$rows = Yii::app()->db->createCommand($sql)->queryAll();
 			if (count($rows) > 0) {
 				$this->detail = array();
