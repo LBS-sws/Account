@@ -110,6 +110,7 @@ if ($model->scenario!='view') {
 $('table').on('click','#btnDelRow', function() {
 	$(this).closest('tr').find('[id*=\"_uflag\"]').val('D');
 	$(this).closest('tr').hide();
+	$(this).closest('tr').remove();
 });
 EOF;
 Yii::app()->clientScript->registerScript('removeRow',$js,CClientScript::POS_READY);
