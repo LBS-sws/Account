@@ -2220,9 +2220,12 @@ class ReportXS01List extends CListPageModel
                    left outer join swoper$suffix.swo_task  b on  b.id=a.task
             where a.id='$ai'";
             $records = Yii::app()->db->createCommand($sql)->queryRow();
-            $fuwu=$this->getProductctAmount($city,$records['task'],$records['sales_products'],$date,$records['money']);//本单产品提成比例
+
+            $fuwu=$this->getProductctAmount($city,$records['sales_products'],$records['sales_products'],$date,$records['money']);//本单产品提成比例 2021-5-20 第二个系数$records['task']
+
             $fuwu=$fuwu+$point['point'];
             $mons+=$records['money']*$fuwu*$records['qty'];
+
         }
 
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
@@ -2260,6 +2263,7 @@ class ReportXS01List extends CListPageModel
 							order by sales_amount limit 1
 						";
                 $row = Yii::app()->db->createCommand($sql)->queryRow();
+
                 if ($row!==false) {
                     $sql = "select id, rate from acc_product_rate_dtl
 							where hdr_id='$id' and name='$cust_type' and ((sales_amount>=$sales_amt and operator='LE')
