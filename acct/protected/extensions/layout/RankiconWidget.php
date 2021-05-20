@@ -29,12 +29,17 @@ class RankiconWidget extends CWidget
 				<h3 class="modal-title">$title</h3>
 			</div>
 			<div class="modal-body">
-				<table width="100%"><tr>
-					<td width="10%">&nbsp;</td>
-					<td align="center">$image</td>
-					<td align="center"><h2><strong>$level</strong></h2></td>
-					<td width="10%">&nbsp;</td>
-				</tr></table>
+				<table width="100%">
+					<tr>
+						<td width="10%">&nbsp;</td>
+						<td align="center">$image</td>
+						<td align="center"><h2><strong>$level</strong></h2></td>
+						<td width="10%">&nbsp;</td>
+					</tr>
+					<tr><td colspan=4>&nbsp;</td></tr>
+					<tr><td colspan=4>&nbsp;</td></tr>
+					<tr><td colspan=4>&nbsp;</td></tr>
+				</table>
 			</div>
 		</div>
 		<!-- /.modal-content -->
