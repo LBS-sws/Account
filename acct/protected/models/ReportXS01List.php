@@ -2221,8 +2221,8 @@ class ReportXS01List extends CListPageModel
             where a.id='$ai'";
             $records = Yii::app()->db->createCommand($sql)->queryRow();
 
-            $fuwu=$this->getProductctAmount($city,$records['sales_products'],$records['sales_products'],$date,$records['money']);//本单产品提成比例 2021-5-20 第二个系数$records['task']
-
+            $fuwu=$this->getProductctAmount($city,$records['task'],$records['sales_products'],$date,$records['money']);//本单产品提成比例 2021-5-20 第二个系数$records['task']
+            //var_dump($fuwu);die();
             $fuwu=$fuwu+$point['point'];
             $mons+=$records['money']*$fuwu*$records['qty'];
 
