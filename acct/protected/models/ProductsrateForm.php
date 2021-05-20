@@ -130,12 +130,8 @@ class ProductsrateForm extends CFormModel
 						) values (
 						:name,:start_dt, :city, :luu, :lcu
 						)";
-				if(isset($_POST['ProductsrateForm']['detail'][0]['name'])){
-                    $name=$_POST['ProductsrateForm']['detail'][0]['name'];
-                }else{
-                    $name=$_POST['ProductsrateForm']['detail'][1]['name'];
-                }
-
+				$detail = array_values($_POST['ProductsrateForm']['detail']);
+				$name=$detail[0]['name'];
 				break;
 			case 'edit':
 				$sql = "update acc_product_rate_hdr set  
@@ -145,11 +141,8 @@ class ProductsrateForm extends CFormModel
 							luu = :luu 
 						where id = :id
 						";
-                if($_POST['ProductsrateForm']['detail'][0]['name']){
-                    $name=$_POST['ProductsrateForm']['detail'][0]['name'];
-                }else{
-                    $name=$_POST['ProductsrateForm']['detail'][1]['name'];
-                }
+                $detail = array_values($_POST['ProductsrateForm']['detail']);
+                $name=$detail[0]['name'];
 				break;
 		}
 
