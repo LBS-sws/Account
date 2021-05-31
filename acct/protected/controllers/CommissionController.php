@@ -99,7 +99,9 @@ class CommissionController extends Controller
 
     public function actionNew($pageNum=0,$year,$month,$index)
     {
+
         $model = new ReportXS01List;
+
         if (isset($_POST['ReportXS01List'])) {
             $model->attributes = $_POST['ReportXS01List'];
         } else {
@@ -624,6 +626,10 @@ class CommissionController extends Controller
         }else{
             $records=2;
         }
+        //6月份后设置不加入东成西就
+        if(time()>=strtotime('2021/06/01')){
+            $records=1;
+        }
         return $records;
     }
 
@@ -660,7 +666,10 @@ class CommissionController extends Controller
                 $a=2;
             }
         }
-
+        //6月份后设置不加入东成西就
+        if(time()>=strtotime('2021/06/01')){
+            $a=1;
+        }
         return $a;
     }
 }
