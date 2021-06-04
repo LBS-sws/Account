@@ -889,13 +889,6 @@ class ReportXS01SList extends CListPageModel
                 if($year_rz==$year&&$month_rz==($month-1)){
                     $new_employee = 2;
                 }
-                //取消东成西就判断是否当月入职
-                if(time()>=strtotime('2021/06/01')){
-                    $new_employee=2;
-                    if($year_rz==$year&&$month_rz==$month){
-                        $new_employee=1;
-                    }
-                }
             }
             $a=$this->position($index);
 
@@ -937,24 +930,23 @@ class ReportXS01SList extends CListPageModel
         }
 
         $salemoney=$fuwumoney+$invmoney;
-        //东成西就取消，2021年5月及以前数据固定
-        if(time()>=strtotime('2021/06/01')) {
-            $sql = "select * from acc_service_comm_dtl where hdr_id='$index'";
-            $records = Yii::app()->db->createCommand($sql)->queryRow();
-            if (empty($records)) {
-                $sql1 = "insert into acc_service_comm_dtl(
+
+        $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
+        $records = Yii::app()->db->createCommand($sql)->queryRow();
+        if(empty($records)){
+            $sql1 = "insert into acc_service_comm_dtl(
 					hdr_id, new_calc, new_amount,new_money
 				) values (
-					'" . $index . "','" . $fuwu . "','" . $salemoney . "','" . $money . "'
+					'".$index."','".$fuwu."','".$salemoney."','".$money."'
 				)";
-            } else {
-                $sql1 = "update acc_service_comm_dtl set new_calc='$fuwu' , new_amount='" . $salemoney . "',new_money='" . $money . "' where hdr_id='$index'";
-            }
-//print_r($sql1);exit();
-            $sql2 = "update acc_service_comm_hdr set performance='$color'  where id='$index'";
-            $records = Yii::app()->db->createCommand($sql2)->execute();
-            $record = Yii::app()->db->createCommand($sql1)->execute();
+        }else{
+            $sql1="update acc_service_comm_dtl set new_calc='$fuwu' , new_amount='".$salemoney."',new_money='".$money."' where hdr_id='$index'";
         }
+//print_r($sql1);exit();
+        $sql2="update acc_service_comm_hdr set performance='$color'  where id='$index'";
+        $records = Yii::app()->db->createCommand($sql2)->execute();
+        $record = Yii::app()->db->createCommand($sql1)->execute();
+
 
 //                print_r('<pre>');
 //                print_r($zhuangji);
@@ -1098,27 +1090,24 @@ class ReportXS01SList extends CListPageModel
         $money=$money*$fuwu;//更改新增提成
         $fuwumoney=$money+$money1;//更改总和
         //新增补充修改
-        //东成西就取消，2021年5月及以前数据固定
-        if(time()>=strtotime('2021/06/01')) {
-            if (!empty($records_new_money['new_calc']) && $records_new_money['new_calc'] > 0) {
-                $new_moneyss = $records_new_money['new_amount'] / $records_new_money['new_calc'];
-                $new_amount = $new_moneyss * $fuwu;
-                $sql_new = "update acc_service_comm_dtl set new_amount='$new_amount' ,new_calc='$fuwu' where hdr_id='$index'";
-                $model = Yii::app()->db->createCommand($sql_new)->execute();
-            }
-            $sql = "select * from acc_service_comm_dtl where hdr_id='$index'";
-            $records = Yii::app()->db->createCommand($sql)->queryRow();
-            if (empty($records)) {
-                $sql1 = "insert into acc_service_comm_dtl(
+        if(!empty($records_new_money['new_calc'])&&$records_new_money['new_calc']>0){
+            $new_moneyss=$records_new_money['new_amount']/ $records_new_money['new_calc'];
+          $new_amount=$new_moneyss*$fuwu;
+          $sql_new="update acc_service_comm_dtl set new_amount='$new_amount' ,new_calc='$fuwu' where hdr_id='$index'";
+          $model = Yii::app()->db->createCommand($sql_new)->execute();
+        }
+        $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
+        $records = Yii::app()->db->createCommand($sql)->queryRow();
+        if(empty($records)){
+            $sql1 = "insert into acc_service_comm_dtl(
 					hdr_id, edit_amount,edit_money
 				) values (
-					'" . $index . "','" . $fuwumoney . "' ,'" . $moneys . "'
+					'".$index."','".$fuwumoney."' ,'".$moneys."'
 				)";
-            } else {
-                $sql1 = "update acc_service_comm_dtl set edit_amount='$fuwumoney' ,edit_money='$moneys' where hdr_id='$index'";
-            }
-            $model = Yii::app()->db->createCommand($sql1)->execute();
+        }else{
+            $sql1="update acc_service_comm_dtl set edit_amount='$fuwumoney' ,edit_money='$moneys' where hdr_id='$index'";
         }
+        $model = Yii::app()->db->createCommand($sql1)->execute();
     }
 
     public function endSale($id,$index,$royalty,$years,$months){
@@ -1298,23 +1287,21 @@ class ReportXS01SList extends CListPageModel
         if(empty($money)){
             $money=0;
         }
-        //东成西就取消，2021年5月及以前数据固定
-        if(time()>=strtotime('2021/06/01')) {
-            $sql = "select * from acc_service_comm_dtl where hdr_id='$index'";
-            $records = Yii::app()->db->createCommand($sql)->queryRow();
-            if (empty($records)) {
-                $sql1 = "insert into acc_service_comm_dtl(
+        $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
+        $records = Yii::app()->db->createCommand($sql)->queryRow();
+        if(empty($records)){
+            $sql1 = "insert into acc_service_comm_dtl(
 					hdr_id, end_amount
 				) values (
-					'" . $index . "','" . $money . "'
+					'".$index."','".$money."'
 				)";
-            } else {
-                $sql1 = "update acc_service_comm_dtl set end_amount='$money'  where hdr_id='$index'";
-            }
-            $model = Yii::app()->db->createCommand($sql1)->execute();
+        }else{
+            $sql1="update acc_service_comm_dtl set end_amount='$money'  where hdr_id='$index'";
+        }
+        $model = Yii::app()->db->createCommand($sql1)->execute();
 //        print_r('<pre>');
 //        print_r($sql1);  exit();
-        }
+
     }
 
     public function performanceSale($id,$year,$month,$index){
@@ -1380,6 +1367,10 @@ class ReportXS01SList extends CListPageModel
                     $sql2 = "select new_calc from  acc_service_comm_dtl where hdr_id='" . $records1['id'] . "'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     $point=$this->getPoint($year,$month,$index);//积分激励点
+                    //最低提成点为5%
+                    if ($records2['new_calc']<=0){
+                        $records2['new_calc'] = 0.05;
+                    }
                     $fuwu_last=$point+$records2['new_calc'];
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     if (!empty($a)) {
@@ -1406,21 +1397,19 @@ class ReportXS01SList extends CListPageModel
         if(empty($moneys)){
             $moneys=0;
         }
-        //东成西就取消，2021年5月及以前数据固定
-        if(time()>=strtotime('2021/06/01')) {
-            $sql = "select * from acc_service_comm_dtl where hdr_id='$index'";
-            $records = Yii::app()->db->createCommand($sql)->queryRow();
-            if (empty($records)) {
-                $sql1 = "insert into acc_service_comm_dtl(
+        $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
+        $records = Yii::app()->db->createCommand($sql)->queryRow();
+        if(empty($records)){
+            $sql1 = "insert into acc_service_comm_dtl(
 					hdr_id, performance_amount,out_money
 				) values (
-					'" . $index . "','" . $money . "','" . $moneys . "'
+					'".$index."','".$money."','".$moneys."'
 				)";
-            } else {
-                $sql1 = "update acc_service_comm_dtl set performance_amount='$money' ,out_money='$moneys'  where hdr_id='$index'";
-            }
-            $model = Yii::app()->db->createCommand($sql1)->execute();
+        }else{
+            $sql1="update acc_service_comm_dtl set performance_amount='$money' ,out_money='$moneys'  where hdr_id='$index'";
         }
+        $model = Yii::app()->db->createCommand($sql1)->execute();
+
 
 //                print_r('<pre>');
 //                print_r($zhuangji);
@@ -1542,21 +1531,18 @@ class ReportXS01SList extends CListPageModel
 //            $zhuangji=0;
 //        }
         $fuwumoney=$money+$money1;
-        //东成西就取消，2021年5月及以前数据固定
-        if(time()>=strtotime('2021/06/01')) {
-            $sql = "select * from acc_service_comm_dtl where hdr_id='$index'";
-            $records = Yii::app()->db->createCommand($sql)->queryRow();
-            if (empty($records)) {
-                $sql1 = "insert into acc_service_comm_dtl(
+        $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
+        $records = Yii::app()->db->createCommand($sql)->queryRow();
+        if(empty($records)){
+            $sql1 = "insert into acc_service_comm_dtl(
 					hdr_id, performanceedit_amount,performanceedit_money
 				) values (
-					'" . $index . "','" . $fuwumoney . "' ,'" . $moneys . "'
+					'".$index."','".$fuwumoney."' ,'".$moneys."'
 				)";
-            } else {
-                $sql1 = "update acc_service_comm_dtl set performanceedit_amount='$fuwumoney' ,performanceedit_money='$moneys' where hdr_id='$index'";
-            }
-            $model = Yii::app()->db->createCommand($sql1)->execute();
+        }else{
+            $sql1="update acc_service_comm_dtl set performanceedit_amount='$fuwumoney' ,performanceedit_money='$moneys' where hdr_id='$index'";
         }
+        $model = Yii::app()->db->createCommand($sql1)->execute();
     }
 
     public function performanceendSale($id,$index,$royalty,$years,$months){
@@ -1752,21 +1738,18 @@ class ReportXS01SList extends CListPageModel
         if(empty($money)){
             $money=0;
         }
-        //东成西就取消，2021年5月及以前数据固定
-        if(time()>=strtotime('2021/06/01')) {
-            $sql = "select * from acc_service_comm_dtl where hdr_id='$index'";
-            $records = Yii::app()->db->createCommand($sql)->queryRow();
-            if (empty($records)) {
-                $sql1 = "insert into acc_service_comm_dtl(
+        $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
+        $records = Yii::app()->db->createCommand($sql)->queryRow();
+        if(empty($records)){
+            $sql1 = "insert into acc_service_comm_dtl(
 					hdr_id, performanceend_amount
 				) values (
-					'" . $index . "','" . $money . "'
+					'".$index."','".$money."'
 				)";
-            } else {
-                $sql1 = "update acc_service_comm_dtl set performanceend_amount='$money'  where hdr_id='$index'";
-            }
-            $model = Yii::app()->db->createCommand($sql1)->execute();
+        }else{
+            $sql1="update acc_service_comm_dtl set performanceend_amount='$money'  where hdr_id='$index'";
         }
+        $model = Yii::app()->db->createCommand($sql1)->execute();
 //        print_r('<pre>');
 //        print_r($sql1);  exit();
 
@@ -1941,11 +1924,7 @@ class ReportXS01SList extends CListPageModel
                 $a=2;
             }
         }
-        //6月份后设置不加入东成西就
-        if(time()>=strtotime('2021/06/01')) {
-            $a = 1;
-        }
-            return $a;
+        return $a;
     }
 
     public function position($index){
@@ -1961,10 +1940,6 @@ class ReportXS01SList extends CListPageModel
         }else{
             $records=2;
         }
-        //6月份后设置不加入东成西就
-        if(time()>=strtotime('2021/06/01')) {
-            $records = 1;
-        }
-            return $records;
+        return $records;
     }
 }
