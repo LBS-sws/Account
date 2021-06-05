@@ -70,5 +70,7 @@ return array(
 'Some records cannot be calculated'=>'部分記錄無法計算',
 'SalesTableForm'=>'銷售提成表',
 'Please complete the sales commission form audit first'=>'請先完成銷售提成表審核',
+'Saving' => '保存中',
+'Invalid file type.'=>'無效的文件類型.',
 );
 ?>
