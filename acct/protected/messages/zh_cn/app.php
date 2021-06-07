@@ -18,7 +18,7 @@ return array(
 	'Sales'=>'销售系统',
 	'Sale Query'=>'销售查询区域显示',
 
-	'Quiz'=>'测验系统',
+	'Quiz'=>'培训系统',
     'Academic Credit'=>'学分系统',
 	'Online Library'=>'网上文库',
 	'Charitable Credit'=>'慈善分系统',
