@@ -318,6 +318,7 @@ class SalesTableForm extends CFormModel
                         $temp['y_ic_c'] = '';//续约IC费
                         $temp['y_ic_c_end'] = '';//终止续约IC费
                         $temp['y_ic_end'] = '';//终止IC费
+                        $temp['y_amt_paid'] = $color!=2&&($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a:'';//焗雾白蚁甲醛雾化
                         $temp['ia_money'] = '';//扣除IA提成
                         $temp['ib_money'] = '';//扣除IB提成
                         $temp['ic_money'] = '';//扣除IC提成
@@ -409,7 +410,7 @@ class SalesTableForm extends CFormModel
                             $temp['y_ic_c'] = '';//续约IC费
                             $temp['y_ic_c_end'] = '';//终止续约IC费
                             $temp['y_ic_end'] = '';//终止IC费
-                            $temp['y_amt_paid'] = $color!=2&&($row['commission']>0||$row['other_commission']>0)&&$row['status']!='C'&&$row['status']!='T'?$amt_paid_year_a:'';;//焗雾白蚁甲醛雾化
+                            $temp['y_amt_paid'] = '';//焗雾白蚁甲醛雾化
                             if(!empty($row['othersalesman'])){
                                 if($a1==$row['othersalesman']){
                                     $temp['ia_money'] = $row['other_commission']<0?$row['other_commission']:'';//扣除IA提成
