@@ -71,5 +71,7 @@ return array(
     'Some records cannot be calculated'=>'部分记录无法计算',
     'SalesTableForm'=>'销售提成表',
     'Please complete the sales commission form audit first'=>'请先完成销售提成表审核',
+	'Saving' => '保存中',
+	'Invalid file type.'=>'无效的文件类型.',
 );
 ?>
