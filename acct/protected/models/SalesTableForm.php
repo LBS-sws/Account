@@ -184,11 +184,6 @@ class SalesTableForm extends CFormModel
         }else{
             $position_a=2;
         }
-        //6月份后设置不加入东成西就
-        if(time()>=strtotime('2021/06/01')){
-            $position_a=1;
-        }
-
         $sql="select a.*,b.*,c.name as city_name ,d.group_type from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
               left outer join security$suffix.sec_city c on  a.city=c.code 
@@ -287,6 +282,7 @@ class SalesTableForm extends CFormModel
                             if ($a1 == $row['othersalesman']) {
                                 $color=2;
                                 $temp['amt_install'] ='';//I装机费
+                                $temp['amt_paid']='';//焗雾白蚁甲醛雾化
                             }else{
                                 $color=1;
                                 $temp['amt_install'] = $row['amt_install']>0&&$row['commission']>0?$row['amt_install']:'';//I装机费
@@ -676,14 +672,6 @@ class SalesTableForm extends CFormModel
             if($year_rz==$year&&$month_rz==($month-1)){
                 $employee = 2;
             }
-            //取消东成西就判断是否当月入职
-            if(time()>=strtotime('2021/06/01')){
-                $employee=2;
-                if($year_rz==$year&&$month_rz==$month){
-                    $employee=1;
-                }
-            }
-
         }
         if(empty($point)||$employee==1){
             $point['point']=0;
@@ -911,10 +899,6 @@ class SalesTableForm extends CFormModel
         }else{
             $records=2;
         }
-        //6月份后设置不加入东成西就
-        if(time()>=strtotime('2021/06/01')){
-            $records=1;
-        }
         return $records;
     }
     public  function getEmployee($employee,$year,$month){
@@ -947,10 +931,6 @@ class SalesTableForm extends CFormModel
             }else{
                 $a=2;
             }
-        }
-        //6月份后设置不加入东成西就
-        if(time()>=strtotime('2021/06/01')){
-            $a=1;
         }
         return $a;
     }
