@@ -128,6 +128,7 @@ class DocMan {
         $this->docId = $id;
         $this->formId = $form;
         $this->baseDir = Yii::app()->params['docmanPath'];
+		if (!empty(Yii::app()->params['docmanSize'])) $this->docMaxSize = Yii::app()->params['docmanSize'];
 
         $this->inputName .= strtolower($type);
         $this->tableName .= strtolower($type);
