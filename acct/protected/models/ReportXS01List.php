@@ -2242,9 +2242,11 @@ class ReportXS01List extends CListPageModel
         }
         $mons=0;
         foreach ($id as $ai){
+            $ai=rtrim($ai,'_');
             $sql="select * from swoper$suffix.swo_logistic_dtl  a
                    left outer join swoper$suffix.swo_task  b on  b.id=a.task
             where a.id='$ai'";
+            Yii::app()->db->createCommand("update swoper$suffix.swo_logistic_dtl set commission = 1 WHERE id='$ai'")->execute();
             $records = Yii::app()->db->createCommand($sql)->queryRow();
 
             $fuwu=$this->getProductctAmount($city,$records['task'],$records['sales_products'],$date,$records['money']);//本单产品提成比例 2021-5-20 第二个系数$records['task']
@@ -2573,8 +2575,11 @@ class ReportXS01List extends CListPageModel
         $suffix = Yii::app()->params['envSuffix'];
         foreach ($id as $ai) {
             $fq_comm = 0;
-            //判断是否是在提成计算新增数据
-            if(strstr($ai,'+')){
+
+            if(strstr($ai,'_')) {//判断是否是产品提成
+                $ai=rtrim($ai,'_');
+                $sqlct="update swoper$suffix.swo_logistic_dtl set commission=0 where id='$ai'";
+            }elseif(strstr($ai,'+')){//判断是否是在提成计算新增数据
                 $ai=rtrim($ai,'+');
 //                $sqljf = "select amt_paid,all_number from acc_service_comm_copy where id='$ai'";
 //                $fj_model =  Yii::app()->db->createCommand($sqljf)->queryRow();

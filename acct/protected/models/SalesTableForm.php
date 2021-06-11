@@ -679,7 +679,7 @@ class SalesTableForm extends CFormModel
         $sql = "select b.log_dt,b.company_name,a.money,a.qty,c.description,c.sales_products,c.id from swoper$suffix.swo_logistic_dtl a
                 left outer join swoper$suffix.swo_logistic b on b.id=a.log_id		
                	left outer join swoper$suffix.swo_task c on a.task=c.	id
-                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$a1."' and b.city ='$city' and a.money>0 and c.sales_products!='wu' ";
+                where a.commission = 1 and b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$a1."' and b.city ='$city' and a.money>0 and c.sales_products!='wu' ";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
         //print_r('<pre>');print_r($rows);exit();
         if(count($rows)>0){
