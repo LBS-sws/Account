@@ -30,9 +30,9 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
             <?php  echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save1'), array(
                     'submit'=>Yii::app()->createUrl('commission/productsave',array('year'=>$year,'month'=>$month,'index'=>$index)))
             ); ?>
-<!--            --><?php //echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Clear'), array(
-//                    'submit'=>Yii::app()->createUrl('commission/clear',array('year'=>$year,'month'=>$month,'index'=>$index,'clear'=>'performanceend')))
-//            ); ?>
+            <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Clear'), array(
+                    'submit'=>Yii::app()->createUrl('commission/clear',array('year'=>$year,'month'=>$month,'index'=>$index,'clear'=>'product')))
+            ); ?>
         </div>
     </div>
 </div>
