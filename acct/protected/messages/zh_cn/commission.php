@@ -34,6 +34,7 @@ return array(
     'RenewalEnd'=>'续约终止生意额',
     'Prodcct'=>'产品生意额',
     'product_amount'=>'产品提成',
+    'service reward'=>'服务奖励点',
 
 );
 ?>

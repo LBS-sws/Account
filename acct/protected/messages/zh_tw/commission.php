@@ -32,5 +32,6 @@ return array(
     'point'=>'銷售提成激勵點',
     'Renewal'=>'續約生意額',
     'RenewalEnd'=>'續約終止生意額',
+    'service reward'=>'服務獎勵點',
 );
 ?>
