@@ -840,16 +840,16 @@ class ReportXS01List extends CListPageModel
 //判断续约金额加起来有2000/1000的
         foreach ($ou as &$v){
             if($v['paid_type']=='M'){
-                    $v['sum']=$v['amt_paid']*$v['ctrt_period'];
+                $v['sum']=$v['amt_paid']*$v['ctrt_period'];
             }else{
                 $v['sum']=$v['amt_paid'];
             }
         }
         foreach($ou as $k=>&$v){
-             if(!isset($list[$v['company_name']])){
+            if(!isset($list[$v['company_name']])){
                 $list[$v['company_name']]=$v['sum'];
             }else{
-                 $list[$v['company_name']]+=$v['sum'];
+                $list[$v['company_name']]+=$v['sum'];
             }
         }
         foreach ($list as $key => $value){
@@ -2249,7 +2249,7 @@ class ReportXS01List extends CListPageModel
             Yii::app()->db->createCommand("update swoper$suffix.swo_logistic_dtl set commission = 1 WHERE id='$ai'")->execute();
             $records = Yii::app()->db->createCommand($sql)->queryRow();
 
-            $fuwu=$this->getProductctAmount($city,$records['task'],$records['sales_products'],$date,$records['money']);//本单产品提成比例 2021-5-20 第二个系数$records['task']
+            $fuwu=$this->getProductctAmount($city,$records['task'],$records['sales_products'],$date,$money);//本单产品提成比例 2021-5-20 第二个系数$records['task'],最后一个参数$records['money']
             //var_dump($fuwu);die();
             $fuwu=$fuwu+$point['point'];
             $mons+=$records['money']*$fuwu*$records['qty'];
@@ -2598,7 +2598,7 @@ class ReportXS01List extends CListPageModel
 //            var_dump($fj['hdr_id']);
 //            die();
         }
-      //  var_dump($fq_comm);die();
+        //  var_dump($fq_comm);die();
 //        if ($fq_comm>0){
 //            $sql1="update acc_service_comm_dtl set new_calc='0' , new_amount='0',new_money='0' where hdr_id='$index'";
 //            $record = Yii::app()->db->createCommand($sql1)->execute();
