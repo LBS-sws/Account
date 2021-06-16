@@ -146,6 +146,7 @@ class ReportXS01Form extends CReportForm
             if(time()>=strtotime('2021/06/01')){
                 $a=1;
             }
+            var_dump($a);
             if($records['city']=='CD'||$records['city']=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||(($records['city']=='FS'||$records['city']=='NJ')&&strtotime($date)<strtotime('2021/02/01'))){
                 $month=$records['month_no'];
                 $year=$records['year_no'];
@@ -178,11 +179,12 @@ class ReportXS01Form extends CReportForm
 //                $months=$month;
 //                $years=$year;
 //            }
+            var_dump("month:".$month);
+            var_dump("year:".$year);
             $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."' and city='".$records['city']."'";
             $point = Yii::app()->db->createCommand($sql_point)->queryRow();
             //新增判断当月是否入职月
             if($employee==1){
-                $this->employee_code = $records['employee_code'];
                 $employee_code = $records['employee_code'];
                 $sql_r="select e.user_id from  hr$suffix.hr_employee d                  
               left outer join hr$suffix.hr_binding e on  d.id=e.employee_id
@@ -212,6 +214,7 @@ class ReportXS01Form extends CReportForm
             $sql_points="update sales$suffix.sal_integral set hdr_id='$index' where id='".$point['id']."'";
             $record = Yii::app()->db->createCommand($sql_points)->execute();
             $this->city=$records['city_name'];
+            $this->employee_code = $records['employee_code'];
             $this->employee_name=$records['employee_name'];
             $this->saleyear=$records['year_no']."/".$records['month_no'];
             $new_calc=$arr['new_calc']*100;
