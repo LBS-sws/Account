@@ -284,6 +284,12 @@ class ReportXS01Form extends CReportForm
                 ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
                 ->where("(b.single != 1 or b.single is NULL) and a.salesman='$salesman' $dateSql")
                 ->queryScalar();
+            $rows = Yii::app()->db->createCommand()->select("a.id,a.cust_type_name")
+                ->from("swoper$suffix.swo_service a")
+                ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
+                ->where("(b.single != 1 or b.single is NULL) and a.salesman='$salesman' $dateSql")
+                ->queryAll();
+            var_dump($rows);
             if($serviceCount>=4){
                 return "1%";
             }
