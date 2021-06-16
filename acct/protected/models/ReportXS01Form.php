@@ -278,18 +278,12 @@ class ReportXS01Form extends CReportForm
             ->queryScalar();
         if($logisticSum>=3){//满足三瓶洗地易
             //判断是否有四次非一次性新增业务
-            $dateSql = " and date_format(a.status_dt,'%Y/%m/%d')>='$startDate' and date_format(a.status_dt,'%Y/%m/%d')<='$endDate'";
+            $dateSql = " and date_format(a.first_dt,'%Y/%m/%d')>='$startDate' and date_format(a.first_dt,'%Y/%m/%d')<='$endDate'";
             $serviceCount =Yii::app()->db->createCommand()->select("count(a.id)")
                 ->from("swoper$suffix.swo_service a")
                 ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
                 ->where("(b.single != 1 or b.single is NULL) and a.salesman='$salesman' $dateSql")
                 ->queryScalar();
-            $rows = Yii::app()->db->createCommand()->select("a.id,a.cust_type_name")
-                ->from("swoper$suffix.swo_service a")
-                ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
-                ->where("(b.single != 1 or b.single is NULL) and a.salesman='$salesman' $dateSql")
-                ->queryAll();
-            var_dump($rows);
             if($serviceCount>=4){
                 return "1%";
             }
