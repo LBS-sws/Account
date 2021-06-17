@@ -931,6 +931,9 @@ class SalesTableForm extends CFormModel
                 $a=2;
             }
         }
+        if(strtotime("$year-$month-01")>=strtotime("2021-06-01")){
+            $a = 1;//超過2021-06-01不加入东成西就
+        }
         return $a;
     }
 

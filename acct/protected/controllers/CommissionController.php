@@ -24,9 +24,13 @@ class CommissionController extends Controller
     {
         return array(
             array('allow',
-                'actions'=>array('save','new','add','newsave','performance','performanceedit','performanceend','editsave','endsave','performancesave','position','product','productsave',
-                    'performanceeditsave','performanceendsave','renewal','renewalend','renewalsave','renewalendsave','clear'),
+                'actions'=>array('new','performance','performanceedit','performanceend','position','product',
+                    'renewal','renewalend'),
                 'expression'=>array('CommissionController','allowReadWrite'),
+            ),
+            array('allow',//超過兩個月後，不允許計算
+                'actions'=>array('save','clear','add','newsave','editsave','endsave','performancesave','performanceeditsave','performanceendsave','renewalsave','renewalendsave','productsave'),
+                'expression'=>array('CommissionController','allowEditDate'),
             ),
             array('allow',
                 'actions'=>array('view','index','index_s','edit','end'),
@@ -293,7 +297,7 @@ class CommissionController extends Controller
         $date1='2020/07/01';
         $employee=$this->getEmployee($index,$year,$month);
         if($city=='CD'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||(($city=='FS'||$city=='NJ')&&strtotime($date)<strtotime('2021/02/01'))){
-          $model = new ReportXS01SList;
+            $model = new ReportXS01SList;
         }else{
             $model = new ReportXS01List;
         }
@@ -302,6 +306,7 @@ class CommissionController extends Controller
 //                    print_r('<pre>');
 //        print_r($_POST['ReportXS01From']['id']);
             $model->newSale($_POST['ReportXS01From']['id'],$year,$month,$index);
+
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
             $this->redirect(Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }else{
@@ -613,6 +618,16 @@ class CommissionController extends Controller
         return Yii::app()->user->validFunction('XS01');
     }
 
+    public static function allowEditDate() {
+        $year = key_exists("year",$_GET)?$_GET["year"]:0;
+        $month = key_exists("month",$_GET)?$_GET["month"]:0;
+        if(date("Y/m/d",strtotime("$year-$month-01"))>=date("Y/m/01",strtotime("-2 months"))){
+            return Yii::app()->user->validRWFunction('XS01');
+        }else{
+            return false;
+        }
+    }
+
     public function position($index){
         $suffix = Yii::app()->params['envSuffix'];
         $sql="select * from hr$suffix.hr_employee a
@@ -625,10 +640,6 @@ class CommissionController extends Controller
             $records=1;//不加入东成西就
         }else{
             $records=2;
-        }
-        //6月份后设置不加入东成西就
-        if(time()>=strtotime('2021/06/01')){
-            $records=1;
         }
         return $records;
     }
@@ -644,6 +655,7 @@ class CommissionController extends Controller
         $sql1="select visit_dt from sales$suffix.sal_visit   where username='".$records['user_id']."' order by visit_dt
 ";
         $record = Yii::app()->db->createCommand($sql1)->queryRow();
+        //$record['visit_dt'] = "2021/05/01";
         $timestrap=strtotime($record['visit_dt']);
         $years=date('Y',$timestrap);
         $months=date('m',$timestrap);
@@ -666,9 +678,8 @@ class CommissionController extends Controller
                 $a=2;
             }
         }
-        //6月份后设置不加入东成西就
-        if(time()>=strtotime('2021/06/01')){
-            $a=1;
+        if(strtotime("$year-$month-01")>=strtotime("2021-06-01")){
+            $a = 1;//超過2021-06-01不加入东成西就
         }
         return $a;
     }

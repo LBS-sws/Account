@@ -142,15 +142,10 @@ class ReportXS01Form extends CReportForm
             $date=$records['year_no']."/".$records['month_no'].'/'."01";
             $date1='2020/07/01';
             $employee=$this->getEmployee($records['employee_code'],$records['year_no'],$records['month_no']);
-            //6月份后设置不加入东成西就
-            if(time()>=strtotime('2021/06/01')){
-                $a=1;
-            }
-            var_dump($a);
+
             if($records['city']=='CD'||$records['city']=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||(($records['city']=='FS'||$records['city']=='NJ')&&strtotime($date)<strtotime('2021/02/01'))){
                 $month=$records['month_no'];
                 $year=$records['year_no'];
-
             }else{
                 $month=$records['month_no']-1;
                 $year=$records['year_no'];
@@ -179,8 +174,6 @@ class ReportXS01Form extends CReportForm
 //                $months=$month;
 //                $years=$year;
 //            }
-            var_dump("month:".$month);
-            var_dump("year:".$year);
             $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."' and city='".$records['city']."'";
             $point = Yii::app()->db->createCommand($sql_point)->queryRow();
             //新增判断当月是否入职月
@@ -353,9 +346,8 @@ class ReportXS01Form extends CReportForm
                 $a=2;
             }
         }
-        //6月份后设置不加入东成西就
-        if(time()>=strtotime('2021/06/01')) {
-            $a = 1;
+        if(strtotime("$year-$month-01")>=strtotime("2021-06-01")){
+            $a = 1;//超過2021-06-01不加入东成西就
         }
         return $a;
     }

@@ -21,7 +21,9 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
 	</ol>
 -->
 </section>
-<div class="box"><div class="box-body">
+<?php if ($this->allowEditDate()): ?>
+<div class="box">
+    <div class="box-body">
         <div class="btn-group" role="group">
 
 <!--            --><?php //echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
@@ -41,6 +43,7 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
         </div>
     </div>
 </div>
+<?php endif ?>
 <section class="content" >
     <div class="box">
     <div id="yw0" class="tabbable">

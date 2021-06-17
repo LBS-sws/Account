@@ -1137,6 +1137,7 @@ class ReportXS01List extends CListPageModel
                     $a=$records['amt_paid']*$records['ctrt_period'];
                 }
                 $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
+
                 if(empty($spanning)){
                     Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Data is filled in incorrectly, please check and modify before proceeding') );
                     Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)));
@@ -2193,10 +2194,6 @@ class ReportXS01List extends CListPageModel
         }else{
             $position_a=2;
         }
-        //6月份后设置不加入东成西就
-        if(time()>=strtotime('2021/06/01')){
-            $position_a=1;
-        }
         $sql="select a.*,b.*,c.name as city_name ,d.group_type from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
               left outer join security$suffix.sec_city c on  a.city=c.code 
@@ -2507,9 +2504,8 @@ class ReportXS01List extends CListPageModel
                 $a=2;
             }
         }
-        //6月份后设置不加入东成西就
-        if(time()>=strtotime('2021/06/01')){
-            $a=1;
+        if(strtotime("$year-$month-01")>=strtotime("2021-06-01")){
+            $a = 1;//超過2021-06-01不加入东成西就
         }
         return $a;
     }
@@ -2545,9 +2541,8 @@ class ReportXS01List extends CListPageModel
                 $a=2;
             }
         }
-        //6月份后设置不加入东成西就
-        if(time()>=strtotime('2021/06/01')){
-            $a=1;
+        if(strtotime("$year-$month-01")>=strtotime("2021-06-01")){
+            $a = 1;//超過2021-06-01不加入东成西就
         }
         return $a;
     }

@@ -21,6 +21,7 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
 	</ol>
 -->
 </section>
+<?php if ($this->allowEditDate()): ?>
 <div class="box"><div class="box-body">
         <div class="btn-group" role="group">
 
@@ -36,6 +37,7 @@ $this->pageTitle=Yii::app()->name . ' - commission Report';
         </div>
     </div>
 </div>
+<?php endif ?>
 <section class="content" >
     <div class="box">
     <div id="yw0" class="tabbable">

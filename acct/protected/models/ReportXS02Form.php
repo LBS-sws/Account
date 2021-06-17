@@ -143,10 +143,6 @@ class ReportXS02Form extends CReportForm
             $date1='2020/07/01';
             $employee=$this->getEmployee($records['employee_code'],$records['year_no'],$records['month_no']);
             // print_r($a);print_r($employee);
-            //6月份后设置不加入东成西就
-            if(time()>=strtotime('2021/06/01')){
-                $a=1;
-            }
             if($records['city']=='CD'||$records['city']=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||(($records['city']=='FS'||$records['city']=='NJ')&&strtotime($date)<strtotime('2021/02/01'))){
                 $month=$records['month_no'];
                 $year=$records['year_no'];
@@ -270,7 +266,7 @@ class ReportXS02Form extends CReportForm
             ->queryScalar();
         if($logisticSum>=3){//满足三瓶洗地易
             //判断是否有四次非一次性新增业务
-            $dateSql = " and date_format(a.status_dt,'%Y/%m/%d')>='$startDate' and date_format(a.status_dt,'%Y/%m/%d')<='$endDate'";
+            $dateSql = " and date_format(a.first_dt,'%Y/%m/%d')>='$startDate' and date_format(a.first_dt,'%Y/%m/%d')<='$endDate'";
             $serviceCount =Yii::app()->db->createCommand()->select("count(a.id)")
                 ->from("swoper$suffix.swo_service a")
                 ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
@@ -340,9 +336,8 @@ class ReportXS02Form extends CReportForm
                 $a=2;
             }
         }
-        //6月份后设置不加入东成西就
-        if(time()>=strtotime('2021/06/01')){
-            $a=1;
+        if(strtotime("$year-$month-01")>=strtotime("2021-06-01")){
+            $a = 1;//超過2021-06-01不加入东成西就
         }
         return $a;
     }
