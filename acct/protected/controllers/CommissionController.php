@@ -33,13 +33,46 @@ class CommissionController extends Controller
                 'expression'=>array('CommissionController','allowEditDate'),
             ),
             array('allow',
-                'actions'=>array('view','index','index_s','edit','end'),
+                'actions'=>array('view','index','index_s','edit','end','test'),
                 'expression'=>array('CommissionController','allowReadOnly'),
             ),
             array('deny',  // deny all users
                 'users'=>array('*'),
             ),
         );
+    }
+
+    public function actionTest($month=6,$id=0)
+    {
+        $suffix = Yii::app()->params['envSuffix'];
+        $row = Yii::app()->db->createCommand()->select("code,name,city")
+            ->from("hr$suffix.hr_employee")
+            ->where("id=:id",array(":id"=>$id))
+            ->queryRow();
+        if($row){
+            $id = Yii::app()->db->createCommand()->select("id")
+                ->from("acc_service_comm_hdr")
+                ->where("year_no='2021' and month_no=:month_no and employee_code=:employee_code",
+                    array(":month_no"=>$month,":employee_code"=>$row["code"])
+                )->queryScalar();
+            if($id){
+                echo "error hdr_id";
+            }else{
+                //year_no,month_no,employee_code,employee_name,city
+                Yii::app()->db->createCommand()->insert("acc_service_comm_hdr",
+                    array(
+                        "year_no"=>2021,
+                        "month_no"=>$month,
+                        "employee_code"=>$row["code"],
+                        "employee_name"=>$row["name"],
+                        "city"=>$row["city"]
+                    )
+                );
+                echo "success";
+            }
+        }else{
+            echo "error staff_id";
+        }
     }
 
     public function actionIndex()
