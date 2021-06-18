@@ -191,13 +191,6 @@ class ReportXS01Form extends CReportForm
                 if($year_rz==$year&&$month_rz==($month-1)){
                     $employee = 2;
                 }
-                //取消东成西就判断是否当月入职
-                if(time()>=strtotime('2021/06/01')){
-                    $employee=2;
-                    if($year_rz==$year&&$month_rz==$month){
-                        $employee=1;
-                    }
-                }
             }
             if(empty($point)||$employee==1){
                 $point['point']=0;
