@@ -669,12 +669,16 @@ class SalesTableForm extends CFormModel
             $year_rz=date('Y',$timestrap);
             $month_rz=date('m',$timestrap);
             if($year_rz==$year&&$month_rz==($month-1)){
-                $employee = 2;
+                $point['point']=0;
+                $point['id']=key_exists("id",$point)?$point['id']:0;
             }
         }
-        if(empty($point)||$employee==1){
+        if(empty($point)){
             $point['point']=0;
         }
+        //经理不需要加入激励点计算
+        $point['point']=ReportXS01SList::position($index)==1?0:$point['point'];
+
         //来源于物流配送的销售的单
         $sql = "select b.log_dt,b.company_name,a.money,a.qty,c.description,c.sales_products,c.id from swoper$suffix.swo_logistic_dtl a
                 left outer join swoper$suffix.swo_logistic b on b.id=a.log_id		

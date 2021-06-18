@@ -343,6 +343,7 @@ class CommissionController extends Controller
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
             $this->redirect(Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)));
         }else{
+            ReportXS01SList::clearNewServiceCommission($index);
             $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
             $records = Yii::app()->db->createCommand($sql)->queryRow();
             if(empty($records)){

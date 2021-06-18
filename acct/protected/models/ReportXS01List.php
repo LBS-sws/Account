@@ -723,7 +723,7 @@ class ReportXS01List extends CListPageModel
                     'first_dt'=>General::toDate($arrs['first_dt']), //服务时间
                     'amt_paid'=>$a,                                     //服务年金额金额
                     'amt_install'=>$arrs['amt_install'],           //安装金额
-                    'status_copy'=>0,           //是否计算
+                    'status_copy'=>$arrs['status_copy'],           //是否计算
                     'othersalesman'=>$arrs['othersalesman'],           //跨区业务员
                 );
             }
@@ -1087,7 +1087,7 @@ class ReportXS01List extends CListPageModel
         $moneys=0;
         $start_dt=$year."-".$month."-01";
         foreach ($id as $ai){
-            if(strstr($ai,'+')){
+            if(strstr($ai,'+')){ //会计系统的新增服务
                 $ai=rtrim($ai,'+');
                 $sql="select * from acc_service_comm_copy where id='$ai'";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
@@ -1124,7 +1124,7 @@ class ReportXS01List extends CListPageModel
                     $cust_type1='inv';
                 }
                 //   $zhuangji+=$records['amt_install'];
-            }else{
+            }else{ //日报表系统的新增服务
                 $sql="select * from swoper$suffix.swo_service where id='$ai'";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
                 if($records['paid_type']=='1'||$records['paid_type']=='Y'){

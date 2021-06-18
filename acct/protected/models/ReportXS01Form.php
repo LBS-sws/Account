@@ -189,13 +189,16 @@ class ReportXS01Form extends CReportForm
                 $year_rz=date('Y',$timestrap);
                 $month_rz=date('m',$timestrap);
                 if($year_rz==$year&&$month_rz==($month-1)){
-                    $employee = 2;
+                    $point['point']=0;
+                    $point['id']=key_exists("id",$point)?$point['id']:0;
                 }
             }
-            if(empty($point)||$employee==1){
+            if(empty($point)){
                 $point['point']=0;
                 $point['id']=0;
             }
+            //经理不需要加入激励点计算
+            $point['point']=ReportXS01SList::position($index)==1?0:$point['point'];
 
             $sql_points="update sales$suffix.sal_integral set hdr_id='$index' where id='".$point['id']."'";
             $record = Yii::app()->db->createCommand($sql_points)->execute();
@@ -203,6 +206,8 @@ class ReportXS01Form extends CReportForm
             $this->employee_code = $records['employee_code'];
             $this->employee_name=$records['employee_name'];
             $this->saleyear=$records['year_no']."/".$records['month_no'];
+            $this->service_reward=ReportXS01Form::serviceReward($this->employee_code,$this->employee_name,$this->saleyear);
+            $this->service_reward=($this->service_reward*100)."%";
             $new_calc=$arr['new_calc']*100;
             if($new_calc==0){
                 $new_calc=5;
@@ -246,18 +251,19 @@ class ReportXS01Form extends CReportForm
             }
             $this->performance=$a;
 
-            $this->service_reward=$this->serviceReward();
         }
         return true;
     }
 
     //计算服务奖励点
-    private function serviceReward(){
+    public static function serviceReward($employee_code,$employee_name,$saleyear,$salesman=""){
         $suffix = Yii::app()->params['envSuffix'];
-        $startDate = date("Y/m/d",strtotime($this->saleyear."/01"));
-        $endDate = date("Y/m/d",strtotime($this->saleyear."/31"));
+        $startDate = date("Y/m/d",strtotime($saleyear."/01"));
+        $endDate = date("Y/m/d",strtotime($saleyear."/31"));
         $dateSql = " and date_format(b.log_dt,'%Y/%m/%d')>='$startDate' and date_format(b.log_dt,'%Y/%m/%d')<='$endDate'";
-        $salesman = $this->employee_name." ($this->employee_code)";
+        if(empty($salesman)){
+            $salesman = $employee_name." ($employee_code)";
+        }
         //检测是否有配送过三瓶以上的洗地易
         $logisticSum = Yii::app()->db->createCommand()->select("sum(a.qty)")
             ->from("swoper$suffix.swo_logistic_dtl a")
@@ -271,13 +277,20 @@ class ReportXS01Form extends CReportForm
             $serviceCount =Yii::app()->db->createCommand()->select("count(a.id)")
                 ->from("swoper$suffix.swo_service a")
                 ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
-                ->where("(b.single != 1 or b.single is NULL) and a.salesman='$salesman' $dateSql")
+                ->where("(b.single != 1 or b.single is NULL) and a.commission is not null and a.salesman='$salesman' $dateSql")
                 ->queryScalar();
-            if($serviceCount>=4){
-                return "1%";
+            $serviceCount=$serviceCount?$serviceCount:0;
+            $serviceAddCount =Yii::app()->db->createCommand()->select("count(a.id)")
+                ->from("acc_service_comm_copy a")
+                ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
+                ->where("(b.single != 1 or b.single is NULL) and a.commission is not null and a.salesman='$salesman' $dateSql")
+                ->queryScalar();
+            $serviceAddCount=$serviceAddCount?$serviceAddCount:0;
+            if($serviceCount+$serviceAddCount>=4){
+                return 0.01;
             }
         }
-        return "0%";
+        return 0;
     }
 
     public function saveData($add,$index){

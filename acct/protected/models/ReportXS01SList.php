@@ -767,15 +767,37 @@ class ReportXS01SList extends CListPageModel
             }
         }
     }
+//清空不需要计算的值
+    public function clearNewServiceCommission($index){
+        $suffix = Yii::app()->params['envSuffix'];
+        $row = Yii::app()->db->createCommand()
+            ->select('year_no,month_no,employee_code,employee_name')
+            ->from("acc_service_comm_hdr")
+            ->where('id=:id',array(":id"=>$index))->queryRow();
+        if($row){
+            $strtime = strtotime($row["year_no"]."/".$row["month_no"]."/01");
+            $startDate = date("Y-m-01",$strtime);
+            $endDate = date("Y-m-31",$strtime);
+            Yii::app()->db->createCommand()->update("acc_service_comm_copy",array(
+                'commission'=>null
+            ),"first_dt between '$startDate' and '$endDate'");
+            Yii::app()->db->createCommand()->update("swoper$suffix.swo_service",array(
+                'commission'=>null
+            ),"first_dt between '$startDate' and '$endDate'");
+        }
+    }
 
     public function newSale($id,$year,$month,$index){
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
 	    $money=0;
         $money1=0;
+        $reward = 0;//服务奖励点
         $zhuangji=0;
         $moneys=0;
         $start_dt=$year."-".$month."-01";
+        //清空不需要计算的值
+        $this->clearNewServiceCommission($index);
 
         foreach ($id as $ai){
 
@@ -867,6 +889,7 @@ class ReportXS01SList extends CListPageModel
             }else{
                 $money_all=$money;
             }
+            $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$records['salesman']);//服务奖励点
             $fuwu=$this->getAmount($city,$cust_type,$start_dt,$money_all);//提成比例服务
             $point=$this->getPoint($year,$month,$index);//积分激励点      print_r($months);
             $records['salesman']=str_replace('(','',$records['salesman']);
@@ -887,15 +910,14 @@ class ReportXS01SList extends CListPageModel
                 $year_rz=date('Y',$timestrap);
                 $month_rz=date('m',$timestrap);
                 if($year_rz==$year&&$month_rz==($month-1)){
-                    $new_employee = 2;
+                    $point=0;
                 }
             }
             $a=$this->position($index);
-
-            if($new_employee==1&&$a==2){
+            if($a==1){
                 $point=0;
             }
-            $fuwus=$fuwu+$point;
+            $fuwus=$fuwu+$point+$reward;
             $fuwumoney=$moneys*$fuwus;
 
         }else{
@@ -904,6 +926,7 @@ class ReportXS01SList extends CListPageModel
                 Yii::app()->getRequest()->redirect(Yii::app()->createUrl('commission/new',array('year'=>$year,'month'=>$month,'index'=>$index)));
             }
         }
+
       if(!empty($cust_type1)){
           $inv=$this->getAmount($city,$cust_type1,$start_dt,$money1);//提成比例inv
 
@@ -957,6 +980,7 @@ class ReportXS01SList extends CListPageModel
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
         $money=0;
+        $reward=0;
         $money1=0;
         $moneys=0;
         $start_dt=$years."-".$months."-01";
@@ -1016,6 +1040,7 @@ class ReportXS01SList extends CListPageModel
                     $timestrap=strtotime($date);
                     $year=date('Y',$timestrap);
                     $month=date('m',$timestrap);
+                    $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$records['salesman']);//服务奖励点
                     $records['salesman']=str_replace('(','',$records['salesman']);
                     $records['salesman']=str_replace(')','',$records['salesman']);
 //                    print_r($sql); print_r($recordss);exit();
@@ -1082,18 +1107,19 @@ class ReportXS01SList extends CListPageModel
             $new_money=$moneys;
         }
         $fuwu=$this->getAmount($city,$cust_type,$start_dt,$new_money);//提成比例服务
+        //die();
         $point=$this->getPoint($years,$months,$index);//积分激励点
-        $fuwu=$fuwu+$point;
+        $fuwus=$fuwu+$point+$reward;
 //            if(empty($zhuangji)){
 //                $zhuangji=0;
 //            }
-        $money=$money*$fuwu;//更改新增提成
+        $money=$money*$fuwus;//更改新增提成
         $fuwumoney=$money+$money1;//更改总和
         //新增补充修改
         if(!empty($records_new_money['new_calc'])&&$records_new_money['new_calc']>0){
             $new_moneyss=$records_new_money['new_amount']/ $records_new_money['new_calc'];
-          $new_amount=$new_moneyss*$fuwu;
-          $sql_new="update acc_service_comm_dtl set new_amount='$new_amount' ,new_calc='$fuwu' where hdr_id='$index'";
+          $new_amount=$new_moneyss*$fuwus;
+          $sql_new="update acc_service_comm_dtl set new_amount='$new_amount' where hdr_id='$index'";
           $model = Yii::app()->db->createCommand($sql_new)->execute();
         }
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
@@ -1308,6 +1334,7 @@ class ReportXS01SList extends CListPageModel
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
         $money=0;
+        $reward =0;
         $money1=0;
    //     $zhuangji=0;
         $moneys=0;
@@ -1360,6 +1387,7 @@ class ReportXS01SList extends CListPageModel
                 $sql3="select performance from acc_service_comm_hdr where  id='$index'";
                 $color = Yii::app()->db->createCommand($sql3)->queryRow();
                 if($color['performance']==1) {
+                    $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$records['othersalesman']);//服务奖励点
                     $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                     $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                     $sql1 = "select * from acc_service_comm_hdr where year_no='" . $year . "' and month_no='" . $month . "' and city='" . $records['city'] . "' and  concat_ws(' ',employee_name,employee_code)= '" . $records['othersalesman'] . "' ";
@@ -1371,7 +1399,7 @@ class ReportXS01SList extends CListPageModel
                     if ($records2['new_calc']<=0){
                         $records2['new_calc'] = 0.05;
                     }
-                    $fuwu_last=$point+$records2['new_calc'];
+                    $fuwu_last=$point+$records2['new_calc']+$reward;
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     if (!empty($a)) {
                         $moneys += $a * $otherspanning;
@@ -1418,6 +1446,7 @@ class ReportXS01SList extends CListPageModel
     public function performanceeditSale($id,$year,$month,$index,$royalty){
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
+        $reward=0;
         $money=0;
         $money1=0;
         $moneys=0;
@@ -1441,6 +1470,7 @@ class ReportXS01SList extends CListPageModel
                 $sql3="select performance from acc_service_comm_hdr where  id='$index'";
                 $color = Yii::app()->db->createCommand($sql3)->queryRow();
                 if($color['performance']==1){
+                    $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$records['othersalesman']);//服务奖励点
                     $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                     $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                     $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
@@ -1449,7 +1479,7 @@ class ReportXS01SList extends CListPageModel
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     $point=$this->getPoint($year,$month,$index);//积分激励点
-                    $fuwu_last=$point+$records2['new_calc'];
+                    $fuwu_last=$point+$records2['new_calc']+$reward;
                     $fuwumoney=$c*$fuwu_last;
                     if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                         $money+=$fuwumoney*$otherspanning;
@@ -1939,7 +1969,7 @@ class ReportXS01SList extends CListPageModel
         ";
         $position = Yii::app()->db->createCommand($sql)->queryRow();
         if(empty($position)){
-            $records=1;//不加入东成西就
+            $records=1;
         }else{
             $records=2;
         }
