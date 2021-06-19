@@ -277,13 +277,13 @@ class ReportXS01Form extends CReportForm
             $serviceCount =Yii::app()->db->createCommand()->select("count(a.id)")
                 ->from("swoper$suffix.swo_service a")
                 ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
-                ->where("(b.single != 1 or b.single is NULL) and a.commission is not null and a.salesman='$salesman' $dateSql")
+                ->where("(b.single != 1 or b.single is NULL) and a.status = 'N' and a.commission is not null and a.salesman='$salesman' $dateSql")
                 ->queryScalar();
             $serviceCount=$serviceCount?$serviceCount:0;
             $serviceAddCount =Yii::app()->db->createCommand()->select("count(a.id)")
                 ->from("acc_service_comm_copy a")
                 ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
-                ->where("(b.single != 1 or b.single is NULL) and a.commission is not null and a.salesman='$salesman' $dateSql")
+                ->where("(b.single != 1 or b.single is NULL) and a.status = 'N' and a.commission is not null and a.salesman='$salesman' $dateSql")
                 ->queryScalar();
             $serviceAddCount=$serviceAddCount?$serviceAddCount:0;
             if($serviceCount+$serviceAddCount>=4){

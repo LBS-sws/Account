@@ -158,6 +158,7 @@ class SalesTableForm extends CFormModel
         $start=$salerow['year_no'].'-'. $salerow['month_no'].'-01';
         $end=$salerow['year_no'].'-'. $salerow['month_no'].'-31';
         $a1=$salerow['employee_name']." (".$salerow['employee_code'].")";
+        $reward = ReportXS01Form::serviceReward('','',$salerow['year_no']."/".$salerow['month_no'],$a1);//服务奖励点
         $sql1 = "select paid_type,amt_paid,ctrt_period,b4_amt_paid,cust_type_name,status_dt,company_name,status,commission,other_commission,amt_install,othersalesman,cust_type,service
                   from swoper$suffix.swo_service where  ((commission!=' ' and commission!=0) or (other_commission!=0 and other_commission!=' ')) and ((status_dt<='$end' and  status_dt>='$start') or (first_dt<='$end' and  first_dt>='$start')) and (salesman='$a1' or  othersalesman='$a1')
                   union
@@ -778,10 +779,10 @@ class SalesTableForm extends CFormModel
         $other_money=array_sum(array_map(create_function('$val', 'return $val["other_money"];'), $this->group));
         // $this->commission=array_sum(array_map(create_function('$val', 'return $val["commission"];'), $this->group));
         $this->all_sale=$this->paper+$this->disinfectant+$this->purification+$this->chemical+$this->aromatherapy+$this->pestcontrol+$this->other;
-        $this->ia_royalty=($new_calc+$point['point'])*100;//提成点数 B
-        $this->ib_royalty=($new_calc+$point['point'])*100;//提成点数 C
-        $this->amt_paid_royalty=($new_calc+$point['point'])*100;//提成点数 焗雾
-        $this->ic_royalty=($new_calc+$point['point'])*100;//提成点数 租机
+        $this->ia_royalty=($new_calc+$point['point']+$reward)*100;//提成点数 B
+        $this->ib_royalty=($new_calc+$point['point']+$reward)*100;//提成点数 C
+        $this->amt_paid_royalty=($new_calc+$point['point']+$reward)*100;//提成点数 焗雾
+        $this->ic_royalty=($new_calc+$point['point']+$reward)*100;//提成点数 租机
         $this->xuyue_royalty=1;//提成点数 续约
         $amt_install_royalty=$this->getAmount($city,'paper','paper',$start,$money);//装机提成比例
        // print_r($amt_install_royalty);  print_r($city);  print_r($money);  print_r('**');print_r($start);
@@ -789,11 +790,11 @@ class SalesTableForm extends CFormModel
         $this->sale_royalty="/";//提成点数 销售
         $this->huaxueji_royalty=(0.1+$point['point'])*100;//提成点数 化学剂
         $this->xuyuezhong_royalty=1;//提成点数 续约终止
-        $this->ia_money=round($new_ia_money*($new_calc+$point['point']),2);//金额 a
-        $this->ib_money=round($new_ib_money*($new_calc+$point['point']),2);//金额 b
-        $amt_paid_money=($new_amt_paid*($new_calc+$point['point']))+$end_amt_paid;
+        $this->ia_money=round($new_ia_money*($new_calc+$point['point']+$reward),2);//金额 a
+        $this->ib_money=round($new_ib_money*($new_calc+$point['point']+$reward),2);//金额 b
+        $amt_paid_money=($new_amt_paid*($new_calc+$point['point']+$reward))+$end_amt_paid;
         $this->amt_paid_money=round($amt_paid_money,2);//金额 焗雾
-        $this->ic_money=round($new_ic_money*($new_calc+$point['point']),2);//金额 租机
+        $this->ic_money=round($new_ic_money*($new_calc+$point['point']+$reward),2);//金额 租机
         $this->xuyue_money= ($this->y_ia_c+ $this->y_ib_c+ $this->y_ic_c)*0.01;//金额 续约
         $this->amt_install_money=round($this->amt_install*$this->amt_install_royalty,2);//金额 装机
         if( $this->amt_install_money<0){

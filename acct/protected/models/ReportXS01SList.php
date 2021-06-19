@@ -780,10 +780,10 @@ class ReportXS01SList extends CListPageModel
             $endDate = date("Y-m-31",$strtime);
             Yii::app()->db->createCommand()->update("acc_service_comm_copy",array(
                 'commission'=>null
-            ),"first_dt between '$startDate' and '$endDate'");
+            ),"status = 'N' and first_dt between '$startDate' and '$endDate'");
             Yii::app()->db->createCommand()->update("swoper$suffix.swo_service",array(
                 'commission'=>null
-            ),"first_dt between '$startDate' and '$endDate'");
+            ),"status = 'N' and first_dt between '$startDate' and '$endDate'");
         }
     }
 
