@@ -981,13 +981,14 @@ class ReportXS01SList extends CListPageModel
         $suffix = Yii::app()->params['envSuffix'];
         $money=0;
         $reward=0;
-        $money1=0;
-        $moneys=0;
+        $money1=0;//更改減少
+        $moneys=0;//更改增多
         $start_dt=$years."-".$months."-01";
       //  $zhuangji=0;
         foreach ($id as $ai){
                 $sql="select * from swoper$suffix.swo_service where id='$ai'";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
+                $reward = ReportXS01Form::serviceReward('','',$years."/".$months,$records['salesman']);//服务奖励点
                 if($records['paid_type']=='1'||$records['paid_type']=='Y'){
                     $a=$records['amt_paid'];
                 }else{
@@ -1000,7 +1001,7 @@ class ReportXS01SList extends CListPageModel
                 }
              //   $zhuangji+=$records['amt_install'];
                 $c=$a-$b;
-                if($c>0){
+                if($c>0){//大於零更改新增   小於零更改減少
 //                    $sql="select new_calc from  acc_service_comm_dtl where hdr_id='$index'";
 //                    $record = Yii::app()->db->createCommand($sql)->queryRow();
                    // $fuwumoney=$c*$record['new_calc'];
@@ -1040,7 +1041,6 @@ class ReportXS01SList extends CListPageModel
                     $timestrap=strtotime($date);
                     $year=date('Y',$timestrap);
                     $month=date('m',$timestrap);
-                    $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$records['salesman']);//服务奖励点
                     $records['salesman']=str_replace('(','',$records['salesman']);
                     $records['salesman']=str_replace(')','',$records['salesman']);
 //                    print_r($sql); print_r($recordss);exit();
@@ -1118,8 +1118,8 @@ class ReportXS01SList extends CListPageModel
         //新增补充修改
         if(!empty($records_new_money['new_calc'])&&$records_new_money['new_calc']>0){
             $new_moneyss=$records_new_money['new_amount']/ $records_new_money['new_calc'];
-          $new_amount=$new_moneyss*$fuwus;
-          $sql_new="update acc_service_comm_dtl set new_amount='$new_amount' where hdr_id='$index'";
+          $new_amount=$new_moneyss*$fuwu;
+          $sql_new="update acc_service_comm_dtl set new_amount='$new_amount',new_calc='$fuwu' where hdr_id='$index'";
           $model = Yii::app()->db->createCommand($sql_new)->execute();
         }
         $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
