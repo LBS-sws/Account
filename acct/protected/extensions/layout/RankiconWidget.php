@@ -52,10 +52,11 @@ EOF;
 	}
 	
 	protected function renderScript() {
+		$modalWindow = Yii::app()->params['showRankNotice']=='on' ? 'modal-ranknotice' : 'modal-default';
 		$js = <<<EOF
 $('#modal-ranking').modal('show');
 $('#modal-ranking').on("hidden.bs.modal", function() {
-	$('#modal-default').modal('show');
+	$('#$modalWindow').modal('show');
 });
 EOF;
 		Yii::app()->clientScript->registerScript('rankicon',$js,CClientScript::POS_READY);
