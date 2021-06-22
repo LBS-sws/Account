@@ -689,7 +689,7 @@ class SalesTableForm extends CFormModel
         //print_r('<pre>');print_r($rows);exit();
         if(count($rows)>0){
             foreach ($rows as $v){
-                    $fuwu=$this->getAmount($city,$v['id'],$v['sales_products'],$start,$v['money']);//本单产品提成比例
+                    $fuwu=$this->getAmount($city,$v['id'],$v['sales_products'],$start,$money);//本单产品提成比例
                     $fuwu=$fuwu+$point['point'];
                     $temp['status_dt'] = General::toDate($v['log_dt']);//日期
                     $temp['company_name'] = $v['company_name'];//客户名称
