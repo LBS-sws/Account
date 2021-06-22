@@ -655,7 +655,7 @@ class CommissionController extends Controller
     public static function allowEditDate() {
         $year = key_exists("year",$_GET)?$_GET["year"]:0;
         $month = key_exists("month",$_GET)?$_GET["month"]:0;
-        if(date("Y/m/d",strtotime("$year-$month-01"))>=date("Y/m/01",strtotime("-2 months"))){
+        if(date("Y/m/d",strtotime("$year-$month-01"))>=date("Y/m/01",strtotime("-1 months"))){
             return Yii::app()->user->validRWFunction('XS01');
         }else{
             return false;
