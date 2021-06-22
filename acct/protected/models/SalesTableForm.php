@@ -655,7 +655,11 @@ class SalesTableForm extends CFormModel
         $this->y_ic_end=array_sum(array_map(create_function('$val', 'return $val["y_ic_end"];'), $this->group));
         $this->y_amt_paid=array_sum(array_map(create_function('$val', 'return $val["y_amt_paid"];'), $this->group));
         $this->abc_money=$this->y_ia+ $this->y_ib+$this->y_ic+$this->y_amt_paid;//iaibic营业额
+        /*異常的銷售激勵點（沈超刪除）
         $sql_point="select * from sales$suffix.sal_integral where hdr_id='$index' ";
+        $point = Yii::app()->db->createCommand($sql_point)->queryRow();
+        */
+        $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."' and city='".$records['city']."'";
         $point = Yii::app()->db->createCommand($sql_point)->queryRow();
         //新增判断当月是否入职月
         if($employee==1){//$records['employee_code'], $records['year_no'], $records['month_no']
