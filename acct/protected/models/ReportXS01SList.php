@@ -1038,6 +1038,7 @@ class ReportXS01SList extends CListPageModel
                     $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N' and salesman='".$records['salesman']."' order by status_dt desc";
                     $recordss = Yii::app()->db->createCommand($sql)->queryRow();
                     $date=$recordss['first_dt'];
+                    var_dump("date:$date");
                     $timestrap=strtotime($date);
                     $year=date('Y',$timestrap);
                     $month=date('m',$timestrap);
@@ -1052,6 +1053,13 @@ class ReportXS01SList extends CListPageModel
                     $point=$this->getPoint($year,$month,$index);//积分激励点
                     $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$records['salesman']);//服务奖励点
                     $fuwu_last=$point+$records2['new_calc']+$reward;
+                    var_dump("salesman:".$records['salesman']);
+                    var_dump("hdr_id:".$records1['id']);
+                    var_dump("new_calc:".$records2['new_calc']);
+                    var_dump("point:$point");
+                    var_dump("reward:$reward");
+                    var_dump("fuwu_last:$fuwu_last");
+                    die();
                    if(isset($m)){
                        if(!empty($records2)){
                            $m=$m*$fuwu_last;
