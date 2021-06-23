@@ -259,7 +259,7 @@ class ReportXS01Form extends CReportForm
     public static function serviceReward($employee_code,$employee_name,$saleyear,$salesman=""){
         $suffix = Yii::app()->params['envSuffix'];
         $startDate = date("Y/m/d",strtotime($saleyear."/01"));
-        $endDate = date("Y/m/d",strtotime($saleyear."/31"));
+        $endDate = date("Y/m/31",strtotime($saleyear."/01"));
         $dateSql = " and date_format(b.log_dt,'%Y/%m/%d')>='$startDate' and date_format(b.log_dt,'%Y/%m/%d')<='$endDate'";
         if(empty($salesman)){
             $salesman = $employee_name." ($employee_code)";
@@ -277,7 +277,8 @@ class ReportXS01Form extends CReportForm
             $serviceCount =Yii::app()->db->createCommand()->select("count(a.id)")
                 ->from("swoper$suffix.swo_service a")
                 ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
-                ->where("(b.single != 1 or b.single is NULL) and a.status = 'N' and a.commission is not null and a.salesman='$salesman' $dateSql")
+                ->leftJoin("swoper$suffix.swo_customer_type c","a.cust_type = c.id")
+                ->where("((b.single != 1 and a.cust_type_name != 0) or (c.single != 1 and a.cust_type_name = 0)) and a.status = 'N' and a.commission is not null and a.salesman='$salesman' $dateSql")
                 ->queryScalar();
             $serviceCount=$serviceCount?$serviceCount:0;
             $serviceAddCount =Yii::app()->db->createCommand()->select("count(a.id)")
@@ -286,7 +287,7 @@ class ReportXS01Form extends CReportForm
                 ->where("(b.single != 1 or b.single is NULL) and a.status = 'N' and a.commission is not null and a.salesman='$salesman' $dateSql")
                 ->queryScalar();
             $serviceAddCount=$serviceAddCount?$serviceAddCount:0;
-            if($serviceCount+$serviceAddCount>=4){
+            if($serviceCount+$serviceAddCount>=4&&$startDate>="2021/06/01"){
                 return 0.01;
             }
         }
