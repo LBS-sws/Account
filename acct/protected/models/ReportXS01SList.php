@@ -1038,10 +1038,10 @@ class ReportXS01SList extends CListPageModel
                     $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N' and salesman='".$records['salesman']."' order by status_dt desc";
                     $recordss = Yii::app()->db->createCommand($sql)->queryRow();
                     $date=$recordss['first_dt'];
-                    var_dump("date:$date");
                     $timestrap=strtotime($date);
                     $year=date('Y',$timestrap);
                     $month=date('m',$timestrap);
+                    ReportXS01SList::resetYearAndMonth($year,$month,$recordss['city'],$recordss['id']);//需要计算服务单有没有东成西就
                     $records['salesman']=str_replace('(','',$records['salesman']);
                     $records['salesman']=str_replace(')','',$records['salesman']);
 //                    print_r($sql); print_r($recordss);exit();
@@ -1053,13 +1053,6 @@ class ReportXS01SList extends CListPageModel
                     $point=$this->getPoint($year,$month,$index);//积分激励点
                     $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$records['salesman']);//服务奖励点
                     $fuwu_last=$point+$records2['new_calc']+$reward;
-                    var_dump("salesman:".$records['salesman']);
-                    var_dump("hdr_id:".$records1['id']);
-                    var_dump("new_calc:".$records2['new_calc']);
-                    var_dump("point:$point");
-                    var_dump("reward:$reward");
-                    var_dump("fuwu_last:$fuwu_last");
-                    die();
                    if(isset($m)){
                        if(!empty($records2)){
                            $m=$m*$fuwu_last;
@@ -1145,6 +1138,25 @@ class ReportXS01SList extends CListPageModel
         $model = Yii::app()->db->createCommand($sql1)->execute();
     }
 
+    //东成西就需要重新计算年月
+    public static function resetYearAndMonth(&$year,&$month,$city,$index){
+        $date=$year."/".$month.'/'."01";
+        $date1='2020/07/01';
+        $employee=CommissionController::getEmployee($index,$year,$month);
+        $a=CommissionController::position($index);
+        if($city=='CD'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||(($city=='FS'||$city=='NJ')&&strtotime($date)<strtotime('2021/02/01'))){
+            //当月
+            return;
+        }else{
+            //上个月
+            $month=$month-1;
+            if($month==0){
+                $month=12;
+                $year=$year-1;
+            }
+        }
+    }
+
     public function endSale($id,$index,$royalty,$years,$months){
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
@@ -1179,6 +1191,7 @@ class ReportXS01SList extends CListPageModel
                 $timestrap=strtotime($date);
                 $year=date('Y',$timestrap);
                 $month=date('m',$timestrap);
+                ReportXS01SList::resetYearAndMonth($year,$month,$records['city'],$records['id']);//需要计算服务单有没有东成西就
                 $records['salesman']=str_replace('(','',$records['salesman']);
                 $records['salesman']=str_replace(')','',$records['salesman']);
                 if(empty($records['city'])){
