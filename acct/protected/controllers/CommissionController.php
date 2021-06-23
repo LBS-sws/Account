@@ -33,13 +33,31 @@ class CommissionController extends Controller
                 'expression'=>array('CommissionController','allowEditDate'),
             ),
             array('allow',
-                'actions'=>array('view','index','index_s','edit','end','test'),
+                'actions'=>array('view','index','index_s','edit','end','test','remove'),
                 'expression'=>array('CommissionController','allowReadOnly'),
             ),
             array('deny',  // deny all users
                 'users'=>array('*'),
             ),
         );
+    }
+
+    //清空重复的数据
+    public function actionRemove(){
+        $rows = Yii::app()->db->createCommand()->select("max(id) as id")
+            ->from("acc_service_comm_hdr")
+            ->group('year_no, month_no, employee_code, employee_name, city')
+            ->having('count(*)>1')
+            ->queryAll();
+        if($rows){
+            foreach ($rows as $row){
+                Yii::app()->db->createCommand()->delete('acc_service_comm_hdr', 'id=:id',
+                    array(':id'=>$row['id']));
+            }
+            echo "success";
+        }else{
+            echo "don't have data";
+        }
     }
 
     public function actionTest($month=6,$id=0)
