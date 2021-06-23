@@ -1041,12 +1041,16 @@ class ReportXS01SList extends CListPageModel
                     $timestrap=strtotime($date);
                     $year=date('Y',$timestrap);
                     $month=date('m',$timestrap);
-                    ReportXS01SList::resetYearAndMonth($year,$month,$recordss['city'],$recordss['id']);//需要计算服务单有没有东成西就
                     $records['salesman']=str_replace('(','',$records['salesman']);
                     $records['salesman']=str_replace(')','',$records['salesman']);
-//                    print_r($sql); print_r($recordss);exit();
                     $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
                     $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
+                    ReportXS01SList::resetYearAndMonth($year,$month,$recordss['city'],$records1['id']);//需要计算服务单有没有东成西就
+                    if($year!=$year||$month!=$month){
+                        $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
+                        $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
+                    }
+//                    print_r($sql); print_r($recordss);exit();
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
@@ -1144,10 +1148,13 @@ class ReportXS01SList extends CListPageModel
         $date1='2020/07/01';
         $employee=CommissionController::getEmployee($index,$year,$month);
         $a=CommissionController::position($index);
+        var_dump("a:$a");
+        var_dump("employee:$employee");
         if($city=='CD'||$city=='TJ'||$a==1||strtotime($date)<strtotime($date1)||$employee==1||(($city=='FS'||$city=='NJ')&&strtotime($date)<strtotime('2021/02/01'))){
             //当月
             return;
         }else{
+            var_dump(2);
             //上个月
             $month=$month-1;
             if($month==0){
@@ -1191,7 +1198,6 @@ class ReportXS01SList extends CListPageModel
                 $timestrap=strtotime($date);
                 $year=date('Y',$timestrap);
                 $month=date('m',$timestrap);
-                ReportXS01SList::resetYearAndMonth($year,$month,$records['city'],$records['id']);//需要计算服务单有没有东成西就
                 $records['salesman']=str_replace('(','',$records['salesman']);
                 $records['salesman']=str_replace(')','',$records['salesman']);
                 if(empty($records['city'])){
@@ -1200,6 +1206,11 @@ class ReportXS01SList extends CListPageModel
                 }
                 $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
+                ReportXS01SList::resetYearAndMonth($year,$month,$records['city'],$records1['id']);//需要计算服务单有没有东成西就
+                if($year!=$year||$month!=$month){
+                    $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
+                    $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
+                }
                 $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                 $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                 $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
