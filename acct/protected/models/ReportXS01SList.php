@@ -1054,7 +1054,6 @@ class ReportXS01SList extends CListPageModel
                     }
                     var_dump("setYear:$year");
                     var_dump("setMonth:$month");
-                    die();
 //                    print_r($sql); print_r($recordss);exit();
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
@@ -1062,6 +1061,10 @@ class ReportXS01SList extends CListPageModel
                     $point=$this->getPoint($year,$month,$index);//积分激励点
                     $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$records['salesman']);//服务奖励点
                     $fuwu_last=$point+$records2['new_calc']+$reward;
+                    var_dump("point:$point");
+                    var_dump("reward:$reward");
+                    var_dump("fuwu_last:$fuwu_last");
+                    var_dump("new_calc:".$records2['new_calc']);
                    if(isset($m)){
                        if(!empty($records2)){
                            $m=$m*$fuwu_last;
@@ -1074,10 +1077,12 @@ class ReportXS01SList extends CListPageModel
                                    $commission=$m;
                                    $money1+=$commission;
                                }
+                               var_dump("commission:$commission");
                                $sqlct="update swoper$suffix.swo_service set royalty='".$fuwu_last."',commission='".$commission."'  where id='$ai'";
                                $model = Yii::app()->db->createCommand($sqlct)->execute();
                            }
                        }else{
+                           var_dump("error");
                            $m=$m*$royalty[$ai];
                            if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                $cust_type='fw';
@@ -1145,6 +1150,8 @@ class ReportXS01SList extends CListPageModel
             $sql1="update acc_service_comm_dtl set edit_amount='$fuwumoney' ,edit_money='$moneys' where hdr_id='$index'";
         }
         $model = Yii::app()->db->createCommand($sql1)->execute();
+
+        die();
     }
 
     //东成西就需要重新计算年月
