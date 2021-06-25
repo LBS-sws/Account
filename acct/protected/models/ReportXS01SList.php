@@ -778,12 +778,13 @@ class ReportXS01SList extends CListPageModel
             $strtime = strtotime($row["year_no"]."/".$row["month_no"]."/01");
             $startDate = date("Y-m-01",$strtime);
             $endDate = date("Y-m-31",$strtime);
+            $salesman = $row["employee_name"]." (".$row["employee_code"].")";
             Yii::app()->db->createCommand()->update("acc_service_comm_copy",array(
                 'commission'=>null
-            ),"status = 'N' and first_dt between '$startDate' and '$endDate'");
+            ),"status = 'N' and first_dt between '$startDate' and '$endDate' and salesman='$salesman'");
             Yii::app()->db->createCommand()->update("swoper$suffix.swo_service",array(
                 'commission'=>null
-            ),"status = 'N' and first_dt between '$startDate' and '$endDate'");
+            ),"status = 'N' and first_dt between '$startDate' and '$endDate' and salesman='$salesman'");
         }
     }
 
@@ -1041,6 +1042,7 @@ class ReportXS01SList extends CListPageModel
                     $timestrap=strtotime($date);
                     $year=date('Y',$timestrap);
                     $month=date('m',$timestrap);
+                    $salesman = $records['salesman'];
                     $records['salesman']=str_replace('(','',$records['salesman']);
                     $records['salesman']=str_replace(')','',$records['salesman']);
                     $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['salesman']."' ";
@@ -1053,7 +1055,7 @@ class ReportXS01SList extends CListPageModel
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
                     $point=$this->getPoint($year,$month,$index);//积分激励点
-                    $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$records['salesman']);//服务奖励点
+                    $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$salesman);//服务奖励点
                     $fuwu_last=$point+$records2['new_calc']+$reward;
                    if(isset($m)){
                        if(!empty($records2)){
@@ -1143,6 +1145,9 @@ class ReportXS01SList extends CListPageModel
 
     //东成西就需要重新计算年月
     public static function resetYearAndMonth(&$year,&$month,$city,$index){
+        if(strtotime("$year-$month-01")>=strtotime("2021-06-01")){
+            return;//超過2021-06-01不加入东成西就
+        }
         $date=$year."/".$month.'/'."01";
         $date1='2020/07/01';
         $employee=CommissionController::getEmployee($index,$year,$month);
@@ -1194,6 +1199,7 @@ class ReportXS01SList extends CListPageModel
                 $timestrap=strtotime($date);
                 $year=date('Y',$timestrap);
                 $month=date('m',$timestrap);
+                $salesman = $records['salesman'];
                 $records['salesman']=str_replace('(','',$records['salesman']);
                 $records['salesman']=str_replace(')','',$records['salesman']);
                 if(empty($records['city'])){
@@ -1209,7 +1215,8 @@ class ReportXS01SList extends CListPageModel
                 $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                 $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
                 $point=$this->getPoint($year,$month,$index);//积分激励点
-                $fuwu_last=$point+$records2['new_calc'];
+                $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$salesman);//服务奖励点
+                $fuwu_last=$point+$records2['new_calc']+$reward;
                 if(isset($m)){
                     if(!empty($records2)){
                         $m=$m*$fuwu_last;
@@ -1539,12 +1546,16 @@ class ReportXS01SList extends CListPageModel
                 $recordss = Yii::app()->db->createCommand($sql)->queryRow();
                 $date=$recordss['first_dt'];
                 $timestrap=strtotime($date);
-                $years=date('Y',$timestrap);
-                $months=date('m',$timestrap);
+                $year=date('Y',$timestrap);
+                $month=date('m',$timestrap);
 
+                $othersalesman = $records['othersalesman'];
                 $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                 $records['othersalesman']=str_replace(')','',$records['othersalesman']);
-                $sql1="select * from acc_service_comm_hdr where year_no='".$years."' and month_no='".$months."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
+                $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
+                $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
+                ReportXS01SList::resetYearAndMonth($year,$month,$recordss['city'],$records1['id']);//需要计算服务单有没有东成西就
+                $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
                 $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                 if($records1['performance']==1){
@@ -1552,7 +1563,7 @@ class ReportXS01SList extends CListPageModel
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     if(isset($m)){
                         if($records2['new_calc']!=0&&empty(!$records2['new_calc'])){
-                            $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$records['othersalesman']);//服务奖励点
+                            $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$othersalesman);//服务奖励点
                             $point=$this->getPoint($year,$month,$index);//积分激励点
                             $fuwu_last=$point+$records2['new_calc']+$reward;
                             $m=$m*$fuwu_last;
@@ -1642,10 +1653,15 @@ class ReportXS01SList extends CListPageModel
                 $timestrap=strtotime($date);
                 $year=date('Y',$timestrap);
                 $month=date('m',$timestrap);
+                $othersalesman=$records['othersalesman'];
                 $records['othersalesman']=str_replace('(','',$records['othersalesman']);
                 $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                 $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
+                ReportXS01SList::resetYearAndMonth($year,$month,$records['city'],$records1['id']);//需要计算服务单有没有东成西就
+                $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
+                $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
+                $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$othersalesman);//服务奖励点
                 if($records1['performance']==1){
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";//当初提成比例
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
@@ -1653,7 +1669,7 @@ class ReportXS01SList extends CListPageModel
                     if(isset($m)){
                         if($records2['new_calc']!=0&&empty(!$records2['new_calc'])){
                             $point=$this->getPoint($year,$month,$index);//积分激励点
-                            $fuwu_last=$point+$records2['new_calc'];
+                            $fuwu_last=$point+$records2['new_calc']+$reward;
                             $m=$m*$fuwu_last;
                             if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                 $money[]=round($m*$otherspanning,2);
