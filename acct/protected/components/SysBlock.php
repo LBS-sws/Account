@@ -62,12 +62,12 @@ class SysBlock {
 			$day = date("m-d");
             $dateSql = " and b.id<0";
             if($year>2020){
-                if($year == 2021&&$day>="02-01"&&$day<"08-01"){
-                    $dateSql = " and ((b.year<=".($year-1).") or (b.year = $year and b.year_type = 1))";
-                }elseif ($day>="08-01"){
-                    $dateSql = " and (b.year = $year and b.year_type = 1)";
+                if ($day>="08-01"){
+                    $dateSql = " and (b.year <= ".($year-1)." or (b.year = $year and b.year_type = 1))";
                 }elseif ($day>="02-01"){
-                    $dateSql = " and (b.year = ".($year-1)." and b.year_type = 2)";
+                    $dateSql = " and (b.year <= ".($year-1).")";
+                }else{
+                    $dateSql = " and (b.year <= ".($year-2)." or (b.year = ".($year-1)." and b.year_type = 1))";
                 }
             }
 			$count = Yii::app()->db->createCommand()->select("a.id")->from("hr$suffix.hr_review_h a")
