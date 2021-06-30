@@ -39,6 +39,7 @@ class SalesTableList extends CListPageModel
                  left outer join  acc_service_comm_dtl d on a.id=d.hdr_id         
                  left outer join  acc_product f on a.id=f.service_hdr_id             
 			     where   a.city in ($city) and b.city in ($city)
+			      and (b.staff_status!='-1' or (b.staff_status='-1' and REPLACE (b.leave_time, '-', '/') >= CONCAT(a.year_no,'/',IF(a.month_no<10,CONCAT('0',a.month_no),a.month_no),'/01'))) 
 			";
         $sql2 = "select count(*) from acc_service_comm_hdr a
                  inner join  hr$suffix.hr_employee b  on b.code=a.employee_code
@@ -47,6 +48,7 @@ class SalesTableList extends CListPageModel
                  left outer join  acc_service_comm_dtl d on a.id=d.hdr_id       
                    left outer join  acc_product f on a.id=f.service_hdr_id         
 			     where   a.city in ($city) and b.city in ($city)
+			      and (b.staff_status!='-1' or (b.staff_status='-1' and REPLACE (b.leave_time, '-', '/') >= CONCAT(a.year_no,'/',IF(a.month_no<10,CONCAT('0',a.month_no),a.month_no),'/01'))) 
 			";
 		$clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {

@@ -45,6 +45,7 @@ class ReportXS02List extends CListPageModel
             $month=12;
             $year=$year-1;
         }
+        $leaveTime = date("Y/m/01",strtotime("$year/$month/01"));
         $user=Yii::app()->user->id;
         if(Yii::app()->user->validFunction('CN09')){
             $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,d.performance_amount,d.performanceedit_amount,d.performanceend_amount,d.renewal_amount,d.renewalend_amount,d.product_amount,e.name as cityname from acc_service_comm_hdr a
@@ -52,14 +53,14 @@ class ReportXS02List extends CListPageModel
                  inner join  hr$suffix.hr_dept c on b.position=c.id      
                  inner join security$suffix.sec_city e on a.city=e.code 		  
                  left outer join  acc_service_comm_dtl d on a.id=d.hdr_id            
-			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($citys) and b.city in ($citys)  
+			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($citys) and b.city in ($citys) and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime')) 
 			";
             $sql2 = "select count(a.id) from acc_service_comm_hdr a
 			      inner join  hr$suffix.hr_employee b  on b.code=a.employee_code   
                  inner join  hr$suffix.hr_dept c on b.position=c.id   
                   inner join security$suffix.sec_city e on a.city=e.code 		   
                   left outer join  acc_service_comm_dtl d on a.id=d.hdr_id          
-			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($citys) and b.city in ($citys)  
+			     where  a.year_no='$year'  and a.month_no='$month' and a.city in ($citys) and b.city in ($citys) and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
 			";
         }else{
             $sql1 = "select a.*,c.name,d.new_amount,d.edit_amount,d.end_amount,d.performance_amount,d.performanceedit_amount,d.performanceend_amount,d.renewal_amount,d.renewalend_amount,d.product_amount,e.name as cityname from acc_service_comm_hdr a
@@ -68,7 +69,7 @@ class ReportXS02List extends CListPageModel
                  inner join security$suffix.sec_city e on a.city=e.code
                  left outer join  acc_service_comm_dtl d on a.id=d.hdr_id
                  left outer join  hr$suffix.hr_binding e on b.name=e.employee_name
-			     where  a.year_no='$year'  and a.month_no='$month' and a.city='$city' and b.city='$city'  and e.user_id='$user'  and b.staff_status = 0
+			     where  a.year_no='$year'  and a.month_no='$month' and a.city='$city' and b.city='$city'  and e.user_id='$user' and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
 			";
             $sql2 = "select count(a.id) from acc_service_comm_hdr a
 			      inner join  hr$suffix.hr_employee b  on b.code=a.employee_code
@@ -76,7 +77,7 @@ class ReportXS02List extends CListPageModel
                   inner join security$suffix.sec_city e on a.city=e.code
                   left outer join  acc_service_comm_dtl d on a.id=d.hdr_id
                   left outer join  hr$suffix.hr_binding e on b.name=e.employee_name
-			     where  a.year_no='$year'  and a.month_no='$month' and a.city='$city' and b.city='$city'  and e.user_id='$user'  and b.staff_status = 0
+			     where  a.year_no='$year'  and a.month_no='$month' and a.city='$city' and b.city='$city'  and e.user_id='$user'  and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
 			";
         }
 
