@@ -1056,6 +1056,8 @@ class ReportXS01SList extends CListPageModel
                     $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
                     $point=$this->getPoint($year,$month,$index);//积分激励点
                     $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$salesman);//服务奖励点
+
+                    $records2['new_calc'] = $records2['new_calc']<=0?0.05:$records2['new_calc'];
                     $fuwu_last=$point+$records2['new_calc']+$reward;
                    if(isset($m)){
                        if(!empty($records2)){
@@ -1216,6 +1218,7 @@ class ReportXS01SList extends CListPageModel
                 $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
                 $point=$this->getPoint($year,$month,$index);//积分激励点
                 $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$salesman);//服务奖励点
+                $records2['new_calc'] = $records2['new_calc']<=0?0.05:$records2['new_calc'];
                 $fuwu_last=$point+$records2['new_calc']+$reward;
                 if(isset($m)){
                     if(!empty($records2)){
@@ -1394,6 +1397,7 @@ class ReportXS01SList extends CListPageModel
                     $sql2 = "select new_calc from  acc_service_comm_dtl where hdr_id='" . $records1['id'] . "'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     $point=$this->getPoint($year,$month,$index);//积分激励点
+                    $records2['new_calc'] = $records2['new_calc']<=0?0.05:$records2['new_calc'];
                     $fuwu_last=$point+$records2['new_calc']+$reward;
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     if (!empty($a)) {
@@ -1514,6 +1518,7 @@ class ReportXS01SList extends CListPageModel
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     $point=$this->getPoint($year,$month,$index);//积分激励点
+                    $records2['new_calc'] = $records2['new_calc']<=0?0.05:$records2['new_calc'];
                     $fuwu_last=$point+$records2['new_calc']+$reward;
                     $fuwumoney=$c*$fuwu_last;
                     if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
@@ -1667,7 +1672,7 @@ class ReportXS01SList extends CListPageModel
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
                     if(isset($m)){
-                        if($records2['new_calc']!=0&&empty(!$records2['new_calc'])){
+                        if($records2['new_calc']!=0&&!empty($records2['new_calc'])){
                             $point=$this->getPoint($year,$month,$index);//积分激励点
                             $fuwu_last=$point+$records2['new_calc']+$reward;
                             $m=$m*$fuwu_last;
