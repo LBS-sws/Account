@@ -172,6 +172,8 @@ return array(
 	'Description'=>'产品名称',
 	'Qty'=>'数量',
 	'Qty Money'=>'单价',
+	'Generate Invoice'=>'发票生成',
+	'Invoice'=>'发票',
 
 );
 ?>

@@ -167,5 +167,7 @@ return array(
 
 'Sales commission table'=>'銷售提成表',
 'Time'=>'日期',
+'Generate Invoice'=>'發票生成',
+'Invoice'=>'發票',
 );
 ?>

@@ -99,6 +99,16 @@ return array(
 			),
 		),
 	),
+	'Generate Invoice'=>array(
+		'access'=>'XI',
+		'icon'=>'fa-bolt',
+		'items'=>array(
+			'Invoice'=>array(
+				'access'=>'XI01',
+				'url'=>'/invoice/index',
+			)
+		),
+	),
 	'Import'=>array(
 		'access'=>'XF',
 		'icon'=>'fa-bolt',
