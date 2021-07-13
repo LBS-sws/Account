@@ -628,32 +628,33 @@ class SalesTableForm extends CFormModel
         }
         //月金额
       //  print_r('<pre>'); print_r($this->group);exit();
-        $this->ia=array_sum(array_map(create_function('$val', 'return $val["ia"];'), $this->group));
-        $this->ia_c=array_sum(array_map(create_function('$val', 'return $val["ia_c"];'), $this->group));
-        $this->ia_c_end=array_sum(array_map(create_function('$val', 'return $val["ia_c_end"];'), $this->group));
-        $this->ia_end=array_sum(array_map(create_function('$val', 'return $val["ia_end"];'), $this->group));
-        $this->ib=array_sum(array_map(create_function('$val', 'return $val["ib"];'), $this->group));
-        $this->ib_c=array_sum(array_map(create_function('$val', 'return $val["ib_c"];'), $this->group));
-        $this->ib_c_end=array_sum(array_map(create_function('$val', 'return $val["ib_c_end"];'), $this->group));
-        $this->ib_end=array_sum(array_map(create_function('$val', 'return $val["ib_end"];'), $this->group));
-        $this->ic=array_sum(array_map(create_function('$val', 'return $val["ic"];'), $this->group));
-        $this->ic_c=array_sum(array_map(create_function('$val', 'return $val["ic_c"];'), $this->group));
-        $this->ic_c_end=array_sum(array_map(create_function('$val', 'return $val["ic_c_end"];'), $this->group));
-        $this->ic_end=array_sum(array_map(create_function('$val', 'return $val["ic_end"];'), $this->group));
+        //var_dump($this->group);
+        $this->ia=array_sum(array_map(create_function('$val', 'return !key_exists("ia",$val)?0:$val["ia"];'), $this->group));
+        $this->ia_c=array_sum(array_map(create_function('$val', 'return !key_exists("ia_c",$val)?0:$val["ia_c"];'), $this->group));
+        $this->ia_c_end=array_sum(array_map(create_function('$val', 'return !key_exists("ia_c_end",$val)?0:$val["ia_c_end"];'), $this->group));
+        $this->ia_end=array_sum(array_map(create_function('$val', 'return !key_exists("ia_end",$val)?0:$val["ia_end"];'), $this->group));
+        $this->ib=array_sum(array_map(create_function('$val', 'return !key_exists("ib",$val)?0:$val["ib"];'), $this->group));
+        $this->ib_c=array_sum(array_map(create_function('$val', 'return !key_exists("ib_c",$val)?0:$val["ib_c"];'), $this->group));
+        $this->ib_c_end=array_sum(array_map(create_function('$val', 'return !key_exists("ib_c_end",$val)?0:$val["ib_c_end"];'), $this->group));
+        $this->ib_end=array_sum(array_map(create_function('$val', 'return !key_exists("ib_end",$val)?0:$val["ib_end"];'), $this->group));
+        $this->ic=array_sum(array_map(create_function('$val', 'return !key_exists("ic",$val)?0:$val["ic"];'), $this->group));
+        $this->ic_c=array_sum(array_map(create_function('$val', 'return !key_exists("ic_c",$val)?0:$val["ic_c"];'), $this->group));
+        $this->ic_c_end=array_sum(array_map(create_function('$val', 'return !key_exists("ic_c_end",$val)?0:$val["ic_c_end"];'), $this->group));
+        $this->ic_end=array_sum(array_map(create_function('$val', 'return !key_exists("ic_end",$val)?0:$val["ic_end"];'), $this->group));
 //年金额
-        $this->y_ia=array_sum(array_map(create_function('$val', 'return $val["y_ia"];'), $this->group));
-        $this->y_ia_c=array_sum(array_map(create_function('$val', 'return $val["y_ia_c"];'), $this->group));
-        $this->y_ia_c_end=array_sum(array_map(create_function('$val', 'return $val["y_ia_c_end"];'), $this->group));
-        $this->y_ia_end=array_sum(array_map(create_function('$val', 'return $val["y_ia_end"];'), $this->group));
-        $this->y_ib=array_sum(array_map(create_function('$val', 'return $val["y_ib"];'), $this->group));
-        $this->y_ib_c=array_sum(array_map(create_function('$val', 'return $val["y_ib_c"];'), $this->group));
-        $this->y_ib_c_end=array_sum(array_map(create_function('$val', 'return $val["y_ib_c_end"];'), $this->group));
-        $this->y_ib_end=array_sum(array_map(create_function('$val', 'return $val["y_ib_end"];'), $this->group));
-        $this->y_ic=array_sum(array_map(create_function('$val', 'return $val["y_ic"];'), $this->group));
-        $this->y_ic_c=array_sum(array_map(create_function('$val', 'return $val["y_ic_c"];'), $this->group));
-        $this->y_ic_c_end=array_sum(array_map(create_function('$val', 'return $val["y_ic_c_end"];'), $this->group));
-        $this->y_ic_end=array_sum(array_map(create_function('$val', 'return $val["y_ic_end"];'), $this->group));
-        $this->y_amt_paid=array_sum(array_map(create_function('$val', 'return $val["y_amt_paid"];'), $this->group));
+        $this->y_ia=array_sum(array_map(create_function('$val', 'return !key_exists("y_ia",$val)?0:$val["y_ia"];'), $this->group));
+        $this->y_ia_c=array_sum(array_map(create_function('$val', 'return !key_exists("y_ia_c",$val)?0:$val["y_ia_c"];'), $this->group));
+        $this->y_ia_c_end=array_sum(array_map(create_function('$val', 'return !key_exists("y_ia_c_end",$val)?0:$val["y_ia_c_end"];'), $this->group));
+        $this->y_ia_end=array_sum(array_map(create_function('$val', 'return !key_exists("y_ia_end",$val)?0:$val["y_ia_end"];'), $this->group));
+        $this->y_ib=array_sum(array_map(create_function('$val', 'return !key_exists("y_ib",$val)?0:$val["y_ib"];'), $this->group));
+        $this->y_ib_c=array_sum(array_map(create_function('$val', 'return !key_exists("y_ib_c",$val)?0:$val["y_ib_c"];'), $this->group));
+        $this->y_ib_c_end=array_sum(array_map(create_function('$val', 'return !key_exists("y_ib_c_end",$val)?0:$val["y_ib_c_end"];'), $this->group));
+        $this->y_ib_end=array_sum(array_map(create_function('$val', 'return !key_exists("y_ib_end",$val)?0:$val["y_ib_end"];'), $this->group));
+        $this->y_ic=array_sum(array_map(create_function('$val', 'return !key_exists("y_ic",$val)?0:$val["y_ic"];'), $this->group));
+        $this->y_ic_c=array_sum(array_map(create_function('$val', 'return !key_exists("y_ic_c",$val)?0:$val["y_ic_c"];'), $this->group));
+        $this->y_ic_c_end=array_sum(array_map(create_function('$val', 'return !key_exists("y_ic_c_end",$val)?0:$val["y_ic_c_end"];'), $this->group));
+        $this->y_ic_end=array_sum(array_map(create_function('$val', 'return !key_exists("y_ic_end",$val)?0:$val["y_ic_end"];'), $this->group));
+        $this->y_amt_paid=array_sum(array_map(create_function('$val', 'return !key_exists("y_amt_paid",$val)?0:$val["y_amt_paid"];'), $this->group));
         $this->abc_money=$this->y_ia+ $this->y_ib+$this->y_ic+$this->y_amt_paid;//iaibic营业额
         /*異常的銷售激勵點（沈超刪除）
         $sql_point="select * from sales$suffix.sal_integral where hdr_id='$index' ";
@@ -754,34 +755,34 @@ class SalesTableForm extends CFormModel
             }
         }
         //产品
-        $this->amt_paid=array_sum(array_map(create_function('$val', 'return $val["amt_paid"];'), $this->group));
-        $this->amt_install=array_sum(array_map(create_function('$val', 'return $val["amt_install"];'), $this->group));
-        $this->paper=array_sum(array_map(create_function('$val', 'return $val["paper"];'), $this->group));
-        $this->disinfectant=array_sum(array_map(create_function('$val', 'return $val["disinfectant"];'), $this->group));
-        $this->purification=array_sum(array_map(create_function('$val', 'return $val["purification"];'), $this->group));
-        $this->chemical=array_sum(array_map(create_function('$val', 'return $val["chemical"];'), $this->group));
-        $this->aromatherapy=array_sum(array_map(create_function('$val', 'return $val["aromatherapy"];'), $this->group));
-        $this->pestcontrol=array_sum(array_map(create_function('$val', 'return $val["pestcontrol"];'), $this->group));
-        $this->other=array_sum(array_map(create_function('$val', 'return $val["other"];'), $this->group));
+        $this->amt_paid=array_sum(array_map(create_function('$val', 'return !key_exists("amt_paid",$val)?0:$val["amt_paid"];'), $this->group));
+        $this->amt_install=array_sum(array_map(create_function('$val', 'return !key_exists("amt_install",$val)?0:$val["amt_install"];'), $this->group));
+        $this->paper=array_sum(array_map(create_function('$val', 'return !key_exists("paper",$val)?0:$val["paper"];'), $this->group));
+        $this->disinfectant=array_sum(array_map(create_function('$val', 'return !key_exists("disinfectant",$val)?0:$val["disinfectant"];'), $this->group));
+        $this->purification=array_sum(array_map(create_function('$val', 'return !key_exists("purification",$val)?0:$val["purification"];'), $this->group));
+        $this->chemical=array_sum(array_map(create_function('$val', 'return !key_exists("chemical",$val)?0:$val["chemical"];'), $this->group));
+        $this->aromatherapy=array_sum(array_map(create_function('$val', 'return !key_exists("aromatherapy",$val)?0:$val["aromatherapy"];'), $this->group));
+        $this->pestcontrol=array_sum(array_map(create_function('$val', 'return !key_exists("pestcontrol",$val)?0:$val["pestcontrol"];'), $this->group));
+        $this->other=array_sum(array_map(create_function('$val', 'return !key_exists("other",$val)?0:$val["other"];'), $this->group));
 
-        $ia_money=array_sum(array_map(create_function('$val', 'return $val["ia_money"];'), $this->group));
-        $ib_money=array_sum(array_map(create_function('$val', 'return $val["ib_money"];'), $this->group));
-        $ic_money=array_sum(array_map(create_function('$val', 'return $val["ic_money"];'), $this->group));
+        $ia_money=array_sum(array_map(create_function('$val', 'return !key_exists("ia_money",$val)?0:$val["ia_money"];'), $this->group));
+        $ib_money=array_sum(array_map(create_function('$val', 'return !key_exists("ib_money",$val)?0:$val["ib_money"];'), $this->group));
+        $ic_money=array_sum(array_map(create_function('$val', 'return !key_exists("ic_money",$val)?0:$val["ic_money"];'), $this->group));
 
-        $new_ia_money=array_sum(array_map(create_function('$val', 'return $val["new_ia_money"];'), $this->group));
-        $new_ib_money=array_sum(array_map(create_function('$val', 'return $val["new_ib_money"];'), $this->group));
-        $new_ic_money=array_sum(array_map(create_function('$val', 'return $val["new_ic_money"];'), $this->group));
-        $new_amt_paid=array_sum(array_map(create_function('$val', 'return $val["new_amt_paid"];'), $this->group));
-        $end_amt_paid=array_sum(array_map(create_function('$val', 'return $val["end_amt_paid"];'), $this->group));
+        $new_ia_money=array_sum(array_map(create_function('$val', 'return !key_exists("new_ia_money",$val)?0:$val["new_ia_money"];'), $this->group));
+        $new_ib_money=array_sum(array_map(create_function('$val', 'return !key_exists("new_ib_money",$val)?0:$val["new_ib_money"];'), $this->group));
+        $new_ic_money=array_sum(array_map(create_function('$val', 'return !key_exists("new_ic_money",$val)?0:$val["new_ic_money"];'), $this->group));
+        $new_amt_paid=array_sum(array_map(create_function('$val', 'return !key_exists("new_amt_paid",$val)?0:$val["new_amt_paid"];'), $this->group));
+        $end_amt_paid=array_sum(array_map(create_function('$val', 'return !key_exists("end_amt_paid",$val)?0:$val["end_amt_paid"];'), $this->group));
 
-        $paper_money=array_sum(array_map(create_function('$val', 'return $val["paper_money"];'), $this->group));
-        $disinfectant_money=array_sum(array_map(create_function('$val', 'return $val["disinfectant_money"];'), $this->group));
-        $purification_money=array_sum(array_map(create_function('$val', 'return $val["purification_money"];'), $this->group));
-        //$chemical_money=array_sum(array_map(create_function('$val', 'return $val["chemical_money"];'), $this->group));
-        $aromatherapy_money=array_sum(array_map(create_function('$val', 'return $val["aromatherapy_money"];'), $this->group));
-        $pestcontrol_money=array_sum(array_map(create_function('$val', 'return $val["pestcontrol_money"];'), $this->group));
-        $other_money=array_sum(array_map(create_function('$val', 'return $val["other_money"];'), $this->group));
-        // $this->commission=array_sum(array_map(create_function('$val', 'return $val["commission"];'), $this->group));
+        $paper_money=array_sum(array_map(create_function('$val', 'return !key_exists("paper_money",$val)?0:$val["paper_money"];'), $this->group));
+        $disinfectant_money=array_sum(array_map(create_function('$val', 'return !key_exists("disinfectant_money",$val)?0:$val["disinfectant_money"];'), $this->group));
+        $purification_money=array_sum(array_map(create_function('$val', 'return !key_exists("purification_money",$val)?0:$val["purification_money"];'), $this->group));
+        //$chemical_money=array_sum(array_map(create_function('$val', 'return !key_exists("chemical_money",$val)?0:$val["chemical_money"];'), $this->group));
+        $aromatherapy_money=array_sum(array_map(create_function('$val', 'return !key_exists("aromatherapy_money",$val)?0:$val["aromatherapy_money"];'), $this->group));
+        $pestcontrol_money=array_sum(array_map(create_function('$val', 'return !key_exists("pestcontrol_money",$val)?0:$val["pestcontrol_money"];'), $this->group));
+        $other_money=array_sum(array_map(create_function('$val', 'return !key_exists("other_money",$val)?0:$val["other_money"];'), $this->group));
+        // $this->commission=array_sum(array_map(create_function('$val', 'return !key_exists("commission",$val)?0:$val["commission"];'), $this->group));
         $this->all_sale=$this->paper+$this->disinfectant+$this->purification+$this->chemical+$this->aromatherapy+$this->pestcontrol+$this->other;
         $this->ia_royalty=($new_calc+$point['point']+$reward)*100;//提成点数 B
         $this->ib_royalty=($new_calc+$point['point']+$reward)*100;//提成点数 C
@@ -845,7 +846,7 @@ class SalesTableForm extends CFormModel
                 $this->detail[] = $temp;
             }
         }
-        $this->supplement_money=array_sum(array_map(create_function('$val', 'return $val["commission"];'), $this->detail));
+        $this->supplement_money=array_sum(array_map(create_function('$val', 'return !key_exists("commission",$val)?0:$val["commission"];'), $this->detail));
         $this->final_money=$this->supplement_money+$this->add_money+$this->reduce_money;
         return true;
 	}

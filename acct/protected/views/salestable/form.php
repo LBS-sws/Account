@@ -147,35 +147,35 @@ $this->pageTitle = Yii::app()->name . ' - Salestable Form';
                     </tr>
                     <?php if (!empty($model->group)) {
                         foreach ($model->group as $value) { ?>
-                            <tr <?php if ($value['othersalesman'] == 1) {
+                            <tr <?php if (key_exists("othersalesman",$value)&&$value['othersalesman'] == 1) {
                                 echo "style='color: red'";
                             }
-                            if ($value['othersalesman'] == 2) {
+                            if (key_exists("othersalesman",$value)&&$value['othersalesman'] == 2) {
                                 echo "style='color: blue'";
                             } ?>>
-                                <td><?php echo $value['status_dt']; ?></td>
-                                <td><?php echo $value['company_name']; ?></td>
-                                <td><?php echo $value['ia']; ?></td>
-                                <td><?php echo $value['ia_c']; ?></td>
-                                <td><?php echo $value['ia_end']; ?></td>
-                                <td><?php echo $value['ia_c_end']; ?></td>
-                                <td><?php echo $value['ib']; ?></td>
-                                <td><?php echo $value['ib_c']; ?></td>
-                                <td><?php echo $value['ib_end']; ?></td>
-                                <td><?php echo $value['ib_c_end']; ?></td>
-                                <td><?php echo $value['ic']; ?></td>
-                                <td><?php echo $value['ic_c']; ?></td>
-                                <td><?php echo $value['ic_end']; ?></td>
-                                <td><?php echo $value['ic_c_end']; ?></td>
-                                <td><?php echo $value['amt_paid']; ?></td>
-                                <td><?php echo $value['amt_install']; ?></td>
-                                <td><?php echo $value['paper']; ?></td>
-                                <td><?php echo $value['disinfectant']; ?></td>
-                                <td><?php echo $value['purification']; ?></td>
-                                <td><?php echo $value['chemical']; ?></td>
-                                <td><?php echo $value['aromatherapy']; ?></td>
-                                <td><?php echo $value['pestcontrol']; ?></td>
-                                <td><?php echo $value['other']; ?></td>
+                                <td><?php echo !key_exists("status_dt",$value)?"error":$value['status_dt']; ?></td>
+                                <td><?php echo !key_exists("company_name",$value)?"error":$value['company_name']; ?></td>
+                                <td><?php echo !key_exists("ia",$value)?"error":$value['ia']; ?></td>
+                                <td><?php echo !key_exists("ia_c",$value)?"error":$value['ia_c']; ?></td>
+                                <td><?php echo !key_exists("ia_end",$value)?"error":$value['ia_end']; ?></td>
+                                <td><?php echo !key_exists("ia_c_end",$value)?"error":$value['ia_c_end']; ?></td>
+                                <td><?php echo !key_exists("ib",$value)?"error":$value['ib']; ?></td>
+                                <td><?php echo !key_exists("ib_c",$value)?"error":$value['ib_c']; ?></td>
+                                <td><?php echo !key_exists("ib_end",$value)?"error":$value['ib_end']; ?></td>
+                                <td><?php echo !key_exists("ib_c_end",$value)?"error":$value['ib_c_end']; ?></td>
+                                <td><?php echo !key_exists("ic",$value)?"error":$value['ic']; ?></td>
+                                <td><?php echo !key_exists("ic_c",$value)?"error":$value['ic_c']; ?></td>
+                                <td><?php echo !key_exists("ic_end",$value)?"error":$value['ic_end']; ?></td>
+                                <td><?php echo !key_exists("ic_c_end",$value)?"error":$value['ic_c_end']; ?></td>
+                                <td><?php echo !key_exists("amt_paid",$value)?"error":$value['amt_paid']; ?></td>
+                                <td><?php echo !key_exists("amt_install",$value)?"error":$value['amt_install']; ?></td>
+                                <td><?php echo !key_exists("paper",$value)?"error":$value['paper']; ?></td>
+                                <td><?php echo !key_exists("disinfectant",$value)?"error":$value['disinfectant']; ?></td>
+                                <td><?php echo !key_exists("purification",$value)?"error":$value['purification']; ?></td>
+                                <td><?php echo !key_exists("chemical",$value)?"error":$value['chemical']; ?></td>
+                                <td><?php echo !key_exists("aromatherapy",$value)?"error":$value['aromatherapy']; ?></td>
+                                <td><?php echo !key_exists("pestcontrol",$value)?"error":$value['pestcontrol']; ?></td>
+                                <td><?php echo !key_exists("other",$value)?"error":$value['other']; ?></td>
                             </tr>
                         <?php }
                     } ?>
