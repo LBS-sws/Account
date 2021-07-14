@@ -188,7 +188,7 @@ $this->pageTitle=Yii::app()->name . ' - Invoice Form';
                 </div>
             </div>
 
-
+            <!-- 不需要顯示舊編號
             <div class="form-group">
                 <?php echo $form->labelEx($model,'old_no',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-6">
@@ -197,6 +197,7 @@ $this->pageTitle=Yii::app()->name . ' - Invoice Form';
                     ); ?>
                 </div>
             </div>
+            -->
             <div class="form-group">
                 <?php echo $form->labelEx($model,'generated_by',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-3">

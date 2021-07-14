@@ -36,7 +36,7 @@ class InvoiceForm extends CFormModel
     public $amount;
     public $disc;
 
-    private $infoStyle="font-weight: bold;color: blue;font-size: 17px;";
+    private $infoStyle="font-weight: bold;color: black;font-size: 17px;";
 
 	/**
 	 * Declares customized attribute labels.
@@ -150,9 +150,15 @@ class InvoiceForm extends CFormModel
         $start=$date['start'];
         $end=$date['end'];
         $model=new Invoice;
+        /*模擬數據-start*/
+        //$this->city="NN";
+        //$start="2021-06-01";
+        //$end="2021-06-05";
+        /*模擬數據-end*/
         $arr=$model->getData($this->city,$start,$end);
 //        print_r('<pre>');
-//        print_r($arr);exit();
+        //print_r($arr);
+        //die();
         if(key_exists("message",$arr)&&$arr["message"]=="Success"&&isset($arr['data'])){
             $connection = Yii::app()->db;
             $transaction=$connection->beginTransaction();
@@ -175,17 +181,18 @@ class InvoiceForm extends CFormModel
     public function saveU(&$connection, $arr){
         if(!empty($arr['data'])){
             foreach ($arr['data'] as $a){
-                $invoice_dt = General::toMyDate($a['invoice_dt']);
+                $invoice_no = key_exists("invoice_no",$a)?$a["invoice_no"]:"";
+                $invoice_no = end(explode($this->city,$invoice_no));
 //	        $sql_s="select id from acc_invoice where dates='".$invoice_dt."' and customer_account='".$a['customer_code']."' and invoice_no='".$a['invoice_no']."'";
-                $sql_s="select id from acc_invoice where dates='".$invoice_dt."' and customer_code='".$a['customer_code']."' and city='$this->city'";
+                $sql_s="select id from acc_invoice where invoice_no='".$invoice_no."' and customer_code='".$a['customer_code']."' and city='$this->city'";
                 $records = Yii::app()->db->createCommand($sql_s)->queryRow();
                 if(!$records){
 //        $sql="insert into acc_invoice (dates,payment_term,customer_po_no,customer_account,salesperson,sales_order_no,sales_order_date,ship_via,invoice_company,invoice_address,invoice_tel,delivery_company,delivery_address,delivery_tel,description,quantity,unit_price,disc,amount,sub_total,gst,total_amount,generated_by,lcu,luu) value ()";
                     $uid = Yii::app()->user->id;
                     Yii::app()->db->createCommand()->insert("acc_invoice",array(
                         'customer_code'=>key_exists("customer_code",$a)?$a["customer_code"]:"",
-                        'invoice_dt'=>$invoice_dt,
-                        'dates'=>$invoice_dt,
+                        'invoice_dt'=>key_exists("invoice_dt",$a)?$a["invoice_dt"]:null,
+                        'dates'=>key_exists("invoice_dt",$a)?$a["invoice_dt"]:null,
                         'invoice_no'=>key_exists("invoice_no",$a)?$a["invoice_no"]:"",
                         'invoice_to_name'=>key_exists("invoice_to_name",$a)?$a["invoice_to_name"]:"",
                         'invoice_to_addr'=>key_exists("invoice_to_addr",$a)?$a["invoice_to_addr"]:"",
@@ -239,10 +246,8 @@ class InvoiceForm extends CFormModel
                                 }
                             }
                         }
-                        $invoice_no=date('ym',strtotime($invoice_dt));
-                        $invoice_no=($invoice_no*100000)+$id;
                         Yii::app()->db->createCommand()->update("acc_invoice",array(
-                            'invoice_no'=>$this->city.$invoice_no,
+                            'invoice_no'=>$invoice_no,
                             'old_no'=>implode(",",$old_no),
                             'invoice_amt'=>$invoice_amt,
                             'luu'=>null,
@@ -660,7 +665,12 @@ class InvoiceForm extends CFormModel
             $this->insertModelForPDF($pdf,$this);
         }
         ob_clean();
-        $address='invoice_'.date("Y-m-d").'.pdf';
+        if(count($_POST['InvoiceList']['attr'])==1){
+            $address=str_replace('/','-',$this->invoice_no);
+            $address.='.pdf';
+        }else{
+            $address='all_'.date("Y-m-d").'.pdf';
+        }
         $outstring =$pdf->Output($address, 'I');
         return $address;
     }
@@ -674,9 +684,9 @@ class InvoiceForm extends CFormModel
         $pdf->writeHTML($tbl, true, false, false, false, '');
         $this->insertModelForPDF($pdf,$model);
         ob_clean();
-        $date=str_replace('/','-',$model->invoice_dt);
-        $name=str_replace('/',' ',$model->invoice_to_name);
-        $address="/".$date."-".$name.'.pdf';
+        $date=str_replace('/','-',$model->invoice_no);
+        //$name=str_replace('/',' ',$model->invoice_to_name);
+        $address=$date.'.pdf';
 //        $tem_dir = $_SERVER['SystemRoot'].'/temp';
 //        $address=$tem_dir.$date."-".$model->invoice_company.'.pdf';
         //var_dump(sys_get_temp_dir().$address);die();
@@ -690,7 +700,8 @@ class InvoiceForm extends CFormModel
 
     public function zip($files){
 //        $files = array('image.jpeg','text.txt','music.wav');
-        $zipname = sys_get_temp_dir().'/'.'zipped_file.zip';
+        $fileName = 'zipped_file.zip';
+        $zipname = sys_get_temp_dir().'/'.$fileName;
         $zip = new ZipArchive;
         $zip->open($zipname, ZipArchive::CREATE);
         foreach ($files as $file) {
@@ -707,7 +718,7 @@ class InvoiceForm extends CFormModel
 
 ///Then download the zipped file.
         header('Content-Type: application/zip');
-        header('Content-disposition: attachment; filename='.$zipname);
+        header('Content-disposition: attachment; filename='.$fileName);
         header('Content-Length: '.filesize($zipname));
         readfile($zipname);
         unlink($zipname);

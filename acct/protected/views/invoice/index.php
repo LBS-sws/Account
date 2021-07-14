@@ -45,7 +45,7 @@ $this->pageTitle=Yii::app()->name . ' - Invoice';
             </div>
             <div class="btn-group pull-right" role="group">
                 <?php echo TbHtml::button('<span class="fa fa-print"></span> '.Yii::t('invoice','print'), array(
-                    'submit'=>Yii::app()->createUrl('invoice/print')));
+                    'id'=>'btnPrints'));
                 ?>
             </div>
 	    </div>
@@ -80,6 +80,7 @@ $this->pageTitle=Yii::app()->name . ' - Invoice';
 <?php $this->endWidget(); ?>
 <?php $this->renderPartial('//invoice/_type'); ?>
 <?php
+//
 	$js = Script::genTableRowClick();
 	Yii::app()->clientScript->registerScript('rowClick',$js,CClientScript::POS_READY);
 $js = "
@@ -91,11 +92,17 @@ $('body').on('click','#all',function() {
 	var val = $(this).prop('checked');
 	$('input[type=checkbox][name*=\"InvoiceList[attr][]\"]').prop('checked',val);
 });
+
+$('#btnPrints').on('click',function(){
+    $('#Invoice-list').prop('target','_blank');
+    jQuery.yii.submitForm(this,'".Yii::app()->createUrl('invoice/print')."',{});
+    $('#Invoice-list').prop('target','_self');
+});
 ";
 Yii::app()->clientScript->registerScript('selectAll',$js,CClientScript::POS_READY);
 $js = Script::genDeleteData(Yii::app()->createUrl('invoice/alldelete'));
 Yii::app()->clientScript->registerScript('deleteRecord',$js,CClientScript::POS_READY);
 ?>
-
+<form target="_self"></form>
 
 
