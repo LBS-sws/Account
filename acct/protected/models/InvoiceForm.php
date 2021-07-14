@@ -685,12 +685,7 @@ class InvoiceForm extends CFormModel
         $this->insertModelForPDF($pdf,$model);
         ob_clean();
         $date=str_replace('/','-',$model->invoice_no);
-        //$name=str_replace('/',' ',$model->invoice_to_name);
         $address=$date.'.pdf';
-//        $tem_dir = $_SERVER['SystemRoot'].'/temp';
-//        $address=$tem_dir.$date."-".$model->invoice_company.'.pdf';
-        //var_dump(sys_get_temp_dir().$address);die();
-        //$outstring =$pdf->Output(sys_get_temp_dir().$address, 'I');
         $outstring =$pdf->Output(sys_get_temp_dir().'/'.$address, 'F');
         return $address;
     }
@@ -699,27 +694,22 @@ class InvoiceForm extends CFormModel
 
 
     public function zip($files){
-//        $files = array('image.jpeg','text.txt','music.wav');
         $fileName = 'zipped_file.zip';
         $zipname = sys_get_temp_dir().'/'.$fileName;
         $zip = new ZipArchive;
         $zip->open($zipname, ZipArchive::CREATE);
         foreach ($files as $file) {
-//            $ch = curl_init();
-//            curl_setopt($ch, CURLOPT_POST, 0);
-//            curl_setopt($ch, CURLOPT_URL, $file);
-//            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-//            $fileContent = curl_exec($ch);
-//            curl_close($ch);
             $result = basename($file);
             $zip->addFile(sys_get_temp_dir().$file,$result);
         }
         $zip->close();
 
 ///Then download the zipped file.
-        header('Content-Type: application/zip');
-        header('Content-disposition: attachment; filename='.$fileName);
-        header('Content-Length: '.filesize($zipname));
+        header('Content-Type: application/zip;charset=utf-8; name='.$fileName);
+        header('Accept-Ranges: bytes');
+        header('Content-Transfer-Encoding: binary');
+        header('Content-Disposition: attachment; filename='.$fileName);
+        header('Accept-Length:'.filesize($zipname));
         readfile($zipname);
         unlink($zipname);
         foreach ($files as $a){
