@@ -169,5 +169,6 @@ return array(
 'Time'=>'日期',
 'Generate Invoice'=>'發票生成',
 'Invoice'=>'發票',
+'Batch deletion of invoices'=>'批量刪除發票',
 );
 ?>

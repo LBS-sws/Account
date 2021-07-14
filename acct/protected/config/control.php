@@ -13,4 +13,5 @@ return array(
     'Import Customer/Supplier'=>array('access'=>'CN10',),
 	'Payroll File Rollback'=>array('access'=>'CN11',),
     'Sales commission table Approval'=>array('access'=>'CN12',),
+    'Batch deletion of invoices'=>array('access'=>'CN13',),
 );

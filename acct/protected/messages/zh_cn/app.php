@@ -174,6 +174,7 @@ return array(
 	'Qty Money'=>'单价',
 	'Generate Invoice'=>'发票生成',
 	'Invoice'=>'发票',
+    'Batch deletion of invoices'=>'批量删除发票',
 
 );
 ?>
