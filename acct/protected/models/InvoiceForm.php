@@ -691,7 +691,7 @@ class InvoiceForm extends CFormModel
 //        $address=$tem_dir.$date."-".$model->invoice_company.'.pdf';
         //var_dump(sys_get_temp_dir().$address);die();
         //$outstring =$pdf->Output(sys_get_temp_dir().$address, 'I');
-        $outstring =$pdf->Output(sys_get_temp_dir().$address, 'F');
+        $outstring =$pdf->Output(sys_get_temp_dir().'/'.$address, 'F');
         return $address;
     }
 
