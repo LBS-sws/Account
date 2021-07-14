@@ -694,8 +694,8 @@ class InvoiceForm extends CFormModel
 
 
     public function zip($files){
-        $fileName = 'zipped_file.zip';
-        $zipname = sys_get_temp_dir().'/'.$fileName;
+//        $files = array('image.jpeg','text.txt','music.wav');
+        $zipname = sys_get_temp_dir().'/'.'zipped_file.zip';
         $zip = new ZipArchive;
         $zip->open($zipname, ZipArchive::CREATE);
         foreach ($files as $file) {
@@ -703,13 +703,17 @@ class InvoiceForm extends CFormModel
             $zip->addFile(sys_get_temp_dir().$file,$result);
         }
         $zip->close();
-
-///Then download the zipped file.
+/*
         header('Content-Type: application/zip;charset=utf-8; name='.$fileName);
         header('Accept-Ranges: bytes');
         header('Content-Transfer-Encoding: binary');
         header('Content-Disposition: attachment; filename='.$fileName);
         header('Accept-Length:'.filesize($zipname));
+ */
+///Then download the zipped file.
+        header('Content-Type: application/zip');
+        header('Content-disposition: attachment; filename='.$zipname);
+        header('Content-Length: '.filesize($zipname));
         readfile($zipname);
         unlink($zipname);
         foreach ($files as $a){
