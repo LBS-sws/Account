@@ -161,7 +161,7 @@ class InvoiceForm extends CFormModel
 				$this->remarks = $row['remarks'];
 				$this->sales_name = $row['sales_name'];
 				$this->staff_name = $row['staff_name'];
-				//$this->sales_id = current(explode(" ",$this->sales_name));
+				$this->staff_id = current(explode(" ",$this->staff_name));
 				$this->addr = $row['addr'];
 				$this->tel = $row['tel'];
 				$this->name_zh = $row['name_zh'];
@@ -701,7 +701,7 @@ class InvoiceForm extends CFormModel
 <table border="0" width="812px" cellspacing="0" cellpadding="0" style="line-height: 9.5px;">
     <tr>
         <td width="86px" style="color:red;font-weight: bold;">服務技術員名稱</td>
-        <td width="105px" rowspan="2" style="border-bottom: 1px solid black;text-align:center;'.$info_style.'">'.$model->staff_name.'</td>
+        <td width="105px" rowspan="2" style="border-bottom: 1px solid black;text-align:center;'.$info_style.'">'.$model->staff_id.'</td>
         <td width="5px" rowspan="2"></td>
         <td width="143px" style="color:red;font-weight: bold;">客戶簽署及蓋印</td>
         <td width="105px" rowspan="2" style="border-bottom: 1px solid black;"> </td>
