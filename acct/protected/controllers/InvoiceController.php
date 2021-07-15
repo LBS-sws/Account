@@ -143,6 +143,7 @@ class InvoiceController extends Controller
     {
         $model = new InvoiceForm;
         if(isset($_POST['InvoiceList']['attr'])){
+            ini_set('memory_limit','500M');
             $address = array();
             foreach ($_POST['InvoiceList']['attr'] as $a){
                 $model->retrieveData($a);
@@ -160,6 +161,7 @@ class InvoiceController extends Controller
     {
         $model = new InvoiceForm;
         if(isset($_POST['InvoiceList']['attr'])){
+            ini_set('memory_limit','500M');
             $model->allPrints();
             Yii::app()->end();
         }else{

@@ -855,8 +855,9 @@ class InvoiceForm extends CFormModel
         ob_clean();
         $date=str_replace('/','-',$model->invoice_dt);
         $name=str_replace('/',' ',$model->name_zh);
+        //$name=iconv("utf-8","gb2312//IGNORE",$name);
+        $name=mb_convert_encoding($name, "gb2312", "UTF-8");
         $address="/".$date."-".$name.'.pdf';
-        $address=iconv("utf-8","gb2312",$address);
         $outstring =$pdf->Output(sys_get_temp_dir().$address, 'F');
         return $address;
     }
