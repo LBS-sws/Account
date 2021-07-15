@@ -32,6 +32,19 @@ return array(
     'remarks'=>'特別說明',
     'print'=>'打印',
     'New Record'=>'新增發票',
+    //bowl,baf,hand,urinal,hsd,td,sink,abhsd,ptd,ttl,aerosal,toiletRoom
+    'bowl'=>'坐廁數量',
+    'baf'=>'電動清新機',
+    'hand'=>'手部消毒機',
+    'urinal'=>'尿缸',
+    'hsd'=>'皂液機',
+    'td'=>'廁紙機',
+    'sink'=>'洗手盤',
+    'abhsd'=>'除菌皂液機',
+    'ptd'=>'抹手紙機',
+    'ttl'=>'總數',
+    'aerosal'=>'噴機',
+    'toiletRoom'=>'洗手間數目',
 
 );
 ?>

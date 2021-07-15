@@ -6,7 +6,7 @@
 	$content = '
 <form id="report-form" class="form-horizontal" action="" method="post">
 			<div class="form-group" style="height: 34px;line-height: 34px">
-				<label class="col-sm-2 control-label" for="Report01Form_start_dt">start date</label>				<div class="col-sm-3" style="width: 240px;">
+				<label class="col-sm-2 control-label" for="Report01Form_start_dt">'.Yii::t("misc","Start Date").'</label>				<div class="col-sm-3" style="width: 240px;">
 					<div class="input-group date">
 						<div class="input-group-addon">
 							<i class="fa fa-calendar"></i>
@@ -15,7 +15,7 @@
 				</div>
 			</div>
 			<div class="form-group" style="height: 34px;line-height: 34px">
-				<label class="col-sm-2 control-label" for="Report01Form_start_dt">end date</label>				<div class="col-sm-3" style="width: 240px;">
+				<label class="col-sm-2 control-label" for="Report01Form_start_dt">'.Yii::t("misc","End Date").'</label>				<div class="col-sm-3" style="width: 240px;">
 					<div class="input-group date">
 						<div class="input-group-addon">
 							<i class="fa fa-calendar"></i>

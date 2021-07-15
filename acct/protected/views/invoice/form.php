@@ -88,7 +88,7 @@ $this->pageTitle=Yii::app()->name . ' - Invoice Form';
                     ); ?>
                 </div>
 			</div>
-
+<!--
             <div class="form-group">
                 <?php echo $form->labelEx($model,'invoice_to_name',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-7">
@@ -115,6 +115,7 @@ $this->pageTitle=Yii::app()->name . ' - Invoice Form';
                     ); ?>
                 </div>
             </div>
+-->
 
             <div class="form-group">
                 <?php echo $form->labelEx($model,'name_zh',array('class'=>"col-sm-2 control-label")); ?>
@@ -139,6 +140,87 @@ $this->pageTitle=Yii::app()->name . ' - Invoice Form';
                 <div class="col-sm-7">
                     <?php echo $form->textField($model, 'tel',
                         array('size'=>40,'maxlength'=>250,'readonly'=>'')
+                    ); ?>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'bowl',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-2">
+                    <?php echo $form->numberField($model, 'bowl',
+                        array('readonly'=>'')
+                    ); ?>
+                </div>
+                <?php echo $form->labelEx($model,'baf',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-2">
+                    <?php echo $form->numberField($model, 'baf',
+                        array('readonly'=>'')
+                    ); ?>
+                </div>
+                <?php echo $form->labelEx($model,'hand',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-2">
+                    <?php echo $form->numberField($model, 'hand',
+                        array('readonly'=>'')
+                    ); ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'urinal',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-2">
+                    <?php echo $form->numberField($model, 'urinal',
+                        array('readonly'=>'')
+                    ); ?>
+                </div>
+                <?php echo $form->labelEx($model,'hsd',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-2">
+                    <?php echo $form->numberField($model, 'hsd',
+                        array('readonly'=>'')
+                    ); ?>
+                </div>
+                <?php echo $form->labelEx($model,'td',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-2">
+                    <?php echo $form->numberField($model, 'td',
+                        array('readonly'=>'')
+                    ); ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'sink',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-2">
+                    <?php echo $form->numberField($model, 'sink',
+                        array('readonly'=>'')
+                    ); ?>
+                </div>
+                <?php echo $form->labelEx($model,'abhsd',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-2">
+                    <?php echo $form->numberField($model, 'abhsd',
+                        array('readonly'=>'')
+                    ); ?>
+                </div>
+                <?php echo $form->labelEx($model,'ptd',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-2">
+                    <?php echo $form->numberField($model, 'ptd',
+                        array('readonly'=>'')
+                    ); ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'ttl',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-2">
+                    <?php echo $form->numberField($model, 'ttl',
+                        array('readonly'=>'')
+                    ); ?>
+                </div>
+                <?php echo $form->labelEx($model,'aerosal',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-2">
+                    <?php echo $form->numberField($model, 'aerosal',
+                        array('readonly'=>'')
+                    ); ?>
+                </div>
+                <?php echo $form->labelEx($model,'toiletRoom',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-2">
+                    <?php echo $form->numberField($model, 'toiletRoom',
+                        array('readonly'=>'')
                     ); ?>
                 </div>
             </div>

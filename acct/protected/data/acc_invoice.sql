@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50620
 File Encoding         : 65001
 
-Date: 2021-07-12 16:20:49
+Date: 2021-07-15 09:08:45
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -39,6 +39,18 @@ CREATE TABLE `acc_invoice` (
   `page_num` int(4) DEFAULT '0',
   `dates` date DEFAULT NULL,
   `city` varchar(100) DEFAULT NULL,
+  `toiletRoom` varchar(10) DEFAULT NULL COMMENT '洗手間數目',
+  `aerosal` varchar(10) DEFAULT NULL COMMENT '噴機',
+  `ttl` varchar(10) DEFAULT NULL COMMENT '總數',
+  `ptd` varchar(10) DEFAULT NULL COMMENT '抹手紙機',
+  `abhsd` varchar(10) DEFAULT NULL COMMENT '除菌皂液機',
+  `sink` varchar(10) DEFAULT NULL COMMENT '洗手盤',
+  `td` varchar(10) DEFAULT NULL COMMENT '廁紙機',
+  `hsd` varchar(10) DEFAULT NULL COMMENT '皂液機',
+  `urinal` varchar(10) DEFAULT NULL COMMENT '尿缸',
+  `hand` varchar(10) DEFAULT NULL COMMENT '手部消毒機',
+  `baf` varchar(10) DEFAULT NULL COMMENT '電動清新機',
+  `bowl` varchar(10) DEFAULT NULL COMMENT '坐廁數量',
   `lcu` varchar(100) DEFAULT NULL,
   `luu` varchar(100) DEFAULT NULL,
   `lcd` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -66,4 +78,4 @@ CREATE TABLE `acc_invoice_type` (
   `lcd` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `lud` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=148 DEFAULT CHARSET=utf8 COMMENT='關於澳門發票的服務';
+) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=utf8 COMMENT='關於澳門發票的服務';
