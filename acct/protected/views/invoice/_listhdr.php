@@ -18,7 +18,7 @@
 		?>
 	</th>
 	<th>
-		<?php echo TbHtml::link($this->getLabelName('invoice_to_name').$this->drawOrderArrow('invoice_to_name'),'#',$this->createOrderLink('Invoice-list','invoice_to_name'))
+		<?php echo TbHtml::link($this->getLabelName('name_zh').$this->drawOrderArrow('name_zh'),'#',$this->createOrderLink('Invoice-list','name_zh'))
 			;
 		?>
 	</th>

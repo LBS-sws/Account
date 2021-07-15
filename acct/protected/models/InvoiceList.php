@@ -14,6 +14,7 @@ class InvoiceList extends CListPageModel
 			'invoice_dt'=>Yii::t('invoice','Date'),
 			'customer_code'=>Yii::t('invoice','Customer Account'),
 			'invoice_to_name'=>Yii::t('invoice','Invoice Company'),
+            'name_zh'=>Yii::t('invoice','Delivery Company'),
 
 		);
 	}
@@ -30,6 +31,9 @@ class InvoiceList extends CListPageModel
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
 			$svalue = str_replace("'","\'",$this->searchValue);
 			switch ($this->searchField) {
+				case 'name_zh':
+					$clause .= General::getSqlConditionClause('name_zh',$svalue);
+					break;
 				case 'invoice_no':
 					$clause .= General::getSqlConditionClause('invoice_no',$svalue);
 					break;
@@ -77,6 +81,7 @@ class InvoiceList extends CListPageModel
 					'invoice_dt'=>$dates,
 					'customer_code'=>$record['customer_code'],
 					'invoice_to_name'=>$record['invoice_to_name'],
+					'name_zh'=>$record['name_zh'],
 				);
 			}
 		}

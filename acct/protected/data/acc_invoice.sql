@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50620
 File Encoding         : 65001
 
-Date: 2021-07-15 09:08:45
+Date: 2021-07-15 15:24:44
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -32,6 +32,8 @@ CREATE TABLE `acc_invoice` (
   `payment_term` varchar(100) DEFAULT NULL COMMENT '支付方式',
   `sales_id` varchar(100) DEFAULT NULL COMMENT '銷售員編號',
   `sales_name` varchar(100) DEFAULT NULL COMMENT '銷售員姓名',
+  `staff_id` varchar(100) DEFAULT NULL COMMENT '服務人員',
+  `staff_name` varchar(100) DEFAULT NULL COMMENT '服務人員',
   `addr` varchar(255) DEFAULT NULL COMMENT '聯繫地址',
   `tel` varchar(100) DEFAULT NULL COMMENT '聯繫電話',
   `name_zh` varchar(100) DEFAULT NULL COMMENT '聯繫人',

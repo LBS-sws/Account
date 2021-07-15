@@ -18,6 +18,8 @@ class InvoiceForm extends CFormModel
     public $invoice_to_tel;//服务电话
     public $sales_id;//销售
     public $sales_name;//销售
+    public $staff_id;//销售
+    public $staff_name;//销售
     public $addr;//联系人地址
     public $tel;//联系人电话
     public $name_zh;//联系人
@@ -68,6 +70,7 @@ class InvoiceForm extends CFormModel
 			'invoice_to_addr'=>Yii::t('invoice','Invoice Address'),
             'invoice_to_tel'=>Yii::t('invoice','Invoice Tel'),
             'sales_name'=>Yii::t('invoice','Salesperson'),
+            'staff_name'=>Yii::t('invoice','technician'),
             'name_zh'=>Yii::t('invoice','Delivery Company'),
             'addr'=>Yii::t('invoice','Delivery Address'),
             'tel'=>Yii::t('invoice','Delivery Tel'),
@@ -99,7 +102,7 @@ class InvoiceForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('id,type,generated_by,old_no,name_zh,tel,addr,sales_name
+			array('id,type,generated_by,old_no,name_zh,tel,addr,sales_name,staff_name
 			,bowl,baf,hand,urinal,hsd,td,sink,abhsd,ptd,ttl,aerosal,toiletRoom
 			,payment_term,remarks,invoice_to_tel,invoice_to_addr,invoice_to_name,invoice_amt
 			,invoice_no,invoice_dt,customer_code','safe'),
@@ -157,25 +160,26 @@ class InvoiceForm extends CFormModel
 				$this->invoice_to_tel = $row['invoice_to_tel'];
 				$this->remarks = $row['remarks'];
 				$this->sales_name = $row['sales_name'];
-				$this->sales_id = current(explode(" ",$this->sales_name));
+				$this->staff_name = $row['staff_name'];
+				//$this->sales_id = current(explode(" ",$this->sales_name));
 				$this->addr = $row['addr'];
 				$this->tel = $row['tel'];
 				$this->name_zh = $row['name_zh'];
 				$this->old_no = $row['old_no'];
 				//$this->total_amount = round($total_amount,2);//sprintf("%.2f",$total_amount)
 
-                $this->bowl = $row['bowl'];
-                $this->baf = $row['baf'];
-                $this->hand = $row['hand'];
-                $this->urinal = $row['urinal'];
-                $this->hsd = $row['hsd'];
-                $this->td = $row['td'];
-                $this->sink = $row['sink'];
-                $this->abhsd = $row['abhsd'];
-                $this->ptd = $row['ptd'];
-                $this->ttl = $row['ttl'];
-                $this->aerosal = $row['aerosal'];
-                $this->toiletRoom = $row['toiletRoom'];
+                $this->bowl = empty($row['bowl'])?0:$row['bowl'];
+                $this->baf = empty($row['baf'])?0:$row['baf'];
+                $this->hand = empty($row['hand'])?0:$row['hand'];
+                $this->urinal = empty($row['urinal'])?0:$row['urinal'];
+                $this->hsd = empty($row['hsd'])?0:$row['hsd'];
+                $this->td = empty($row['td'])?0:$row['td'];
+                $this->sink = empty($row['sink'])?0:$row['sink'];
+                $this->abhsd = empty($row['abhsd'])?0:$row['abhsd'];
+                $this->ptd = empty($row['ptd'])?0:$row['ptd'];
+                $this->ttl = empty($row['ttl'])?0:$row['ttl'];
+                $this->aerosal = empty($row['aerosal'])?0:$row['aerosal'];
+                $this->toiletRoom = empty($row['toiletRoom'])?0:$row['toiletRoom'];
 
                 $this->city = $row['city'];
 				$this->generated_by = $this->getNames($row['lcu']);
@@ -345,6 +349,7 @@ class InvoiceForm extends CFormModel
                             addr=:addr,                                                                                                              
                             tel=:tel,                                                                                                              
                             remarks=:remarks,                                                                                                              
+                            staff_name=:staff_name,                                                                                                              
                             invoice_amt=:invoice_amt,                                                                                                              
                             bowl=:bowl,                                                                                                              
                             baf=:baf,                                                                                                              
@@ -375,6 +380,8 @@ class InvoiceForm extends CFormModel
             $command->bindParam(':invoice_to_addr',$this->invoice_to_addr,PDO::PARAM_STR);
         if (strpos($sql,':invoice_to_tel')!==false)
             $command->bindParam(':invoice_to_tel',$this->invoice_to_tel,PDO::PARAM_STR);
+        if (strpos($sql,':staff_name')!==false)
+            $command->bindParam(':staff_name',$this->staff_name,PDO::PARAM_STR);
         if (strpos($sql,':name_zh')!==false)
             $command->bindParam(':name_zh',$this->name_zh,PDO::PARAM_STR);
         if (strpos($sql,':addr')!==false)
@@ -686,7 +693,7 @@ class InvoiceForm extends CFormModel
 <table border="0" width="812px" cellspacing="0" cellpadding="0" style="line-height: 9.5px;">
     <tr>
         <td width="86px" style="color:red;font-weight: bold;">服務技術員名稱</td>
-        <td width="105px" rowspan="2" style="border-bottom: 1px solid black;text-align:center;'.$info_style.'">'.$model->sales_id.'</td>
+        <td width="105px" rowspan="2" style="border-bottom: 1px solid black;text-align:center;'.$info_style.'">'.$model->staff_name.'</td>
         <td width="5px" rowspan="2"></td>
         <td width="143px" style="color:red;font-weight: bold;">客戶簽署及蓋印</td>
         <td width="105px" rowspan="2" style="border-bottom: 1px solid black;"> </td>
@@ -721,6 +728,18 @@ class InvoiceForm extends CFormModel
         $html='<span style="'.$info_style.'">'.$model->payment_term.'</span>';
         $pdf->writeHTMLCell(95,8,50,69,$html,0);
         //坐廁 電動清新機 手部消毒機$w, $h, $x, $y, $html='', $border=0
+        $model->bowl=empty($model->bowl)?"":$model->bowl;
+        $model->baf=empty($model->baf)?"":$model->baf;
+        $model->hand=empty($model->hand)?"":$model->hand;
+        $model->urinal=empty($model->urinal)?"":$model->urinal;
+        $model->hsd=empty($model->hsd)?"":$model->hsd;
+        $model->sink=empty($model->sink)?"":$model->sink;
+        $model->td=empty($model->td)?"":$model->td;
+        $model->abhsd=empty($model->abhsd)?"":$model->abhsd;
+        $model->ptd=empty($model->ptd)?"":$model->ptd;
+        $model->ttl=empty($model->ttl)?"":$model->ttl;
+        $model->aerosal=empty($model->aerosal)?"":$model->aerosal;
+        $model->toiletRoom=empty($model->toiletRoom)?"":$model->toiletRoom;
         $html='<span style="'.$info_style.'">'.$model->bowl.'</span>';
         $pdf->writeHTMLCell(30,8,163,35,$html,0);
         $html='<span style="'.$info_style.'">'.$model->baf.'</span>';

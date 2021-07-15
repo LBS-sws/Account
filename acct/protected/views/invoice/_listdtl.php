@@ -3,6 +3,6 @@
 	<td><?php echo $this->record['invoice_no']; ?></td>
 	<td><?php echo $this->record['invoice_dt']; ?></td>
 	<td><?php echo $this->record['customer_code']; ?></td>
-	<td><?php echo $this->record['invoice_to_name']; ?></td>
+	<td><?php echo $this->record['name_zh']; ?></td>
 
 </tr>

@@ -55,7 +55,7 @@ $this->pageTitle=Yii::app()->name . ' - Invoice';
 						'invoice_no',
 						'invoice_dt',
 						'customer_code',
-						'invoice_to_name',
+						'name_zh',
 
 					);
 		if (!Yii::app()->user->isSingleCity()) $search[] = 'city_name';

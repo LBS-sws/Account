@@ -88,6 +88,14 @@ $this->pageTitle=Yii::app()->name . ' - Invoice Form';
                     ); ?>
                 </div>
 			</div>
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'staff_name',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-7">
+                    <?php echo $form->textField($model, 'staff_name',
+                        array('size'=>40,'maxlength'=>250,'readonly'=>'')
+                    ); ?>
+                </div>
+			</div>
 <!--
             <div class="form-group">
                 <?php echo $form->labelEx($model,'invoice_to_name',array('class'=>"col-sm-2 control-label")); ?>

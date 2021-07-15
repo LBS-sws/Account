@@ -45,5 +45,6 @@ return array(
     'ttl'=>'总数',
     'aerosal'=>'喷机',
     'toiletRoom'=>'洗手间数目',
+    'technician'=>'服务同事名称',
 );
 ?>
