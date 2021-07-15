@@ -569,12 +569,12 @@ class CommissionController extends Controller
             $records = Yii::app()->db->createCommand($sql)->queryRow();
             if(empty($records)){
                 $sql1 = "insert into acc_service_comm_dtl(
-					hdr_id, renewal_amount
+					hdr_id, renewal_amount, renewal_money
 				) values (
-					'".$index."','0'
+					'".$index."','0','0'
 				)";
             }else{
-                $sql1="update acc_service_comm_dtl set renewal_amount='0'  where hdr_id='$index'";
+                $sql1="update acc_service_comm_dtl set renewal_amount='0',renewal_money='0'  where hdr_id='$index'";
             }
             $model = Yii::app()->db->createCommand($sql1)->execute();
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
@@ -596,12 +596,12 @@ class CommissionController extends Controller
             $records = Yii::app()->db->createCommand($sql)->queryRow();
             if(empty($records)){
                 $sql1 = "insert into acc_service_comm_dtl(
-					hdr_id, renewal_amount
+					hdr_id, renewalend_amount
 				) values (
 					'".$index."','0'
 				)";
             }else{
-                $sql1="update acc_service_comm_dtl set renewal_amount='0'  where hdr_id='$index'";
+                $sql1="update acc_service_comm_dtl set renewalend_amount='0'  where hdr_id='$index'";
             }
             $model = Yii::app()->db->createCommand($sql1)->execute();
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
