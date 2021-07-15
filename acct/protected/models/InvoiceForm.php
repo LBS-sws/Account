@@ -245,6 +245,8 @@ class InvoiceForm extends CFormModel
                         'payment_term'=>key_exists("payment_term",$a)?$a["payment_term"]:"",
                         'sales_id'=>key_exists("sales_id",$a)?$a["sales_id"]:"",
                         'sales_name'=>key_exists("sales_name",$a)?$a["sales_name"]:"",
+                        'staff_id'=>key_exists("staff_id",$a)?$a["staff_id"]:"",
+                        'staff_name'=>key_exists("staff_name",$a)?$a["staff_name"]:"",
                         'addr'=>key_exists("addr",$a)?$a["addr"]:"",
                         'tel'=>key_exists("tel",$a)?$a["tel"]:"",
                         'name_zh'=>key_exists("name_zh",$a)?$a["name_zh"]:"",
@@ -261,6 +263,12 @@ class InvoiceForm extends CFormModel
                         $old_no = key_exists("invoice_no",$a)?array($a["invoice_no"]):array();//发票编号多个编号用,分割
                         $remarks="";//發票的特別說明
                         foreach ($a["line"] as $line){
+                            if(key_exists("staff_id",$line)){
+                                $arr['staff_id'] = $line["staff_id"];
+                            }
+                            if(key_exists("sales_name",$line)){
+                                $arr['sales_name'] = $line["sales_name"];
+                            }
                             $arr['bowl'] = key_exists("bowl",$line)?$line["bowl"]:null;
                             $arr['baf'] = key_exists("baf",$line)?$line["baf"]:null;
                             $arr['hand'] = key_exists("hand",$line)?$line["hand"]:null;
