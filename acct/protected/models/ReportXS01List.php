@@ -285,7 +285,7 @@ class ReportXS01List extends CListPageModel
         $list = array();
         $this->attr = array();
         if (count($records) > 0) {
-            foreach ($records as $k=>&$record){
+            foreach ($records as $k=>$record){
                 $cust_type_name=str_replace("'","''",$record['cust_type_name']);
                 $endDate = date("Y-m-d",strtotime($record['status_dt']));
                 $sign_dt = date("Y-m-d",strtotime($record['sign_dt']));
