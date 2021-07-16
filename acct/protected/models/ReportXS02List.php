@@ -243,6 +243,7 @@ class ReportXS02List extends CListPageModel
     public function endDataByPage($pageNum=1,$year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
+        $city_only = Yii::app()->user->city();
         $city = Yii::app()->user->city_allow();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
@@ -308,6 +309,24 @@ class ReportXS02List extends CListPageModel
         $list = array();
         $this->attr = array();
         if (count($records) > 0) {
+            foreach ($records as $k=>&$record){
+                $cust_type_name=str_replace("'","''",$record['cust_type_name']);
+                $endDate = date("Y-m-d",strtotime($record['status_dt']));
+                $sign_dt = date("Y-m-d",strtotime($record['sign_dt']));
+                $sql2="select a.*,  c.description as type_desc, d.name as city_name					
+				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
+				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
+				where a.city ='$city_only'   and a.status='C'  and  a.company_name='".$record['company_name']."'  and  a.salesman ='".$name['name']."'
+				and  a.cust_type='".$record['cust_type']."' and a.cust_type_name='".$cust_type_name."'  and a.royalty=0.01 and a.status_dt<='$endDate' and date_format(a.sign_dt,'%Y-%m-%d')<='$sign_dt'
+				order by  a.id desc
+";
+                $c = Yii::app()->db->createCommand($sql2)->queryRow();
+                if($c){
+                    unset($records[$k]);
+                    $this->totalRow--;
+                }
+            }
+
             foreach ($records as $k=>$record) {
                 if($record['paid_type']=='1'||$record['paid_type']=='Y'){
                     $a=$record['amt_paid'];
@@ -943,7 +962,7 @@ class ReportXS02List extends CListPageModel
     public function renewalendDataByPage($pageNum=1,$year,$month,$index)
     {
         $suffix = Yii::app()->params['envSuffix'];
-        $city = Yii::app()->user->city_allow();
+        $city=Yii::app()->user->city();
         $sqlm="select concat_ws(' ',employee_name,employee_code) as name from acc_service_comm_hdr where id='$index'";
         $name = Yii::app()->db->createCommand($sqlm)->queryRow();
         $name['name']=str_replace(' ',' (',$name['name']);
@@ -954,7 +973,7 @@ class ReportXS02List extends CListPageModel
 				from swoper$suffix.swo_service a 
 				inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city in ($city)  and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'  and  a.salesman ='".$name['name']."' and (surplus!=0 or surplus_edit0!=0 or surplus_edit1!=0 or surplus_edit2!=0 or surplus_edit3!=0) 
+				where a.city ='$city' and a.status='T' and a.status_dt>='$start' and a.status_dt<='$end'  and  a.salesman ='".$name['name']."' and (surplus!=0 or surplus_edit0!=0 or surplus_edit1!=0 or surplus_edit2!=0 or surplus_edit3!=0) 
 ";
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -995,12 +1014,14 @@ class ReportXS02List extends CListPageModel
         $sql = $this->sqlWithPageCriteria($sql, $this->pageNum);
         $records = Yii::app()->db->createCommand($sql)->queryAll();
         foreach ($records as $k=>&$record){
-            $company_name=str_replace("'","''",$record['company_name']);
+            $cust_type_name=str_replace("'","''",$record['cust_type_name']);
+            $endDate = date("Y-m-d",strtotime($record['status_dt']));
+            $sign_dt = date("Y-m-d",strtotime($record['sign_dt']));
             $sql2="select a.*,  c.description as type_desc, d.name as city_name					
 				from swoper$suffix.swo_service a inner join security$suffix.sec_city d on a.city=d.code 			  
 				left outer join swoper$suffix.swo_customer_type c on a.cust_type=c.id 
-				where a.city in ($city)   and a.status='C'  and  a.company_name='".$company_name."'  and  a.salesman ='".$name['name']."'
-				and  a.cust_type='".$record['cust_type']."' and a.cust_type_name='".$record['cust_type_name']."'  and a.royalty=0.01
+				where a.city ='$city'   and a.status='C'  and  a.company_name='".$record['company_name']."'  and  a.salesman ='".$name['name']."'
+				and  a.cust_type='".$record['cust_type']."' and a.cust_type_name='".$cust_type_name."'  and a.royalty=0.01 and a.status_dt<='$endDate' and date_format(a.sign_dt,'%Y-%m-%d')<='$sign_dt'
 				order by  a.id desc
 ";
             $c = Yii::app()->db->createCommand($sql2)->queryRow();
