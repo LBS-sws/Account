@@ -398,7 +398,7 @@ $('#PayReqForm_trans_type_code').on('change', function() {
 EOF;
 Yii::app()->clientScript->registerScript('defaultAc',$js,CClientScript::POS_READY);
 
-$js = Script::genLookupSearchEx();
+$js = Script::genLookupSearchEx(true);
 Yii::app()->clientScript->registerScript('lookupSearch',$js,CClientScript::POS_READY);
 
 $defButtonSts = $model->isReadOnly() ? 'true' : 'false';

@@ -142,9 +142,11 @@ EOF;
 		return $str;
 	}
 	
-	public static function genLookupSearchEx() {
+	public static function genLookupSearchEx($flag=false) {
 		$mesg = Yii::t('dialog','No Record Found');
 		$link = Yii::app()->createAbsoluteUrl("lookup");
+		$for_company = !$flag ? ''
+			: 'var typename = $("#lookuptype").val(); if (typename=="company") data += "&fullname=true";';
 		$str = <<<EOF
 $('#btnLookup').on('click',function(){
 	var data = "search="+$("#txtlookup").val();
@@ -164,7 +166,7 @@ $('#btnLookup').on('click',function(){
 	
 	var city = $("[id$='_city']").val();
 	if (city !== undefined && city !==null) data += "&incity="+city;
-	
+	$for_company
 	var link = "$link"+"/"+$("#lookuptype").val()+'ex';
 	var ofstr = $('#lookupotherfield').val();
 	$.ajax({

@@ -59,7 +59,7 @@ class LookupController extends Controller
 		echo TbHtml::listBox('lstlookup', '', $data, array('size'=>'15', 'multiple'=>true));
 	}
 
-	public function actionCompanyEx($search, $incity='') {
+	public function actionCompanyEx($search, $incity='', $fullname=false) {
 		$suffix = Yii::app()->params['envSuffix'];
 		$suffix = $suffix=='dev' ? '_w' : $suffix;
 		$city = empty($incity) ? Yii::app()->user->city() : $incity;
@@ -74,7 +74,7 @@ class LookupController extends Controller
 						'id'=>$record['id'],
 					//	'value'=>substr($record['code'].str_repeat(' ',8),0,8).(empty($record['full_name'])?$record['name']:$record['full_name']),
 					//	'value'=>substr($record['code'].str_repeat(' ',8),0,8).$record['name'],
-						'value'=>$record['code'].$record['name'],//'value'=>$record['code'].' '.$record['name'].'/'.$record['full_name'],
+						'value'=>(!$fullname ? $record['code'].$record['name'] : $record['code'].' '.$record['name'].'/'.$record['full_name']),
 						'contact'=>trim($record['cont_name']).'/'.trim($record['cont_phone']),
 						'address'=>$record['address'],
 					);
