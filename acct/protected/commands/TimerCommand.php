@@ -6,9 +6,10 @@ class TimerCommand extends CConsoleCommand
     {
         $suffix = Yii::app()->params['envSuffix'];
         $firstDay = date("Y/m/d");
-        $sql = "SELECT a.*,f.field_value,
+        $sql = "SELECT g.name as city_name,a.*,f.field_value,
 workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt) as wfstatusdesc
 FROM acc_request a left outer join acc_request_info f on f.req_id = a.id and f.field_id='ref_no'
+LEFT JOIN security$suffix.sec_city g ON a.city = g.code
 WHERE workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>'ED' and workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>''";
         $records = Yii::app()->db->createCommand($sql)->queryAll();
         $firstDay = date("Y/m/d", strtotime("$firstDay - 30 day"));
@@ -41,7 +42,7 @@ WHERE workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>'ED' and workflow$
 					$to_addr = json_encode($tmp);
                     $subject = "付款申请报销提醒-" . $record['field_value'];
                     $description = "付款申请报销提醒-" . $record['field_value'];
-                    $message = "单号：" . $record['field_value'] . ",申请日期为：" . $record['req_dt'] . "金额为：" . $record['amount'] . "的申请已过一个月，报销仍未完成";
+                    $message = "单号：" . $record['field_value'] ."，城市：" . $record['city_name'] . ",申请日期为：" . $record['req_dt'] . "金额为：" . $record['amount'] . "的申请已过一个月，报销仍未完成";
                     $lcu = "admin";
                     $aaa = Yii::app()->db->createCommand()->insert("swoper$suffix.swo_email_queue", array(
                         'request_dt' => date('Y-m-d H:i:s'),
@@ -67,7 +68,7 @@ WHERE workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>'ED' and workflow$
                     $to_addr = '["' . $rs[0]['email'] . '"]';
                     $subject = "付款申请报销提醒-" . $record['field_value'];
                     $description = "付款申请报销提醒-" . $record['field_value'];
-                    $message = "单号：" . $record['field_value'] . ",申请日期为：" . $record['req_dt'] . "金额为：" . $record['amount'] . "的申请已过两个月，报销仍未完成";
+                    $message = "单号：" . $record['field_value'] ."，城市：" . $record['city_name'] . ",申请日期为：" . $record['req_dt'] . "金额为：" . $record['amount'] . "的申请已过两个月，报销仍未完成";
                     $lcu = "admin";
                     $aaa = Yii::app()->db->createCommand()->insert("swoper$suffix.swo_email_queue", array(
                         'request_dt' => date('Y-m-d H:i:s'),
@@ -90,7 +91,7 @@ WHERE workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>'ED' and workflow$
                     $to_addr = "[" . $rs[0]['email'] . "]";
                     $subject = "付款申请报销提醒-" . $record['field_value'];
                     $description = "付款申请报销提醒-" . $record['field_value'];
-                    $message = "单号：" . $record['field_value'] . ",申请日期为：" . $record['req_dt'] . "金额为：" . $record['amount'] . "的申请已过三个月，报销仍未完成";
+                    $message = "单号：" . $record['field_value'] ."，城市：" . $record['city_name'] . ",申请日期为：" . $record['req_dt'] . "金额为：" . $record['amount'] . "的申请已过三个月，报销仍未完成";
                     $lcu = "admin";
                     $aaa = Yii::app()->db->createCommand()->insert("swoper$suffix.swo_email_queue", array(
                         'request_dt' => date('Y-m-d H:i:s'),
