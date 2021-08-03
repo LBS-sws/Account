@@ -910,7 +910,8 @@ class ReportXS01SList extends CListPageModel
                 $timestrap=strtotime($record_r['visit_dt']);
                 $year_rz=date('Y',$timestrap);
                 $month_rz=date('m',$timestrap);
-                if($year_rz==$year&&$month_rz==($month-1)){
+                $day_rz=intval(date('d',$timestrap));//第一条记录不是一号则当月不计算激励点
+                if($year_rz==intval($year)&&$month_rz==intval($month)&&$day_rz!=1){
                     $point=0;
                 }
             }
