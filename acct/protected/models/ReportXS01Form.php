@@ -186,9 +186,10 @@ class ReportXS01Form extends CReportForm
                 $sql_c="select visit_dt from sales$suffix.sal_visit   where username='$records_u'  order by visit_dt ";
                 $record = Yii::app()->db->createCommand($sql_c)->queryRow();
                 $timestrap=strtotime($record['visit_dt']);
-                $year_rz=date('Y',$timestrap);
-                $month_rz=date('m',$timestrap);
-                if($year_rz==$year&&$month_rz==($month-1)){
+                $year_rz=intval(date('Y',$timestrap));
+                $month_rz=intval(date('m',$timestrap));
+                $day_rz=intval(date('d',$timestrap));//第一条记录不是一号则当月不计算激励点
+                if($year_rz==intval($year)&&$month_rz==intval($month)&&$day_rz!=1){
                     $point['point']=0;
                     $point['id']=key_exists("id",$point)?$point['id']:0;
                 }
