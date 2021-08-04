@@ -1874,7 +1874,7 @@ class ReportXS01SList extends CListPageModel
         $sql="select employee_name from acc_service_comm_hdr where id=$id";
         $name = Yii::app()->db->createCommand($sql)->queryScalar();
         $suffix = Yii::app()->params['envSuffix'];
-        $sql1="select a.*, b.new_calc ,e.user_id from acc_service_comm_hdr a
+        $sql1="select a.*,d.entry_time, b.new_calc ,e.user_id from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
               left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
                left outer join hr$suffix.hr_binding e on  d.id=e.employee_id          
@@ -1883,6 +1883,18 @@ class ReportXS01SList extends CListPageModel
         $arr = Yii::app()->db->createCommand($sql1)->queryRow();
         $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."' and city='$city'";
         $point = Yii::app()->db->createCommand($sql_point)->queryRow();
+
+        if(strtotime($arr["entry_time"]."+ 1 month")>=strtotime("$year-$month-01")){//判斷是否新入職(大概查詢)
+            $sql_c="select visit_dt from sales$suffix.sal_visit   where username='".$arr['user_id']."'  order by visit_dt ";
+            $record = Yii::app()->db->createCommand($sql_c)->queryRow();
+            $timestrap=strtotime($record['visit_dt']);
+            $year_rz=intval(date('Y',$timestrap));
+            $month_rz=intval(date('m',$timestrap));
+            $day_rz=intval(date('d',$timestrap));//第一条记录不是一号则当月不计算激励点
+            if($year_rz==intval($year)&&$month_rz==intval($month)&&$day_rz!=1){
+                $point['point']=0;
+            }
+        }
         return $point['point'];
     }
 
