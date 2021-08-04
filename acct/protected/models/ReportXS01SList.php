@@ -1441,12 +1441,6 @@ class ReportXS01SList extends CListPageModel
                     }
                     $fuwu_last=$point+$records2['new_calc']+$reward;
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
-                    var_dump("point:$point<br/>");
-                    var_dump("reward:$reward<br/>");
-                    var_dump("new_calc:".$records2['new_calc']."<br/>");
-                    var_dump("fuwu_last:$fuwu_last<br/>");
-                    var_dump("otherspanning:$otherspanning<br/>");
-                    die();
                     if (!empty($a)) {
                         $moneys += $a * $otherspanning;
                         if ($records['cust_type'] == '1' || $records['cust_type'] == '2' || $records['cust_type'] == '3' || $records['cust_type'] == '5' || $records['cust_type'] == '6' || $records['cust_type'] == '7') {
@@ -1880,9 +1874,10 @@ class ReportXS01SList extends CListPageModel
         $sql="select employee_name from acc_service_comm_hdr where id=$id";
         $name = Yii::app()->db->createCommand($sql)->queryScalar();
         $suffix = Yii::app()->params['envSuffix'];
-        $sql1="select a.*,d.entry_time, b.new_calc ,e.user_id from acc_service_comm_hdr a
+        $sql1="select a.*,f.manager_type,d.entry_time, b.new_calc ,e.user_id from acc_service_comm_hdr a
               left outer join acc_service_comm_dtl b on  b.hdr_id=a.id
               left outer join hr$suffix.hr_employee d on  a.employee_code=d.code 
+              left outer join hr$suffix.hr_dept f on  f.id=d.position 
                left outer join hr$suffix.hr_binding e on  d.id=e.employee_id          
               where  a.year_no='$year' and  a.month_no='$month' and a.employee_name='$name' and d.city='$city'
 ";
@@ -1901,6 +1896,7 @@ class ReportXS01SList extends CListPageModel
                 $point['point']=0;
             }
         }
+        $point['point']=in_array($arr["manager_type"],array(1,2))?$point['point']:0;
         return $point['point'];
     }
 
@@ -2038,9 +2034,9 @@ class ReportXS01SList extends CListPageModel
         ";
         $position = Yii::app()->db->createCommand($sql)->queryRow();
         if(empty($position)){
-            $records=1;
+            $records=1;//manager_type not in array(1,2);
         }else{
-            $records=2;
+            $records=2;//manager_type in array(1,2);
         }
         return $records;
     }
