@@ -1441,6 +1441,12 @@ class ReportXS01SList extends CListPageModel
                     }
                     $fuwu_last=$point+$records2['new_calc']+$reward;
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
+                    var_dump("point:$point<br/>");
+                    var_dump("reward:$reward<br/>");
+                    var_dump("new_calc:".$records2['new_calc']."<br/>");
+                    var_dump("fuwu_last:$fuwu_last<br/>");
+                    var_dump("otherspanning:$otherspanning<br/>");
+                    die();
                     if (!empty($a)) {
                         $moneys += $a * $otherspanning;
                         if ($records['cust_type'] == '1' || $records['cust_type'] == '2' || $records['cust_type'] == '3' || $records['cust_type'] == '5' || $records['cust_type'] == '6' || $records['cust_type'] == '7') {
