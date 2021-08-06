@@ -1154,6 +1154,7 @@ class ReportXS02List extends CListPageModel
         $objPHPExcel->getActiveSheet()->setCellValue('B9','跨区业绩 : '.$view['out_money']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('B10','跨区更改新增业绩 : '.$view['performanceedit_money']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('B12','续约业绩 : '.$view['renewal_money']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('C5','服务奖励点 : '.$view['service_reward']) ;
 
         $objPHPExcel->getActiveSheet()->getStyle('A17:H17')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
         $objPHPExcel->getActiveSheet()->getStyle('A17:H17')->getFill()->getStartColor()->setARGB('99FFFF');

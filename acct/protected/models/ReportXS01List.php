@@ -287,6 +287,7 @@ class ReportXS01List extends CListPageModel
         if (count($records) > 0) {
             foreach ($records as $k=>$record){
                 $cust_type_name=str_replace("'","''",$record['cust_type_name']);
+                $record['company_name']=str_replace("'","''",$record['company_name']);
                 $endDate = date("Y-m-d",strtotime($record['status_dt']));
                 $sign_dt = date("Y-m-d",strtotime($record['sign_dt']));
                 $sql2="select a.*,  c.description as type_desc, d.name as city_name					
@@ -992,6 +993,7 @@ class ReportXS01List extends CListPageModel
 
         foreach ($records as $k=>&$record){
             $cust_type_name=str_replace("'","''",$record['cust_type_name']);
+            $record['company_name']=str_replace("'","''",$record['company_name']);
             $endDate = date("Y-m-d",strtotime($record['status_dt']));
             $sign_dt = date("Y-m-d",strtotime($record['sign_dt']));
             $sql2="select a.*,  c.description as type_desc, d.name as city_name					
@@ -1311,6 +1313,7 @@ class ReportXS01List extends CListPageModel
                 }
                 //当初提成比例
 //                //                $records['company_name']=str_replace(' ','',$records['company_name']);
+                $records['company_name']=str_replace("'","''",$records['company_name']);
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N' and salesman='".$records['salesman']."' order by status_dt desc";
                 $recordss = Yii::app()->db->createCommand($sql)->queryRow();
                 $date=$recordss['first_dt'];
@@ -1801,6 +1804,7 @@ class ReportXS01List extends CListPageModel
                     $m=0;
                 }
                 //                $records['company_name']=str_replace(' ','',$records['company_name']);
+                $records['company_name']=str_replace("'","''",$records['company_name']);
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N' and salesman='".$records['salesman']."' order by status_dt desc";
                 $recordss = Yii::app()->db->createCommand($sql)->queryRow();
                 $date=$recordss['first_dt'];
@@ -1909,6 +1913,8 @@ class ReportXS01List extends CListPageModel
                     $m=0;
                 }
                 //                $records['company_name']=str_replace(' ','',$records['company_name']);
+
+                $records['company_name']=str_replace("'","''",$records['company_name']);
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='N' and salesman='".$records['salesman']."' and sign_dt='".$records['sign_dt']."' order by status_dt desc";
                 $records = Yii::app()->db->createCommand($sql)->queryRow();
                 if(empty($records)){
@@ -1962,6 +1968,7 @@ class ReportXS01List extends CListPageModel
                 }
             }else{
                 //                $records['company_name']=str_replace(' ','',$records['company_name']);
+                $records['company_name']=str_replace("'","''",$records['company_name']);
                 $sql="select * from  swoper$suffix.swo_service where company_name='".$records['company_name']."' and cust_type='".$records['cust_type']."' and status='A' and salesman='".$records['salesman']."' order by status_dt desc ";//更改
                 $record = Yii::app()->db->createCommand($sql)->queryAll();
                 for ($i=0;$i<count($record);$i++){
@@ -1995,6 +2002,7 @@ class ReportXS01List extends CListPageModel
                         $m=0;
                     }
 //                    $record[$i]['company_name']=str_replace(' ','',$record[$i]['company_name']);
+                    $record['company_name']=str_replace("'","''",$record['company_name']);
                     $sqls="select * from  swoper$suffix.swo_service where company_name='".$record[$i]['company_name']."' and cust_type='".$record[$i]['cust_type']."' and status='N' and salesman='".$record[$i]['salesman']."' order by status_dt desc";
                     $arr = Yii::app()->db->createCommand($sqls)->queryRow();
                     $date=$arr['first_dt'];
