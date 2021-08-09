@@ -1674,11 +1674,23 @@ class ReportXS01SList extends CListPageModel
                 if($records1['performance']==1){
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";//当初提成比例
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
+                    var_dump("year:{$year} month:{$month}");
+                    var_dump("old(new_calc):");
+                    var_dump($records2);
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
+                    var_dump("otherspanning:");
+                    var_dump($otherspanning);
                     if(isset($m)){
                         if($records2['new_calc']!=0&&!empty($records2['new_calc'])){
                             $point=$this->getPoint($year,$month,$index);//积分激励点
+                            var_dump("point:");
+                            var_dump($point);
+                            var_dump("reward:");
+                            var_dump($reward);
                             $fuwu_last=$point+$records2['new_calc']+$reward;
+                            var_dump("fuwu_last:");
+                            var_dump($fuwu_last);
+                            die();
                             $m=$m*$fuwu_last;
                             if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                 $money[]=round($m*$otherspanning,2);
