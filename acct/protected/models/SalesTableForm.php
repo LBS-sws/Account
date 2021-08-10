@@ -160,10 +160,10 @@ class SalesTableForm extends CFormModel
         $a1=$salerow['employee_name']." (".$salerow['employee_code'].")";
         $reward = ReportXS01Form::serviceReward('','',$salerow['year_no']."/".$salerow['month_no'],$a1);//服务奖励点
         $sql1 = "select paid_type,amt_paid,ctrt_period,b4_amt_paid,cust_type_name,status_dt,company_name,status,commission,other_commission,amt_install,othersalesman,cust_type,service
-                  from swoper$suffix.swo_service where  ((commission!=' ' and commission!=0) or (other_commission!=0 and other_commission!=' ')) and ((status_dt<='$end' and  status_dt>='$start') or (first_dt<='$end' and  first_dt>='$start')) and (salesman='$a1' or  othersalesman='$a1')
+                  from swoper$suffix.swo_service where  ((commission!=' ' and commission!=0) or (other_commission!=0 and other_commission!=' ')) and ((status_dt<='$end' and  status_dt>='$start') or (first_dt<='$end' and  first_dt>='$start')) and (salesman='$a1' or  othersalesman='$a1') and city='{$salerow['city']}'
                   union
                   select paid_type,amt_paid,ctrt_period,b4_amt_paid,cust_type_name,status_dt,company_name,status,commission,other_commission,amt_install,othersalesman,cust_type,service 
-                  from acc_service_comm_copy where  ((commission!=' ' and commission!=0) or (other_commission!=0 and other_commission!=' ')) and ((status_dt<='$end' and  status_dt>='$start') or (first_dt<='$end' and  first_dt>='$start')) and (salesman='$a1' or  othersalesman='$a1')
+                  from acc_service_comm_copy where  ((commission!=' ' and commission!=0) or (other_commission!=0 and other_commission!=' ')) and ((status_dt<='$end' and  status_dt>='$start') or (first_dt<='$end' and  first_dt>='$start')) and (salesman='$a1' or  othersalesman='$a1') and city='{$salerow['city']}'
 ";
         $rows = Yii::app()->db->createCommand($sql1)->queryAll();
         $sql1 = "select * from acc_product where  service_hdr_id='$index'";
