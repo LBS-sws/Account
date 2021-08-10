@@ -1562,11 +1562,12 @@ class ReportXS01SList extends CListPageModel
                 $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                 $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
+                $performance = $records1['performance'];//当月是否达标
                 ReportXS01SList::resetYearAndMonth($year,$month,$recordss['city'],$records1['id']);//需要计算服务单有没有东成西就
                 $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
                 $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
-                if($records1['performance']==1){
+                if($performance==1){
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     if(isset($m)){
@@ -1667,30 +1668,19 @@ class ReportXS01SList extends CListPageModel
                 $records['othersalesman']=str_replace(')','',$records['othersalesman']);
                 $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
                 $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
+                $performance = $records1['performance'];//当月是否达标
                 ReportXS01SList::resetYearAndMonth($year,$month,$records['city'],$records1['id']);//需要计算服务单有没有东成西就
                 $sql1="select * from acc_service_comm_hdr where year_no='".$year."' and month_no='".$month."' and city='".$records['city']."' and  concat_ws(' ',employee_name,employee_code)= '".$records['othersalesman']."' ";
-                $records1 = Yii::app()->db->createCommand($sql1)->queryRow();
+                $records1 = Yii::app()->db->createCommand($sql1)->queryRow();//因为有东成西就所有再次计算
                 $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$othersalesman);//服务奖励点
-                if($records1['performance']==1){
+                if($performance==1){
                     $sql2="select new_calc from  acc_service_comm_dtl where hdr_id='".$records1['id']."'";//当初提成比例
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
-                    var_dump("year:{$year} month:{$month}");
-                    var_dump("old(new_calc):");
-                    var_dump($records2);
                     $otherspanning=$this->getOtherRoyalty($index,$city,$year,$month,$records['salesman']);
-                    var_dump("otherspanning:");
-                    var_dump($otherspanning);
                     if(isset($m)){
                         if($records2['new_calc']!=0&&!empty($records2['new_calc'])){
                             $point=$this->getPoint($year,$month,$index);//积分激励点
-                            var_dump("point:");
-                            var_dump($point);
-                            var_dump("reward:");
-                            var_dump($reward);
                             $fuwu_last=$point+$records2['new_calc']+$reward;
-                            var_dump("fuwu_last:");
-                            var_dump($fuwu_last);
-                            die();
                             $m=$m*$fuwu_last;
                             if($records['cust_type']=='1'||$records['cust_type']=='2'||$records['cust_type']=='3'||$records['cust_type']=='5'||$records['cust_type']=='6'||$records['cust_type']=='7'){
                                 $money[]=round($m*$otherspanning,2);
