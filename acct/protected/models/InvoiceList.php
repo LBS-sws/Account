@@ -15,7 +15,8 @@ class InvoiceList extends CListPageModel
 			'customer_code'=>Yii::t('invoice','Customer Account'),
 			'invoice_to_name'=>Yii::t('invoice','Invoice Company'),
             'name_zh'=>Yii::t('invoice','Delivery Company'),
-
+            'payment_term'=>Yii::t('invoice','Payment Term'),
+            'city_name'=>Yii::t('misc','City'),
 		);
 	}
 	
@@ -23,34 +24,25 @@ class InvoiceList extends CListPageModel
 	{
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city_allow();
-		$sql1 = "select *  from acc_invoice where city in ($city) 
+		$sql1 = "select a.*,b.name as city_name from acc_invoice a 
+            LEFT JOIN security$suffix.sec_city b ON a.city = b.code
+            where a.city in ($city) 
 			";
-		$sql2 = "select count(id) from acc_invoice where city in ($city) 
+		$sql2 = "select count(a.id) from acc_invoice a 
+            LEFT JOIN security$suffix.sec_city b ON a.city = b.code
+            where a.city in ($city) 
 			";
 		$clause = "";
-		if (!empty($this->searchField) && !empty($this->searchValue)) {
-			$svalue = str_replace("'","\'",$this->searchValue);
-			switch ($this->searchField) {
-				case 'name_zh':
-					$clause .= General::getSqlConditionClause('name_zh',$svalue);
-					break;
-				case 'invoice_no':
-					$clause .= General::getSqlConditionClause('invoice_no',$svalue);
-					break;
-				case 'invoice_dt':
-					$clause .= General::getSqlConditionClause('invoice_dt',$svalue);
-					break;
-				case 'customer_code':
-					$clause .= General::getSqlConditionClause('customer_code',$svalue);
-					break;
-				case 'invoice_to_name':
-					$clause .= General::getSqlConditionClause('invoice_to_name',$svalue);
-					break;
-                case 'city_name':
-                    $clause .= ' and city in '.$this->getCityCodeSqlLikeName($svalue);
-					break;
-			}
-		}
+        if (!empty($this->searchField) && (!empty($this->searchValue) || $this->isAdvancedSearch())) {
+            if ($this->isAdvancedSearch()) {
+                $clause = $this->buildSQLCriteria();
+            } else {
+                $svalue = str_replace("'","\'",$this->searchValue);
+                $columns = $this->searchColumns();
+                $clause .= General::getSqlConditionClause($columns[$this->searchField],$svalue);
+            }
+        }
+        $clause .= $this->getDateRangeCondition('invoice_dt');
 
 		$order = "";
 		if (!empty($this->orderField)) {
@@ -78,32 +70,32 @@ class InvoiceList extends CListPageModel
 					'id'=>$record['id'],
 					'number'=>$number,
 					'invoice_no'=>$record['invoice_no'],
+					'city_name'=>$record['city_name'],
 					'invoice_dt'=>$dates,
 					'customer_code'=>$record['customer_code'],
 					'invoice_to_name'=>$record['invoice_to_name'],
 					'name_zh'=>$record['name_zh'],
+					'payment_term'=>$record['payment_term'],
 				);
 			}
 		}
-		$session = Yii::app()->session;
-		$session['invoice_xi01'] = $this->getCriteria();
+        $session = Yii::app()->session;
+        $session[$this->criteriaName()] = $this->getCriteria();
 		return true;
 	}
 
-//获取地区編號（模糊查詢）
-    public function getCityCodeSqlLikeName($code)
-    {
-        $from =  'security'.Yii::app()->params['envSuffix'].'.sec_city';
-        $rows = Yii::app()->db->createCommand()->select("code")->from($from)->where(array('like', 'name', "%$code%"))->queryAll();
-        $arr = array();
-        foreach ($rows as $row){
-            array_push($arr,"'".$row["code"]."'");
-        }
-        if(empty($arr)){
-            return "('')";
-        }else{
-            $arr = implode(",",$arr);
-            return "($arr)";
-        }
+
+    public function searchColumns() {
+        $search = array(
+            'invoice_no'=>"a.invoice_no",
+            'invoice_dt'=>"date_format(a.invoice_dt,'%Y/%m/%d')",
+            'customer_code'=>"a.customer_code",
+            'name_zh'=>"a.name_zh",
+            'payment_term'=>"a.payment_term",
+
+        );
+        if (!Yii::app()->user->isSingleCity()) $search['city_name'] = 'b.name';
+        return $search;
     }
+
 }

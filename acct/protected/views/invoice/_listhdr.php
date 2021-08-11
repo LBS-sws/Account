@@ -1,24 +1,36 @@
 <tr>
 	<th>  <input name="Fruit"  type="checkbox"  id="all"></th>
 
+    <?php if (!Yii::app()->user->isSingleCity()) : ?>
+        <th>
+            <?php echo TbHtml::link($this->getLabelName('city_name').$this->drawOrderArrow('b.name'),'#',$this->createOrderLink('Invoice-list','b.name'))
+            ;
+            ?>
+        </th>
+    <?php endif ?>
 	<th>
-		<?php echo TbHtml::link($this->getLabelName('invoice_no').$this->drawOrderArrow('invoice_no'),'#',$this->createOrderLink('Invoice-list','invoice_no'))
+		<?php echo TbHtml::link($this->getLabelName('invoice_no').$this->drawOrderArrow('a.invoice_no'),'#',$this->createOrderLink('Invoice-list','a.invoice_no'))
 			;
 		?>
 	</th>
 
 	<th>
-		<?php echo TbHtml::link($this->getLabelName('invoice_dt').$this->drawOrderArrow('invoice_dt'),'#',$this->createOrderLink('Invoice-list','invoice_dt'))
+		<?php echo TbHtml::link($this->getLabelName('invoice_dt').$this->drawOrderArrow('a.invoice_dt'),'#',$this->createOrderLink('Invoice-list','a.invoice_dt'))
 			;
 		?>
 	</th>
 	<th>
-		<?php echo TbHtml::link($this->getLabelName('customer_code').$this->drawOrderArrow('customer_code'),'#',$this->createOrderLink('Invoice-list','customer_code'))
+		<?php echo TbHtml::link($this->getLabelName('customer_code').$this->drawOrderArrow('a.customer_code'),'#',$this->createOrderLink('Invoice-list','a.customer_code'))
 			;
 		?>
 	</th>
 	<th>
-		<?php echo TbHtml::link($this->getLabelName('name_zh').$this->drawOrderArrow('name_zh'),'#',$this->createOrderLink('Invoice-list','name_zh'))
+		<?php echo TbHtml::link($this->getLabelName('payment_term').$this->drawOrderArrow('a.payment_term'),'#',$this->createOrderLink('Invoice-list','a.payment_term'))
+			;
+		?>
+	</th>
+	<th>
+		<?php echo TbHtml::link($this->getLabelName('name_zh').$this->drawOrderArrow('a.name_zh'),'#',$this->createOrderLink('Invoice-list','a.name_zh'))
 			;
 		?>
 	</th>

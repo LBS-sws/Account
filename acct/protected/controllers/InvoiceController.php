@@ -49,11 +49,11 @@ class InvoiceController extends Controller
 		if (isset($_POST['InvoiceList'])) {
 			$model->attributes = $_POST['InvoiceList'];
 		} else {
-			$session = Yii::app()->session;
-			if (isset($session['invoice_xi01']) && !empty($session['invoice_xi01'])) {
-				$criteria = $session['invoice_xi01'];
-				$model->setCriteria($criteria);
-			}
+            $session = Yii::app()->session;
+            if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+                $criteria = $session[$model->criteriaName()];
+                $model->setCriteria($criteria);
+            }
 		}
 		$model->determinePageNum($pageNum);
 		$model->retrieveDataByPage($model->pageNum);

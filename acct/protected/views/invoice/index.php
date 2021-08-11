@@ -50,32 +50,24 @@ $this->pageTitle=Yii::app()->name . ' - Invoice';
             </div>
 	    </div>
     </div>
-	<?php 
-		$search = array(
-						'invoice_no',
-						'invoice_dt',
-						'customer_code',
-						'name_zh',
-
-					);
-		if (!Yii::app()->user->isSingleCity()) $search[] = 'city_name';
+	<?php
 		$this->widget('ext.layout.ListPageWidget', array(
 			'title'=>Yii::t('invoice','Invoice List'),
 			'model'=>$model,
-				'viewhdr'=>'//invoice/_listhdr',
-				'viewdtl'=>'//invoice/_listdtl',
-				'gridsize'=>'24',
-				'height'=>'600',
-				'search'=>$search,
+            'viewhdr'=>'//invoice/_listhdr',
+            'viewdtl'=>'//invoice/_listdtl',
+            'advancedSearch'=>true,
+            'hasDateButton'=>true,
 		));
 	?>
 </section>
 <?php $this->renderPartial('//site/removedialog'); ?>
 <?php
-	echo $form->hiddenField($model,'pageNum');
-	echo $form->hiddenField($model,'totalRow');
-	echo $form->hiddenField($model,'orderField');
-	echo $form->hiddenField($model,'orderType');
+    echo $form->hiddenField($model,'pageNum');
+    echo $form->hiddenField($model,'totalRow');
+    echo $form->hiddenField($model,'orderField');
+    echo $form->hiddenField($model,'orderType');
+    echo $form->hiddenField($model,'filter');
 ?>
 <?php $this->endWidget(); ?>
 <?php $this->renderPartial('//invoice/_type'); ?>
@@ -103,6 +95,5 @@ Yii::app()->clientScript->registerScript('selectAll',$js,CClientScript::POS_READ
 $js = Script::genDeleteData(Yii::app()->createUrl('invoice/alldelete'));
 Yii::app()->clientScript->registerScript('deleteRecord',$js,CClientScript::POS_READY);
 ?>
-<form target="_self"></form>
 
 
