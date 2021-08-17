@@ -13,5 +13,6 @@ return array(
     'validateNewStaff'=>'欢迎加入史伟莎, 为确保服务品质<br>请于到职日起算三个月内, 完成第一次的培训测验<br/>要求：答题正确率为85%, 否则需继续测验',
 	'Please complete Report System - Sales Summary Report Submission before using other functions.'
     =>'在使用其他功能前，请先完成日报表系统-月报表总结提交。',
+    'EveryYearForExamination'=>'亲爱的同事，为巩固技术服务知识和服务品质,请于次月底完成一年一次的培训测验<br/>要求：答题正确率为85%, 否则需继续测验',
 );
 ?>
