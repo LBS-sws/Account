@@ -72,5 +72,6 @@ return array(
 'Please complete the sales commission form audit first'=>'請先完成銷售提成表審核',
 'Saving' => '保存中',
 'Invalid file type.'=>'無效的文件類型.',
+'Advice'=>'温馨提示',
 );
 ?>
