@@ -30,7 +30,7 @@ class RptReimbReminder extends CReport {
 				WHERE workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>'ED' 
 				and workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>''
 				and datediff('$start_dt', a.req_dt) > 59
-				and a.city='$city'
+				and a.city='$city' and a.status='Y'
 				order by a.id
 			";
 		$this->result = Yii::app()->db->createCommand($sql)->queryAll();
