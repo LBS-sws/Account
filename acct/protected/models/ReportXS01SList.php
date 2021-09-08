@@ -1057,10 +1057,10 @@ class ReportXS01SList extends CListPageModel
                     $records2 = Yii::app()->db->createCommand($sql2)->queryRow();
                     $spanning=$this->getRoyalty($index,$city,$year,$month,$records['othersalesman']);
                     $point=$this->getPoint($year,$month,$index);//积分激励点
-                    $reward = ReportXS01Form::serviceReward('','',$year."/".$month,$salesman);//服务奖励点
+                    $rewardClose = ReportXS01Form::serviceReward('','',$year."/".$month,$salesman);//服务奖励点
 
                     $records2['new_calc'] = $records2['new_calc']<=0?0.05:$records2['new_calc'];
-                    $fuwu_last=$point+$records2['new_calc']+$reward;
+                    $fuwu_last=$point+$records2['new_calc']+$rewardClose;
                    if(isset($m)){
                        if(!empty($records2)){
                            $m=$m*$fuwu_last;
