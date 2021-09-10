@@ -25,9 +25,15 @@ $this->pageTitle=Yii::app()->name . ' - Service Rate Form';
 				'submit'=>Yii::app()->createUrl('srate/save'))); 
 		?>
 <?php endif ?>
-        <?php echo TbHtml::button('<span class="fa fa-remove"></span> '.Yii::t('misc','Delete'), array(
-            		'submit'=>Yii::app()->createUrl('srate/delete')));
-        ?>
+        <?php if ($model->scenario!="new"): ?>
+            <?php echo TbHtml::button('<span class="fa fa-clone"></span> '.Yii::t('misc','Copy'), array(
+                    'submit'=>Yii::app()->createUrl('srate/new', array('index'=>$model->id)))
+            );
+            ?>
+            <?php echo TbHtml::button('<span class="fa fa-remove"></span> '.Yii::t('misc','Delete'), array(
+                'submit'=>Yii::app()->createUrl('srate/delete')));
+            ?>
+        <?php endif ?>
 	</div>
 	</div></div>
 

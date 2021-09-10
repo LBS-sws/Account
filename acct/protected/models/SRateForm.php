@@ -88,7 +88,7 @@ class SRateForm extends CFormModel
 					$temp['rate'] = $row['rate'];
 					$temp['name'] = $row['name'];
 					$temp['operator'] = $row['operator'];
-					$temp['uflag'] = 'N';
+					$temp['uflag'] = $this->getScenario()=="new"?"Y":"N";
 					$this->detail[] = $temp;
 				}
 			}

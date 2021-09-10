@@ -82,9 +82,14 @@ class SrateController extends Controller
 		}
 	}
 	
-	public function actionNew()
+	public function actionNew($index=0)
 	{
+        $index = is_numeric($index)?$index:0;
 		$model = new SRateForm('new');
+        if($index>0){
+            $model->retrieveData($index);
+            $model->id = null;
+        }
 		$model->city = Yii::app()->user->city();
 		$this->render('form',array('model'=>$model,));
 	}
