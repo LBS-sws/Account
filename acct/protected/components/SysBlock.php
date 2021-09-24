@@ -224,7 +224,9 @@ class SysBlock {
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
         $email=Yii::app()->user->email();
-        $lastdate = date('d')<3 ? date('Y-m-d',strtotime(date('Y-m-3').' -3 months')) : date('Y-m-d',strtotime(date('Y-m-4').' -2 months'));
+        $lastdate = date('m')==10
+			? (date('d')<10 ? date('Y-m-d',strtotime(date('Y-m-10').' -3 months')) : date('Y-m-d',strtotime(date('Y-m-11').' -2 months')))
+			: (date('d')<3 ? date('Y-m-d',strtotime(date('Y-m-3').' -3 months')) : date('Y-m-d',strtotime(date('Y-m-4').' -2 months')));
         $year = date("Y", strtotime($lastdate));
         $month = date("n", strtotime($lastdate));
         $sql = "select a_control from security$suffix.sec_user_access 
