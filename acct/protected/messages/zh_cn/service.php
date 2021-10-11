@@ -17,5 +17,8 @@ return array(
     'Yearly'=>'年金额',
     'One time'=>'一次性',
     'Salesman'=>'业务员',
+    'judge general'=>'是否通用',
+    'general'=>'通用',
+    'ratio'=>'百分比',
 );
 ?>

@@ -41,6 +41,7 @@ return array(
     'Sales New Query'=>'销售新生意额查询',
     'Sales Edit Query'=>'销售更改生意额查询',
     'Sales End Query'=>'销售终止生意额查询',
+    'Sales Renewal Query'=>'续约生意额查询',
     'Spanning Sales New Query'=>'跨区新生意额查询',
     'Spanning Sales Edit Query'=>'跨区更改生意额查询',
     'Spanning Sales End Query'=>'跨区终止生意额查询',
@@ -177,5 +178,8 @@ return array(
 	'Invoice'=>'发票',
     'Batch deletion of invoices'=>'批量删除发票',
 
+    'ID Sales Commission ladder'=>'ID服务提成阶梯',
+    'ID Sales Commission'=>'ID销售提成计算',
+    'ID Sales Commission history'=>'ID销售提成查询',
 );
 ?>

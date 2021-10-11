@@ -135,6 +135,18 @@ return array(
                 'access'=>'XS02',
                 'url'=>'/query/index',
             ),
+            'ID Sales Commission'=>array(
+                'access'=>'XS10',
+                'url'=>'/IDCommission/index?type=1',
+            ),
+            'ID Sales Commission history'=>array(
+                'access'=>'XS11',
+                'url'=>'/IDCommission/index',
+            ),
+            'ID Sales Commission ladder'=>array(
+                'access'=>'XS09',
+                'url'=>'/IDLadder/index',
+            ),
             'Sales Commission ladder'=>array(
                 'access'=>'XS03',
                 'url'=>'/srate/index',

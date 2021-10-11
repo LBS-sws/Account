@@ -36,5 +36,15 @@ return array(
     'product_amount'=>'产品提成',
     'service reward'=>'服务奖励点',
 
+    'renewal_money_back'=>'续约回款',
+    'new_money_back'=>'新增回款',
+    'edit_money_back'=>'更改新增回款',
+    'commission rate'=>'是否计算过提成',
+    'service no'=>'服务编号',
+    'service type'=>'客户类别',
+    'back money'=>'回款金额',
+    'back date'=>'回款日期',
+    'rate num'=>'提成比例',
+    'commission money'=>'实际计算金额',
 );
 ?>

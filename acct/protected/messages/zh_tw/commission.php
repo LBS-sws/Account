@@ -33,5 +33,9 @@ return array(
     'Renewal'=>'續約生意額',
     'RenewalEnd'=>'續約終止生意額',
     'service reward'=>'服務獎勵點',
+
+    'renewal_money_back'=>'續約回款',
+    'new_money_back'=>'新增回款',
+    'edit_money_back'=>'更改新增回款',
 );
 ?>

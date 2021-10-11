@@ -41,6 +41,7 @@ return array(
 'Sales New Query'=>'銷售新生意額查詢',
 'Sales Edit Query'=>'銷售更改生意額查詢',
 'Sales End Query'=>'銷售終止生意額查詢',
+'Sales Renewal Query'=>'續約生意額查詢',
 'Spanning Sales New Query'=>'跨區新生意額查詢',
 'Spanning Sales Edit Query'=>'跨區更改生意額查詢',
 'Spanning Sales End Query'=>'跨區終止生意額查詢',
