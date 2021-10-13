@@ -166,7 +166,7 @@ class IDCommissionForm extends CReportForm
                 }else{
                     return false;//員工不存在，異常
                 }
-                Yii::app()->db->createCommand()->insert("acc_serviceID_comm_hdr",array(
+                Yii::app()->db->createCommand()->insert("acc_serviceid_comm_hdr",array(
                     "year_no"=>$this->year,
                     "month_no"=>$this->month,
                     "employee_id"=>$this->employee_id,
