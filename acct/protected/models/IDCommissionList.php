@@ -158,7 +158,7 @@ class IDCommissionList extends CListPageModel
         $city = Yii::app()->user->city_allow();
         $row = Yii::app()->db->createCommand()
             ->select("a.id,a.year_no,a.month_no,a.employee_id,a.sum_amount,b.code,b.name,b.city,b.group_type")
-            ->from("acc_serviceID_comm_hdr a")
+            ->from("acc_serviceid_comm_hdr a")
             ->leftJoin("hr{$suffix}.hr_employee b","a.employee_id=b.id")
             ->where("a.id=:id and b.city in ($city)",array(":id"=>$index))
             ->queryRow();
@@ -245,7 +245,7 @@ class IDCommissionList extends CListPageModel
         $city = Yii::app()->user->city_allow();
         $row = Yii::app()->db->createCommand()
             ->select("a.id,a.year_no,a.month_no,a.employee_id,a.sum_amount,b.code,b.name,b.city,b.group_type")
-            ->from("acc_serviceID_comm_hdr a")
+            ->from("acc_serviceid_comm_hdr a")
             ->leftJoin("hr{$suffix}.hr_employee b","a.employee_id=b.id")
             ->where("a.id=:id and b.city in ($city)",array(":id"=>$index))
             ->queryRow();
@@ -305,7 +305,7 @@ class IDCommissionList extends CListPageModel
         $city = Yii::app()->user->city_allow();
         $row = Yii::app()->db->createCommand()
             ->select("a.id,a.year_no,a.month_no,a.employee_id,a.sum_amount,b.code,b.name,b.city,b.group_type")
-            ->from("acc_serviceID_comm_hdr a")
+            ->from("acc_serviceid_comm_hdr a")
             ->leftJoin("hr{$suffix}.hr_employee b","a.employee_id=b.id")
             ->where("a.id=:id and b.city in ($city)",array(":id"=>$index))
             ->queryRow();

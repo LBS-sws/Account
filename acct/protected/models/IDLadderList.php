@@ -17,12 +17,12 @@ class IDLadderList extends CListPageModel
 		$suffix = Yii::app()->params['envSuffix'];
 		$citylist = Yii::app()->user->city_allow();
 		$sql1 = "select a.id, a.city,a.name, a.only_num, a.start_dt, b.name as city_name 
-				from acc_serviceID_rate_hdr a
+				from acc_serviceid_rate_hdr a
 				left outer join security$suffix.sec_city b on a.city=b.code				
 				where a.city in ($citylist)
 			";
 		$sql2 = "select count(a.id)
-				from acc_serviceID_rate_hdr a
+				from acc_serviceid_rate_hdr a
 				left outer join security$suffix.sec_city b on a.city=b.code		  
 				where a.city in ($citylist)
 			";

@@ -59,7 +59,7 @@ class IDLadderForm extends CFormModel
 
 	public function validateFinish($attribute, $params) {
         if($this->only_num == 1){
-            Yii::app()->db->createCommand()->update("acc_serviceID_rate_hdr",array("only_num"=>0),"id>0");
+            Yii::app()->db->createCommand()->update("acc_serviceid_rate_hdr",array("only_num"=>0),"id>0");
         }
     }
 
@@ -95,7 +95,7 @@ class IDLadderForm extends CFormModel
 	public function retrieveData($index)
 	{
 		$city = Yii::app()->user->city_allow();
-		$sql = "select * from acc_serviceID_rate_hdr where id=$index and city in($city)";
+		$sql = "select * from acc_serviceid_rate_hdr where id=$index and city in($city)";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->id = $row['id'];
@@ -104,7 +104,7 @@ class IDLadderForm extends CFormModel
 			$this->city = $row['city'];
 			$this->start_dt = General::toDate($row['start_dt']);
 
-			$sql = "select * from acc_serviceID_rate_dtl where hdr_id=$index order by operator desc, month_num";
+			$sql = "select * from acc_serviceid_rate_dtl where hdr_id=$index order by operator desc, month_num";
 			$rows = Yii::app()->db->createCommand($sql)->queryAll();
 			if (count($rows) > 0) {
 				$this->detail = array();
@@ -148,17 +148,17 @@ class IDLadderForm extends CFormModel
 		$sql = '';
 		switch ($this->scenario) {
 			case 'delete':
-				$sql = "delete from acc_serviceID_rate_hdr where id = :id";
+				$sql = "delete from acc_serviceid_rate_hdr where id = :id";
 				break;
 			case 'new':
-				$sql = "insert into acc_serviceID_rate_hdr(
+				$sql = "insert into acc_serviceid_rate_hdr(
 						name,start_dt, only_num, city, luu, lcu
 						) values (
 						:name,:start_dt, :only_num, :city, :luu, :lcu
 						)";
 				break;
 			case 'edit':
-				$sql = "update acc_serviceID_rate_hdr set  
+				$sql = "update acc_serviceid_rate_hdr set  
                             name = :name,                     
 							only_num = :only_num,
 							city = :city,
@@ -203,11 +203,11 @@ class IDLadderForm extends CFormModel
 			$sql = '';
 			switch ($this->scenario) {
 				case 'delete':
-					$sql = "delete from acc_serviceID_rate_dtl where hdr_id = :hdr_id";
+					$sql = "delete from acc_serviceid_rate_dtl where hdr_id = :hdr_id";
 					break;
 				case 'new':
 					if ($row['uflag']=='Y') {
-						$sql = "insert into acc_serviceID_rate_dtl(
+						$sql = "insert into acc_serviceid_rate_dtl(
 									hdr_id, operator, month_num, rate, type_id,
 									luu, lcu
 								) values (
@@ -219,12 +219,12 @@ class IDLadderForm extends CFormModel
 				case 'edit':
 					switch ($row['uflag']) {
 						case 'D':
-							$sql = "delete from acc_serviceID_rate_dtl where id = :id";
+							$sql = "delete from acc_serviceid_rate_dtl where id = :id";
 							break;
 						case 'Y':
 							$sql = ($row['id']==0)
 									?
-									"insert into acc_serviceID_rate_dtl(
+									"insert into acc_serviceid_rate_dtl(
 										hdr_id, operator, month_num, rate, type_id,
 										luu, lcu
 									) values (
@@ -232,7 +232,7 @@ class IDLadderForm extends CFormModel
 										:luu, :lcu
 									)"
 									: 
-									"update acc_serviceID_rate_dtl set
+									"update acc_serviceid_rate_dtl set
 										hdr_id = :hdr_id,
 										operator = :operator, 
 										month_num = :month_num,

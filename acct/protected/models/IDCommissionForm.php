@@ -150,7 +150,7 @@ class IDCommissionForm extends CReportForm
         $suffix = Yii::app()->params['envSuffix'];
         if(empty($index)){
             //增加
-            $list = Yii::app()->db->createCommand()->select("id,sum_amount")->from("acc_serviceID_comm_hdr")
+            $list = Yii::app()->db->createCommand()->select("id,sum_amount")->from("acc_serviceid_comm_hdr")
                 ->where("year_no=:year_no and month_no=:month_no and employee_id=:employee_id",
                     array(":year_no"=>$this->year,":month_no"=>$this->month,":employee_id"=>$this->employee_id))
                 ->queryRow();
@@ -217,7 +217,7 @@ class IDCommissionForm extends CReportForm
         if($this->addEmployee($index)){
             $row = Yii::app()->db->createCommand()
                 ->select("a.id,a.year_no,a.month_no,a.employee_id,a.sum_amount,b.code,b.name,b.city,b.group_type")
-                ->from("acc_serviceID_comm_hdr a")
+                ->from("acc_serviceid_comm_hdr a")
                 ->leftJoin("hr{$suffix}.hr_employee b","a.employee_id=b.id")
                 ->where("a.id=:id",array(":id"=>$this->id))
                 ->queryRow();
