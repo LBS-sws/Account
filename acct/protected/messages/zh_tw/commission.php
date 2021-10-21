@@ -37,5 +37,12 @@ return array(
     'renewal_money_back'=>'續約回款',
     'new_money_back'=>'新增回款',
     'edit_money_back'=>'更改新增回款',
+    'commission rate'=>'是否計算過提成',
+    'service no'=>'服務編號',
+    'service type'=>'客戶類別',
+    'back money'=>'應計提成金額',
+    'back date'=>'應計提成日期',
+    'rate num'=>'提成比例',
+    'commission money'=>'實際計算金額',
 );
 ?>

@@ -42,8 +42,8 @@ return array(
     'commission rate'=>'是否计算过提成',
     'service no'=>'服务编号',
     'service type'=>'客户类别',
-    'back money'=>'回款金额',
-    'back date'=>'回款日期',
+    'back money'=>'应计提成金额',
+    'back date'=>'应计提成日期',
     'rate num'=>'提成比例',
     'commission money'=>'实际计算金额',
 );

@@ -212,9 +212,14 @@ class IDCommissionForm extends CReportForm
     }
 
     //總頁
-    public function retrieveData($index){
+    public function retrieveData($index,$bool=false){
         $suffix = Yii::app()->params['envSuffix'];
-        if($this->addEmployee($index)){
+        if(!$bool){ //沒有該員工時，生成該員工提成列表
+            $bool = $this->addEmployee($index);
+        }else{
+            $this->id = $index;
+        }
+        if($bool){
             $row = Yii::app()->db->createCommand()
                 ->select("a.id,a.year_no,a.month_no,a.employee_id,a.sum_amount,b.code,b.name,b.city,b.group_type")
                 ->from("acc_serviceid_comm_hdr a")
@@ -245,5 +250,4 @@ class IDCommissionForm extends CReportForm
     public function newSave(){
 
     }
-
 }

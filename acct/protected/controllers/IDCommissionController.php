@@ -45,7 +45,7 @@ class IDCommissionController extends Controller
                 'expression'=>array('IDCommissionController','allowEditDate'),
             ),
 			array('allow', 
-				'actions'=>array('index','index_s','view'),
+				'actions'=>array('index','index_s','view','downs'),
 				'expression'=>array('IDCommissionController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -210,15 +210,12 @@ class IDCommissionController extends Controller
         $this->redirect(Yii::app()->createUrl('IDCommission/renew',array('index'=>$model->id,'type'=>$this->type,'year'=>$model->year,'month'=>$model->month)));
     }
 
-	public function actionDowns($year,$month,$index)
+	public function actionDowns($index)
 	{
-        $a=$this->position($index);
-        $model = new ReportXS02Form('view');
-        $model->retrieveData($index,$a);
-        $view=$model;
-        $model = new ReportXS02List;
-        $model->retrieveXiaZai($year,$month,$index,$view);
-
+        $model = new IDCommissionForm('view');
+        $model->retrieveData($index,true);
+        $list = new IDCommissionList('view');
+        $list->retrieveXiaZai($index,$model);
 	}
 
 	public static function allowReadWrite() {

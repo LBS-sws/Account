@@ -28,7 +28,6 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                 'class'=>'btn btn-default'));
             ?>
         </div>
-        <!--
 <?php if ($this->type==0): ?>
         <div class="btn-group pull-right" role="group">
             <?php echo TbHtml::button('<span class="fa fa-download"></span> '.Yii::t('misc','Down'), array(
@@ -36,7 +35,6 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
 
         </div>
 <?php endif ?>
-        -->
     </div>
 </div>
 <section class="content" >
