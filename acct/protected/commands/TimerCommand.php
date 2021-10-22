@@ -36,9 +36,15 @@ WHERE workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>'ED' and workflow$
 //                    $to_addr = "[" . $recordes[0]['email'] . "," . $recordss[0]['email'] . "," . $rs[0]['email'] . "]";
 // 以上格式不能發送 , 不是正確 JSON
 					$tmp = array();
-					if (!empty($recordes[0]['email'])) $tmp[] = $recordes[0]['email'];
 					if (!empty($recordss[0]['email'])) $tmp[] = $recordss[0]['email'];
 					if (!empty($rs[0]['email'])) $tmp[] = $rs[0]['email'];
+                    if ($recordes){//由於會計可能有多個所以循環添加會計郵箱
+                        foreach ($recordes as $accEmail){
+                            if(!in_array($accEmail,$tmp)){
+                                $tmp[] = $accEmail;
+                            }
+                        }
+                    }
 					$to_addr = json_encode($tmp);
                     $subject = "付款申请报销提醒-" . $record['field_value'];
                     $description = "付款申请报销提醒-" . $record['field_value'];
