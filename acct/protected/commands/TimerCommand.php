@@ -40,8 +40,8 @@ WHERE workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>'ED' and workflow$
 					if (!empty($rs[0]['email'])) $tmp[] = $rs[0]['email'];
                     if ($recordes){//由於會計可能有多個所以循環添加會計郵箱
                         foreach ($recordes as $accEmail){
-                            if(!in_array($accEmail,$tmp)){
-                                $tmp[] = $accEmail;
+                            if(!in_array($accEmail["email"],$tmp)){
+                                $tmp[] = $accEmail["email"];
                             }
                         }
                     }
