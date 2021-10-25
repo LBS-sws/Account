@@ -375,11 +375,11 @@ class IDCommissionList extends CListPageModel
         $objPHPExcel->getActiveSheet()->setCellValue('A2','提成月份 : '.$view['year'].'/'.$view['month']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('A3','组别 : '.$view->getGroupType($view['group_type'],true)) ;
         $objPHPExcel->getActiveSheet()->setCellValue('A5','新增生意提成：'.$view['new_amount']) ;
-        $objPHPExcel->getActiveSheet()->setCellValue('C5','新增回款：'.$view['new_money']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('C5','实际新增提成金额：'.$view['new_money']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('A7','更改生意提成：'.$view['edit_amount']) ;
-        $objPHPExcel->getActiveSheet()->setCellValue('C7','更改新增回款：'.$view['edit_money']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('C7','实际更改提成金额：'.$view['edit_money']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('A9','续约生意提成：'.$view['renewal_amount']) ;
-        $objPHPExcel->getActiveSheet()->setCellValue('C9','续约回款：'.$view['renewal_money']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('C9','实际续约提成金额：'.$view['renewal_money']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('A11','总额：'.$view['sum_amount']) ;
 
         $objPHPExcel->getActiveSheet()->getStyle('A13:K13')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);

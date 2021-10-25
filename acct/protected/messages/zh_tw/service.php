@@ -19,5 +19,8 @@ return array(
     'Salesman'=>'業務員',
     'general'=>'通用',
     'ratio'=>'百分比',
+    'new_money_back'=>'實際新增提成金額',
+    'edit_money_back'=>'實際更改提成金額',
+    'renewal_money_back'=>'實際續約提成金額',
 );
 ?>

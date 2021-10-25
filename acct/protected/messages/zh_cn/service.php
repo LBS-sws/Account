@@ -20,5 +20,8 @@ return array(
     'judge general'=>'是否通用',
     'general'=>'通用',
     'ratio'=>'百分比',
+    'new_money_back'=>'实际新增提成金额',
+    'edit_money_back'=>'实际更改提成金额',
+    'renewal_money_back'=>'实际续约提成金额',
 );
 ?>

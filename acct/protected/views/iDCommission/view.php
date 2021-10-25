@@ -135,7 +135,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                 </div>
                 <div class="box-body" style="width: 400px;position: absolute;left:60%;">
                     <div class="form-group" style="width: 400px;">
-                        <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('commission','new_money_back'); ?></label>
+                        <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('service','new_money_back'); ?></label>
                         <div class="col-sm-3">
                             <?php echo $form->textField($model, 'new_money',
                                 array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -143,7 +143,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                         </div>
                     </div>
                     <div class="form-group" style="width: 400px;">
-                        <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('commission','edit_money_back'); ?></label>
+                        <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('service','edit_money_back'); ?></label>
                         <div class="col-sm-3">
                             <?php echo $form->textField($model, 'edit_money',
                                 array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
@@ -151,7 +151,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                         </div>
                     </div>
                     <div class="form-group" style="width: 400px;">
-                        <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('commission','renewal_money_back'); ?></label>
+                        <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('service','renewal_money_back'); ?></label>
                         <div class="col-sm-3">
                             <?php echo $form->textField($model, 'renewal_money',
                                 array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
