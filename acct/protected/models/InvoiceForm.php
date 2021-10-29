@@ -346,12 +346,14 @@ class InvoiceForm extends CFormModel
 	protected function saveInvoice(&$connection)
 	{
 		$sql = '';
+        $cityAllow = Yii::app()->user->city_allow();
 		switch ($this->scenario) {
 			case 'delete':
-				$sql = "delete from acc_invoice where id = :id and city = :city";
+				$sql = "delete from acc_invoice where id = :id and city IN ({$cityAllow})";
 				break;
 			case 'edit':
-				$sql = "update acc_invoice set
+				$sql = "update acc_invoice set                                                                                                            
+                            invoice_dt=:invoice_dt,                                                                                                             
                             payment_term=:payment_term,                                                                                                             
                             name_zh=:name_zh,                                                                                                              
                             addr=:addr,                                                                                                              
@@ -372,7 +374,7 @@ class InvoiceForm extends CFormModel
                             aerosal=:aerosal,                                                                                                              
                             toiletRoom=:toiletRoom,                                                                                                              
                             luu=:luu
-						where id = :id and city = :city
+						where id = :id and city IN ({$cityAllow})
 						";
 				break;
 		}
@@ -380,6 +382,8 @@ class InvoiceForm extends CFormModel
 		$city = Yii::app()->user->city();
 		$uid = Yii::app()->user->id;
 		$command=$connection->createCommand($sql);
+		if (strpos($sql,':invoice_dt')!==false)
+			$command->bindParam(':invoice_dt',$this->invoice_dt,PDO::PARAM_STR);
 		if (strpos($sql,':payment_term')!==false)
 			$command->bindParam(':payment_term',$this->payment_term,PDO::PARAM_STR);
 		if (strpos($sql,':invoice_to_name')!==false)
@@ -429,7 +433,7 @@ class InvoiceForm extends CFormModel
 		if (strpos($sql,':luu')!==false)
 			$command->bindParam(':luu',$uid,PDO::PARAM_STR);
         if (strpos($sql,':city')!==false)
-            $command->bindParam(':city',$city,PDO::PARAM_STR);
+            $command->bindParam(':city',$cityAllow,PDO::PARAM_STR);
         if (strpos($sql,':id')!==false)
             $command->bindParam(':id',$this->id,PDO::PARAM_INT);
 		$command->execute();

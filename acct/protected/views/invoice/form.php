@@ -59,7 +59,7 @@ $this->pageTitle=Yii::app()->name . ' - Invoice Form';
                             <i class="fa fa-calendar"></i>
                         </div>
                         <?php echo $form->textField($model, 'invoice_dt',
-                            array('class'=>'form-control pull-right','readonly'=>'readonly',));
+                            array('class'=>'form-control pull-right','readonly'=>'',));
                         ?>
                     </div>
                 </div>
