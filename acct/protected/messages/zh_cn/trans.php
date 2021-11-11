@@ -153,6 +153,7 @@ return array(
 	'This paid account cannot be used because balance is less than 0'=>'由于账户余额小于0，因此无法使用此付费账户',
 	'Account balance and T3 balance are not the same. Please fill in remarks.'=>'账户余额和T3余额不相同。 请填写备注。',
 	'Account balance and T3 balance are not the same. Please fill in balance adjustment detail.'=>'账户余额和T3余额不相同。 请填写余额差异调整表。',
+	'Account balance and T3 balance are not the same. Please check balance adjustment detail.'=>'账户余额和T3余额不相同。 请檢查余额差异调整表。',
 	'Please state reason for balance difference (if any)'=>'请说明余额差异(如有)的原因',
 	'Please upload Balance screen dump'=>'请上传余额截图',
 	'Please upload Cash Audit Table'=>'请上传现金盘点表',

@@ -571,7 +571,15 @@ class T3AuditForm extends CFormModel
 							$flag = true;
 						}
 					}
-					
+
+					if (!$flag) {
+						if (abs(($data["bal_t3"]-$data["tot_tr_lnr"]+$data["tot_tp_lnp"])-($data["bal_lbs"]-$data["tot_lr_tnr"]+$data["tot_lp_tnp"]))-abs($data["bal_adj"])!=0) {
+							$message = Yii::t('trans','Account balance and T3 balance are not the same. Please check balance adjustment detail.');
+							$this->addError($attribute,$message);
+							$flag = true;
+						}
+					}
+
 					if ($flag) break;
 				}
 			}

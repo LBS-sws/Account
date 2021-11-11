@@ -153,6 +153,7 @@ return array(
 'This paid account cannot be used because balance is less than 0'=>'由於賬戶餘額小於0，因此無法使用此付費賬戶',
 'Account balance and T3 balance are not the same. Please fill in remarks.'=>'賬戶餘額和T3餘額不相同。請填寫備註。 ',
 'Account balance and T3 balance are not the same. Please fill in balance adjustment detail.'=>'賬戶餘額和T3餘額不相同。請填寫餘額差異調整表。 ',
+'Account balance and T3 balance are not the same. Please check balance adjustment detail.'=>'賬戶餘額和T3餘額不相同。請檢查餘額差異調整表。 ',
 'Please state reason for balance difference (if any)'=>'請說明餘額差異(如有)的原因',
 'Please upload Balance screen dump'=>'請上傳餘額截圖',
 'Please upload Cash Audit Table'=>'請上傳現金盤點表',
