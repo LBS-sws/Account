@@ -364,14 +364,15 @@ class CommissionController extends Controller
             ReportXS01SList::clearNewServiceCommission($index);
             $sql="select * from acc_service_comm_dtl where hdr_id='$index'";
             $records = Yii::app()->db->createCommand($sql)->queryRow();
+            $new_calc = ReportXS01List::getAmountForCommId($index);
             if(empty($records)){
                 $sql1 = "insert into acc_service_comm_dtl(
 					hdr_id, new_calc, new_amount,new_money
 				) values (
-					'".$index."','0','0','0'
+					'".$index."','$new_calc','0','0'
 				)";
             }else{
-                $sql1="update acc_service_comm_dtl set new_calc='0' , new_amount='0',new_money='0' where hdr_id='$index'";
+                $sql1="update acc_service_comm_dtl set new_calc='$new_calc' , new_amount='0',new_money='0' where hdr_id='$index'";
             }
             $record = Yii::app()->db->createCommand($sql1)->execute();
             $sql2="update acc_service_comm_hdr set performance='2'  where id='$index'";

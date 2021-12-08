@@ -2338,10 +2338,21 @@ class ReportXS01List extends CListPageModel
         return $rtn;
     }
 
-    public  function getAmount($city, $cust_type, $start_dt, $sales_amt) {
+    public static function getAmountForCommId($hdr_id) {
+        $rtn = 0;
+        $commRow = Yii::app()->db->createCommand()->select("city,year_no,month_no")
+            ->from("acc_service_comm_hdr")->where("id=:id",array(":id"=>$hdr_id))->queryRow();
+        if($commRow){
+            $start_dt = $commRow["year_no"]."-".$commRow["month_no"]."-01";
+            $rtn = self::getAmount($commRow["city"],"fw",$start_dt,0);
+        }
+        return $rtn;
+    }
+    public static function getAmount($city, $cust_type, $start_dt, $sales_amt) {
         //城市，类别，时间，总金额
         $rtn = 0;
-        if (!empty($city) && !empty($cust_type) && !empty($start_dt) && !empty($sales_amt)) {
+        $sales_amt = empty($sales_amt)||!is_numeric($sales_amt)?0:$sales_amt;
+        if (!empty($city) && !empty($cust_type) && !empty($start_dt)) {
             $suffix = Yii::app()->params['envSuffix'];
             $suffix = '_w';
             //客户类别
