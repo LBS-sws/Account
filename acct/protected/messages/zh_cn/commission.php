@@ -34,7 +34,7 @@ return array(
     'RenewalEnd'=>'续约终止生意额',
     'Prodcct'=>'产品生意额',
     'product_amount'=>'产品提成',
-    'service reward'=>'服务奖励点',
+    'service reward'=>'创新业务提成点',
 
     'renewal_money_back'=>'续约回款',
     'new_money_back'=>'新增回款',

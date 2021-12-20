@@ -273,26 +273,61 @@ class ReportXS01Form extends CReportForm
             ->where("c.task_type='FLOOR' and b.salesman='$salesman' and money>0$dateSql")
             ->queryScalar();
         if($logisticSum>=3){//满足三瓶洗地易
-            //判断是否有四次非一次性新增业务
-            $dateSql = " and date_format(a.first_dt,'%Y/%m/%d')>='$startDate' and date_format(a.first_dt,'%Y/%m/%d')<='$endDate'";
-            $serviceCount =Yii::app()->db->createCommand()->select("count(a.id)")
-                ->from("swoper$suffix.swo_service a")
-                ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
-                ->leftJoin("swoper$suffix.swo_customer_type c","a.cust_type = c.id")
-                ->where("((b.single != 1 and a.cust_type_name != 0) or (c.single != 1 and a.cust_type_name = 0)) and a.status = 'N' and a.commission is not null and a.salesman='$salesman' $dateSql")
-                ->queryScalar();
-            $serviceCount=$serviceCount?$serviceCount:0;
-            $serviceAddCount =Yii::app()->db->createCommand()->select("count(a.id)")
-                ->from("acc_service_comm_copy a")
-                ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
-                ->where("(b.single != 1 or b.single is NULL) and a.status = 'N' and a.commission is not null and a.salesman='$salesman' $dateSql")
-                ->queryScalar();
-            $serviceAddCount=$serviceAddCount?$serviceAddCount:0;
-            if($serviceCount+$serviceAddCount>=4&&$startDate>="2021/06/01"){
-                return 0.01;
+            if($startDate>="2021/06/01"&&$startDate<"2022/01/01"){ //2021/06/01新增服務獎勵點
+                $serviceCount = self::serviceFourCount($startDate,$endDate,$salesman);
+                if($serviceCount>=4){
+                    return 0.01;
+                }
+            }elseif ($startDate>="2022/01/01"){ //2022/01/01服務獎勵點改名為创新业务提成点（並修改邏輯）
+                $serviceMoney = self::serviceFourMoney($startDate,$endDate,$salesman);
+                if($serviceMoney>=2500){
+                    return 0.01;
+                }
             }
         }
         return 0;
+    }
+
+    //非一次性新增业务的金額
+    public static function serviceFourMoney($startDate,$endDate,$salesman){
+        $suffix = Yii::app()->params['envSuffix'];
+        $dateSql = " and date_format(a.first_dt,'%Y/%m/%d')>='$startDate' and date_format(a.first_dt,'%Y/%m/%d')<='$endDate'";
+        $dateIDSql = " and date_format(a.status_dt,'%Y/%m/%d')>='$startDate' and date_format(a.status_dt,'%Y/%m/%d')<='$endDate'";
+        $serviceMoney =Yii::app()->db->createCommand()
+            ->select("sum(CASE WHEN a.paid_type = 'M' THEN a.amt_paid*a.ctrt_period ELSE a.amt_paid END)")
+            ->from("swoper$suffix.swo_service a")
+            ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
+            ->leftJoin("swoper$suffix.swo_customer_type c","a.cust_type = c.id")
+            ->where("((b.single != 1 and a.cust_type_name != 0) or (c.single != 1 and a.cust_type_name = 0)) and a.status = 'N' and a.salesman='$salesman' $dateSql")
+            ->queryScalar();
+        $serviceMoney=$serviceMoney?$serviceMoney:0;
+        $serviceIDMoney =Yii::app()->db->createCommand()
+            ->select("sum(a.amt_money)")
+            ->from("swoper$suffix.swo_serviceid a")
+            ->where("a.status = 'N' and a.salesman='$salesman' $dateIDSql")
+            ->queryScalar();
+        $serviceIDMoney=$serviceIDMoney?$serviceIDMoney:0;
+        return $serviceMoney+$serviceIDMoney;
+    }
+
+    //非一次性新增业务的總次數
+    public static function serviceFourCount($startDate,$endDate,$salesman){
+        $suffix = Yii::app()->params['envSuffix'];
+        $dateSql = " and date_format(a.first_dt,'%Y/%m/%d')>='$startDate' and date_format(a.first_dt,'%Y/%m/%d')<='$endDate'";
+        $serviceCount =Yii::app()->db->createCommand()->select("count(a.id)")
+            ->from("swoper$suffix.swo_service a")
+            ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
+            ->leftJoin("swoper$suffix.swo_customer_type c","a.cust_type = c.id")
+            ->where("((b.single != 1 and a.cust_type_name != 0) or (c.single != 1 and a.cust_type_name = 0)) and a.status = 'N' and a.commission is not null and a.salesman='$salesman' $dateSql")
+            ->queryScalar();
+        $serviceCount=$serviceCount?$serviceCount:0;
+        $serviceAddCount =Yii::app()->db->createCommand()->select("count(a.id)")
+            ->from("acc_service_comm_copy a")
+            ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
+            ->where("(b.single != 1 or b.single is NULL) and a.status = 'N' and a.commission is not null and a.salesman='$salesman' $dateSql")
+            ->queryScalar();
+        $serviceAddCount=$serviceAddCount?$serviceAddCount:0;
+        return $serviceCount+$serviceAddCount;
     }
 
     public function saveData($add,$index){
