@@ -60,7 +60,7 @@ class CommissionController extends Controller
         }
     }
 
-    public function actionTest($month=6,$id=0)
+    public function actionTest($year=2021,$month=6,$id=0)
     {
         $suffix = Yii::app()->params['envSuffix'];
         $row = Yii::app()->db->createCommand()->select("code,name,city")
@@ -70,8 +70,8 @@ class CommissionController extends Controller
         if($row){
             $id = Yii::app()->db->createCommand()->select("id")
                 ->from("acc_service_comm_hdr")
-                ->where("year_no='2021' and month_no=:month_no and employee_code=:employee_code",
-                    array(":month_no"=>$month,":employee_code"=>$row["code"])
+                ->where("year_no=:year_no and month_no=:month_no and employee_code=:employee_code",
+                    array(":year_no"=>$year,":month_no"=>$month,":employee_code"=>$row["code"])
                 )->queryScalar();
             if($id){
                 echo "error hdr_id";
@@ -79,7 +79,7 @@ class CommissionController extends Controller
                 //year_no,month_no,employee_code,employee_name,city
                 Yii::app()->db->createCommand()->insert("acc_service_comm_hdr",
                     array(
-                        "year_no"=>2021,
+                        "year_no"=>$year,
                         "month_no"=>$month,
                         "employee_code"=>$row["code"],
                         "employee_name"=>$row["name"],
