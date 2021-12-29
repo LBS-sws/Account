@@ -256,6 +256,15 @@ class ReportXS01Form extends CReportForm
         return true;
     }
 
+    public static function getServiceStr($year,$month){
+        $startDate = date("Y/m/d",strtotime("{$year}/{$month}/01"));
+        if($startDate>="2022/01/01"){
+            return Yii::t("commission","bring reward");
+        }else{
+            return Yii::t("commission","service reward");
+        }
+    }
+
     //计算服务奖励点
     public static function serviceReward($employee_code,$employee_name,$saleyear,$salesman=""){
         $suffix = Yii::app()->params['envSuffix'];
@@ -298,7 +307,7 @@ class ReportXS01Form extends CReportForm
             ->from("swoper$suffix.swo_service a")
             ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
             ->leftJoin("swoper$suffix.swo_customer_type c","a.cust_type = c.id")
-            ->where("((b.single != 1 and a.cust_type_name != 0) or (c.single != 1 and a.cust_type_name = 0)) and a.status = 'N' and a.salesman='$salesman' $dateSql")
+            ->where("b.bring = 1 and a.status = 'N' and a.salesman='$salesman' $dateSql")
             ->queryScalar();
         $serviceMoney=$serviceMoney?$serviceMoney:0;
         $serviceIDMoney =Yii::app()->db->createCommand()

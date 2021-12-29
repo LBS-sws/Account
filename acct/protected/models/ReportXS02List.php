@@ -1123,6 +1123,7 @@ class ReportXS02List extends CListPageModel
     }
 
     public function retrieveXiaZai($year,$month,$index,$view){
+        $service_reward = ReportXS01Form::getServiceStr($year,$month);
         $pageNum=1;
         Yii::$enableIncludePath = false;
         $phpExcelPath = Yii::getPathOfAlias('ext.phpexcel');
@@ -1154,7 +1155,7 @@ class ReportXS02List extends CListPageModel
         $objPHPExcel->getActiveSheet()->setCellValue('B9','跨区业绩 : '.$view['out_money']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('B10','跨区更改新增业绩 : '.$view['performanceedit_money']) ;
         $objPHPExcel->getActiveSheet()->setCellValue('B12','续约业绩 : '.$view['renewal_money']) ;
-        $objPHPExcel->getActiveSheet()->setCellValue('C5','创新业务提成点 : '.$view['service_reward']) ;
+        $objPHPExcel->getActiveSheet()->setCellValue('C5',"{$service_reward} : ".$view['service_reward']) ;
 
         $objPHPExcel->getActiveSheet()->getStyle('A17:H17')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
         $objPHPExcel->getActiveSheet()->getStyle('A17:H17')->getFill()->getStartColor()->setARGB('99FFFF');

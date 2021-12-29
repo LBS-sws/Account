@@ -136,7 +136,7 @@ $this->pageTitle=Yii::app()->name . ' - Month Report';
                     </div>
                 </div>
                 <div class="form-group" style="width: 400px;">
-                    <label class="col-sm-2 control-label" style="width: 150px;"><?php echo Yii::t('commission','service reward'); ?></label>
+                    <label class="col-sm-2 control-label" style="width: 150px;"><?php echo ReportXS01Form::getServiceStr($model->year,$model->month); ?></label>
                     <div class="col-sm-7">
                         <?php echo $form->textField($model, 'service_reward',
                             array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
