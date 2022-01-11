@@ -1074,13 +1074,13 @@ class ReportXS02List extends CListPageModel
                 left outer join swoper$suffix.swo_logistic b on b.id=a.log_id		
                	left outer join swoper$suffix.swo_task c on a.task=c.	id
              	left outer join security$suffix.sec_city d on a.city=d.code 			  
-                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$name['name']."' and b.city ='$city' and a.money>0";
+                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman LIKE '".$name['name']."%' and b.city ='$city' and a.money>0";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
         $sql1 = "select count(a.id) from swoper$suffix.swo_logistic_dtl a
                 left outer join swoper$suffix.swo_logistic b on b.id=a.log_id		
                	left outer join swoper$suffix.swo_task c on a.task=c.	id
              	left outer join security$suffix.sec_city d on a.city=d.code 			  
-                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman='".$name['name']."' and b.city ='$city' and a.money>0";
+                where b.log_dt<='$end' and  b.log_dt>='$start' and b.salesman LIKE '".$name['name']."%' and b.city ='$city' and a.money>0";
         $this->totalRow = Yii::app()->db->createCommand($sql1)->queryScalar();
         if (count($rows) > 0) {
             foreach ($rows as $record) {
