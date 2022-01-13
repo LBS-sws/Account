@@ -46,6 +46,6 @@ return array(
     'aerosal'=>'噴機',
     'toiletRoom'=>'洗手間數目',
     'technician'=>'服務同事名稱',
-
+	'Export'=>'匯出',
 );
 ?>
