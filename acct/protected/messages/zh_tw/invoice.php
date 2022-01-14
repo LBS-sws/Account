@@ -47,5 +47,7 @@ return array(
     'toiletRoom'=>'洗手間數目',
     'technician'=>'服務同事名稱',
 	'Export'=>'匯出',
+	'Product Code'=>'服务/产品编号',
+	'Product Name'=>'服务/产品名稱',
 );
 ?>

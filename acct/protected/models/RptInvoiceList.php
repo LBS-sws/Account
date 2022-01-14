@@ -25,6 +25,7 @@ class RptInvoiceList extends CReport {
             'ttl'=>array('label'=>Yii::t('invoice','ttl'),'width'=>10,'align'=>'R'),
             'aerosal'=>array('label'=>Yii::t('invoice','aerosal'),'width'=>10,'align'=>'R'),
             'toiletRoom'=>array('label'=>Yii::t('invoice','toiletRoom'),'width'=>10,'align'=>'R'),
+			'product_code'=>array('label'=>Yii::t('invoice','Product Code'),'width'=>15,'align'=>'L'),
 			'product_name'=>array('label'=>Yii::t('invoice','Description'),'width'=>20,'align'=>'L'),
 			'qty'=>array('label'=>Yii::t('invoice','Quantity'),'width'=>10,'align'=>'R'),
 			'unit_price'=>array('label'=>Yii::t('invoice','Unit Price'),'width'=>10,'align'=>'R'),

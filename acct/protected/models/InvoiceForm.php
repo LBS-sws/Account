@@ -783,7 +783,7 @@ class InvoiceForm extends CFormModel
             $html='<table border="0" width="812px" cellspacing="0" cellpadding="0" style="line-height: 10px;">';
             foreach ($model->type as $row){
                 $html.='<tr style="'.$info_style.'">';
-                $html.='<td width="390px">'.$row['product_name'].'</td>';
+                $html.='<td width="390px">'.(strpos($row['product_code'],'INV')!==false ? $row['product_code'].' ' : '').$row['product_name'].'</td>';
                 $html.='<td width="100px" style="text-align: center">'.$row['qty'].'</td>';
                 $html.='<td width="50px"> </td>';
                 $html.='<td width="153px" style="text-align: center">'.$row['unit_price'].'</td>';

@@ -89,7 +89,7 @@ class InvoiceList extends CListPageModel
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city_allow();
 		$sql1 = "
-			SELECT a.*, b.name as city_name, c.product_name, c.unit, c.qty, c.unit_price, c.amount,
+			SELECT a.*, b.name as city_name, c.product_code, c.product_name, c.unit, c.qty, c.unit_price, c.amount,
 				e.name as generated_by
 			FROM acc_invoice a 
             LEFT JOIN security$suffix.sec_city b ON a.city = b.code
@@ -140,6 +140,7 @@ class InvoiceList extends CListPageModel
 					'ttl'=>$record['ttl'],
 					'aerosal'=>$record['aerosal'],
 					'toiletRoom'=>$record['toiletRoom'],
+					'product_code'=>$record['product_code'],
 					'product_name'=>$record['product_name'],
 					'qty'=>$record['qty'],
 					'unit_price'=>$record['unit_price'],
