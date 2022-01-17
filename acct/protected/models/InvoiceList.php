@@ -62,7 +62,7 @@ class InvoiceList extends CListPageModel
 		$this->attr = array();
 		if (count($records) > 0) {
 			foreach ($records as $k=>$record) {
-                $dates = General::toMyDate($record['invoice_dt']);
+                $dates = date('Y/m/d',strtotime($record['invoice_dt']));
                 $timestrap=strtotime($dates);
                 $number=date('ym',$timestrap);
                 $number=($number*10000000)+$record['id'];
@@ -120,7 +120,7 @@ class InvoiceList extends CListPageModel
 			foreach ($records as $k=>$record) {
 				$this->attr[] = array(
 					'invoice_no'=>$record['invoice_no'],
-					'invoice_dt'=>$record['invoice_dt'],
+					'invoice_dt'=>date('Y/m/d',strtotime($record['invoice_dt'])),
 					'customer_code'=>$record['customer_code'],
 					'name_zh'=>$record['name_zh'],
 					'addr'=>$record['addr'],

@@ -39,6 +39,7 @@ class RptInvoiceList extends CReport {
 		$tmp = array();
 		$last_no = '';
 		foreach ($this->data as $row) {
+/*
 			if ($last_no==$row['invoice_no']) {
 				$row['invoice_no'] = '';
 				$row['invoice_dt'] = '';
@@ -64,6 +65,7 @@ class RptInvoiceList extends CReport {
 			} else {
 				$last_no = $row['invoice_no'];
 			}
+*/
 			$tmp[] = $row;
 		}
 		$this->data = $tmp;

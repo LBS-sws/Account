@@ -251,11 +251,11 @@ $this->pageTitle=Yii::app()->name . ' - Invoice Form';
                </div>
                <div class="form-group">
                    <label class="col-sm-2 control-label" for="InvoiceForm_disc"><?php echo Yii::t('invoice','Unit Price');?></label>
-                   <div class="col-sm-3">
+                   <div class="col-sm-2">
                        <input min="0" name="InvoiceForm[type][<?php echo $i;?>][unit_price]" id="InvoiceForm_unit_price<?php echo $i;?>" class="input-40 form-control unit_price" type="number" value="<?php echo floatval($value['unit_price']);?>">
                    </div>
-                   <label class="col-sm-1 control-label" for="InvoiceForm_disc"><?php echo Yii::t('invoice','Amount');?></label>
-                   <div class="col-sm-3">
+                   <label class="col-sm-2 control-label" for="InvoiceForm_disc"><?php echo Yii::t('invoice','Amount');?></label>
+                   <div class="col-sm-2">
                        <input min="0" name="InvoiceForm[type][<?php echo $i;?>][amount]" id="InvoiceForm_amount<?php echo $i;?>" class="input-40 form-control amount" type="number" readonly value="<?php echo floatval($value['amount']);?>">
                    </div>
                </div>
@@ -266,7 +266,7 @@ $this->pageTitle=Yii::app()->name . ' - Invoice Form';
 
             <div class="form-group">
                 <?php echo $form->labelEx($model,'invoice_amt',array('class'=>"col-sm-2 control-label")); ?>
-                <div class="col-sm-3">
+                <div class="col-sm-2">
                     <?php echo $form->numberField($model, 'invoice_amt',
                         array('size'=>40,'min'=>0,'readonly'=>'readonly')
                     ); ?>
