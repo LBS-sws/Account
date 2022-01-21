@@ -34,7 +34,7 @@ class InvoiceController extends Controller
 				'expression'=>array('InvoiceController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view'),
+				'actions'=>array('index','view','export'),
 				'expression'=>array('InvoiceController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -170,6 +170,23 @@ class InvoiceController extends Controller
         }
     }
 	
+	public function actionExport() {
+		$model = new InvoiceList;
+		$session = Yii::app()->session;
+		if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+			$criteria = $session[$model->criteriaName()];
+			$model->setCriteria($criteria);
+		}
+        $model->retrieveExportData();
+		
+		$objData = new RptInvoiceList;
+		$objData->data = $model->attr;
+		$objExport = new Export;
+		$objExport->dataModel = $objData;
+		
+		$filename = 'invoice.xlsx';
+		$objExport->exportExcel($filename);
+	}
 
 	public static function allowReadWrite() {
 		return Yii::app()->user->validRWFunction('XI01');

@@ -62,7 +62,7 @@ class InvoiceList extends CListPageModel
 		$this->attr = array();
 		if (count($records) > 0) {
 			foreach ($records as $k=>$record) {
-                $dates = General::toMyDate($record['invoice_dt']);
+                $dates = date('Y/m/d',strtotime($record['invoice_dt']));
                 $timestrap=strtotime($dates);
                 $number=date('ym',$timestrap);
                 $number=($number*10000000)+$record['id'];
@@ -84,6 +84,76 @@ class InvoiceList extends CListPageModel
 		return true;
 	}
 
+	public function retrieveExportData()
+	{
+		$suffix = Yii::app()->params['envSuffix'];
+		$city = Yii::app()->user->city_allow();
+		$sql1 = "
+			SELECT a.*, b.name as city_name, c.product_code, c.product_name, c.unit, c.qty, c.unit_price, c.amount,
+				e.name as generated_by
+			FROM acc_invoice a 
+            LEFT JOIN security$suffix.sec_city b ON a.city = b.code
+			LEFT JOIN acc_invoice_type c ON a.id = c.invoice_id
+			LEFT JOIN hr$suffix.hr_binding d ON a.lcu = d.user_id
+			LEFT JOIN hr$suffix.hr_employee e ON e.id = d.employee_id
+            where a.city in ($city) 
+		";
+		$clause = "";
+        if (!empty($this->searchField) && (!empty($this->searchValue) || $this->isAdvancedSearch())) {
+            if ($this->isAdvancedSearch()) {
+                $clause = $this->buildSQLCriteria();
+            } else {
+                $svalue = str_replace("'","\'",$this->searchValue);
+                $columns = $this->searchColumns();
+                $clause .= General::getSqlConditionClause($columns[$this->searchField],$svalue);
+            }
+        }
+        $clause .= $this->getDateRangeCondition('a.invoice_dt');
+
+	    $order ="order by a.invoice_no, c.id";
+
+		$sql = $sql1.$clause.$order;
+		$records = Yii::app()->db->createCommand($sql)->queryAll();
+		$list = array();
+		$this->attr = array();
+		if (count($records) > 0) {
+			foreach ($records as $k=>$record) {
+				$this->attr[] = array(
+					'invoice_no'=>$record['invoice_no'],
+					'invoice_dt'=>date('Y/m/d',strtotime($record['invoice_dt'])),
+					'customer_code'=>$record['customer_code'],
+					'name_zh'=>$record['name_zh'],
+					'addr'=>$record['addr'],
+					'tel'=>$record['tel'],
+					'sales_name'=>$record['sales_name'],
+					'staff_name'=>$record['staff_name'],
+					'payment_term'=>$record['payment_term'],
+					'bowl'=>$record['bowl'],
+					'baf'=>$record['baf'],
+					'hand'=>$record['hand'],
+					'urinal'=>$record['urinal'],
+					'hsd'=>$record['hsd'],
+					'td'=>$record['td'],
+					'sink'=>$record['sink'],
+					'abhsd'=>$record['abhsd'],
+					'ptd'=>$record['ptd'],
+					'ttl'=>$record['ttl'],
+					'aerosal'=>$record['aerosal'],
+					'toiletRoom'=>$record['toiletRoom'],
+					'product_code'=>$record['product_code'],
+					'product_name'=>$record['product_name'],
+					'qty'=>$record['qty'],
+					'unit_price'=>$record['unit_price'],
+					'amount'=>$record['amount'],
+					'invoice_amt'=>$record['invoice_amt'],
+					'generated_by'=>$record['generated_by'],
+				);
+			}
+		}
+        $session = Yii::app()->session;
+        $session[$this->criteriaName()] = $this->getCriteria();
+		return true;
+	}
 
     public function searchColumns() {
         $search = array(

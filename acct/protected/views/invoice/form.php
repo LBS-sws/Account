@@ -236,22 +236,26 @@ $this->pageTitle=Yii::app()->name . ' - Invoice Form';
            <?php $i=1;foreach ($model['type'] as $value){ ?>
                <div class="type_mian">
                <div class="form-group">
+                   <label class="col-sm-2 control-label" for="InvoiceForm_disc"><?php echo Yii::t('invoice','Product Code').$i;?></label>
+                   <div class="col-sm-2">
+                       <input min="0" name="InvoiceForm[type][<?php echo $i;?>][product_code]" id="InvoiceForm_product_code<?php echo $i;?>" class="input-40 form-control" type="text" readonly value="<?php echo $value['product_code'];?>">
+                   </div>
                    <label class="col-sm-2 control-label" for="InvoiceForm_disc"><?php echo Yii::t('invoice','Description').$i;?></label>
-                   <div class="col-sm-3">
+                   <div class="col-sm-2">
                        <input min="0" name="InvoiceForm[type][<?php echo $i;?>][product_name]" id="InvoiceForm_description<?php echo $i;?>" class="input-40 form-control" type="text" value="<?php echo $value['product_name'];?>">
                    </div>
-                   <label class="col-sm-1 control-label" for="InvoiceForm_disc"><?php echo Yii::t('invoice','Quantity');?></label>
-                   <div class="col-sm-3">
+                   <label class="col-sm-2 control-label" for="InvoiceForm_disc"><?php echo Yii::t('invoice','Quantity');?></label>
+                   <div class="col-sm-2">
                        <input min="0" name="InvoiceForm[type][<?php echo $i;?>][qty]" id="InvoiceForm_quantity<?php echo $i;?>" class="input-40 form-control qty" type="number" value="<?php echo $value['qty'];?>">
                    </div>
                </div>
                <div class="form-group">
                    <label class="col-sm-2 control-label" for="InvoiceForm_disc"><?php echo Yii::t('invoice','Unit Price');?></label>
-                   <div class="col-sm-3">
+                   <div class="col-sm-2">
                        <input min="0" name="InvoiceForm[type][<?php echo $i;?>][unit_price]" id="InvoiceForm_unit_price<?php echo $i;?>" class="input-40 form-control unit_price" type="number" value="<?php echo floatval($value['unit_price']);?>">
                    </div>
-                   <label class="col-sm-1 control-label" for="InvoiceForm_disc"><?php echo Yii::t('invoice','Amount');?></label>
-                   <div class="col-sm-3">
+                   <label class="col-sm-2 control-label" for="InvoiceForm_disc"><?php echo Yii::t('invoice','Amount');?></label>
+                   <div class="col-sm-2">
                        <input min="0" name="InvoiceForm[type][<?php echo $i;?>][amount]" id="InvoiceForm_amount<?php echo $i;?>" class="input-40 form-control amount" type="number" readonly value="<?php echo floatval($value['amount']);?>">
                    </div>
                </div>
@@ -262,7 +266,7 @@ $this->pageTitle=Yii::app()->name . ' - Invoice Form';
 
             <div class="form-group">
                 <?php echo $form->labelEx($model,'invoice_amt',array('class'=>"col-sm-2 control-label")); ?>
-                <div class="col-sm-3">
+                <div class="col-sm-2">
                     <?php echo $form->numberField($model, 'invoice_amt',
                         array('size'=>40,'min'=>0,'readonly'=>'readonly')
                     ); ?>

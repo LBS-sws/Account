@@ -8,6 +8,8 @@ class CReport {
 	public $title;
 	public $subtitle;
 	
+	public $show_report_title = true;
+	
 	public function genReport() {
 		return true;
 	}
@@ -53,7 +55,7 @@ class CReport {
 		$this->excel->start();
 		
 		$this->excel->newFile();
-		if (!empty($this->sheetname)) $this->excel->getActiveSheet()->setTitle($this->sheetname);
+//		if (!empty($this->sheetname)) $this->excel->getActiveSheet()->setTitle($this->sheetname);
 		$this->excel->setReportDefaultFormat();
 		$this->printHeader();
 		$this->printDetail();
@@ -69,10 +71,10 @@ class CReport {
 
 		$fields = $this->fields();
 		
-		$this->excel->writeReportTitle($title, $subtitle);
+		if ($this->show_report_title) $this->excel->writeReportTitle($title, $subtitle);
 		if (!empty($fields)) {		
 			$j = 0; // column
-			$row = 3;
+			$row = $this->show_report_title ? 3 : 1;
 			foreach ($fields as $id=>$items) {
 				$this->excel->writeCell($j, $row, $items['label']);
 				$this->excel->setColWidth($j, $items['width']);
@@ -90,7 +92,7 @@ class CReport {
 		if (!empty($fields) && !empty($this->data)) {		
 			$itemcnt = count($this->data);
 			// Print Detail
-			$y = 4;
+			$y = $this->show_report_title ? 4 : 2;
 			foreach ($this->data as $row) {
 				$x = 0;
 				foreach ($fields as $key=>$items) {

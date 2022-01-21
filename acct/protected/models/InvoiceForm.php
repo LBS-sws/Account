@@ -783,7 +783,7 @@ class InvoiceForm extends CFormModel
             $html='<table border="0" width="812px" cellspacing="0" cellpadding="0" style="line-height: 10px;">';
             foreach ($model->type as $row){
                 $html.='<tr style="'.$info_style.'">';
-                $html.='<td width="390px">'.$row['product_name'].'</td>';
+                $html.='<td width="390px">'.(strpos($row['product_code'],'INV')!==false ? $row['product_code'].' ' : '').$row['product_name'].'</td>';
                 $html.='<td width="100px" style="text-align: center">'.$row['qty'].'</td>';
                 $html.='<td width="50px"> </td>';
                 $html.='<td width="153px" style="text-align: center">'.$row['unit_price'].'</td>';
@@ -859,9 +859,11 @@ class InvoiceForm extends CFormModel
         ob_clean();
         $date=str_replace('/','-',$model->invoice_dt);
         $name=str_replace('/',' ',$model->name_zh);
+		$code=str_replace('/','',$model->customer_code);
         //$name=iconv("utf-8","gb2312//IGNORE",$name);
-        $name=mb_convert_encoding($name, "gb2312", "UTF-8");
-        $address="/".$date."-".$name.'.pdf';
+//		$name=mb_convert_encoding($name, "gb2312", "UTF-8");
+//        $address="/".$date."-".$name.'.pdf';
+        $address="/".$date."-".$code.'.pdf';
         $outstring =$pdf->Output(sys_get_temp_dir().$address, 'F');
         return $address;
     }
