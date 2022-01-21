@@ -224,9 +224,26 @@ class SysBlock {
         $city = Yii::app()->user->city();
         $suffix = Yii::app()->params['envSuffix'];
         $email=Yii::app()->user->email();
-        $lastdate = date('m')==10
-			? (date('d')<10 ? date('Y-m-d',strtotime(date('Y-m-10').' -3 months')) : date('Y-m-d',strtotime(date('Y-m-11').' -2 months')))
-			: (date('d')<3 ? date('Y-m-d',strtotime(date('Y-m-3').' -3 months')) : date('Y-m-d',strtotime(date('Y-m-4').' -2 months')));
+        $year = date('Y');
+        $day = date('d');
+        $month = date('n');
+        if($year==2022&&$month==2){//2022年春节处理(2022年2月14日)
+            if($day<14){
+                $lastdate = date('Y-m-d',strtotime(date('Y-m-14').' -3 months'));
+            }else{
+                $lastdate = date('Y-m-d',strtotime(date('Y-m-15').' -2 months'));
+            }
+        }elseif(in_array($month,array(10,5))){//（国庆、五一）特殊处理
+            if($day<10){
+                $lastdate = date('Y-m-d',strtotime(date('Y-m-10').' -3 months'));
+            }else{
+                $lastdate = date('Y-m-d',strtotime(date('Y-m-11').' -2 months'));
+            }
+        }elseif($day<3){ //每月三号以后限制两个月以前的报表汇总
+            $lastdate = date('Y-m-d',strtotime(date('Y-m-3').' -3 months'));
+        }else{
+            $lastdate = date('Y-m-d',strtotime(date('Y-m-4').' -2 months'));
+        }
         $year = date("Y", strtotime($lastdate));
         $month = date("n", strtotime($lastdate));
         $sql = "select a_control from security$suffix.sec_user_access 
