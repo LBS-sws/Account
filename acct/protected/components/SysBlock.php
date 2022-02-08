@@ -15,9 +15,12 @@ class SysBlock {
         $sysId = Yii::app()->params['systemId'];
 
         foreach ($this->checkItems as $key=>$value) {
-            if (!isset($sysblock[$key]) || $sysblock[$key]==false) {
+            if (!isset($sysblock[$key]) || $sysblock[$key]["bool"]==false) {
                 $result = call_user_func_array('self::'.$value['validation'],array($key,&$value));
-                $sysblock[$key] = $result;
+                $sysblock[$key] = array(
+                    "bool"=>$result,
+                    'fun'=>$value
+                );
                 $session['sysblock'] = $sysblock;
                 //function設置為空時，只提示一次，不限制行為(start)
                 if($value['function']===""){
@@ -49,8 +52,10 @@ class SysBlock {
     public function getBlockMessage($systemId) {
         $session = Yii::app()->session;
         if (isset($session['sysblock'])) {
-            foreach ($session['sysblock'] as $key=>$value) {
-                if (!$value && isset($this->checkItems[$key])) {
+            foreach ($session['sysblock'] as $key=>$value) {//後續把value改成了數組類型
+                if (is_array($value)&&!$value["bool"]) {
+                    return $value["fun"]['message'];
+                }elseif(!$value && isset($this->checkItems[$key])) {
                     return $this->checkItems[$key]['message'];
                 }
             }
@@ -69,7 +74,7 @@ class SysBlock {
         $row = Yii::app()->db->createCommand()->select("b.id")->from("hr$suffix.hr_binding a")
             ->leftJoin("hr$suffix.hr_employee b","a.employee_id=b.id")
             ->leftJoin("security$suffix.sec_user_access e","a.user_id=e.username")
-            ->where("a.user_id=:user_id and a_read_write like'%RE02%'",array(":user_id"=>$uid))->queryRow();
+            ->where("a.user_id=:user_id and e.system_id='hr' and e.a_read_write like'%RE02%'",array(":user_id"=>$uid))->queryRow();
         if($row){ //賬號有綁定的員工且有考核權限
             $year = date("Y");
             $day = date("m-d");
@@ -258,7 +263,7 @@ class SysBlock {
                 where city='$city' and  request_dt>= '$star' and  request_dt<= '$end' and subject='$subject' 	
 			";
         $row = Yii::app()->db->createCommand($sql)->queryAll();
-        if(count($row)==1){
+        if(count($row)>=1){
             return true;
         }else{
             return false;
@@ -373,6 +378,43 @@ class SysBlock {
                 if($title<0.85){//測驗後的正確率小於85%
                     return false;
                 }
+            }
+        }
+        return true;
+    }
+
+    /**
+    新入職員工一個月後提示錄入社会保障卡号
+     **/
+    public function validateSocialCode($key,&$value) {
+        $thisDay = intval(date("d"));
+        $maxDay = intval(date("t"));
+        $oldDate = date("Y-m-d",strtotime("-1 months"));
+        if($thisDay==16||$thisDay==$maxDay){//每月16號及最後一天彈窗提示
+            $uid = Yii::app()->user->id;
+            $city = Yii::app()->user->city();
+            $suffix = Yii::app()->params['envSuffix'];
+            $row = Yii::app()->db->createCommand()->select("b.id")->from("hr$suffix.hr_binding a")
+                ->leftJoin("hr$suffix.hr_employee b","a.employee_id=b.id")
+                ->leftJoin("security$suffix.sec_user_access e","a.user_id=e.username")
+                ->where("a.user_id=:user_id and e.system_id='hr' and (e.a_read_write like'%ZE01%' or e.a_read_write like'%ZG01%')",array(":user_id"=>$uid))->queryRow();
+            if($row){//有員工錄入及入職審核權限
+                $dateSql = "replace(entry_time,'/', '-')<='{$oldDate}' ";//一個月以前
+                $staffRows = Yii::app()->db->createCommand()->select("name")->from("hr$suffix.hr_employee")
+                    ->where("city=:city and staff_status in (0,4) and (social_code='' or social_code is null) and $dateSql",array(":city"=>$city))->queryAll();
+                if($staffRows){
+                    //有員工沒有填社保號
+                    $staffList = array();
+                    foreach ($staffRows as $staff){
+                        $staffList[] = $staff["name"];
+                    }
+                    $staffList = implode("、",$staffList);
+                    $value["message"].="<br>".Yii::t("block","username")."：".$staffList;
+                    $this->checkItems[$key]["function"]="";
+                    $value["function"]="";
+                    return false;
+                }
+
             }
         }
         return true;
