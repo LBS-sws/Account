@@ -2169,13 +2169,14 @@ class ReportXS01List extends CListPageModel
                 $a=$records['amt_paid']*$records['ctrt_period'];
             }
             $moneys=$a/$records['all_number']*$records['surplus'];
+            $moneys*=0.01;//後續添加（沈超）- 和‘後續刪除’一起修改
             $money[]=$moneys;
             $sqlct="update swoper$suffix.swo_service set royalty='0.01',commission='-".$moneys."'  where id='$ai'";
             $model = Yii::app()->db->createCommand($sqlct)->execute();
         }
         $money=array_sum($money);
         $money=-$money;
-        $money=$money*0.01;
+        //$money=$money*0.01;//後續刪除（沈超）
 
             $sql = "select * from acc_service_comm_dtl where hdr_id='$index'";
             $records = Yii::app()->db->createCommand($sql)->queryRow();
