@@ -24,7 +24,7 @@ class TransinController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','fileupload','fileremove'),
+				'actions'=>array('new','test','testSave','edit','delete','save','fileupload','fileremove','ajaxPayer','testSave'),
 				'expression'=>array('TransinController','allowReadWrite'),
 			),
 			array('allow', 
@@ -81,6 +81,32 @@ class TransinController extends Controller
 			$this->render('form',array('model'=>$model,));
 		}
 	}
+
+	public function actionTest()
+	{
+		$model = new TransInForm('view');
+        $this->render('test',array('model'=>$model,));
+	}
+
+    public function actionAjaxPayer() {
+        $data = key_exists("list",$_POST)?$_POST["list"]:array();
+        $data = TransInForm::validateAjaxPayer($data);
+        echo json_encode($data);
+    }
+
+    public function actionTestSave() {
+        $list = key_exists("test",$_POST)?$_POST["test"]:array();
+        $trans = key_exists("TransInForm",$_POST)?$_POST["TransInForm"]:"";
+        if(!empty($list)&&!empty($trans)){
+            $model = new TransInForm('view');
+            $model->testSave($list,$trans);
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+            $this->redirect(Yii::app()->createUrl('transin/index'));
+        }else{
+            Dialog::message(Yii::t('dialog','Validation Message'), "数据异常，保存失败");
+            $this->redirect(Yii::app()->createUrl('transin/test'));
+        }
+    }
 	
 	public function actionNew($index=0)
 	{

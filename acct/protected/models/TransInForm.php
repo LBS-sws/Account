@@ -131,6 +131,68 @@ class TransInForm extends CFormModel
 		}
 	}
 
+	public static function validateAjaxPayer($data){
+        $suffix = Yii::app()->params['envSuffix'];
+	    if(!empty($data)){
+	        foreach ($data as &$row){
+                if($row["status"]==1){
+                    $bool= Yii::app()->db->createCommand()->select("id")
+                        ->from("swoper$suffix.swo_company")->where("code=:code",array(":code"=>$row["payer_code"]))->queryRow();
+                    if(!$bool){
+                        $row["status"]=0;
+                        $row["error"]="付款人编号没找到：{$row["payer_code"]}";
+                    }else{
+                        $row["payer_id"] = $bool["id"];
+                    }
+                }
+            }
+        }
+        return $data;
+    }
+
+    public function testSave($list,$trans){
+        $city = Yii::app()->user->city();
+        $uid = Yii::app()->user->id;
+	    foreach ($list as $row){
+            Yii::app()->db->createCommand()->insert("acc_trans",array(
+                "trans_dt"=>$row["trans_dt"],//日期
+                "trans_type_code"=>$row["trans_type_code"],//交易类别
+                "acct_id"=>$row["acct_id"],//账户
+                "trans_desc"=>$row["trans_desc"],//备注
+                "amount"=>round($row["amount"],2),//金额
+                "status"=>'A',
+                "city"=>$city,
+                "lcu"=>$uid,
+                "luu"=>$uid
+            ));
+            $id = Yii::app()->db->getLastInsertID();
+            $row["item_code"]=$trans["item_code"];
+            $row["acct_code"]=$trans["acct_code"];
+            $row["int_fee"]="N";//综合费用 N:否 Y:是
+            $row["cheque_no"]="";//支票号码
+            $row["detail"]="";//摘要
+            $row["handle_staff"]="";//交款人
+            $row["handle_staff_name"]="";//交款人
+            $row["invoice_no"]="";//中国税票号码
+            $row["month_no"]="";//服务费用日期
+            $row["reason"]="";//原因
+            $row["remarks"]="";//备注2
+            $row["united_inv_no"]="";//United 账单号码
+            $row["year_no"]="";//服务费用日期
+            foreach ($this->dyn_fields as $dynfldid) {
+                if (key_exists($dynfldid,$row)) {
+                    Yii::app()->db->createCommand()->insert("acc_trans_info",array(
+                        "trans_id"=>$id,
+                        "field_id"=>$dynfldid,
+                        "field_value"=>$row[$dynfldid],
+                        "lcu"=>$uid,
+                        "luu"=>$uid
+                    ));
+                }
+            }
+        }
+    }
+
 	public function retrieveData($index)
 	{
 		$suffix = Yii::app()->params['envSuffix'];
