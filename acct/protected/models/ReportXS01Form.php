@@ -176,7 +176,6 @@ class ReportXS01Form extends CReportForm
 //            }
             $sql_point="select * from sales$suffix.sal_integral where year='$year' and month='$month' and username='".$arr['user_id']."' and city='".$records['city']."'";
             $point = Yii::app()->db->createCommand($sql_point)->queryRow();
-            var_dump($point);
             //新增判断当月是否入职月
             if($employee==1){
                 $employee_code = $records['employee_code'];
@@ -195,15 +194,12 @@ class ReportXS01Form extends CReportForm
                     $point['id']=key_exists("id",$point)?$point['id']:0;
                 }
             }
-            var_dump($point);
             if(empty($point)){
                 $point['point']=0;
                 $point['id']=0;
             }
-            var_dump($point);
             //经理不需要加入激励点计算
             $point['point']=ReportXS01SList::position($index)==1?0:$point['point'];
-            var_dump($point);
             $sql_points="update sales$suffix.sal_integral set hdr_id='$index' where id='".$point['id']."'";
             $record = Yii::app()->db->createCommand($sql_points)->execute();
             $this->city=$records['city_name'];
