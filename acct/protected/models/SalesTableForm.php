@@ -506,20 +506,19 @@ class SalesTableForm extends CFormModel
                             $temp['ia_money'] = '';//扣除IA提成
                             if(!empty($row['othersalesman'])){
                                 if($a1==$row['othersalesman']){
-                                    var_dump(1);
                                     $temp['ib_money'] = $row['other_commission']<0?$row['other_commission']:'';//扣除IB提成
                                 }else{
-                                    var_dump(2);
                                     $temp['ib_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
                                 }
                             }else{
-                                var_dump(3);
                                 $temp['ib_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
                             }
-                            var_dump("id:{$row['id']}");
-                            var_dump("othersalesman:{$row['othersalesman']}");
-                            var_dump("commission:{$row['commission']}");
-                            var_dump("other_commission:{$row['other_commission']}");
+                            if(!empty($temp['ib_money'])){
+                                var_dump("id:{$row['id']}");
+                                var_dump("othersalesman:{$row['othersalesman']}");
+                                var_dump("commission:{$row['commission']}");
+                                var_dump("other_commission:{$row['other_commission']}");
+                            }
                             $temp['ic_money'] = '';//扣除IC提成
                             $temp['new_ia_money'] = '';//新增IA提成
                             if(!empty($row['othersalesman'])){
