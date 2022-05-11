@@ -159,10 +159,10 @@ class SalesTableForm extends CFormModel
         $end=$salerow['year_no'].'-'. $salerow['month_no'].'-31';
         $a1=$salerow['employee_name']." (".$salerow['employee_code'].")";
         $reward = ReportXS01Form::serviceReward('','',$salerow['year_no']."/".$salerow['month_no'],$a1);//服务奖励点
-        $sql1 = "select id,paid_type,amt_paid,ctrt_period,b4_amt_paid,cust_type_name,status_dt,company_name,status,commission,other_commission,amt_install,othersalesman,cust_type,service
+        $sql1 = "select id,paid_type,amt_paid,ctrt_period,b4_amt_paid,cust_type_name,status_dt,company_name,status,commission,other_commission,amt_install,othersalesman,cust_type,service,lcu,luu,lcd,lud
                   from swoper$suffix.swo_service where  ((commission!=' ' and commission!=0) or (other_commission!=0 and other_commission!=' ')) and ((status_dt<='$end' and  status_dt>='$start') or (first_dt<='$end' and  first_dt>='$start')) and (salesman='$a1' or  othersalesman='$a1') and city='{$salerow['city']}'
                   union
-                  select id,paid_type,amt_paid,ctrt_period,b4_amt_paid,cust_type_name,status_dt,company_name,status,commission,other_commission,amt_install,othersalesman,cust_type,service 
+                  select id,paid_type,amt_paid,ctrt_period,b4_amt_paid,cust_type_name,status_dt,company_name,status,commission,other_commission,amt_install,othersalesman,cust_type,service,lcu,luu,lcd,lud
                   from acc_service_comm_copy where  ((commission!=' ' and commission!=0) or (other_commission!=0 and other_commission!=' ')) and ((status_dt<='$end' and  status_dt>='$start') or (first_dt<='$end' and  first_dt>='$start')) and (salesman='$a1' or  othersalesman='$a1') and city='{$salerow['city']}'
 ";
         $rows = Yii::app()->db->createCommand($sql1)->queryAll();
@@ -513,11 +513,15 @@ class SalesTableForm extends CFormModel
                             }else{
                                 $temp['ib_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
                             }
-                            if(!empty($temp['ib_money'])){
+                            if($row['id']==146516){
                                 var_dump("id:{$row['id']}");
                                 var_dump("othersalesman:{$row['othersalesman']}");
                                 var_dump("commission:{$row['commission']}");
                                 var_dump("other_commission:{$row['other_commission']}");
+                                var_dump("lcu:{$row['lcu']}");
+                                var_dump("luu:{$row['luu']}");
+                                var_dump("lcd:{$row['lcd']}");
+                                var_dump("lud:{$row['lud']}");
                             }
                             $temp['ic_money'] = '';//扣除IC提成
                             $temp['new_ia_money'] = '';//新增IA提成
