@@ -513,16 +513,6 @@ class SalesTableForm extends CFormModel
                             }else{
                                 $temp['ib_money'] = $row['commission']<0?$row['commission']:'';//扣除IB提成
                             }
-                            if($row['id']==146516){
-                                var_dump("id:{$row['id']}");
-                                var_dump("othersalesman:{$row['othersalesman']}");
-                                var_dump("commission:{$row['commission']}");
-                                var_dump("other_commission:{$row['other_commission']}");
-                                var_dump("lcu:{$row['lcu']}");
-                                var_dump("luu:{$row['luu']}");
-                                var_dump("lcd:{$row['lcd']}");
-                                var_dump("lud:{$row['lud']}");
-                            }
                             $temp['ic_money'] = '';//扣除IC提成
                             $temp['new_ia_money'] = '';//新增IA提成
                             if(!empty($row['othersalesman'])){
