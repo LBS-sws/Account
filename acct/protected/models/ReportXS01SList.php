@@ -1894,7 +1894,7 @@ class ReportXS01SList extends CListPageModel
         $point = Yii::app()->db->createCommand($sql_point)->queryRow();
 
         //某人說了必須查看當月1號是否有銷售拜訪
-        if(true or strtotime($arr["entry_time"]."+ 1 month")>=strtotime("$year-$month-01")){//判斷是否新入職(大概查詢)
+        if(true || strtotime($arr["entry_time"]."+ 1 month")>=strtotime("$year-$month-01")){//判斷是否新入職(大概查詢)
             $sql_c="select visit_dt from sales$suffix.sal_visit   where username='".$arr['user_id']."'  order by visit_dt ";
             $record = Yii::app()->db->createCommand($sql_c)->queryRow();
             $timestrap=strtotime($record['visit_dt']);
