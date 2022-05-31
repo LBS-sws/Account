@@ -173,6 +173,36 @@ return array(
             ),
         ),
     ),
+	'Plane System'=>array( //技术部直升机机制
+		'access'=>'PS',
+		'icon'=>'fa-plane',
+		'items'=>array(
+            'Plane Award'=>array(//技术部直升机奖励制度
+                'access'=>'PS01',
+                'url'=>'/planeAward/index'
+            ),
+            'Plane Allot'=>array(//参与技术部直升机
+                'access'=>'PS02',
+                'url'=>'/planeAllot/index'
+            ),
+            'Plane Set Money'=>array(//做单金额及对应的奖励
+                'access'=>'PS03',
+                'url'=>'/planeSetMoney/index'
+            ),
+            'Plane Set Job'=>array(//职务级别及对应的奖励
+                'access'=>'PS04',
+                'url'=>'/planeSetJob/index'
+            ),
+            'Plane Set Year'=>array(//年资及对应的奖金
+                'access'=>'PS05',
+                'url'=>'/planeSetYear/index'
+            ),
+            'Plane Set Other'=>array(//直升机外另计的项目
+                'access'=>'PS06',
+                'url'=>'/planeSetOther/index'
+            ),
+        )
+    ),
 	'System Setting'=>array(
 		'access'=>'XC',
 		'icon'=>'fa-gear',

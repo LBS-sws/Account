@@ -11,6 +11,7 @@ class ListPageWidget extends CWidget
 	public $hasNavBar = true;
 	public $hasSearchBar = true;
 	public $hasPageBar = true;
+    public $search_add_html = '';
 	public $searchlinkparam = array();
 	
 	public $advancedSearch = false;
@@ -38,6 +39,9 @@ class ListPageWidget extends CWidget
 				$layout .= '<span class="pull-right">';
 				$layout .= $this->searchBar();
 				$layout .= '</span>';
+                if(!empty($this->search_add_html)){
+                    $layout.="<span class='pull-right' style='margin-right: 15px;'>".$this->search_add_html."</span>";
+                }
 			}
 		$layout .= '</div>';
 		}

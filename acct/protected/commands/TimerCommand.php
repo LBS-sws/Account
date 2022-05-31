@@ -113,6 +113,23 @@ WHERE workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>'ED' and workflow$
                 }
 
         }
+
+        //刷新直升机机制的奖金
+        $this->resetPlane();
+    }
+
+    private function resetPlane(){
+        $planeDate = date("Y-m-01");
+        $planeDate = date("Y-m-d",strtotime("{$planeDate} - 1 months"));
+        $rows = Yii::app()->db->createCommand()->select("id")->from("acc_plane")
+            ->where("plane_date>='{$planeDate}'")->queryAll();
+        $model = new PlaneAwardForm('view');
+        if($rows){
+            foreach ($rows as $row){
+                $model->retrieveData($row["id"],false);
+            }
+        }
+
     }
 }
 

@@ -172,5 +172,17 @@ return array(
 'Generate Invoice'=>'發票生成',
 'Invoice'=>'發票',
 'Batch deletion of invoices'=>'批量刪除發票',
+
+    'ID Sales Commission ladder'=>'ID服務提成階梯',
+    'ID Sales Commission'=>'ID銷售提成計算',
+    'ID Sales Commission history'=>'ID銷售提成查詢',
+
+    'Plane System'=>'技術部直升機機製',
+    'Plane Award'=>'技術部直升機獎勵',
+    'Plane Allot'=>'參與技術部直升機',
+    'Plane Set Money'=>'做单金额及对应的奖励',
+    'Plane Set Job'=>'職務級別及對應的獎勵',
+    'Plane Set Year'=>'年資及對應的獎金',
+    'Plane Set Other'=>'直升機外另計的項目',
 );
 ?>

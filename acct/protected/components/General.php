@@ -638,6 +638,23 @@ class General {
             ->from("hr$suffix.hr_setting")->where("set_name='systemId'")->queryScalar();
         return $value?$value:0;
     }
+
+    public static function getValueMoneyForAsc($list,$value_name){
+        $value_name = floatval($value_name);
+        $plane = 0;
+        $id = 0;
+        if($list){
+            foreach ($list as $row){
+                if($value_name>=floatval($row["value_name"])){
+                    $id = $row["id"];
+                    $plane = floatval($row["value_money"]);
+                }else{
+                    break;
+                }
+            }
+        }
+        return array("value"=>$plane,"id"=>$id);
+    }
 }
 
 ?>

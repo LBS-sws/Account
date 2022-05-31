@@ -35,6 +35,9 @@ class SystemNotice
 		$note_id = Yii::app()->db->getLastInsertID();
 
 		foreach ($finalusers as $user) {
+            if(empty($user)){ //由于账号删除后，邮件异常
+                continue;
+            }
 			$sql1 = "insert into swoper$suffix.swo_notification_user
 						(note_id, username, status, lcu, luu)
 					values

@@ -181,5 +181,13 @@ return array(
     'ID Sales Commission ladder'=>'ID服务提成阶梯',
     'ID Sales Commission'=>'ID销售提成计算',
     'ID Sales Commission history'=>'ID销售提成查询',
+
+    'Plane System'=>'技术部直升机机制',
+    'Plane Award'=>'技术部直升机奖励',
+    'Plane Allot'=>'参与技术部直升机',
+    'Plane Set Money'=>'做单金额及对应的奖励',
+    'Plane Set Job'=>'职务级别及对应的奖励',
+    'Plane Set Year'=>'年资及对应的奖金',
+    'Plane Set Other'=>'直升机外另计的项目',
 );
 ?>
