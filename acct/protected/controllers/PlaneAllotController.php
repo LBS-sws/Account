@@ -76,8 +76,9 @@ PlaneAllotController extends Controller
         if (isset($_POST['PlaneAllotList'])) {
             $model->attributes = $_POST['PlaneAllotList'];
         }
-        $id = $_POST["allotOne"]["id"];
-        $job_id = $_POST["allotOne"]["job_id"];
+        $allotList = key_exists("allotOne",$_POST)?$_POST["allotOne"]:array("id"=>0,"job_id"=>0);
+        $id = key_exists("id",$allotList)?$allotList["id"]:0;
+        $job_id = key_exists("job_id",$allotList)?$allotList["job_id"]:0;
         $bool = $model->allotOne($id,$job_id);
         if ($bool) {
             Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
