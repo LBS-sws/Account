@@ -30,6 +30,10 @@ $this->pageTitle=Yii::app()->name . ' - Report';
 				'submit'=>Yii::app()->createUrl('query/index_s')));
 		?>
 	</div>
+            <div class="btn-group pull-right" role="group">
+                <?php echo TbHtml::link('<span class="fa fa-car"></span> '."新版本入口", Yii::app()->createUrl('sellSearch/index'),array('class'=>'btn btn-default'));
+                ?>
+            </div>
 	</div></div>
 	<div class="box box-info">
 		<div class="box-body">
