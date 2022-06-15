@@ -143,7 +143,7 @@ return array(
 'comm_total_amount'=>'提成金額',
 'sale commission man'=>'銷售提成人員列表',
 'sale commission'=>'銷售提成列表',
-'first_dt'=>'服務時間',
+'first_dt'=>'首次日期',
 'sign_dt'=>'簽約時間',
 'company_name'=>'客戶名稱',
 'type_desc'=>'類別',
