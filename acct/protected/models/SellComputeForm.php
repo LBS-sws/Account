@@ -100,6 +100,10 @@ class SellComputeForm extends CFormModel
 			$this->city = $row['city'];
 			$this->city_name = General::getCityName($row['city']);
             $this->showNull = $row['lcd']==$row['lud'];
+            $this->setUpdateBool();
+            if($bool){
+                $this->updateBool=false;
+            }
 			$this->computeDtlList();
 			$this->setSpan();
             return true;
@@ -213,7 +217,8 @@ class SellComputeForm extends CFormModel
         }
     }
 
-    public function getMenuHtml(){
+    public function getMenuHtml($linkType=''){
+        $linkType = $linkType=="Search"?"Search":"Compute";
         $type = $this->getScenario();
         $html = '<ul class="nav nav-tabs" role="menu">';
         foreach (self::$viewList as $row){
@@ -224,9 +229,9 @@ class SellComputeForm extends CFormModel
             }
             $text = Yii::t('commission',$row["name"]);
             if($row['key']=='view'){
-                $url = Yii::app()->createUrl("sellCompute/view",array('index'=>$this->id));
+                $url = Yii::app()->createUrl("sell{$linkType}/view",array('index'=>$this->id));
             }else{
-                $url = Yii::app()->createUrl("sellCompute/list",array('index'=>$this->id,'type'=>$row['key']));
+                $url = Yii::app()->createUrl("sell{$linkType}/list",array('index'=>$this->id,'type'=>$row['key']));
             }
             $html.=TbHtml::link($text,$url,array("tabindex"=>-1));
             $html.="</li>";
@@ -908,12 +913,11 @@ class SellComputeForm extends CFormModel
     }
 
 	public function setUpdateBool(){
-        $dateTime = strtotime("{{$this->year}}/{$this->month}/01");
-        $this->startDate = date("Y-m-d",$dateTime);
+        $this->startDate = date("Y-m-d",strtotime("{$this->year}/{$this->month}/01"));
         $this->endDate = date("Y-m-d",strtotime("{$this->startDate} + 1months - 1day"));
         $ageTime = date("Y-m-01");
-        $ageTime = strtotime("$ageTime - 1 months");
-        if($ageTime<=$dateTime) { //只能修改上个月及以后的数据
+        $ageTime = date("Y-m-d",strtotime("$ageTime - 1 months"));
+        if($ageTime<=$this->startDate) { //只能修改上个月及以后的数据
             $this->updateBool=true;
         }else{
             $this->updateBool=false;

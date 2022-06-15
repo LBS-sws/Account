@@ -10,6 +10,7 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute Form';
 )); ?>
 <style>
     .table-responsive>table{ table-layout: fixed;}
+    input[type="checkbox"].readonly{ opacity: 0.6;pointer-events: none;}
 </style>
 
 <section class="content-header">

@@ -139,7 +139,8 @@ class SellComputeList extends CListPageModel
 			}
 		}
 		$session = Yii::app()->session;
-		$session['sellCompute_c01'] = $this->getCriteria();
+		$sessionNum = $bool?2:1;
+		$session["sellCompute_c0{$sessionNum}"] = $this->getCriteria();
 		return true;
 	}
 
