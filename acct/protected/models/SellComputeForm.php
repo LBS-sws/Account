@@ -267,6 +267,7 @@ class SellComputeForm extends CFormModel
 
     //新增
     private function newTable(){
+        $installRate = $this->getPaperRateAndPoint();//装机提成
         $type = $this->getScenario();
         $html="<thead><tr>";
         $html.="<th width='35px'>";
@@ -283,6 +284,8 @@ class SellComputeForm extends CFormModel
         $html.="<th width='100px'>".Yii::t("commission","amt_sum")."</th>";
         $html.="<th width='90px'>".Yii::t("commission","royalty")."</th>";//commission
         $html.="<th width='100px'>".Yii::t("commission","commission_num")."</th>";
+        $html.="<th width='90px' style='border-left: 1px solid #f4f4f4'>".Yii::t("commission","install money")."</th>";
+        $html.="<th width='90px'>".Yii::t("commission","install amount")."</th>";
         $html.="</tr></thead>";
         $rows = $this->newList();
         if($rows){
@@ -305,6 +308,12 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".$amt_sum."</td>";
                 $html.="<td>".$row['royalty']."</td>";
                 $html.="<td>".$row['commission']."</td>";
+                //$row['amt_install'] = empty($row['amt_install'])?"":$row['amt_install'];
+                $html.="<td style='border-left: 1px solid #f4f4f4'>".$row['amt_install']."</td>";
+                $amt_install = $row['amt_install'];
+                $amt_install = is_numeric($amt_install)?floatval($amt_install)*$installRate:"";
+                $amt_install = $row['commission']==="未计算"?"未计算":$amt_install;
+                $html.="<td>".$amt_install."</td>";
                 $html.="</tr>";
             }
         }
@@ -463,6 +472,7 @@ class SellComputeForm extends CFormModel
 
     //变更
     private function editTable(){
+        $installRate = $this->getPaperRateAndPoint();//装机提成
         $type = $this->getScenario();
         $html="<thead><tr>";
         $html.="<th width='35px'>";
@@ -483,6 +493,8 @@ class SellComputeForm extends CFormModel
         $html.="<th width='195px'>".Yii::t("commission","history royalty")."</th>";
         $html.="<th width='80px'>".Yii::t("commission","royalty")."</th>";
         $html.="<th width='80px'>".Yii::t("commission","commission_num")."</th>";
+        $html.="<th width='90px' style='border-left: 1px solid #f4f4f4'>".Yii::t("commission","install money")."</th>";
+        $html.="<th width='90px'>".Yii::t("commission","install amount")."</th>";
         $html.="</tr></thead>";
         $rows = $this->editList();
         if($rows){
@@ -518,6 +530,11 @@ class SellComputeForm extends CFormModel
                 }
                 $html.="<td>".$row['royalty']."</td>";
                 $html.="<td>".$row['commission']."</td>";
+                $html.="<td style='border-left: 1px solid #f4f4f4'>".$row['amt_install']."</td>";
+                $amt_install = $row['amt_install'];
+                $amt_install = is_numeric($amt_install)?floatval($amt_install)*$installRate:"";
+                $amt_install = $row['commission']==="未计算"?"未计算":$amt_install;
+                $html.="<td>".$amt_install."</td>";
                 $html.="</tr>";
             }
         }
@@ -1417,6 +1434,8 @@ class SellComputeForm extends CFormModel
             if(key_exists('point',$list)||key_exists('new_money',$list)||key_exists('edit_money',$list)){
                 //如果销售提成激励点、新增业绩、更改新增业绩变动，需要刷新数据
                 $this->resetProductSave($data);
+
+                $this->resetInstallSave($data);//刷新装机金额
             }
         }
     }
@@ -1535,6 +1554,35 @@ class SellComputeForm extends CFormModel
 
             Yii::app()->db->createCommand()->update("acc_service_comm_dtl",array(
                 "product_amount"=>$product_amount
+            ),"hdr_id=:id",array(":id"=>$this->id));
+        }
+    }
+
+    //刷新装机金额
+    private function resetInstallSave($data){
+        $installRate = $this->getPaperRateAndPoint($data);
+        $suffix = Yii::app()->params['envSuffix'];
+        $install_amount=0;//装机提成
+        $install_money=0;//装机业绩
+
+        $rows = Yii::app()->db->createCommand()
+            ->select("a.id,a.amt_install")
+            ->from("swoper{$suffix}.swo_service a")
+            ->where("a.commission is not null and a.status in ('N','A') and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and 
+            a.salesman_id={$this->employee_id} and a.amt_install+0>0")->queryAll();
+        if($rows){
+            foreach ($rows as $row){
+                $amt_sum = is_numeric($row['amt_install'])?floatval($row['amt_install']):0;
+
+                $commission =$amt_sum*$installRate;
+                $commission = round($commission,2);
+                $install_amount+=$commission;//装机提成
+                $install_money+=$amt_sum;//装机业绩
+            }
+
+            Yii::app()->db->createCommand()->update("acc_service_comm_dtl",array(
+                "install_amount"=>$install_amount,
+                "install_money"=>$install_money
             ),"hdr_id=:id",array(":id"=>$this->id));
         }
     }
@@ -1671,5 +1719,15 @@ class SellComputeForm extends CFormModel
             return 0.01;
         }
         return 0;
+    }
+
+    //纸品的提成包含激励点（装机提成专用）
+    private function getPaperRateAndPoint($data=array()){
+        $point =key_exists('point',$data)?$data['point']:$this->dtl_list['point'];
+        $new_money =key_exists('new_money',$data)?$data['new_money']:$this->dtl_list['new_money'];
+        $edit_money =key_exists('edit_money',$data)?$data['edit_money']:$this->dtl_list['edit_money'];
+        $money = $new_money+$edit_money;
+        $rate = SellComputeList::getProductRate($money,$this->startDate,$this->city,"paper");
+        return $rate+$point;
     }
 }

@@ -126,7 +126,7 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute Form';
                     <div class="col-lg-4">
                         <?php
                         $rowList = array("new_amount","edit_amount","end_amount","performance_amount","performanceedit_amount","performanceend_amount","renewal_amount",
-                            "renewalend_amount","product_amount");
+                            "renewalend_amount","product_amount","install_amount");
                         foreach ($rowList as $item){
                             echo '<div class="form-group" >';
                             echo '<label class="col-sm-5 control-label">';
@@ -148,7 +148,7 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute Form';
                     <div class="col-lg-4">
                         <?php
                         $rowList = array("new_money","edit_money","","out_money","performanceedit_money","",
-                            "renewal_money");
+                            "renewal_money","","","install_money");
                         foreach ($rowList as $item){
                             if(!empty($item)){
                                 echo '<div class="form-group" >';

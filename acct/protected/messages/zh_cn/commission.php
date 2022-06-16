@@ -29,6 +29,8 @@ return array(
     'new_money'=>'新增业绩',
     'edit_money'=>'更改新增业绩',
     'out_money'=>'跨区业绩',
+    'install_amount'=>'装机提成',
+    'install_money'=>'装机业绩',
     'performanceedit_money'=>'跨区更改新增业绩',
     'point'=>'销售提成激励点',
     'Renewal'=>'续约生意额',
@@ -81,5 +83,9 @@ return array(
     'house'=>'家居',
     'span rate'=>'跨区提成比例',
     'span other rate'=>'被跨区提成比例',
+    'service'=>'服务',
+    'install'=>'装机',
+    'install money'=>'装机金额',
+    'install amount'=>'装机提成',
 );
 ?>
