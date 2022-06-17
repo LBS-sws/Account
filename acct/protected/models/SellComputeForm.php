@@ -918,8 +918,8 @@ class SellComputeForm extends CFormModel
                     if(!key_exists($proType,$computeRate)){
                         $computeRate[$proType] = SellComputeList::getProductRate($edit_money,$this->startDate,$this->city,$proType);
                     }
-                    $row['royalty'] = $computeRate[$proType];
-                    $commission*=($row['royalty']+$point);
+                    $row['royalty'] = $computeRate[$proType]+$point;
+                    $commission*=$row['royalty'];
                 }
                 $html.="<td>".$row['royalty']."</td>";
                 $html.="<td>".$commission."</td>";

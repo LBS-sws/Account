@@ -104,7 +104,7 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute Form';
                             </div>
                         </div>
                         <div class="form-group" >
-                            <label class="col-sm-5 control-label"><?php echo Yii::t('commission','service reward'); ?></label>
+                            <label class="col-sm-5 control-label"><?php echo Yii::t('commission','bring reward'); ?></label>
                             <div class="col-sm-7">
                                 <?php echo TbHtml::textField("service_reward",SellComputeList::showText($model->dtl_list['service_reward'],$model->showNull,"rate"),array('readonly'=>true));?>
                             </div>
