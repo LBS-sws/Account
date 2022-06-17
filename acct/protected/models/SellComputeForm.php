@@ -1468,6 +1468,8 @@ class SellComputeForm extends CFormModel
                 }else{
                     $new_amount+=$commission;
                 }
+                //如果总提成为0，则取消选中状态
+                $commission=empty($royalty)?null:$commission;
                 //刷新數據
                 Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                     "royalty"=>$royalty,
@@ -1496,6 +1498,8 @@ class SellComputeForm extends CFormModel
                 if($row["commission"]>0){ //更改增加
                     $commission = empty($row["royalty"])?0:($row["commission"]/$row["royalty"])*$royalty;
                     $commission = round($commission,2);
+                    //如果总提成为0，则取消选中状态
+                    $commission=empty($royalty)?null:$commission;
                     //刷新數據
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                         "royalty"=>$royalty,
