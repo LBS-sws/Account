@@ -307,6 +307,7 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid']."</td>";
                 $html.="<td>".$amt_sum."</td>";
                 $html.="<td>".$row['royalty']."</td>";
+                $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 //$row['amt_install'] = empty($row['amt_install'])?"":$row['amt_install'];
                 $html.="<td style='border-left: 1px solid #f4f4f4'>".$row['amt_install']."</td>";
@@ -371,6 +372,7 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid']."</td>";
                 $html.="<td>".$amt_sum."</td>";
                 $html.="<td>".$row['royalty']."</td>";
+                $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="</tr>";
             }
@@ -438,6 +440,7 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid']."</td>";
                 $html.="<td>".$amt_sum."</td>";
                 $html.="<td>".$row['royalty']."</td>";
+                $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="</tr>";
             }
@@ -529,6 +532,7 @@ class SellComputeForm extends CFormModel
                     $html.="<td>&nbsp;</td>";
                 }
                 $html.="<td>".$row['royalty']."</td>";
+                $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="<td style='border-left: 1px solid #f4f4f4'>".$row['amt_install']."</td>";
                 $amt_install = $row['amt_install'];
@@ -620,6 +624,7 @@ class SellComputeForm extends CFormModel
                     $html.="<td>&nbsp;</td>";
                 }
                 $html.="<td>".$row['royalty']."</td>";
+                $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="</tr>";
             }
@@ -708,6 +713,7 @@ class SellComputeForm extends CFormModel
                     $html.="<td>".TbHtml::numberField("royalty[{$row['id']}]",$royalty)."</td>";
                 }
                 $html.="<td>".$row['royalty']."</td>";
+                $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="</tr>";
             }
@@ -762,6 +768,7 @@ class SellComputeForm extends CFormModel
                     $html.="<td>".TbHtml::numberField("royalty[{$row['id']}]",$royalty)."</td>";
                 }
                 $html.="<td>".$row['royalty']."</td>";
+                $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="</tr>";
             }
@@ -841,6 +848,7 @@ class SellComputeForm extends CFormModel
                     $html.="<td>".TbHtml::numberField("royalty[{$row['id']}]",$royalty)."</td>";
                 }
                 $html.="<td>".$row['royalty']."</td>";
+                $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="</tr>";
             }
@@ -920,6 +928,7 @@ class SellComputeForm extends CFormModel
                     }
                     $row['royalty'] = $computeRate[$proType]+$point;
                     $commission*=$row['royalty'];
+                    $commission=round($commission,2);
                 }
                 $html.="<td>".$row['royalty']."</td>";
                 $html.="<td>".$commission."</td>";
@@ -991,17 +1000,16 @@ class SellComputeForm extends CFormModel
             //开始修改
             foreach ($updateRows as $updateRow){
                 if(!empty($updateRow['othersalesman'])){ //跨区服务
-                    $commission =$updateRow['amt_sum']*$this->span_rate;
-                }else{
-                    $commission =$updateRow['amt_sum'];
+                    $updateRow['amt_sum']*=$this->span_rate;
                 }
-                $commission*=$royalty;
+                $updateRow['amt_sum'] = round($updateRow['amt_sum'],2);
+                $commission=$updateRow['amt_sum']*$royalty;
                 $commission = round($commission,2);
                 $new_amount+=$commission;//新增的提成金额
                 //计算
                 Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                     "royalty"=>$royalty,
-                    "commission"=>$commission,
+                    "commission"=>$updateRow['amt_sum'],
                     "luu"=>$uid
                 ),"id=:id",array(":id"=>$updateRow["id"]));
             }
@@ -1067,18 +1075,17 @@ class SellComputeForm extends CFormModel
             //开始修改
             foreach ($updateRows as $updateRow){
                 if(!empty($updateRow['othersalesman'])){ //跨区服务
-                    $commission =$updateRow['amt_money']*$this->span_rate;
-                }else{
-                    $commission =$updateRow['amt_money'];
+                    $updateRow['amt_money'] *=$this->span_rate;
                 }
+                $updateRow['amt_money'] = round($updateRow['amt_money'],2);
                 $updateRoyalty=key_exists("history",$updateRow)?$updateRow["history"]["royalty"]:$royalty;
-                $commission*=$updateRoyalty;
+                $commission=$updateRow['amt_money']*$updateRoyalty;
                 $commission = round($commission,2);
                 $edit_amount+=$commission;//更改的提成金额
                 //计算
                 Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                     "royalty"=>$updateRoyalty,
-                    "commission"=>$commission,
+                    "commission"=>$updateRow['amt_money'],
                     "luu"=>$uid
                 ),"id=:id",array(":id"=>$updateRow["id"]));
             }
@@ -1105,16 +1112,17 @@ class SellComputeForm extends CFormModel
                     if(empty($row["history"])){//手动修改历史提成
                         $row["history"]["royalty"]=key_exists($row["id"],$royaltyList)?floatval($royaltyList[$row["id"]]):0.01;
                     }
-                    $commission =$row['amt_money']*$row["history"]["royalty"];
                     if(!empty($row['othersalesman'])){ //跨区服务
-                        $commission *= $this->span_rate;
+                        $row['amt_money'] *= $this->span_rate;
                     }
+                    $row['amt_money'] = round($row['amt_money'],2);
+                    $commission =$row['amt_money']*$row["history"]["royalty"];
                     $commission = round($commission,2);
                     $end_amount+=$commission;//更改的提成金额
                     //计算
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                         "royalty"=>$row["history"]["royalty"],
-                        "commission"=>$commission,
+                        "commission"=>$row['amt_money'],
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }else{
@@ -1161,7 +1169,7 @@ class SellComputeForm extends CFormModel
                     //计算
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                         "royalty"=>$royalty,
-                        "commission"=>$commission,
+                        "commission"=>$amt_sum,
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }else{
@@ -1206,6 +1214,7 @@ class SellComputeForm extends CFormModel
                         $thisRoyalty=$row["history"]["royalty"];
                     }
                     $row['amt_money'] =$row['amt_money']*$this->span_other_rate;//跨区
+                    $row['amt_money'] = round($row['amt_money'],2);
                     $commission =$row['amt_money']*$thisRoyalty;
                     $commission = round($commission,2);
                     $performanceedit_amount+=$commission;//跨区更改提成金额
@@ -1213,7 +1222,7 @@ class SellComputeForm extends CFormModel
                     //计算
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                         "royalty"=>$thisRoyalty,
-                        "commission"=>$commission,
+                        "commission"=>$row['amt_money'],
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }else{
@@ -1245,14 +1254,15 @@ class SellComputeForm extends CFormModel
                     if(empty($row["history"])){//手动修改历史提成
                         $row["history"]["royalty"]=key_exists($row["id"],$royaltyList)?floatval($royaltyList[$row["id"]]):0.01;
                     }
+                    $row['amt_money'] *= $this->span_other_rate;//跨区服务
+                    $row['amt_money'] = round($row['amt_money'],2);
                     $commission =$row['amt_money']*$row["history"]["royalty"];
-                    $commission *= $this->span_other_rate;//跨区服务
                     $commission = round($commission,2);
                     $performanceend_amount+=$commission;//跨区终止生意提成
                     //计算
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                         "royalty"=>$row["history"]["royalty"],
-                        "commission"=>$commission,
+                        "commission"=>$row['amt_money'],
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }else{
@@ -1296,6 +1306,7 @@ class SellComputeForm extends CFormModel
                         $row['amt_money'] *= $this->span_rate;
                     }
                     */
+                    $row['amt_money'] = round($row['amt_money'],2);
                     $commission =$row['amt_money']*$royalty;
                     $commission = round($commission,2);
                     $renewal_amount+=$commission;//续约提成
@@ -1303,7 +1314,7 @@ class SellComputeForm extends CFormModel
                     //计算
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                         "royalty"=>$royalty,
-                        "commission"=>$commission,
+                        "commission"=>$row['amt_money'],
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }else{
@@ -1335,16 +1346,17 @@ class SellComputeForm extends CFormModel
                     if(empty($row["history"])){//手动修改历史提成
                         $row["history"]["royalty"]=key_exists($row["id"],$royaltyList)?floatval($royaltyList[$row["id"]]):0.01;
                     }
-                    $commission =$row['amt_money']*$row["history"]["royalty"];
                     if(!empty($row['othersalesman'])){ //跨区服务
-                        $commission *= $this->span_rate;
+                        $row['amt_money'] *= $this->span_rate;
                     }
+                    $row['amt_money'] = round($row['amt_money'],2);
+                    $commission =$row['amt_money']*$row["history"]["royalty"];
                     $commission = round($commission,2);
                     $renewalend_amount+=$commission;//更改的提成金额
                     //计算
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                         "royalty"=>$row["history"]["royalty"],
-                        "commission"=>$commission,
+                        "commission"=>$row['amt_money'],
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }else{
@@ -1460,20 +1472,16 @@ class SellComputeForm extends CFormModel
             $performance_amount = 0;//跨区新增的提成
             foreach ($newRows as $row){
                 $row["commission"] = is_numeric($row["commission"])?floatval($row["commission"]):0;
-                $row["royalty"] = is_numeric($row["royalty"])?floatval($row["royalty"]):0;
-                $commission = empty($row["royalty"])?0:($row["commission"]/$row["royalty"])*$royalty;
+                $commission = $row["commission"]*$royalty;
                 $commission = round($commission,2);
                 if($row["othersalesman_id"]==$this->employee_id){ //跨区
                     $performance_amount+=$commission;
                 }else{
                     $new_amount+=$commission;
                 }
-                //如果总提成为0，则取消选中状态
-                $commission=empty($royalty)?null:$commission;
                 //刷新數據
                 Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                     "royalty"=>$royalty,
-                    "commission"=>$commission,
                     "luu"=>$uid
                 ),"id=:id",array(":id"=>$row["id"]));
             }
@@ -1496,19 +1504,16 @@ class SellComputeForm extends CFormModel
                 $row["commission"] = is_numeric($row["commission"])?floatval($row["commission"]):0;
                 $row["royalty"] = is_numeric($row["royalty"])?floatval($row["royalty"]):0;
                 if($row["commission"]>0){ //更改增加
-                    $commission = empty($row["royalty"])?0:($row["commission"]/$row["royalty"])*$royalty;
-                    $commission = round($commission,2);
-                    //如果总提成为0，则取消选中状态
-                    $commission=empty($royalty)?null:$commission;
+                    $commission = $row["commission"]*$royalty;
                     //刷新數據
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                         "royalty"=>$royalty,
-                        "commission"=>$commission,
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }else{ //更改减少
-                    $commission = $row["commission"];
+                    $commission = $row["commission"]*$row["royalty"];
                 }
+                $commission = round($commission,2);//保留两位小数点
                 if($row["othersalesman_id"]==$this->employee_id){ //跨区
                     $performanceedit_amount+=$commission;
                 }else{
