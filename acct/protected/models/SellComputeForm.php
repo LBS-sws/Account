@@ -1624,7 +1624,7 @@ class SellComputeForm extends CFormModel
                     $point = empty($integralRow['point'])?0:floatval($integralRow['point']);
                     Yii::app()->db->createCommand()->update("sales$suffix.sal_integral",array(
                         "hdr_id"=>$this->id,
-                        "luu"=>Yii::app()->user->id
+                        //"luu"=>Yii::app()->user->id //不知道为啥，这张表没有这个字段
                     ),"id=:id",array(":id"=>$integralRow["id"]));
                 }
             }
