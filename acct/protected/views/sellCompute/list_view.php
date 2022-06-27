@@ -70,7 +70,7 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute Form';
                         <h3 class="box-title"><strong><?php echo Yii::t('app','sale commission');?></strong></h3>
                     </div>
                 </div>
-                <div class="box-body table-responsive">
+                <div class="box-body">
                     <div class="col-sm-12">
                         <div class="table-responsive">
                             <?php

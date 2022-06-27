@@ -13,8 +13,8 @@ class SellComputeForm extends CFormModel
 	public $staff;//查詢用的格式：員工名稱 (員工編號)
     public $year;
     public $month;
-    private $startDate="2022-05-01";
-    private $endDate="2022-05-31";
+    public $startDate="2022-05-01";
+    public $endDate="2022-05-31";
 
     public $span_id;//跨区业绩目标id
     public $span_rate=0;//跨区提成比例
@@ -355,8 +355,8 @@ class SellComputeForm extends CFormModel
         $rows = $this->performanceList();
         if($rows){
             foreach ($rows as $row){
-                $row['royalty'] = is_numeric($row['royalty'])?floatval($row['royalty']):0;
-                $row['commission'] = is_numeric($row['commission'])?floatval($row['commission']):"未计算";
+                $row['royalty'] = is_numeric($row['royaltys'])?floatval($row['royaltys']):0;
+                $row['commission'] = is_numeric($row['other_commission'])?floatval($row['other_commission']):"未计算";
                 $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
                 $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
                 $row['royalty'] = $row['commission']==="未计算"?"":$row['royalty'];
@@ -596,8 +596,8 @@ class SellComputeForm extends CFormModel
         $rows = $this->performanceeditList();
         if($rows){
             foreach ($rows as $row){
-                $row['royalty'] = is_numeric($row['royalty'])?floatval($row['royalty']):0;
-                $row['commission'] = is_numeric($row['commission'])?floatval($row['commission']):"未计算";
+                $row['royalty'] = is_numeric($row['royaltys'])?floatval($row['royaltys']):0;
+                $row['commission'] = is_numeric($row['other_commission'])?floatval($row['other_commission']):"未计算";
                 $row['royalty'] = $row['commission']==="未计算"?"":$row['royalty'];
                 $amt_sum = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
                 $checkBool = $row['commission']==="未计算"?false:true;
@@ -826,8 +826,8 @@ class SellComputeForm extends CFormModel
         $rows = $this->performanceendList();
         if($rows){
             foreach ($rows as $row){
-                $row['royalty'] = is_numeric($row['royalty'])?floatval($row['royalty']):0;
-                $row['commission'] = is_numeric($row['commission'])?floatval($row['commission']):"未计算";
+                $row['royalty'] = is_numeric($row['royaltys'])?floatval($row['royaltys']):0;
+                $row['commission'] = is_numeric($row['other_commission'])?floatval($row['other_commission']):"未计算";
                 $row['royalty'] = $row['commission']==="未计算"?"":$row['royalty'];
                 $checkBool = $row['commission']==="未计算"?false:true;
                 $html.="<tr>";
@@ -1168,14 +1168,14 @@ class SellComputeForm extends CFormModel
                     $performance_amount+=$commission;//跨区新增的提成金额
                     //计算
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
-                        "royalty"=>$royalty,
-                        "commission"=>$amt_sum,
+                        "royaltys"=>$royalty,
+                        "other_commission"=>$amt_sum,
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }else{
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
-                        "royalty"=>0,
-                        "commission"=>null,
+                        "royaltys"=>0,
+                        "other_commission"=>null,
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }
@@ -1218,17 +1218,17 @@ class SellComputeForm extends CFormModel
                     $commission =$row['amt_money']*$thisRoyalty;
                     $commission = round($commission,2);
                     $performanceedit_amount+=$commission;//跨区更改提成金额
-                    $performanceedit_money+=$row['amt_money'];//跨区跨区更改业绩
+                    $performanceedit_money+=$row['amt_money']>0?$row['amt_money']:0;//跨区更改业绩
                     //计算
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
-                        "royalty"=>$thisRoyalty,
-                        "commission"=>$row['amt_money'],
+                        "royaltys"=>$thisRoyalty,
+                        "other_commission"=>$row['amt_money'],
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }else{
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
-                        "royalty"=>0,
-                        "commission"=>null,
+                        "royaltys"=>0,
+                        "other_commission"=>null,
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }
@@ -1261,14 +1261,14 @@ class SellComputeForm extends CFormModel
                     $performanceend_amount+=$commission;//跨区终止生意提成
                     //计算
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
-                        "royalty"=>$row["history"]["royalty"],
-                        "commission"=>$row['amt_money'],
+                        "royaltys"=>$row["history"]["royalty"],
+                        "other_commission"=>$row['amt_money'],
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }else{
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
-                        "royalty"=>0,
-                        "commission"=>null,
+                        "royaltys"=>0,
+                        "other_commission"=>null,
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }
@@ -1462,28 +1462,31 @@ class SellComputeForm extends CFormModel
         $royalty = $new_calc+$point+$service_reward;
         //修改新增及跨区新增
         $newRows = Yii::app()->db->createCommand()
-            ->select("a.id,a.commission,a.royalty,a.othersalesman_id")
+            ->select("a.id,a.other_commission,a.royaltys,a.commission,a.royalty,a.othersalesman_id")
             ->from("swoper{$suffix}.swo_service a")
-            ->where("a.commission+0>0 and a.status = 'N' and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and 
-            ((a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}) or 
-            a.othersalesman_id={$this->employee_id})")->queryAll();
+            ->where("a.status = 'N' and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and 
+            ((a.commission+0>0 and a.salesman_id={$this->employee_id}) or 
+            (a.other_commission+0>0 and a.othersalesman_id={$this->employee_id}))")->queryAll();
         if($newRows){
             $new_amount = 0;//新增的提成
             $performance_amount = 0;//跨区新增的提成
             foreach ($newRows as $row){
-                $row["commission"] = is_numeric($row["commission"])?floatval($row["commission"]):0;
-                $commission = $row["commission"]*$royalty;
-                $commission = round($commission,2);
+                $updateArr = array("luu"=>$uid);
                 if($row["othersalesman_id"]==$this->employee_id){ //跨区
-                    $performance_amount+=$commission;
+                    $row["other_commission"] = is_numeric($row["other_commission"])?floatval($row["other_commission"]):0;
+                    $other_commission = $row["other_commission"]*$royalty;
+                    $other_commission = round($other_commission,2);
+                    $performance_amount+=$other_commission;
+                    $updateArr["royaltys"]=$royalty;
                 }else{
+                    $row["commission"] = is_numeric($row["commission"])?floatval($row["commission"]):0;
+                    $commission = $row["commission"]*$royalty;
+                    $commission = round($commission,2);
                     $new_amount+=$commission;
+                    $updateArr["royalty"]=$royalty;
                 }
                 //刷新數據
-                Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
-                    "royalty"=>$royalty,
-                    "luu"=>$uid
-                ),"id=:id",array(":id"=>$row["id"]));
+                Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",$updateArr,"id=:id",array(":id"=>$row["id"]));
             }
             Yii::app()->db->createCommand()->update("acc_service_comm_dtl",array(
                 "new_amount"=>$new_amount,
@@ -1492,31 +1495,42 @@ class SellComputeForm extends CFormModel
         }
         //修改更改及跨区更改
         $rows = Yii::app()->db->createCommand()
-            ->select("a.id,a.commission,a.royalty,a.othersalesman_id")
+            ->select("a.id,a.other_commission,a.royaltys,a.commission,a.royalty,a.othersalesman_id")
             ->from("swoper{$suffix}.swo_service a")
-            ->where("a.commission is not null and a.status ='A' and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and 
-            ((a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}) or 
-            a.othersalesman_id={$this->employee_id})")->queryAll();
+            ->where("a.status ='A' and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and 
+            ((a.commission is not null and a.salesman_id={$this->employee_id}) or 
+            (a.other_commission is not null and a.othersalesman_id={$this->employee_id}))")->queryAll();
         if($rows){
             $edit_amount = 0;//更改的提成
             $performanceedit_amount = 0;//跨区更改的提成
             foreach ($rows as $row){
-                $row["commission"] = is_numeric($row["commission"])?floatval($row["commission"]):0;
-                $row["royalty"] = is_numeric($row["royalty"])?floatval($row["royalty"]):0;
-                if($row["commission"]>0){ //更改增加
-                    $commission = $row["commission"]*$royalty;
-                    //刷新數據
-                    Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
-                        "royalty"=>$royalty,
-                        "luu"=>$uid
-                    ),"id=:id",array(":id"=>$row["id"]));
-                }else{ //更改减少
-                    $commission = $row["commission"]*$row["royalty"];
-                }
-                $commission = round($commission,2);//保留两位小数点
                 if($row["othersalesman_id"]==$this->employee_id){ //跨区
-                    $performanceedit_amount+=$commission;
+                    $other_commission=0;
+                    $row["royaltys"] = is_numeric($row["royaltys"])?floatval($row["royaltys"]):0;
+                    $row["other_commission"] = is_numeric($row["other_commission"])?floatval($row["other_commission"]):0;
+                    if($row["other_commission"]>0){ //更改增加
+                        $other_commission = $row["other_commission"]*$royalty;
+                        $other_commission = round($other_commission,2);//保留两位小数点
+                        //刷新數據
+                        Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
+                            "royaltys"=>$royalty,
+                            "luu"=>$uid
+                        ),"id=:id",array(":id"=>$row["id"]));
+                    }
+                    $performanceedit_amount+=$other_commission;
                 }else{
+                    $commission=0;
+                    $row["commission"] = is_numeric($row["commission"])?floatval($row["commission"]):0;
+                    $row["royalty"] = is_numeric($row["royalty"])?floatval($row["royalty"]):0;
+                    if($row["commission"]>0){ //更改增加
+                        $commission = $row["commission"]*$royalty;
+                        $commission = round($commission,2);//保留两位小数点
+                        //刷新數據
+                        Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
+                            "royalty"=>$royalty,
+                            "luu"=>$uid
+                        ),"id=:id",array(":id"=>$row["id"]));
+                    }
                     $edit_amount+=$commission;
                 }
             }
@@ -1577,8 +1591,10 @@ class SellComputeForm extends CFormModel
         $rows = Yii::app()->db->createCommand()
             ->select("a.id,a.amt_install")
             ->from("swoper{$suffix}.swo_service a")
-            ->where("a.commission is not null and a.status in ('N','A') and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and 
-            a.salesman_id={$this->employee_id} and a.amt_install+0>0")->queryAll();
+            ->where("a.commission is not null and (
+            (a.status='N' and a.first_dt between '{$this->startDate}' and '{$this->endDate}') or 
+            (a.status='A' and a.status_dt between '{$this->startDate}' and '{$this->endDate}')
+            ) and a.salesman_id={$this->employee_id} and a.amt_install+0>0")->queryAll();
         if($rows){
             foreach ($rows as $row){
                 $amt_sum = is_numeric($row['amt_install'])?floatval($row['amt_install']):0;

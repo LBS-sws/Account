@@ -129,7 +129,7 @@ return array(
         'items'=>array(
             'Sales Commission'=>array(
                 'access'=>'XS01',
-                'url'=>'/commission/index',
+                'url'=>'/sellCompute/index',
             ),
             'Sales Commission history'=>array(
                 'access'=>'XS02',
