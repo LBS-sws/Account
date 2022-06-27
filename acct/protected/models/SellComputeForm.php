@@ -1719,16 +1719,18 @@ class SellComputeForm extends CFormModel
             ->from("swoper{$suffix}.swo_company")
             ->where("id=:id",array(":id"=>$service["company_id"]))->queryRow();
         if($row){
-            $count = Yii::app()->db->createCommand()
-                ->select("count(id)")
-                ->from("swoper{$suffix}.swo_company")
-                ->where("status=1 and group_id=:group_id and group_name=:group_name",array(
-                    ":group_id"=>$row["group_id"],
-                    ":group_name"=>$row["group_name"]
-                    )
-                )->queryScalar();
-            if($count>=10){//找到十家集团编号相同且在服务中的客户资料
-                return 0.01;
+            if(empty($row["group_id"])&&empty($row["group_name"])){//集团编号不能為空
+                $count = Yii::app()->db->createCommand()
+                    ->select("count(id)")
+                    ->from("swoper{$suffix}.swo_company")
+                    ->where("status=1 and group_id=:group_id and group_name=:group_name",array(
+                            ":group_id"=>$row["group_id"],
+                            ":group_name"=>$row["group_name"]
+                        )
+                    )->queryScalar();
+                if($count>=10){//找到十家集团编号相同且在服务中的客户资料
+                    return 0.01;
+                }
             }
         }
         return 0;
