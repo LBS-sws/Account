@@ -1719,7 +1719,7 @@ class SellComputeForm extends CFormModel
             ->from("swoper{$suffix}.swo_company")
             ->where("id=:id",array(":id"=>$service["company_id"]))->queryRow();
         if($row){
-            if(empty($row["group_id"])&&empty($row["group_name"])){//集团编号不能為空
+            if(!empty($row["group_id"])&&!empty($row["group_name"])){//集团编号不能為空
                 $count = Yii::app()->db->createCommand()
                     ->select("count(id)")
                     ->from("swoper{$suffix}.swo_company")
