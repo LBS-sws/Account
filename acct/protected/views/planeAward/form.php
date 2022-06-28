@@ -184,13 +184,8 @@ Yii::app()->clientScript->registerScript('setFlag',$js,CClientScript::POS_READY)
 if (!$model->isReadOnly()) {
     $js = <<<EOF
 $('table').on('click','#btnDelRow', function() {
-	var uflag = $(this).closest('tr').find('[id*=\"_uflag\"]').val();
-	if(uflag=='Y'){
-	    $(this).closest('tr').remove();
-	}else{
-        $(this).closest('tr').find('[id*=\"_uflag\"]').val('D');
-        $(this).closest('tr').removeClass('tr_show').addClass('tr_hide').hide();
-	}
+    $(this).closest('tr').find('[id*=\"_uflag\"]').val('D');
+    $(this).closest('tr').removeClass('tr_show').addClass('tr_hide').hide();
 });
 EOF;
     Yii::app()->clientScript->registerScript('removeRow',$js,CClientScript::POS_READY);
