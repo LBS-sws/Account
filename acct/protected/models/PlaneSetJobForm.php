@@ -90,11 +90,11 @@ class PlaneSetJobForm extends CFormModel
         }
 	}
 
-    public static function getPlaneList($date){
+    public static function getPlaneList($date,$city){
         $date = date("Y-m-d",strtotime($date));
         $list = array();
         $row = Yii::app()->db->createCommand()->select("id,set_name")->from("acc_plane_set_job")
-            ->where("start_date<=:date",array(":date"=>$date))->order("start_date desc")->queryRow();
+            ->where("start_date<=:date and city=:city",array(":date"=>$date,":city"=>$city))->order("start_date desc")->queryRow();
         if($row){
             $arr = Yii::app()->db->createCommand()->select("id,value_name,value_money")->from("acc_plane_set_job_info")
                 ->where("job_id=:id",array(":id"=>$row["id"]))->order("value_money asc")->queryAll();

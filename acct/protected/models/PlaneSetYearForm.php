@@ -90,11 +90,11 @@ class PlaneSetYearForm extends CFormModel
         }
 	}
 
-    public static function getPlaneForDateAndMoney($date,$money){
+    public static function getPlaneForDateAndMoney($date,$money,$city){
         $date = date("Y-m-d",strtotime($date));
         $plane = array("value"=>0,"id"=>0);
         $row = Yii::app()->db->createCommand()->select("id,set_name")->from("acc_plane_set_year")
-            ->where("start_date<=:date",array(":date"=>$date))->order("start_date desc")->queryRow();
+            ->where("start_date<=:date and city=:city",array(":date"=>$date,":city"=>$city))->order("start_date desc")->queryRow();
         if($row){
             $list = Yii::app()->db->createCommand()->select("id,value_name,value_money")->from("acc_plane_set_year_info")
                 ->where("year_id=:id",array(":id"=>$row["id"]))->order("value_name asc")->queryAll();

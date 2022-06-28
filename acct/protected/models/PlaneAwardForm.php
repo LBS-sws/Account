@@ -215,13 +215,13 @@ class PlaneAwardForm extends CFormModel
                 ":month"=>$this->plane_month
             ))->queryScalar();
         $service_money=$service_money?floatval($service_money):0;
-        $row = PlaneSetMoneyForm::getPlaneForDateAndMoney($this->plane_date,$service_money);
+        $row = PlaneSetMoneyForm::getPlaneForDateAndMoney($this->plane_date,$service_money,$this->city);
         $this->money_num=$row["value"];
         $this->money_id=$row["id"];
         $this->money_value=$service_money;
     }
 
-	//获取做单金额的奖金
+	//获取年资的奖金
 	private function getPlaneYear(){
 	    $planeYear = date("Y",strtotime($this->plane_date));
 	    $planeMonth = date("n",strtotime($this->plane_date));
@@ -230,7 +230,7 @@ class PlaneAwardForm extends CFormModel
 	    $entryMonth = date("n",strtotime($this->entry_time));
         $entryMonth = intval($entryMonth)+intval($entryYear)*12;
         $longMonth = floor(($planeMonth-$entryMonth)/12);
-        $row = PlaneSetYearForm::getPlaneForDateAndMoney($this->plane_date,$longMonth);
+        $row = PlaneSetYearForm::getPlaneForDateAndMoney($this->plane_date,$longMonth,$this->city);
         $this->year_num=$row["value"];
         $this->year_id=$row["id"];
         $this->year_month=$longMonth;
