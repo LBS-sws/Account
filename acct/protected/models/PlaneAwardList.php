@@ -49,8 +49,9 @@ class PlaneAwardList extends CListPageModel
 	}
 
 	public function setJobList(){
+        $city = Yii::app()->user->city();
         $date = "{$this->year}-{$this->month}-01";
-        $this->jobList = PlaneSetJobForm::getPlaneList($date);
+        $this->jobList = PlaneSetJobForm::getPlaneList($date,$city);
     }
 	
 	public function retrieveDataByPage($pageNum=1)
