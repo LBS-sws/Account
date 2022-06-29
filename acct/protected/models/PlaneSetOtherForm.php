@@ -42,7 +42,7 @@ class PlaneSetOtherForm extends CFormModel
 	public function retrieveData($index){
         $city = Yii::app()->user->city();
 		$suffix = Yii::app()->params['envSuffix'];
-		$sql = "select * from acc_plane_set_other where id='".$index."' and city='{$city}'";
+		$sql = "select * from acc_plane_set_other where id='".$index."'";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->id = $row['id'];
