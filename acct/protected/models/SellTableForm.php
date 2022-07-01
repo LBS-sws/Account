@@ -326,7 +326,8 @@ class SellTableForm extends SellComputeForm{
         if($rows){
             $this->serviceList[]=array('title'=>Yii::t("salestable","customer service"));
             foreach ($rows as $row){
-                $row["amt_install"]=is_numeric($row["amt_install"])?floatval($row["amt_install"]):0;
+                //裝機費只計算新增及更改
+                $row["amt_install"]=is_numeric($row["amt_install"])&&in_array($row["status"],array("N","A"))?floatval($row["amt_install"]):0;
                 $row['b4_amt_paid'] = is_numeric($row['b4_amt_paid'])?floatval($row['b4_amt_paid']):0;
                 $row["amt_paid"]=is_numeric($row["amt_paid"])?floatval($row["amt_paid"]):0;
                 $row["ctrt_period"]=is_numeric($row["ctrt_period"])?floatval($row["ctrt_period"]):0;
