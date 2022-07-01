@@ -326,8 +326,7 @@ class SellTableForm extends SellComputeForm{
         if($rows){
             $this->serviceList[]=array('title'=>Yii::t("salestable","customer service"));
             foreach ($rows as $row){
-                //裝機費只計算新增及更改
-                $row["amt_install"]=is_numeric($row["amt_install"])&&in_array($row["status"],array("N","A"))?floatval($row["amt_install"]):0;
+                $row["amt_install"]=is_numeric($row["amt_install"])?floatval($row["amt_install"]):0;
                 $row['b4_amt_paid'] = is_numeric($row['b4_amt_paid'])?floatval($row['b4_amt_paid']):0;
                 $row["amt_paid"]=is_numeric($row["amt_paid"])?floatval($row["amt_paid"]):0;
                 $row["ctrt_period"]=is_numeric($row["ctrt_period"])?floatval($row["ctrt_period"]):0;
@@ -449,6 +448,7 @@ class SellTableForm extends SellComputeForm{
             $row["background"]="blue";//紅色標記跨區
             $row["royalty"]=$row["royaltys"];//轉換跨區的提成點數
             $row["commission"]=$row["other_commission"];//轉換跨區的提成點數
+            $row["amt_install"]=0;//跨區業務不計算裝機費
         }elseif (!empty($row["othersalesman_id"])){ //被跨區
             $row["background"]="red";//藍色標記被跨區
         }
