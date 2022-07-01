@@ -33,6 +33,12 @@ $this->pageTitle=Yii::app()->name . ' - salestabel';
 ////		?>
 <!--<!--	</div>-->
 <!--	</div></div>-->
+    <div class="box"><div class="box-body">
+            <div class="btn-group pull-right" role="group">
+                <?php echo TbHtml::link('<span class="fa fa-car"></span> '."新版本入口", Yii::app()->createUrl('sellTable/index'),array('class'=>'btn btn-default'));
+                ?>
+            </div>
+        </div></div>
 	<?php
     $search = array(
         'employee_code',

@@ -1505,32 +1505,34 @@ class SellComputeForm extends CFormModel
             $performanceedit_amount = 0;//跨区更改的提成
             foreach ($rows as $row){
                 if($row["othersalesman_id"]==$this->employee_id){ //跨区
-                    $other_commission=0;
                     $row["royaltys"] = is_numeric($row["royaltys"])?floatval($row["royaltys"]):0;
                     $row["other_commission"] = is_numeric($row["other_commission"])?floatval($row["other_commission"]):0;
                     if($row["other_commission"]>0){ //更改增加
                         $other_commission = $row["other_commission"]*$royalty;
-                        $other_commission = round($other_commission,2);//保留两位小数点
                         //刷新數據
                         Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                             "royaltys"=>$royalty,
                             "luu"=>$uid
                         ),"id=:id",array(":id"=>$row["id"]));
+                    }else{
+                        $other_commission=$row["other_commission"]*$row["royaltys"];
                     }
+                    $other_commission = round($other_commission,2);//保留两位小数点
                     $performanceedit_amount+=$other_commission;
                 }else{
-                    $commission=0;
                     $row["commission"] = is_numeric($row["commission"])?floatval($row["commission"]):0;
                     $row["royalty"] = is_numeric($row["royalty"])?floatval($row["royalty"]):0;
                     if($row["commission"]>0){ //更改增加
                         $commission = $row["commission"]*$royalty;
-                        $commission = round($commission,2);//保留两位小数点
                         //刷新數據
                         Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                             "royalty"=>$royalty,
                             "luu"=>$uid
                         ),"id=:id",array(":id"=>$row["id"]));
+                    }else{
+                        $commission=$row["commission"]*$row["royalty"];
                     }
+                    $commission = round($commission,2);//保留两位小数点
                     $edit_amount+=$commission;
                 }
             }

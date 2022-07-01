@@ -133,7 +133,7 @@ return array(
             ),
             'Sales Commission history'=>array(
                 'access'=>'XS02',
-                'url'=>'/query/index',
+                'url'=>'/sellSearch/index',
             ),
             'ID Sales Commission'=>array(
                 'access'=>'XS10',
@@ -169,7 +169,7 @@ return array(
             ),
             'Sales commission table'=>array(
                 'access'=>'XS07',
-                'url'=>'/salestable/index',
+                'url'=>'/sellTable/index',
             ),
         ),
     ),
