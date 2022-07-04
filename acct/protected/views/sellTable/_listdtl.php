@@ -1,4 +1,4 @@
-<tr class='clickable-row' data-href='<?php echo $this->getLink('XS07', 'sellTable/edit', 'sellTable/view', array('index'=>$this->record['id']));?>'>
+<tr <?php echo $this->record['style']; ?> class='clickable-row' data-href='<?php echo $this->getLink('XS07', 'sellTable/edit', 'sellTable/view', array('index'=>$this->record['id']));?>'>
     <td><?php echo $this->drawEditButton('XS07', 'sellTable/edit', 'sellTable/view', array('index'=>$this->record['id'])); ?></td>
 
     <td><?php echo $this->record['code']; ?></td>

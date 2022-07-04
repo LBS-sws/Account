@@ -93,7 +93,7 @@ class SellTableList extends CListPageModel
             $order .= " order by {$this->orderField} ";
 			if ($this->orderType=='D') $order .= "desc ";
 		}else{
-            $order .= " order by a.city desc ";
+            $order .= " order by a.city desc,a.id desc ";
         }
 
 		$sql = $sql2.$clause;
@@ -113,6 +113,7 @@ class SellTableList extends CListPageModel
                     'time'=>"{$this->year}/{$this->month}",
                     'city_name'=>$record['city_name'],
                     'dept_name'=>$record['dept_name'],
+                    'style'=>self::examineStyle($record['examine']),
                     'examine'=>self::examine($record['examine']),
                     'moneys'=>key_exists("moneys",$record)?floatval($record['moneys']):0,
                 );
@@ -151,6 +152,20 @@ class SellTableList extends CListPageModel
 	        return $arr[$examine];
         }else{
             return Yii::t("salestable","Not reviewed");
+        }
+    }
+
+    public static function examineStyle($examine){
+	    $arr = array(
+	        "N"=>'',//未审核
+	        "A"=>'style="color: green"',//审核通过
+	        "S"=>'style="color: red"',//已拒绝
+	        "Y"=>'style="color: blue"',//待审核
+        );
+	    if(key_exists($examine,$arr)){
+	        return $arr[$examine];
+        }else{
+            return "";
         }
     }
 
