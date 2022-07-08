@@ -29,7 +29,7 @@ PlaneAwardController extends Controller
                 'expression'=>array('PlaneAwardController','allowReadWrite'),
             ),
             array('allow',
-                'actions'=>array('index','view'),
+                'actions'=>array('index','view','down'),
 				'expression'=>array('PlaneAwardController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -81,6 +81,21 @@ PlaneAwardController extends Controller
         } else {
             $this->render('form',array('model'=>$model,));
         }
+    }
+
+    public function actionDown()
+    {
+        $model = new PlaneAwardList();
+        if (isset($_POST['PlaneAwardList'])) {
+            $model->attributes = $_POST['PlaneAwardList'];
+        } else {
+            $session = Yii::app()->session;
+            if (isset($session['planeAward_c01']) && !empty($session['planeAward_c01'])) {
+                $criteria = $session['planeAward_c01'];
+                $model->setCriteria($criteria);
+            }
+        }
+        $model->downExcel();
     }
 
     public function actionEdit($index)

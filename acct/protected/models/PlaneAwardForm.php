@@ -25,6 +25,7 @@ class PlaneAwardForm extends CFormModel
 	public $city;
 	public $city_name;
 	public $show_date;
+	public $old_pay_wage;
 
 	public $updateBool=true;
 
@@ -49,6 +50,7 @@ class PlaneAwardForm extends CFormModel
             'employee_code'=>Yii::t('plane','employee code'),
             'employee_name'=>Yii::t('plane','employee name'),
             'entry_time'=>Yii::t('plane','entry time'),//入职日期
+            'old_pay_wage'=>Yii::t('plane','old shall pay wages'),//原机制应发工资
             'city'=>Yii::t('plane','city'),
             'city_name'=>Yii::t('plane','city'),
             'job_id'=>Yii::t('plane','job value'),
@@ -70,9 +72,9 @@ class PlaneAwardForm extends CFormModel
 	 */
 	public function rules(){
 		return array(
-            array('id,city,employee_id,employee_code,employee_name,entry_time,plane_date,plane_year,plane_month,info_list','safe'),
+            array('id,city,old_pay_wage,employee_id,employee_code,employee_name,entry_time,plane_date,plane_year,plane_month,info_list','safe'),
 			array('employee_id,id','required'),
-            //array('z_index,display','numerical','allowEmpty'=>false,'integerOnly'=>true),
+            array('old_pay_wage','numerical','allowEmpty'=>false,'integerOnly'=>false),
             array('id','validateID'),
             array('info_list','validateList','on'=>array("edit")),
 		);
@@ -148,6 +150,7 @@ class PlaneAwardForm extends CFormModel
 			$this->plane_year = $row['plane_year'];
 			$this->plane_month = $row['plane_month'];
 			$this->plane_date = $row['plane_date'];
+			$this->old_pay_wage = floatval($row['old_pay_wage']);
 			$this->show_date = $this->plane_year."/".$this->plane_month;
 			$this->city = $row['city'];
 			$this->city_name = General::getCityName($row['city']);
@@ -234,6 +237,18 @@ class PlaneAwardForm extends CFormModel
         $this->year_num=$row["value"];
         $this->year_id=$row["id"];
         $this->year_month=$longMonth;
+    }
+
+	//获取年资的奖金
+	public function diffYearForDate($entryDate,$planeDate){
+	    $planeYear = date("Y",strtotime($planeDate));
+	    $planeMonth = date("n",strtotime($planeDate));
+        $planeMonth = intval($planeMonth)+intval($planeYear)*12;
+	    $entryYear = date("Y",strtotime($entryDate));
+	    $entryMonth = date("n",strtotime($entryDate));
+        $entryMonth = intval($entryMonth)+intval($entryYear)*12;
+        $longMonth = floor(($planeMonth-$entryMonth)/12);
+        return $longMonth;
     }
 
 	//获取杂项奖金列表
@@ -342,6 +357,7 @@ class PlaneAwardForm extends CFormModel
 				$sql = "update acc_plane set
                       other_str = :other_str,
 					  other_sum = :other_sum,
+					  old_pay_wage = :old_pay_wage,
 					  luu=:luu
                       where id = :id";
 				break;
@@ -357,6 +373,8 @@ class PlaneAwardForm extends CFormModel
 			$command->bindParam(':other_str',$this->other_str,PDO::PARAM_STR);
 		if (strpos($sql,':other_sum')!==false)
 			$command->bindParam(':other_sum',$this->other_sum,PDO::PARAM_STR);
+		if (strpos($sql,':old_pay_wage')!==false)
+			$command->bindParam(':old_pay_wage',$this->old_pay_wage,PDO::PARAM_STR);
 
 		if (strpos($sql,':lcu')!==false)
 			$command->bindParam(':lcu',$uid,PDO::PARAM_STR);

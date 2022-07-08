@@ -143,7 +143,13 @@ $this->pageTitle=Yii::app()->name . ' - PlaneAward Form';
 				</div>
 			</div>
 			<div class="form-group">
-				<?php echo $form->labelEx($model,'plane_sum',array('class'=>"col-lg-2 col-lg-offset-4 control-label")); ?>
+				<?php echo $form->labelEx($model,'old_pay_wage',array('class'=>"col-lg-2 control-label")); ?>
+				<div class="col-lg-2">
+				<?php echo $form->numberField($model, 'old_pay_wage',
+					array('readonly'=>($model->isReadOnly()))
+				); ?>
+				</div>
+				<?php echo $form->labelEx($model,'plane_sum',array('class'=>"col-lg-2 control-label")); ?>
 				<div class="col-lg-2">
 				<?php echo $form->textField($model, 'plane_sum',
 					array('readonly'=>(true))

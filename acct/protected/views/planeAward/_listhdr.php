@@ -40,4 +40,14 @@
         ;
         ?>
     </th>
+    <th>
+        <?php echo TbHtml::link($this->getLabelName('old_pay_wage').$this->drawOrderArrow('f.old_pay_wage'),'#',$this->createOrderLink('planeAward-list','f.old_pay_wage'))
+        ;
+        ?>
+    </th>
+    <th>
+        <?php echo TbHtml::link($this->getLabelName('difference').$this->drawOrderArrow('difference'),'#',$this->createOrderLink('planeAward-list','difference'))
+        ;
+        ?>
+    </th>
 </tr>

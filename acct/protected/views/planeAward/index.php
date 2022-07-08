@@ -26,6 +26,17 @@ $this->pageTitle=Yii::app()->name . ' - PlaneAward';
 </section>
 
 <section class="content">
+    <div class="box">
+        <div class="box-body">
+            <div class="btn-group pull-right" role="group">
+                <?php
+                echo TbHtml::button('<span class="fa fa-download"></span> '.Yii::t('dialog','Download'), array(
+                    'submit'=>Yii::app()->createUrl('planeAward/down'),
+                ));
+                ?>
+            </div>
+        </div>
+    </div>
 	<?php
     $modelClass=get_class($model);
     $search_add_html="";

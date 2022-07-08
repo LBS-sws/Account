@@ -51,5 +51,7 @@ return array(
     'money value'=>'做單金額',
     'year month'=>'年資',
     'job value'=>'職務級別',
+    'old shall pay wages'=>'原機製應發工資',
+    'difference'=>'差額',
 );
 ?>
