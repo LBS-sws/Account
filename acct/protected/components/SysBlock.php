@@ -16,7 +16,9 @@ class SysBlock {
 
         foreach ($this->checkItems as $key=>$value) {
             if (!isset($sysblock[$key]) || $sysblock[$key]["bool"]==false) {
-                $result = call_user_func_array('self::'.$value['validation'],array($key,&$value));
+                $function = $value['validation'];
+                $result = $this->$function($key,$value);
+                //$result = call_user_func_array('self::'.$value['validation'],array($key,&$value));
                 $sysblock[$key] = array(
                     "bool"=>$result,
                     'fun'=>$value
