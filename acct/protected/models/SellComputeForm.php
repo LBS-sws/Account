@@ -137,23 +137,23 @@ class SellComputeForm extends CFormModel
             switch ($this->group_type){
                 case 0://0:无
                     $this->span_rate = floatval($row["spanning"]);
-                    $this->bonus_other_rate = floatval($row["otherspanning"]);
+                    $this->span_other_rate = floatval($row["otherspanning"]);
                     if($bool){
-                        $this->span_other_rate = floatval($row["otherspanning"]);
+                        $this->bonus_other_rate = floatval($row["otherspanning"]);
                     }
                     break;
                 case 1://1:商业组
                     $this->span_rate = floatval($row["business_spanning"]);
-                    $this->bonus_other_rate = floatval($row["business_otherspanning"]);
+                    $this->span_other_rate = floatval($row["business_otherspanning"]);
                     if($bool){
-                        $this->span_other_rate = floatval($row["business_otherspanning"]);
+                        $this->bonus_other_rate = floatval($row["business_otherspanning"]);
                     }
                     break;
                 case 2://2:餐饮组
                     $this->span_rate = floatval($row["restaurant_spanning"]);
-                    $this->bonus_other_rate = floatval($row["restaurant_otherspanning"]);
+                    $this->span_other_rate = floatval($row["restaurant_otherspanning"]);
                     if($bool){
-                        $this->span_other_rate = floatval($row["restaurant_otherspanning"]);
+                        $this->bonus_other_rate = floatval($row["restaurant_otherspanning"]);
                     }
                     break;
             }
@@ -982,6 +982,7 @@ class SellComputeForm extends CFormModel
         $new_calc=0;//新增提成比例
         $updateRows = array();
         $span_num=0;//参与计算的单数
+        $performance=1;//跨区提成是否计算
         if($rows){
             foreach ($rows as $row){ //需要先计算新增的总金额
                 if(key_exists($row["id"],$data)){ //该服务需要参与提成计算
@@ -1001,8 +1002,13 @@ class SellComputeForm extends CFormModel
                 }
             }
             //目标金额或者目标单数都不达标
-            if($new_money<$this->span_list['sums']&&$span_num<$this->span_list['sums']){
-                $this->span_rate=0;//跨区提成比例为0
+            if($new_money<$this->span_list['sums']&&$span_num<$this->span_list['sum']){
+                //$this->span_rate=0;//跨区提成比例为0
+                $performance = 0;//不滿足條件，不計算跨區提成
+                $this->bonus_other_rate=0;
+            }else{
+                $performance=1;
+                $this->bonus_other_rate=$this->span_other_rate;
             }
             //计算新增业务提成
             $new_calc=SellComputeList::getNewCalc($edit_money+$new_money,$this->startDate,$this->city);
@@ -1026,9 +1032,13 @@ class SellComputeForm extends CFormModel
         }
         //记录主表修改
         Yii::app()->db->createCommand()->update("acc_service_comm_hdr",array(
+            "performance"=>$performance,
             "luu"=>$uid,
             "lud"=>date("Y-m-d H:i:s")
         ),"id=:id",array(":id"=>$this->id));
+
+        $this->resetBonusSave();//计算奖金库的金额
+
         //修改主表的提成数据
         $this->saveDtlList(array(
             "new_money"=>$new_money,
@@ -1036,9 +1046,8 @@ class SellComputeForm extends CFormModel
             "service_reward"=>$service_reward,
             "point"=>$point,
             "new_calc"=>$new_calc
-        ));
+        ),true);
 
-        $this->resetBonusSave();//计算奖金库的金额
     }
 
     //更改生意额(保存)
@@ -1168,13 +1177,13 @@ class SellComputeForm extends CFormModel
         $royalty = $new_calc+$point+$service_reward;
         //$royaltyList = key_exists("royalty",$_POST)?$_POST["royalty"]:array();//需要手动修改的提成
         if(!empty($rows)){
-            $target = empty($this->span_other_rate)?1:0;//被跨区提成比例为零，放入奖金库
+            $target = empty($this->bonus_other_rate)?1:0;//被跨区提成比例为零，放入奖金库
             foreach ($rows as $row){
                 if(key_exists($row["id"],$data)){ //该服务需要参与提成计算
                     $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
                     $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
                     $amt_sum = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
-                    $amt_sum*=$this->span_other_rate;//跨区
+                    $amt_sum*=$this->bonus_other_rate;//跨区
                     $commission =$amt_sum*$royalty;
                     $commission = round($commission,2);
                     $out_money+=$amt_sum;//跨区业绩
@@ -1223,15 +1232,17 @@ class SellComputeForm extends CFormModel
             foreach ($rows as $row){
                 if(key_exists($row["id"],$data)){ //该服务需要参与提成计算
                     $thisRoyalty = $royalty;
-                    $target = empty($this->span_other_rate)?1:0;//被跨区提成比例为零，放入奖金库
+                    $target = empty($this->bonus_other_rate)?1:0;//被跨区提成比例为零，放入奖金库
                     if(key_exists("history",$row)){ //金额变少了（需要历史提成）
                         $target=0;//更改减少不需要放入奖金库
                         if(empty($row["history"])){//手动修改历史提成
                             $row["history"]["royalty"]=key_exists($row["id"],$royaltyList)?floatval($royaltyList[$row["id"]]):0.01;
                         }
                         $thisRoyalty=$row["history"]["royalty"];
+                        $row['amt_money'] =$row['amt_money']*$this->span_other_rate;//跨区
+                    }else{
+                        $row['amt_money'] =$row['amt_money']*$this->bonus_other_rate;//跨区
                     }
-                    $row['amt_money'] =$row['amt_money']*$this->span_other_rate;//跨区
                     $row['amt_money'] = round($row['amt_money'],2);
                     $commission =$row['amt_money']*$thisRoyalty;
                     $commission = round($commission,2);
@@ -1445,7 +1456,7 @@ class SellComputeForm extends CFormModel
         ));
     }
 
-    private function saveDtlList($data){
+    private function saveDtlList($data,$bool=false){
         $uid = Yii::app()->user->id;
         //修改副表
         $list = array();
@@ -1460,7 +1471,7 @@ class SellComputeForm extends CFormModel
             $list['luu']=$uid;
             Yii::app()->db->createCommand()->update("acc_service_comm_dtl",$list,"hdr_id=:id",array(":id"=>$this->id));
 
-            if(key_exists('new_calc',$list)||key_exists('point',$list)||key_exists('service_reward',$list)){
+            if($bool||key_exists('new_calc',$list)||key_exists('point',$list)||key_exists('service_reward',$list)){
                 //如果提成比例变动，需要刷新数据
                 $this->resetNewAndEditSave($data);
             }
@@ -1490,11 +1501,13 @@ class SellComputeForm extends CFormModel
             (a.other_commission+0>0 and a.othersalesman_id={$this->employee_id}))")->queryAll();
         if($newRows){
             $new_amount = 0;//新增的提成
+            $out_money = 0;//跨区业绩(由於獎金庫的原因，需要重新計算)
             $performance_amount = 0;//跨区新增的提成
             foreach ($newRows as $row){
                 $updateArr = array("luu"=>$uid);
                 if($row["othersalesman_id"]==$this->employee_id){ //跨区
                     $row["other_commission"] = is_numeric($row["other_commission"])?floatval($row["other_commission"]):0;
+                    $out_money+=$row["other_commission"];
                     $other_commission = $row["other_commission"]*$royalty;
                     $other_commission = round($other_commission,2);
                     $performance_amount+=$other_commission;
@@ -1511,6 +1524,7 @@ class SellComputeForm extends CFormModel
             }
             Yii::app()->db->createCommand()->update("acc_service_comm_dtl",array(
                 "new_amount"=>$new_amount,
+                "out_money"=>$out_money,
                 "performance_amount"=>$performance_amount
             ),"hdr_id=:id",array(":id"=>$this->id));
         }
@@ -1523,12 +1537,14 @@ class SellComputeForm extends CFormModel
             (a.other_commission is not null and a.othersalesman_id={$this->employee_id}))")->queryAll();
         if($rows){
             $edit_amount = 0;//更改的提成
+            $performanceedit_money = 0;//跨区更改新增业绩(由於獎金庫的原因，需要重新計算)
             $performanceedit_amount = 0;//跨区更改的提成
             foreach ($rows as $row){
                 if($row["othersalesman_id"]==$this->employee_id){ //跨区
                     $row["royaltys"] = is_numeric($row["royaltys"])?floatval($row["royaltys"]):0;
                     $row["other_commission"] = is_numeric($row["other_commission"])?floatval($row["other_commission"]):0;
                     if($row["other_commission"]>0){ //更改增加
+                        $performanceedit_money+=$row["other_commission"];
                         $other_commission = $row["other_commission"]*$royalty;
                         //刷新數據
                         Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
@@ -1559,6 +1575,7 @@ class SellComputeForm extends CFormModel
             }
             Yii::app()->db->createCommand()->update("acc_service_comm_dtl",array(
                 "edit_amount"=>$edit_amount,
+                "performanceedit_money"=>$performanceedit_money,
                 "performanceedit_amount"=>$performanceedit_amount
             ),"hdr_id=:id",array(":id"=>$this->id));
         }
@@ -1609,29 +1626,44 @@ class SellComputeForm extends CFormModel
         $suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
         $bonusMoney=0;
-        if(empty($this->span_other_rate)){ //被跨区提成点为零，计算奖金库
-            $rows = Yii::app()->db->createCommand()
-                ->select("a.id,a.status,a.amt_paid,a.ctrt_period,a.paid_type,a.b4_amt_paid,a.b4_paid_type")
-                ->from("swoper{$suffix}.swo_service a")
-                ->where("(
+        $rows = Yii::app()->db->createCommand()
+            ->select("a.id,a.status,a.amt_paid,a.ctrt_period,a.paid_type,a.b4_amt_paid,a.b4_paid_type,a.other_commission")
+            ->from("swoper{$suffix}.swo_service a")
+            ->where("(
                 (a.status='N' and a.first_dt between '{$this->startDate}' and '{$this->endDate}')
                  or 
                 (a.status='A' and a.status_dt between '{$this->startDate}' and '{$this->endDate}')
-                ) and a.target=1 and a.othersalesman_id={$this->employee_id}")
-                ->queryAll();
-            if($rows){
-                foreach ($rows as $row){
-                    $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
-                    $row['b4_amt_paid'] = is_numeric($row['b4_amt_paid'])?floatval($row['b4_amt_paid']):0;
-                    $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
-                    $before_sum = $row['b4_paid_type']=="M"?$row['b4_amt_paid']*$row['ctrt_period']:$row['b4_amt_paid'];
-                    $amt_money = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
-                    $amt_money-= $row["status"]=="A"?$before_sum:0;//“更改”计算的是变动金额
-                    $bonusMoney+=$amt_money*$this->bonus_other_rate*0.04;
+                ) and a.other_commission is not null and a.othersalesman_id={$this->employee_id}")
+            ->queryAll();
+        if($rows){
+            foreach ($rows as $row){
+                if($row["other_commission"]<0){
+                    continue;//減少不參與計算
+                }
+                $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
+                $row['b4_amt_paid'] = is_numeric($row['b4_amt_paid'])?floatval($row['b4_amt_paid']):0;
+                $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
+                $before_sum = $row['b4_paid_type']=="M"?$row['b4_amt_paid']*$row['ctrt_period']:$row['b4_amt_paid'];
+                $amt_money = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
+                $amt_money-= $row["status"]=="A"?$before_sum:0;//“更改”计算的是变动金额
+                $amt_money*=$this->span_other_rate;
+                if(empty($this->bonus_other_rate)){ //被跨区提成点为零，计算奖金库
+                    Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
+                        "other_commission"=>0,
+                        "target"=>1,
+                        "luu"=>$uid
+                    ),"id=:id",array(":id"=>$row["id"]));
+                    $bonusMoney+=$amt_money*0.04;
+                }else{
+                    Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
+                        "target"=>0,
+                        "other_commission"=>$amt_money,
+                        "luu"=>$uid
+                    ),"id=:id",array(":id"=>$row["id"]));
                 }
             }
-            $bonusMoney=round($bonusMoney,2);
         }
+        $bonusMoney=round($bonusMoney,2);
         $year = $this->year;
         $month = $this->month;
         $month++;
