@@ -47,7 +47,7 @@ class PlaneSetJobForm extends CFormModel
         $list = array();
         if(!empty($this->info_list)){
             foreach ($this->info_list as $row){
-                if(!empty($row["value_name"])&&!empty($row["value_money"])){
+                if($row["value_name"]!==""&&$row["value_money"]!==""&&is_numeric($row["value_money"])){
                     $row["value_money"] = intval($row["value_money"]);
                     $list[]=$row;
                 }
@@ -185,7 +185,7 @@ class PlaneSetJobForm extends CFormModel
                     $command->bindParam(':value_name',$value_name,PDO::PARAM_STR);
                 }
                 if (strpos($sql,':value_money')!==false) {
-                    $value_money = General::toMyNumber($row['value_money']);
+                    $value_money = is_numeric($row['value_money'])?$row['value_money']:0;
                     $command->bindParam(':value_money',$value_money,PDO::PARAM_STR);
                 }
                 $command->execute();

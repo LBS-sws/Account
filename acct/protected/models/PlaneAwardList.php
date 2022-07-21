@@ -9,11 +9,12 @@ class PlaneAwardList extends CListPageModel
     public $city_name;
 
     public function init(){
+        $date = strtotime("- 1 months");
         if(empty($this->year)||!is_numeric($this->year)){
-            $this->year = date("Y");
+            $this->year = date("Y",$date);
         }
         if(empty($this->month)||!is_numeric($this->month)){
-            $this->month = date("n");
+            $this->month = date("n",$date);
         }
     }
 

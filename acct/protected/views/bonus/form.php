@@ -41,9 +41,11 @@ $this->pageTitle=Yii::app()->name . ' - Bonus Report';
 <!--                    <p style="text-indent: 15px;">2.最好按顺序进行计算提成，首先需要计算新生意额。</p>-->
                 </div>
                 <div class="btn-group pull-right" role="group">
+                    <!-- 改成了自动计算，不需要此按钮
                     <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save1'), array(
                             'submit'=>Yii::app()->createUrl('bonus/save',array('index'=>$index)))
                     ); ?>
+                    -->
                     <?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
                         'submit'=>Yii::app()->createUrl('bonus/index')));
                     ?>

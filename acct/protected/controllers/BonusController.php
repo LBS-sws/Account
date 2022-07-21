@@ -24,7 +24,7 @@ class BonusController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('new','edit','delete','save'),
+				'actions'=>array('new','edit','delete'),
 				'expression'=>array('BonusController','allowReadWrite'),
 			),
 			array('allow', 

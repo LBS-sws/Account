@@ -90,19 +90,16 @@ class PlaneAwardForm extends CFormModel
                 ->where("id=:id",array(":id"=>$arr["other_id"]))->queryRow();
                 if($row&&!empty($arr["other_num"])){
                     $arr["other_num"] = round($arr["other_num"],2);
-                    $this->other_str[]=$row["set_name"]." ({$arr["other_num"]})";
-                    $this->other_sum+=$arr["other_num"];
-                    $list[]=$arr;
+                    $list[]=$arr;//$row['uflag']
+                    if($arr["uflag"]!="D"){//不是刪除的時候
+                        $this->other_str[]=$row["set_name"]." ({$arr["other_num"]})";
+                        $this->other_sum+=$arr["other_num"];
+                    }
                 }
             }
         }
-        $this->other_str = implode(",",$this->other_str);
-        if(empty($list)){
-            $this->addError($attribute, "配置详情不能为空");
-            return false;
-        }else{
-            $this->info_list = $list;
-        }
+        $this->other_str = empty($this->other_str)?"":implode(",",$this->other_str);
+        $this->info_list = $list;
     }
 
     public function validateID($attribute, $params){
@@ -287,61 +284,63 @@ class PlaneAwardForm extends CFormModel
 
         $uid = Yii::app()->user->id;
 
-        foreach ($this->info_list as $row) {
-            $sql = '';
-            switch ($this->scenario) {
-                case 'delete':
-                    $sql = "delete from acc_plane_info where plane_id = :plane_id";
-                    break;
-                case 'new':
-                    if ($row['uflag']=='Y') {
-                        $sql = "insert into acc_plane_info(
+        if(!empty($this->info_list)){
+            foreach ($this->info_list as $row) {
+                $sql = '';
+                switch ($this->scenario) {
+                    case 'delete':
+                        $sql = "delete from acc_plane_info where plane_id = :plane_id";
+                        break;
+                    case 'new':
+                        if ($row['uflag']=='Y') {
+                            $sql = "insert into acc_plane_info(
 									plane_id, other_id, other_num
 								) values (
 									:plane_id, :other_id, :other_num
 								)";
-                    }
-                    break;
-                case 'edit':
-                    switch ($row['uflag']) {
-                        case 'D':
-                            $sql = "delete from acc_plane_info where id = :id";
-                            break;
-                        case 'Y':
-                            $sql = ($row['id']==0)
-                                ?
-                                "insert into acc_plane_info(
+                        }
+                        break;
+                    case 'edit':
+                        switch ($row['uflag']) {
+                            case 'D':
+                                $sql = "delete from acc_plane_info where id = :id";
+                                break;
+                            case 'Y':
+                                $sql = ($row['id']==0)
+                                    ?
+                                    "insert into acc_plane_info(
 										plane_id, other_id, other_num
 									) values (
 										:plane_id, :other_id, :other_num
 									)"
-                                :
-                                "update acc_plane_info set
+                                    :
+                                    "update acc_plane_info set
 										other_id = :other_id,
 										other_num = :other_num
 									where id = :id and plane_id=:plane_id
 									";
-                            break;
-                    }
-                    break;
-            }
+                                break;
+                        }
+                        break;
+                }
 
-            if ($sql != '') {
+                if ($sql != '') {
 //                print_r('<pre>');
 //                print_r($sql);exit();
-                $command=$connection->createCommand($sql);
-                if (strpos($sql,':id')!==false)
-                    $command->bindParam(':id',$row['id'],PDO::PARAM_INT);
-                if (strpos($sql,':plane_id')!==false)
-                    $command->bindParam(':plane_id',$this->id,PDO::PARAM_INT);
-                if (strpos($sql,':other_id')!==false)
-                    $command->bindParam(':other_id',$row['other_id'],PDO::PARAM_INT);
+                    $command=$connection->createCommand($sql);
+                    if (strpos($sql,':id')!==false)
+                        $command->bindParam(':id',$row['id'],PDO::PARAM_INT);
+                    if (strpos($sql,':plane_id')!==false)
+                        $command->bindParam(':plane_id',$this->id,PDO::PARAM_INT);
+                    if (strpos($sql,':other_id')!==false)
+                        $command->bindParam(':other_id',$row['other_id'],PDO::PARAM_INT);
 
-                if (strpos($sql,':other_num')!==false) {
-                    $other_num = $row['other_num'];
-                    $command->bindParam(':other_num',$other_num,PDO::PARAM_STR);
+                    if (strpos($sql,':other_num')!==false) {
+                        $other_num = $row['other_num'];
+                        $command->bindParam(':other_num',$other_num,PDO::PARAM_STR);
+                    }
+                    $command->execute();
                 }
-                $command->execute();
             }
         }
     }
