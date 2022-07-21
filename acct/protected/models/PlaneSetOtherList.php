@@ -21,11 +21,11 @@ class PlaneSetOtherList extends CListPageModel
         $city = Yii::app()->user->city();
 		$sql1 = "select * 
 				from acc_plane_set_other 
-				where 1=1  
+				where city='{$city}'  
 			";
 		$sql2 = "select count(id)
 				from acc_plane_set_other 
-				where 1=1  
+				where city='{$city}'  
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {

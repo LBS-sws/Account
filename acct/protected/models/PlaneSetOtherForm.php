@@ -42,7 +42,7 @@ class PlaneSetOtherForm extends CFormModel
 	public function retrieveData($index){
         $city = Yii::app()->user->city();
 		$suffix = Yii::app()->params['envSuffix'];
-		$sql = "select * from acc_plane_set_other where id='".$index."'";
+		$sql = "select * from acc_plane_set_other where id='".$index."' and city='$city'";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->id = $row['id'];
@@ -55,9 +55,10 @@ class PlaneSetOtherForm extends CFormModel
 	}
 
     public static function getPlaneOtherList($id){
+        $city = Yii::app()->user->city();
         $list = array(""=>"");
         $rows = Yii::app()->db->createCommand()->select("id,set_name")->from("acc_plane_set_other")
-            ->where("z_display=1 or id=:id",array(":id"=>$id))->order("id desc")->queryAll();
+            ->where("(z_display=1 and city=:city) or id=:id",array(":id"=>$id,":city"=>$city))->order("id desc")->queryAll();
         if($rows){
             foreach ($rows as $row){
                 $list[$row["id"]] = $row["set_name"];
@@ -85,7 +86,7 @@ class PlaneSetOtherForm extends CFormModel
 		$sql = '';
 		switch ($this->scenario) {
 			case 'delete':
-				$sql = "delete from acc_plane_set_other where id = :id";
+				$sql = "delete from acc_plane_set_other where id = :id and city=:city";
 				break;
 			case 'new':
 				$sql = "insert into acc_plane_set_other(
@@ -97,7 +98,7 @@ class PlaneSetOtherForm extends CFormModel
 					set_name = :set_name, 
 					z_display = :z_display,
 					luu = :luu
-					where id = :id";
+					where id = :id and city=:city";
 				break;
 		}
 
