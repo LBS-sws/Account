@@ -577,12 +577,12 @@ class General {
 		$tencent = ($remain - $cent) / 10;
 		$rtn = self::numberToChinese($dollar).'圓';
 		$rtn .= $tencent==0 ? '' : self::numberToChinese((string)$tencent).'角';
-		$rtn .= $cent==0 ? '' : self::numberToChinese((string)$cent).'仙';
+		$rtn .= $cent==0 ? '' : self::numberToChinese((string)$cent).'分';
 		return $rtn;
 	}
 	
 	public static function numberToChinese($input) {
-		$number = ['零', '壹', '貳', '參', '肆', '伍', '陸', '柒', '捌', '玖'];
+		$number = ['零', '壹', '貳', '叁', '肆', '伍', '陸', '柒', '捌', '玖'];
 		$unit = ['', '拾', '佰', '仟'];
 		$unit2 = ['', '萬', '億', '兆'];
  
