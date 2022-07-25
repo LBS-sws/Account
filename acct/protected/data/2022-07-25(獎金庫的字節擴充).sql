@@ -1,0 +1,2 @@
+ALTER TABLE acc_bonus MODIFY lcu varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE acc_bonus MODIFY luu varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
