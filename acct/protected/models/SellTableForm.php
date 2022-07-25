@@ -321,8 +321,8 @@ class SellTableForm extends SellComputeForm{
             (a.status!='N' and a.status_dt between '{$this->startDate}' and '{$this->endDate}')
             ) and 
             ((a.commission is not null and a.salesman_id={$this->employee_id}) or 
-            (a.other_commission is not null and a.othersalesman_id={$this->employee_id}))
-            and a.target!=1")
+            (a.target!=1 and a.other_commission is not null and a.othersalesman_id={$this->employee_id}))
+            ")
             ->order("service_date desc,id desc")->queryAll();
         if($rows){
             $this->serviceList[]=array('title'=>Yii::t("salestable","customer service"));
