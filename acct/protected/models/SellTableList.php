@@ -49,13 +49,14 @@ class SellTableList extends CListPageModel
 		$suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city();
         $cityList = Yii::app()->user->city_allow();
+        $leaveTime = date("Y/m/01",strtotime("{$this->year}/{$this->month}/01"));
 		$sql1 = "select b.name,b.code,c.name as dept_name,a.id,e.name as city_name,f.examine
 				from acc_service_comm_hdr a 
 				LEFT JOIN hr$suffix.hr_employee b  on b.code=a.employee_code
                 LEFT JOIN hr$suffix.hr_dept c on b.position=c.id  
                 LEFT JOIN security$suffix.sec_city e on a.city=e.code 
                 LEFT JOIN acc_product f on a.id=f.service_hdr_id 
-				where  a.city in ({$cityList}) and a.year_no= {$this->year} and a.month_no={$this->month}
+				where  a.city in ({$cityList}) and a.year_no= {$this->year} and a.month_no={$this->month} and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
 			";
 		$sql2 = "select count(a.id)
 				from acc_service_comm_hdr a 
@@ -63,7 +64,7 @@ class SellTableList extends CListPageModel
                 LEFT JOIN hr$suffix.hr_dept c on b.position=c.id  
                 LEFT JOIN security$suffix.sec_city e on a.city=e.code 
                 LEFT JOIN acc_product f on a.id=f.service_hdr_id 
-				where a.city in ({$cityList}) and a.year_no= {$this->year} and a.month_no={$this->month}
+				where a.city in ({$cityList}) and a.year_no= {$this->year} and a.month_no={$this->month} and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {

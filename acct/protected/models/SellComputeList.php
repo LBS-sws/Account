@@ -77,20 +77,21 @@ class SellComputeList extends CListPageModel
             $citySql = " a.city='{$city}'";
         }
         $moneysSql = $this->getCountMoneySql();
+        $leaveTime = date("Y/m/01",strtotime("{$this->year}/{$this->month}/01"));
 		$sql1 = "select b.name,b.code,c.name as dept_name,a.id,e.name as city_name {$moneysSql}
 				from acc_service_comm_hdr a 
 				LEFT JOIN hr$suffix.hr_employee b  on b.code=a.employee_code
                 LEFT JOIN hr$suffix.hr_dept c on b.position=c.id  
                 LEFT JOIN security$suffix.sec_city e on a.city=e.code 
                 LEFT JOIN acc_service_comm_dtl f on f.hdr_id=a.id 
-				where {$citySql} and a.year_no= {$this->year} and a.month_no={$this->month}
+				where {$citySql} and a.year_no= {$this->year} and a.month_no={$this->month} and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
 			";
 		$sql2 = "select count(a.id)
 				from acc_service_comm_hdr a 
 				LEFT JOIN hr$suffix.hr_employee b  on b.code=a.employee_code
                 LEFT JOIN hr$suffix.hr_dept c on b.position=c.id  
                 LEFT JOIN security$suffix.sec_city e on a.city=e.code 
-				where {$citySql} and a.year_no= {$this->year} and a.month_no={$this->month}
+				where {$citySql} and a.year_no= {$this->year} and a.month_no={$this->month} and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
