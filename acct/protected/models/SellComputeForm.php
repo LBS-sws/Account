@@ -135,7 +135,7 @@ class SellComputeForm extends CFormModel
                 ->where("a.status='N' and a.commission is not null and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
                 ->queryScalar();
             //金额达标或者参加计算的单数达标(僅針對被跨區限制)
-            $this->span_other_rate = 0;
+            $this->bonus_other_rate = 0;
             $bool = $new_money>=$row['sums']||$serviceNum>=$row['sum'];
             switch ($this->group_type){
                 case 0://0:无
@@ -267,13 +267,14 @@ class SellComputeForm extends CFormModel
     }
 
     //新增
-    public function newList(){
+    public function newList($checkBool=false){
+        $checkSql = $checkBool?"a.commission is not null and ":"";//筛选已经选中的数据
         $suffix = Yii::app()->params['envSuffix'];
         $rows = Yii::app()->db->createCommand()
         ->select("a.*,b.description as type_desc")
         ->from("swoper{$suffix}.swo_service a")
         ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
-        ->where("a.status='N' and a.city='{$this->city}' and b.sales_rate=1 and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
+        ->where("{$checkSql} a.status='N' and a.city='{$this->city}' and b.sales_rate=1 and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
         ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
         return $rows?$rows:array();
     }
@@ -339,13 +340,14 @@ class SellComputeForm extends CFormModel
     }
 
     //跨区新增
-    public function performanceList(){
+    public function performanceList($checkBool=false){
+        $checkSql = $checkBool?"a.other_commission is not null and ":"";//筛选已经选中的数据
         $suffix = Yii::app()->params['envSuffix'];
         $rows = Yii::app()->db->createCommand()
         ->select("a.*,b.description as type_desc")
         ->from("swoper{$suffix}.swo_service a")
         ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
-        ->where("a.status='N' and a.city='{$this->city}' and b.sales_rate=1 and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and a.othersalesman_id={$this->employee_id}")
+        ->where("{$checkSql} a.status='N' and a.city='{$this->city}' and b.sales_rate=1 and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and a.othersalesman_id={$this->employee_id}")
         ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
         return $rows?$rows:array();
     }
@@ -404,14 +406,15 @@ class SellComputeForm extends CFormModel
     }
 
     //续约
-    public function renewalList(){
+    public function renewalList($checkBool=false){
+        $checkSql = $checkBool?"a.commission is not null and ":"";//筛选已经选中的数据
         $suffix = Yii::app()->params['envSuffix'];
         $rows = Yii::app()->db->createCommand()
         ->select("a.*,b.description as type_desc,f.rpt_cat as nature_rpt,f.description as nature_name")
         ->from("swoper{$suffix}.swo_service a")
         ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
         ->leftJoin("swoper{$suffix}.swo_nature f","a.nature_type=f.id")
-        ->where("a.status='C' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id}")
+        ->where("{$checkSql} a.status='C' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id}")
         ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
         return $rows?$rows:array();
     }
@@ -476,15 +479,16 @@ class SellComputeForm extends CFormModel
     }
 
     //变更
-    public function editList(){
+    public function editList($checkBool=false){
+        $checkSql = $checkBool?"a.commission is not null and ":"";//筛选已经选中的数据
         $suffix = Yii::app()->params['envSuffix'];
         $rows = Yii::app()->db->createCommand()
         ->select("a.*,b.description as type_desc")
         ->from("swoper{$suffix}.swo_service a")
         ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
-        ->where("a.status='A' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
+        ->where("{$checkSql} a.status='A' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
         ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
-        if($rows){
+        if($rows&&!$checkBool){
             foreach ($rows as &$row){
                 $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
                 $row['b4_amt_paid'] = is_numeric($row['b4_amt_paid'])?floatval($row['b4_amt_paid']):0;
@@ -577,15 +581,16 @@ class SellComputeForm extends CFormModel
     }
 
     //跨区变更
-    public function performanceeditList(){
+    public function performanceeditList($checkBool=false){
+        $checkSql = $checkBool?"a.other_commission is not null and ":"";//筛选已经选中的数据
         $suffix = Yii::app()->params['envSuffix'];
         $rows = Yii::app()->db->createCommand()
         ->select("a.*,b.description as type_desc")
         ->from("swoper{$suffix}.swo_service a")
         ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
-        ->where("a.status='A' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.othersalesman_id={$this->employee_id}")
+        ->where("{$checkSql} a.status='A' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.othersalesman_id={$this->employee_id}")
         ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
-        if($rows){
+        if($rows&&!$checkBool){
             foreach ($rows as &$row){
                 $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
                 $row['b4_amt_paid'] = is_numeric($row['b4_amt_paid'])?floatval($row['b4_amt_paid']):0;
@@ -670,14 +675,15 @@ class SellComputeForm extends CFormModel
     }
 
     //终止
-    public function endList(){ //1：终止服务  2：续约终止
+    public function endList($checkBool=false){ //1：终止服务  2：续约终止
+        $checkSql = $checkBool?"a.commission is not null and ":"";//筛选已经选中的数据
         $suffix = Yii::app()->params['envSuffix'];
         $list = array('stop'=>array(),'renewal'=>array());
         $rows = Yii::app()->db->createCommand()
         ->select("a.*,b.description as type_desc")
         ->from("swoper{$suffix}.swo_service a")
         ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
-        ->where("a.status='T' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
+        ->where("{$checkSql} a.status='T' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
         ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
         if($rows){
             foreach ($rows as $row){
@@ -691,7 +697,7 @@ class SellComputeForm extends CFormModel
                 $row['amt_money']=round($row['amt_money'],2)*-1;
                 $arr = SellComputeList::getBeforeServiceList($row,'C');
                 if(empty($arr)){
-                    $arr = SellComputeList::getBeforeServiceList($row,'N');
+                    $arr = !$checkBool?SellComputeList::getBeforeServiceList($row,'N'):array();
                     $row["history"]=$arr;
                     $list['stop'][]=$row;
                 }else{//续约终止
@@ -822,15 +828,16 @@ class SellComputeForm extends CFormModel
     }
 
     //跨区终止
-    public function performanceendList(){
+    public function performanceendList($checkBool=false){
+        $checkSql = $checkBool?"a.other_commission is not null and ":"";//筛选已经选中的数据
         $suffix = Yii::app()->params['envSuffix'];
         $rows = Yii::app()->db->createCommand()
         ->select("a.*,b.description as type_desc")
         ->from("swoper{$suffix}.swo_service a")
         ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
-        ->where("a.status='T' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.othersalesman_id={$this->employee_id}")
+        ->where("{$checkSql} a.status='T' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.othersalesman_id={$this->employee_id}")
         ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
-        if($rows){
+        if($rows&&!$checkBool){
             foreach ($rows as &$row){
                 $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
                 $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
@@ -906,14 +913,15 @@ class SellComputeForm extends CFormModel
     }
 
     //产品生意额
-    public function productList(){
+    public function productList($checkBool=false){
+        $checkSql = $checkBool?"a.commission=1 and ":"";//筛选已经选中的数据
         $suffix = Yii::app()->params['envSuffix'];
         $rows = Yii::app()->db->createCommand()
         ->select("a.id,a.commission,a.money,a.qty,f.description,f.sales_products,b.log_dt,b.company_name")
         ->from("swoper$suffix.swo_logistic_dtl a")
         ->leftJoin("swoper$suffix.swo_logistic b","a.log_id=b.id")
         ->leftJoin("swoper{$suffix}.swo_task f","a.task=f.id")
-        ->where("b.log_dt between '{$this->startDate}' and '{$this->endDate}' and b.salesman='{$this->staff}' and b.city ='{$this->city}' and a.qty>0 and a.money>0")
+        ->where("{$checkSql} b.log_dt between '{$this->startDate}' and '{$this->endDate}' and b.salesman='{$this->staff}' and b.city ='{$this->city}' and a.qty>0 and a.money>0")
         ->order("f.sales_products asc,b.log_dt desc")->queryAll();
         return $rows?$rows:array();
     }
@@ -1011,7 +1019,7 @@ class SellComputeForm extends CFormModel
 	}
 
     //新增生意额(保存)
-    private function newSave($data){
+    private function newSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
         $rows = $this->newList();
@@ -1068,7 +1076,7 @@ class SellComputeForm extends CFormModel
                 //计算
                 Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                     "royalty"=>$royalty,
-                    "commission"=>$updateRow['amt_sum'],
+                    "commission"=>$updateRow['amt_sum']>=0?$updateRow['amt_sum']:$commission,
                     "luu"=>$uid
                 ),"id=:id",array(":id"=>$updateRow["id"]));
             }
@@ -1080,8 +1088,6 @@ class SellComputeForm extends CFormModel
             "lud"=>date("Y-m-d H:i:s")
         ),"id=:id",array(":id"=>$this->id));
 
-        $this->resetBonusSave();//计算奖金库的金额
-
         //修改主表的提成数据
         $this->saveDtlList(array(
             "new_money"=>$new_money,
@@ -1089,12 +1095,13 @@ class SellComputeForm extends CFormModel
             "service_reward"=>$service_reward,
             "point"=>$point,
             "new_calc"=>$new_calc
-        ),true);
+        ));
 
+        $this->simulationClick($for_bool,array("new"));
     }
 
     //更改生意额(保存)
-    private function editSave($data){
+    private function editSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
         $rows = $this->editList();
@@ -1149,7 +1156,7 @@ class SellComputeForm extends CFormModel
                 //计算
                 Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                     "royalty"=>$updateRoyalty,
-                    "commission"=>$updateRow['amt_money'],
+                    "commission"=>$updateRow['amt_money']>=0?$updateRow['amt_money']:$commission,
                     "luu"=>$uid
                 ),"id=:id",array(":id"=>$updateRow["id"]));
             }
@@ -1160,10 +1167,11 @@ class SellComputeForm extends CFormModel
             "new_calc"=>$new_calc
         ));
 
+        $this->simulationClick($for_bool,array("new","edit"));
     }
 
     //终止生意额(保存)
-    private function endSave($data){
+    private function endSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
         $rows = $this->endList();
@@ -1186,7 +1194,7 @@ class SellComputeForm extends CFormModel
                     //计算
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                         "royalty"=>$row["history"]["royalty"],
-                        "commission"=>$row['amt_money'],
+                        "commission"=>$row['amt_money']>=0?$row['amt_money']:$commission,
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }else{
@@ -1204,7 +1212,7 @@ class SellComputeForm extends CFormModel
     }
 
     //跨区新增生意额(保存)
-    private function performanceSave($data){
+    private function performanceSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
         $rows = $this->performanceList();
@@ -1226,16 +1234,16 @@ class SellComputeForm extends CFormModel
                     $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
                     $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
                     $amt_sum = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
-                    $amt_sum*=$this->bonus_other_rate;//跨区
+                    $amt_sum*=$this->span_other_rate;//跨区
                     $commission =$amt_sum*$royalty;
                     $commission = round($commission,2);
-                    $out_money+=$amt_sum;//跨区业绩
-                    $performance_amount+=$commission;//跨区新增的提成金额
+                    $out_money+=$target==1?0:$amt_sum;//跨区业绩
+                    $performance_amount+=$target==1?0:$commission;//跨区新增的提成金额
                     //计算
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                         "royaltys"=>$royalty,
                         "target"=>$target,
-                        "other_commission"=>$amt_sum,
+                        "other_commission"=>$amt_sum>=0?$amt_sum:$commission,
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }else{
@@ -1256,7 +1264,7 @@ class SellComputeForm extends CFormModel
     }
 
     //跨区更改生意额(保存)
-    private function performanceeditSave($data){
+    private function performanceeditSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
         $rows = $this->performanceeditList();
@@ -1282,20 +1290,18 @@ class SellComputeForm extends CFormModel
                             $row["history"]["royalty"]=key_exists($row["id"],$royaltyList)?floatval($royaltyList[$row["id"]]):0.01;
                         }
                         $thisRoyalty=$row["history"]["royalty"];
-                        $row['amt_money'] =$row['amt_money']*$this->span_other_rate;//跨区
-                    }else{
-                        $row['amt_money'] =$row['amt_money']*$this->bonus_other_rate;//跨区
                     }
+                    $row['amt_money'] =$row['amt_money']*$this->span_other_rate;//跨区
                     $row['amt_money'] = round($row['amt_money'],2);
                     $commission =$row['amt_money']*$thisRoyalty;
                     $commission = round($commission,2);
-                    $performanceedit_amount+=$commission;//跨区更改提成金额
-                    $performanceedit_money+=$row['amt_money']>0?$row['amt_money']:0;//跨区更改业绩
+                    $performanceedit_amount+=$target==1?0:$commission;//跨区更改提成金额
+                    $performanceedit_money+=$row['amt_money']>0&&$target===0?$row['amt_money']:0;//跨区更改业绩
                     //计算
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                         "royaltys"=>$thisRoyalty,
                         "target"=>$target,
-                        "other_commission"=>$row['amt_money'],
+                        "other_commission"=>$row['amt_money']>=0?$row['amt_money']:$commission,
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }else{
@@ -1317,7 +1323,7 @@ class SellComputeForm extends CFormModel
     }
 
     //跨区终止生意额(保存)
-    private function performanceendSave($data){
+    private function performanceendSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
         $rows = $this->performanceendList();
@@ -1337,7 +1343,7 @@ class SellComputeForm extends CFormModel
                     //计算
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                         "royaltys"=>$row["history"]["royalty"],
-                        "other_commission"=>$row['amt_money'],
+                        "other_commission"=>$row['amt_money']>=0?$row['amt_money']:$commission,
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }else{
@@ -1355,7 +1361,7 @@ class SellComputeForm extends CFormModel
     }
 
     //续约生意额(保存)
-    private function renewalSave($data){
+    private function renewalSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
         $rows = $this->renewalList();
@@ -1389,7 +1395,7 @@ class SellComputeForm extends CFormModel
                     //计算
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                         "royalty"=>$royalty,
-                        "commission"=>$row['amt_money'],
+                        "commission"=>$row['amt_money']>=0?$row['amt_money']:$commission,
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }else{
@@ -1408,7 +1414,7 @@ class SellComputeForm extends CFormModel
     }
 
     //续约终止生意额(保存)
-    private function renewalendSave($data){
+    private function renewalendSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
         $rows = $this->endList();
@@ -1431,7 +1437,7 @@ class SellComputeForm extends CFormModel
                     //计算
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
                         "royalty"=>$row["history"]["royalty"],
-                        "commission"=>$row['amt_money'],
+                        "commission"=>$row['amt_money']>=0?$row['amt_money']:$commission,
                         "luu"=>$uid
                     ),"id=:id",array(":id"=>$row["id"]));
                 }else{
@@ -1449,7 +1455,7 @@ class SellComputeForm extends CFormModel
     }
 
     //产品生意额(保存)
-    private function productSave($data){
+    private function productSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
         $rows = $this->productList();
@@ -1499,7 +1505,7 @@ class SellComputeForm extends CFormModel
         ));
     }
 
-    private function saveDtlList($data,$bool=false){
+    private function saveDtlList($data){
         $uid = Yii::app()->user->id;
         //修改副表
         $list = array();
@@ -1507,6 +1513,7 @@ class SellComputeForm extends CFormModel
             if(key_exists($key,$this->dtl_list)){
                 if(floatval($this->dtl_list[$key])!=$value){
                     $list[$key] = $value; //有数据变动，需要修改
+                    $this->dtl_list[$key] = $value;
                 }
             }
         }
@@ -1514,155 +1521,48 @@ class SellComputeForm extends CFormModel
             $list['luu']=$uid;
             Yii::app()->db->createCommand()->update("acc_service_comm_dtl",$list,"hdr_id=:id",array(":id"=>$this->id));
 
-            if($bool||key_exists('new_calc',$list)||key_exists('point',$list)||key_exists('service_reward',$list)){
-                //如果提成比例变动，需要刷新数据
-                $this->resetNewAndEditSave($data);
-            }
             if(key_exists('point',$list)||key_exists('new_money',$list)||key_exists('edit_money',$list)){
-                //如果销售提成激励点、新增业绩、更改新增业绩变动，需要刷新数据
-                $this->resetProductSave($data);
-
                 $this->resetInstallSave($data);//刷新装机金额
             }
         }
     }
 
-    //如果提成比例变动，需要刷新数据(非產品的所有服務)
-    private function resetNewAndEditSave($data){
-        $suffix = Yii::app()->params['envSuffix'];
-        $uid = Yii::app()->user->id;
-        $new_calc =key_exists('new_calc',$data)?$data['new_calc']:$this->dtl_list['new_calc'];
-        $point =key_exists('point',$data)?$data['point']:$this->dtl_list['point'];
-        $service_reward =key_exists('service_reward',$data)?$data['service_reward']:$this->dtl_list['service_reward'];
-        $royalty = $new_calc+$point+$service_reward;
-        //修改新增及跨区新增
-        $newRows = Yii::app()->db->createCommand()
-            ->select("a.id,a.target,a.other_commission,a.royaltys,a.commission,a.royalty,a.othersalesman_id")
-            ->from("swoper{$suffix}.swo_service a")
-            ->where("a.status = 'N' and a.city='{$this->city}' and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and 
-            ((a.commission+0>0 and a.salesman_id={$this->employee_id}) or 
-            (a.other_commission+0>0 and a.othersalesman_id={$this->employee_id}))")->queryAll();
-        if($newRows){
-            $new_amount = 0;//新增的提成
-            $out_money = 0;//跨区业绩(由於獎金庫的原因，需要重新計算)
-            $performance_amount = 0;//跨区新增的提成
-            foreach ($newRows as $row){
-                $row["other_commission"] = $row["target"]==1?0:$row["other_commission"];//奖金库不计算提成
-                $updateArr = array("luu"=>$uid);
-                if($row["othersalesman_id"]==$this->employee_id){ //跨区
-                    $row["other_commission"] = is_numeric($row["other_commission"])?floatval($row["other_commission"]):0;
-                    $out_money+=$row["other_commission"];
-                    $other_commission = $row["other_commission"]*$royalty;
-                    $other_commission = round($other_commission,2);
-                    $performance_amount+=$other_commission;
-                    $updateArr["royaltys"]=$royalty;
-                }else{
-                    $row["commission"] = is_numeric($row["commission"])?floatval($row["commission"]):0;
-                    $commission = $row["commission"]*$royalty;
-                    $commission = round($commission,2);
-                    $new_amount+=$commission;
-                    $updateArr["royalty"]=$royalty;
+    //模拟点击其它服务
+    private function simulationClick($bool=true,$notIdList){
+        if($bool){
+            $clickMenu=array(
+                "new"=>array("list"=>"newList","save"=>"newSave"),
+                "edit"=>array("list"=>"editList","save"=>"editSave"),
+                "end"=>array("list"=>"endList","save"=>"endSave"),
+                "performance"=>array("list"=>"performanceList","save"=>"performanceSave"),
+                "performanceedit"=>array("list"=>"performanceeditList","save"=>"performanceeditSave"),
+                "performanceend"=>array("list"=>"performanceendList","save"=>"performanceendSave"),
+                "renewal"=>array("list"=>"renewalList","save"=>"renewalSave"),
+                "renewalend"=>array("list"=>"endList","save"=>"renewalendSave"),
+                "product"=>array("list"=>"productList","save"=>"productSave"),
+            );
+            foreach ($clickMenu as $id=>$arr){
+                if(key_exists($id,$notIdList)){
+                    continue;
                 }
-                //刷新數據
-                Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",$updateArr,"id=:id",array(":id"=>$row["id"]));
-            }
-            Yii::app()->db->createCommand()->update("acc_service_comm_dtl",array(
-                "new_amount"=>$new_amount,
-                "out_money"=>$out_money,
-                "performance_amount"=>$performance_amount
-            ),"hdr_id=:id",array(":id"=>$this->id));
-        }
-        //修改更改及跨区更改
-        $rows = Yii::app()->db->createCommand()
-            ->select("a.id,a.target,a.other_commission,a.royaltys,a.commission,a.royalty,a.othersalesman_id")
-            ->from("swoper{$suffix}.swo_service a")
-            ->where("a.status ='A' and a.city='{$this->city}' and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and 
-            ((a.commission is not null and a.salesman_id={$this->employee_id}) or 
-            (a.other_commission is not null and a.othersalesman_id={$this->employee_id}))")->queryAll();
-        if($rows){
-            $edit_amount = 0;//更改的提成
-            $performanceedit_money = 0;//跨区更改新增业绩(由於獎金庫的原因，需要重新計算)
-            $performanceedit_amount = 0;//跨区更改的提成
-            foreach ($rows as $row){
-                $row["other_commission"] = $row["target"]==1?0:$row["other_commission"];//奖金库不计算提成
-                if($row["othersalesman_id"]==$this->employee_id){ //跨区
-                    $row["royaltys"] = is_numeric($row["royaltys"])?floatval($row["royaltys"]):0;
-                    $row["other_commission"] = is_numeric($row["other_commission"])?floatval($row["other_commission"]):0;
-                    if($row["other_commission"]>0){ //更改增加
-                        $performanceedit_money+=$row["other_commission"];
-                        $other_commission = $row["other_commission"]*$royalty;
-                        //刷新數據
-                        Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
-                            "royaltys"=>$royalty,
-                            "luu"=>$uid
-                        ),"id=:id",array(":id"=>$row["id"]));
+                $funcList = $arr["list"];
+                $funcSave = $arr["save"];
+                $rows = $this->$funcList(true);
+                if($funcList=="endList"){
+                    if($id=="end"){
+                        $rows=$rows["stop"];
                     }else{
-                        $other_commission=$row["other_commission"]*$row["royaltys"];
+                        $rows=$rows["renewal"];
                     }
-                    $other_commission = round($other_commission,2);//保留两位小数点
-                    $performanceedit_amount+=$other_commission;
-                }else{
-                    $row["commission"] = is_numeric($row["commission"])?floatval($row["commission"]):0;
-                    $row["royalty"] = is_numeric($row["royalty"])?floatval($row["royalty"]):0;
-                    if($row["commission"]>0){ //更改增加
-                        $commission = $row["commission"]*$royalty;
-                        //刷新數據
-                        Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
-                            "royalty"=>$royalty,
-                            "luu"=>$uid
-                        ),"id=:id",array(":id"=>$row["id"]));
-                    }else{
-                        $commission=$row["commission"]*$row["royalty"];
-                    }
-                    $commission = round($commission,2);//保留两位小数点
-                    $edit_amount+=$commission;
+                }
+                $postData=array();
+                foreach ($rows as $row){
+                    $postData[$row["id"]]=$row["id"];
+                }
+                if(!empty($postData)){
+                    $this->$funcSave($postData,false);
                 }
             }
-            Yii::app()->db->createCommand()->update("acc_service_comm_dtl",array(
-                "edit_amount"=>$edit_amount,
-                "performanceedit_money"=>$performanceedit_money,
-                "performanceedit_amount"=>$performanceedit_amount
-            ),"hdr_id=:id",array(":id"=>$this->id));
-        }
-    }
-
-    //如果销售提成激励点、新增业绩、更改新增业绩变动，需要刷新产品提成
-    private function resetProductSave($data){
-        $point =key_exists('point',$data)?$data['point']:$this->dtl_list['point'];
-        $new_money =key_exists('new_money',$data)?$data['new_money']:$this->dtl_list['new_money'];
-        $edit_money =key_exists('edit_money',$data)?$data['edit_money']:$this->dtl_list['edit_money'];
-
-        $suffix = Yii::app()->params['envSuffix'];
-        $product_amount=0;//产品提成
-        $money = $edit_money+$new_money;
-        $computeRate=array();//保存已计算的产品提成比例
-
-        $rows = Yii::app()->db->createCommand()
-            ->select("a.id,a.commission,a.money,a.qty,f.description,f.sales_products,b.log_dt,b.company_name")
-            ->from("swoper$suffix.swo_logistic_dtl a")
-            ->leftJoin("swoper$suffix.swo_logistic b","a.log_id=b.id")
-            ->leftJoin("swoper{$suffix}.swo_task f","a.task=f.id")
-            ->where("a.commission=1 and b.log_dt between '{$this->startDate}' and '{$this->endDate}' and b.salesman='{$this->staff}' and b.city ='{$this->city}' and a.qty>0 and a.money>0")
-            ->order("f.sales_products asc,b.log_dt desc")->queryAll();
-        if($rows){
-            foreach ($rows as $row){
-                $type = $row['sales_products'];
-                $row['qty'] = is_numeric($row['qty'])?floatval($row['qty']):0;
-                $row['money'] = is_numeric($row['money'])?floatval($row['money']):0;
-                $amt_sum = $row['qty']*$row['money'];
-                if(!key_exists($type,$computeRate)){
-                    $computeRate[$type] = SellComputeList::getProductRate($money,$this->startDate,$this->city,$type);
-                }
-                //提成点 = 产品提成点 + 销售提成激励点
-                $thisRoyalty = $computeRate[$type]+$point;
-                $commission =$amt_sum*$thisRoyalty;
-                $commission = round($commission,2);
-                $product_amount+=$commission;//产品提成
-            }
-
-            Yii::app()->db->createCommand()->update("acc_service_comm_dtl",array(
-                "product_amount"=>$product_amount
-            ),"hdr_id=:id",array(":id"=>$this->id));
         }
     }
 
@@ -1670,43 +1570,6 @@ class SellComputeForm extends CFormModel
     private function resetBonusSave(){
         $suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
-        $rows = Yii::app()->db->createCommand()
-            ->select("a.id,a.status,a.amt_paid,a.ctrt_period,a.paid_type,a.b4_amt_paid,a.b4_paid_type,a.other_commission")
-            ->from("swoper{$suffix}.swo_service a")
-            ->where("(
-                (a.status='N' and a.first_dt between '{$this->startDate}' and '{$this->endDate}')
-                 or 
-                (a.status='A' and a.status_dt between '{$this->startDate}' and '{$this->endDate}')
-                ) and a.city='{$this->city}' and a.other_commission is not null and a.othersalesman_id={$this->employee_id}")
-            ->queryAll();
-        if($rows){
-            foreach ($rows as $row){
-                if($row["other_commission"]<0){
-                    continue;//減少不參與計算
-                }
-                $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
-                $row['b4_amt_paid'] = is_numeric($row['b4_amt_paid'])?floatval($row['b4_amt_paid']):0;
-                $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
-                $before_sum = $row['b4_paid_type']=="M"?$row['b4_amt_paid']*$row['ctrt_period']:$row['b4_amt_paid'];
-                $amt_money = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
-                $amt_money-= $row["status"]=="A"?$before_sum:0;//“更改”计算的是变动金额
-                $amt_money*=$this->span_other_rate;
-                if(empty($this->bonus_other_rate)){ //被跨区提成点为零，计算奖金库
-                    Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
-                        "other_commission"=>$amt_money,
-                        "target"=>1,
-                        "luu"=>$uid
-                    ),"id=:id",array(":id"=>$row["id"]));
-                    //$bonusMoney+=$amt_money*0.04;
-                }else{
-                    Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
-                        "target"=>0,
-                        "other_commission"=>$amt_money,
-                        "luu"=>$uid
-                    ),"id=:id",array(":id"=>$row["id"]));
-                }
-            }
-        }
         $bonusMoney = Yii::app()->db->createCommand()
             ->select("sum(a.other_commission)")
             ->from("swoper{$suffix}.swo_service a")
@@ -1714,7 +1577,7 @@ class SellComputeForm extends CFormModel
                 (a.status='N' and a.first_dt between '{$this->startDate}' and '{$this->endDate}')
                  or 
                 (a.status='A' and a.status_dt between '{$this->startDate}' and '{$this->endDate}')
-                ) and a.target=1 and a.other_commission is not null and a.city='{$this->city}'")
+                ) and a.target=1 and a.other_commission+0>0 and a.city='{$this->city}'")
             ->queryScalar();
         $bonusMoney*=0.04;
         $bonusMoney=round($bonusMoney,2);
@@ -1748,7 +1611,7 @@ class SellComputeForm extends CFormModel
     }
 
     //刷新装机金额
-    private function resetInstallSave($data){
+    private function resetInstallSave($data=array()){
         $installRate = $this->getPaperRateAndPoint($data);
         $suffix = Yii::app()->params['envSuffix'];
         $install_amount=0;//装机提成

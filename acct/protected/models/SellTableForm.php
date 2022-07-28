@@ -457,7 +457,7 @@ class SellTableForm extends SellComputeForm{
         $row["royalty"]=is_numeric($row["royalty"])?floatval($row["royalty"]):0;
         $row["rateInstall"]=$row["amt_install"]*$this->pro_rate_list["paper"];
         $row["rateInstall"]=round($row["rateInstall"],2);
-        $row["rateMoney"]=$row["commission"]*$row["royalty"];
+        $row["rateMoney"]=$row["commission"]>=0?$row["commission"]*$row["royalty"]:$row["commission"];
         $row["rateMoney"]=round($row["rateMoney"],2);
         if($row["paid_type"]!="M"){ //非月金額需要顯示金額類型
             $row["ctrt_period"]=$row["paid_type"]=="Y"?Yii::t("service","Yearly"):Yii::t("service","One time");
