@@ -100,13 +100,13 @@ class SellComputeForm extends CFormModel
             $this->lcu = $row['lcu'];
 			$this->city = $row['city'];
 			$this->city_name = General::getCityName($row['city']);
-            $this->showNull = $row['lcd']==$row['lud'];
             $this->setUpdateBool();
             if($bool){
                 $this->updateBool=false;
             }
 			$this->computeDtlList();
 			$this->setSpan();
+            $this->showNull = ($row['lcd']==$row['lud']&&empty($this->dtl_list["new_calc"]));
             return true;
 		}else{
 		    return false;
@@ -203,7 +203,7 @@ class SellComputeForm extends CFormModel
 
 	private function computeDtlList(){
         $this->all_amount=0;
-        $this->dtl_list=array();
+        $this->dtl_list=array("new_calc"=>0);
         $row = Yii::app()->db->createCommand()
             ->select("*")->from("acc_service_comm_dtl")
             ->where("hdr_id=:id",array(":id"=>$this->id))->queryRow();

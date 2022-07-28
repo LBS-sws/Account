@@ -201,7 +201,7 @@ class SellComputeList extends CListPageModel
     }
 
     public static function showText($num,$showBool,$type=""){
-        if ($showBool&&empty($num)){
+        if ($showBool){
             return "";
         }else{
             switch ($type){
