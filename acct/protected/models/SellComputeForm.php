@@ -1533,15 +1533,15 @@ class SellComputeForm extends CFormModel
     private function simulationClick($bool=true,$notIdList){
         if($bool){
             $clickMenu=array(
-                "new"=>array("list"=>"newList","save"=>"newSave"),
-                "edit"=>array("list"=>"editList","save"=>"editSave"),
-                "end"=>array("list"=>"endList","save"=>"endSave"),
-                "performance"=>array("list"=>"performanceList","save"=>"performanceSave"),
-                "performanceedit"=>array("list"=>"performanceeditList","save"=>"performanceeditSave"),
-                "performanceend"=>array("list"=>"performanceendList","save"=>"performanceendSave"),
-                "renewal"=>array("list"=>"renewalList","save"=>"renewalSave"),
-                "renewalend"=>array("list"=>"endList","save"=>"renewalendSave"),
-                "product"=>array("list"=>"productList","save"=>"productSave"),
+                "new"=>array("list"=>"newList","save"=>"newSave","royalty"=>"royalty"),
+                "edit"=>array("list"=>"editList","save"=>"editSave","royalty"=>"royalty"),
+                "end"=>array("list"=>"endList","save"=>"endSave","royalty"=>"royalty"),
+                "performance"=>array("list"=>"performanceList","save"=>"performanceSave","royalty"=>"royaltys"),
+                "performanceedit"=>array("list"=>"performanceeditList","save"=>"performanceeditSave","royalty"=>"royaltys"),
+                "performanceend"=>array("list"=>"performanceendList","save"=>"performanceendSave","royalty"=>"royaltys"),
+                "renewal"=>array("list"=>"renewalList","save"=>"renewalSave","royalty"=>"royalty"),
+                "renewalend"=>array("list"=>"endList","save"=>"renewalendSave","royalty"=>"royalty"),
+                "product"=>array("list"=>"productList","save"=>"productSave","royalty"=>"royalty"),
             );
             foreach ($clickMenu as $id=>$arr){
                 if(key_exists($id,$notIdList)){
@@ -1558,8 +1558,10 @@ class SellComputeForm extends CFormModel
                     }
                 }
                 $postData=array();
+                $_POST["royalty"]=array();
                 foreach ($rows as $row){
                     $postData[$row["id"]]=$row["id"];
+                    $_POST["royalty"][$row["id"]]=$row[$arr["royalty"]];
                 }
                 if(!empty($postData)){
                     $this->$funcSave($postData,false);
