@@ -33,6 +33,8 @@ class SellComputeForm extends CFormModel
 
     private $textSum=0;//文本显示专用（总数）
     private $textNum=0;//文本显示专用（已计算）
+
+    private $old_calc=0;//兼容旧版的提成点（旧版未保存）
     //new,edit,end,performance,performanceedit,performanceend,renewal,renewalend,product,
     public static $viewList = array(
         'view'=>array('key'=>'view','name'=>'ALL'),
@@ -321,7 +323,7 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid']."</td>";
                 $html.="<td>".$amt_sum."</td>";
                 $html.="<td>".$row['royalty']."</td>";
-                $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 //$row['amt_install'] = empty($row['amt_install'])?"":$row['amt_install'];
                 $html.="<td style='border-left: 1px solid #f4f4f4'>".$row['amt_install']."</td>";
@@ -391,7 +393,7 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid']."</td>";
                 $html.="<td>".$amt_sum."</td>";
                 $html.="<td>".$row['royalty']."</td>";
-                $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
                 //獎金庫擴充
                 $row['commission'] = $row['target']==1?"奖金库":$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
@@ -466,7 +468,7 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid']."</td>";
                 $html.="<td>".$amt_sum."</td>";
                 $html.="<td>".$row['royalty']."</td>";
-                $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="</tr>";
                 $this->textSum++;
@@ -563,7 +565,7 @@ class SellComputeForm extends CFormModel
                     $html.="<td>&nbsp;</td>";
                 }
                 $html.="<td>".$row['royalty']."</td>";
-                $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="<td style='border-left: 1px solid #f4f4f4'>".$row['amt_install']."</td>";
                 $amt_install = $row['amt_install'];
@@ -660,7 +662,7 @@ class SellComputeForm extends CFormModel
                     $html.="<td>&nbsp;</td>";
                 }
                 $html.="<td>".$row['royalty']."</td>";
-                $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
                 //獎金庫擴充
                 $row['commission'] = $row['target']==1?"奖金库":$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
@@ -756,7 +758,7 @@ class SellComputeForm extends CFormModel
                     $html.="<td>".TbHtml::numberField("royalty[{$row['id']}]",$royalty)."</td>";
                 }
                 $html.="<td>".$row['royalty']."</td>";
-                $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="</tr>";
                 $this->textSum++;
@@ -815,7 +817,7 @@ class SellComputeForm extends CFormModel
                     $html.="<td>".TbHtml::numberField("royalty[{$row['id']}]",$royalty)."</td>";
                 }
                 $html.="<td>".$row['royalty']."</td>";
-                $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="</tr>";
                 $this->textSum++;
@@ -900,7 +902,7 @@ class SellComputeForm extends CFormModel
                     $html.="<td>".TbHtml::numberField("royalty[{$row['id']}]",$royalty)."</td>";
                 }
                 $html.="<td>".$row['royalty']."</td>";
-                $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="</tr>";
                 $this->textSum++;
