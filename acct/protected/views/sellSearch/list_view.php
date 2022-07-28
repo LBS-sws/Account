@@ -71,6 +71,13 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute Form';
                         </div>
                     </div>
                 </div>
+                <div class="box-footer clearfix">
+                    <span class="pull-right">
+                        <?php
+                        echo $model->getTextSpanHtml();
+                        ?>
+                    </span>
+                </div>
             </div>
 
         </div>

@@ -316,7 +316,7 @@ class SellTableForm extends SellComputeForm{
             ->select("a.*,b.description,IF(a.status='N',a.first_dt,a.status_dt) as service_date")
             ->from("swoper{$suffix}.swo_service a")
             ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
-            ->where("(
+            ->where("a.city='{$this->city}' and (
             (a.status='N' and a.first_dt between '{$this->startDate}' and '{$this->endDate}') or 
             (a.status!='N' and a.status_dt between '{$this->startDate}' and '{$this->endDate}')
             ) and 
@@ -413,7 +413,7 @@ class SellTableForm extends SellComputeForm{
             ->from("swoper{$suffix}.swo_serviceid_info a")
             ->leftJoin("swoper{$suffix}.swo_serviceid b","a.serviceID_id=b.id")
             ->leftJoin("swoper{$suffix}.swo_company f","b.company_id=f.id")
-            ->where("b.salesman_id={$this->employee_id} and a.commission = 1 and a.back_date between '$this->startDate' and '$this->endDate'")
+            ->where("b.city='{$this->city}' and b.salesman_id={$this->employee_id} and a.commission = 1 and a.back_date between '$this->startDate' and '$this->endDate'")
             ->order("a.back_date desc,a.id desc")
             ->queryAll();
         if($rows) {

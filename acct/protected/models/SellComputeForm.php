@@ -30,6 +30,9 @@ class SellComputeForm extends CFormModel
     public $dtl_list = array();//首頁的所有信息
 
     public $viewType="";
+
+    private $textSum=0;//文本显示专用（总数）
+    private $textNum=0;//文本显示专用（已计算）
     //new,edit,end,performance,performanceedit,performanceend,renewal,renewalend,product,
     public static $viewList = array(
         'view'=>array('key'=>'view','name'=>'ALL'),
@@ -270,7 +273,7 @@ class SellComputeForm extends CFormModel
         ->select("a.*,b.description as type_desc")
         ->from("swoper{$suffix}.swo_service a")
         ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
-        ->where("a.status='N' and b.sales_rate=1 and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
+        ->where("a.status='N' and a.city='{$this->city}' and b.sales_rate=1 and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
         ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
         return $rows?$rows:array();
     }
@@ -326,6 +329,10 @@ class SellComputeForm extends CFormModel
                 $amt_install = $row['commission']==="未计算"?"未计算":$amt_install;
                 $html.="<td>".$amt_install."</td>";
                 $html.="</tr>";
+                $this->textSum++;
+                if($checkBool){
+                    $this->textNum++;
+                }
             }
         }
         return $html;
@@ -338,7 +345,7 @@ class SellComputeForm extends CFormModel
         ->select("a.*,b.description as type_desc")
         ->from("swoper{$suffix}.swo_service a")
         ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
-        ->where("a.status='N' and b.sales_rate=1 and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and a.othersalesman_id={$this->employee_id}")
+        ->where("a.status='N' and a.city='{$this->city}' and b.sales_rate=1 and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and a.othersalesman_id={$this->employee_id}")
         ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
         return $rows?$rows:array();
     }
@@ -387,6 +394,10 @@ class SellComputeForm extends CFormModel
                 $row['commission'] = $row['target']==1?"奖金库":$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="</tr>";
+                $this->textSum++;
+                if($checkBool){
+                    $this->textNum++;
+                }
             }
         }
         return $html;
@@ -400,7 +411,7 @@ class SellComputeForm extends CFormModel
         ->from("swoper{$suffix}.swo_service a")
         ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
         ->leftJoin("swoper{$suffix}.swo_nature f","a.nature_type=f.id")
-        ->where("a.status='C' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id}")
+        ->where("a.status='C' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id}")
         ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
         return $rows?$rows:array();
     }
@@ -455,6 +466,10 @@ class SellComputeForm extends CFormModel
                 $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="</tr>";
+                $this->textSum++;
+                if($checkBool){
+                    $this->textNum++;
+                }
             }
         }
         return $html;
@@ -467,7 +482,7 @@ class SellComputeForm extends CFormModel
         ->select("a.*,b.description as type_desc")
         ->from("swoper{$suffix}.swo_service a")
         ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
-        ->where("a.status='A' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
+        ->where("a.status='A' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
         ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
         if($rows){
             foreach ($rows as &$row){
@@ -552,6 +567,10 @@ class SellComputeForm extends CFormModel
                 $amt_install = $row['commission']==="未计算"?"未计算":$amt_install;
                 $html.="<td>".$amt_install."</td>";
                 $html.="</tr>";
+                $this->textSum++;
+                if($checkBool){
+                    $this->textNum++;
+                }
             }
         }
         return $html;
@@ -564,7 +583,7 @@ class SellComputeForm extends CFormModel
         ->select("a.*,b.description as type_desc")
         ->from("swoper{$suffix}.swo_service a")
         ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
-        ->where("a.status='A' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.othersalesman_id={$this->employee_id}")
+        ->where("a.status='A' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.othersalesman_id={$this->employee_id}")
         ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
         if($rows){
             foreach ($rows as &$row){
@@ -641,6 +660,10 @@ class SellComputeForm extends CFormModel
                 $row['commission'] = $row['target']==1?"奖金库":$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="</tr>";
+                $this->textSum++;
+                if($checkBool){
+                    $this->textNum++;
+                }
             }
         }
         return $html;
@@ -654,7 +677,7 @@ class SellComputeForm extends CFormModel
         ->select("a.*,b.description as type_desc")
         ->from("swoper{$suffix}.swo_service a")
         ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
-        ->where("a.status='T' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
+        ->where("a.status='T' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
         ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
         if($rows){
             foreach ($rows as $row){
@@ -730,6 +753,10 @@ class SellComputeForm extends CFormModel
                 $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="</tr>";
+                $this->textSum++;
+                if($checkBool){
+                    $this->textNum++;
+                }
             }
         }
         return $html;
@@ -785,6 +812,10 @@ class SellComputeForm extends CFormModel
                 $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="</tr>";
+                $this->textSum++;
+                if($checkBool){
+                    $this->textNum++;
+                }
             }
         }
         return $html;
@@ -797,7 +828,7 @@ class SellComputeForm extends CFormModel
         ->select("a.*,b.description as type_desc")
         ->from("swoper{$suffix}.swo_service a")
         ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
-        ->where("a.status='T' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.othersalesman_id={$this->employee_id}")
+        ->where("a.status='T' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.othersalesman_id={$this->employee_id}")
         ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
         if($rows){
             foreach ($rows as &$row){
@@ -865,6 +896,10 @@ class SellComputeForm extends CFormModel
                 $row['commission'] = is_numeric($row['commission'])?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
                 $html.="</tr>";
+                $this->textSum++;
+                if($checkBool){
+                    $this->textNum++;
+                }
             }
         }
         return $html;
@@ -947,6 +982,10 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".$row['royalty']."</td>";
                 $html.="<td>".$commission."</td>";
                 $html.="</tr>";
+                $this->textSum++;
+                if($checkBool){
+                    $this->textNum++;
+                }
             }
         }
         return $html;
@@ -1500,7 +1539,7 @@ class SellComputeForm extends CFormModel
         $newRows = Yii::app()->db->createCommand()
             ->select("a.id,a.target,a.other_commission,a.royaltys,a.commission,a.royalty,a.othersalesman_id")
             ->from("swoper{$suffix}.swo_service a")
-            ->where("a.status = 'N' and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and 
+            ->where("a.status = 'N' and a.city='{$this->city}' and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and 
             ((a.commission+0>0 and a.salesman_id={$this->employee_id}) or 
             (a.other_commission+0>0 and a.othersalesman_id={$this->employee_id}))")->queryAll();
         if($newRows){
@@ -1537,7 +1576,7 @@ class SellComputeForm extends CFormModel
         $rows = Yii::app()->db->createCommand()
             ->select("a.id,a.target,a.other_commission,a.royaltys,a.commission,a.royalty,a.othersalesman_id")
             ->from("swoper{$suffix}.swo_service a")
-            ->where("a.status ='A' and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and 
+            ->where("a.status ='A' and a.city='{$this->city}' and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and 
             ((a.commission is not null and a.salesman_id={$this->employee_id}) or 
             (a.other_commission is not null and a.othersalesman_id={$this->employee_id}))")->queryAll();
         if($rows){
@@ -1638,7 +1677,7 @@ class SellComputeForm extends CFormModel
                 (a.status='N' and a.first_dt between '{$this->startDate}' and '{$this->endDate}')
                  or 
                 (a.status='A' and a.status_dt between '{$this->startDate}' and '{$this->endDate}')
-                ) and a.other_commission is not null and a.othersalesman_id={$this->employee_id}")
+                ) and a.city='{$this->city}' and a.other_commission is not null and a.othersalesman_id={$this->employee_id}")
             ->queryAll();
         if($rows){
             foreach ($rows as $row){
@@ -1721,7 +1760,7 @@ class SellComputeForm extends CFormModel
             ->where("a.commission is not null and (
             (a.status='N' and a.first_dt between '{$this->startDate}' and '{$this->endDate}') or 
             (a.status='A' and a.status_dt between '{$this->startDate}' and '{$this->endDate}')
-            ) and a.salesman_id={$this->employee_id} and a.amt_install+0>0")->queryAll();
+            ) and a.city='{$this->city}' and a.salesman_id={$this->employee_id} and a.amt_install+0>0")->queryAll();
         if($rows){
             foreach ($rows as $row){
                 $amt_sum = is_numeric($row['amt_install'])?floatval($row['amt_install']):0;
@@ -1761,7 +1800,7 @@ class SellComputeForm extends CFormModel
                 //新入職員工需要判斷該員工是否在本月1號有銷售拜訪
                 $visitRow = Yii::app()->db->createCommand()->select("id")
                     ->from("sales$suffix.sal_visit")
-                    ->where("username=:id and visit_dt='{$this->startDate}'",array(":id"=>$staffRow["user_id"]))
+                    ->where("city='{$this->city}' and username=:id and visit_dt='{$this->startDate}'",array(":id"=>$staffRow["user_id"]))
                     ->queryRow();
                 if(!$visitRow){
                     $salesBool = false;//當月一號沒有銷售拜訪
@@ -1770,7 +1809,7 @@ class SellComputeForm extends CFormModel
             if($salesBool){
                 $integralRow = Yii::app()->db->createCommand()->select("id,point")
                     ->from("sales$suffix.sal_integral")
-                    ->where("year={$this->year} and month={$this->month} and username=:id",array(":id"=>$staffRow["user_id"]))
+                    ->where("city='{$this->city}' and year={$this->year} and month={$this->month} and username=:id",array(":id"=>$staffRow["user_id"]))
                     ->queryRow();
                 if($integralRow){
                     $point = empty($integralRow['point'])?0:floatval($integralRow['point']);
@@ -1792,7 +1831,7 @@ class SellComputeForm extends CFormModel
             ->from("swoper$suffix.swo_logistic_dtl a")
             ->leftJoin("swoper$suffix.swo_logistic b","a.log_id = b.id")
             ->leftJoin("swoper$suffix.swo_task c","a.task = c.id")
-            ->where("c.task_type='FLOOR' and b.salesman='{$this->staff}' and money>0 and b.log_dt between '{$this->startDate}' and '{$this->endDate}'")
+            ->where("b.city='{$this->city}' and c.task_type='FLOOR' and b.salesman='{$this->staff}' and money>0 and b.log_dt between '{$this->startDate}' and '{$this->endDate}'")
             ->queryScalar();
         if($logisticSum>=3){//满足三瓶洗地易
             //2022/01/01服務獎勵點改名為创新业务提成点（並修改邏輯）
@@ -1814,13 +1853,13 @@ class SellComputeForm extends CFormModel
             ->from("swoper$suffix.swo_service a")
             ->leftJoin("swoper$suffix.swo_customer_type_twoname b","a.cust_type_name = b.id")
             ->leftJoin("swoper$suffix.swo_customer_type c","a.cust_type = c.id")
-            ->where("b.bring = 1 and a.status = 'N' and a.salesman_id='{$this->employee_id}' $dateSql")
+            ->where("a.city='{$this->city}' and b.bring = 1 and a.status = 'N' and a.salesman_id='{$this->employee_id}' $dateSql")
             ->queryScalar();
         $serviceMoney=$serviceMoney?floatval($serviceMoney):0;
         $serviceIDMoney =Yii::app()->db->createCommand()
             ->select("sum(a.amt_money)")
             ->from("swoper$suffix.swo_serviceid a")
-            ->where("a.status = 'N' and a.salesman_id='{$this->employee_id}' $dateIDSql")
+            ->where("a.city='{$this->city}' and a.status = 'N' and a.salesman_id='{$this->employee_id}' $dateIDSql")
             ->queryScalar();
         $serviceIDMoney=$serviceIDMoney?floatval($serviceIDMoney):0;
         return $serviceMoney+$serviceIDMoney;
@@ -1883,5 +1922,10 @@ class SellComputeForm extends CFormModel
         $money = $new_money+$edit_money;
         $rate = SellComputeList::getProductRate($money,$this->startDate,$this->city,"paper");
         return $rate+$point;
+    }
+
+    //显示总数
+    public function getTextSpanHtml(){
+        return "总记录:{$this->textSum}条,已计算:{$this->textNum}条";
     }
 }
