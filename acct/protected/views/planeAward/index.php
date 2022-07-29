@@ -28,6 +28,13 @@ $this->pageTitle=Yii::app()->name . ' - PlaneAward';
 <section class="content">
     <div class="box">
         <div class="box-body">
+            <div class="btn-group" role="group">
+                <?php
+                echo TbHtml::button('<span class="fa fa-paste"></span> '.Yii::t('plane','plane paste'), array(
+                    'submit'=>Yii::app()->createUrl('planeAward/paste'),
+                ));
+                ?>
+            </div>
             <div class="btn-group pull-right" role="group">
                 <?php
                 echo TbHtml::button('<span class="fa fa-download"></span> '.Yii::t('dialog','Download'), array(

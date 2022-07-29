@@ -1,5 +1,9 @@
 <tr>
-	<th width="1%"></th>
+	<th width="1%">
+        <?php
+        echo TbHtml::checkBox("allot_all",false,array("id"=>"allot_all"));
+        ?>
+    </th>
 	<th>
 		<?php echo TbHtml::link($this->getLabelName('code').$this->drawOrderArrow('a.code'),'#',$this->createOrderLink('planeAllot-list','a.code'))
 			;

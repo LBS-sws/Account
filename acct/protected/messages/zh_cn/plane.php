@@ -53,5 +53,6 @@ return array(
     'job value'=>'职务级别',
     'old shall pay wages'=>'原机制应发工资',
     'difference'=>'差额',
+    'plane paste'=>'应发工资快捷操作',
 );
 ?>

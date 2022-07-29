@@ -117,6 +117,14 @@ $('.submitBtn').change(function(){
     $('form:first').submit();
 });
 
+$('#allot_all').change(function(){
+    if($(this).is(':checked')){
+        $('.allot_check').prop('checked',true);
+    }else{
+        $('.allot_check').prop('checked',false);
+    }
+});
+
 $('.allot_btn').click(function(){
     var id = $(this).data('id');
     var name = $(this).closest('tr').children('td.name').text();

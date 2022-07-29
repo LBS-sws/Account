@@ -362,7 +362,7 @@ class PlaneAwardForm extends CFormModel
 				break;
 		}
 
-		$uid = Yii::app()->user->id;
+        $uid = Yii::app()->user->id;
         $city = Yii::app()->user->city();
 
 		$command=$connection->createCommand($sql);
@@ -393,5 +393,72 @@ class PlaneAwardForm extends CFormModel
 
 	public function isReadOnly(){
 	    return $this->getScenario()=='view'||!$this->updateBool;
+    }
+
+    public static function validateAjaxPayer($data,$year,$month){
+	    $html = "";
+        if(!empty($data)){
+            $staffList = self::getStaffList("code",$year,$month);
+            foreach ($data as $row){
+                if(key_exists($row["code"],$staffList)){
+                    $num =$staffList[$row["code"]]["id"];
+                    $row["money"]=is_numeric($row["money"])?round($row["money"],2):0;
+                    $html.= "<tr>";
+                    $html.= "<td>".TbHtml::checkBox("test[check][{$num}]",false,array('class'=>'checkOne'))."</td>";
+                    $html.= "<td>";
+                    $html.=TbHtml::textField("test[{$num}][code]",$row["code"],array("readonly"=>true));
+                    $html.="</td>";
+                    $html.= "<td>".TbHtml::textField("test[{$num}][name]",$staffList[$row["code"]]["name"],array("readonly"=>true))."</td>";
+                    $html.= "<td>".TbHtml::textField("test[{$num}][money]",$row["money"],array("readonly"=>true))."</td>";
+                    $html.= "</tr>";
+                }else{
+                    $html.= "<tr class='danger'>";
+                    $html.= "<td>&nbsp;</td>";
+                    $html.= "<td>".$row["code"]."</td>";
+                    $html.= "<td>该员工未参加直升机</td>";
+                    $html.= "<td>".$row["money"]."</td>";
+                    $html.= "</tr>";
+                }
+            }
+        }
+        return array("html"=>$html);
+    }
+
+    public function pasteSave($list,$paste){
+        $year = key_exists("plane_year",$paste)?$paste["plane_year"]:2022;
+        $month = key_exists("plane_month",$paste)?$paste["plane_month"]:12;
+        $staffList = self::getStaffList("id",$year,$month);
+        $checkList = key_exists("check",$list)?$list["check"]:array();
+        $uid = Yii::app()->user->id;
+        if(!empty($checkList)){
+            foreach ($checkList as $checkId=>$value){
+                if($value==1&&key_exists($checkId,$staffList)&&key_exists($checkId,$list)){
+                    $money = $list[$checkId]["money"];
+                    $money = is_numeric($money)?round($money,2):0;
+                    Yii::app()->db->createCommand()->update("acc_plane",array(
+                        "old_pay_wage"=>$money,
+                        "luu"=>$uid
+                    ),"id=:id",array(":id"=>$checkId));
+                }
+            }
+        }
+    }
+
+    private static function getStaffList($keyStr,$year,$month){
+        $cityList = Yii::app()->user->city_allow();
+        $suffix = Yii::app()->params['envSuffix'];
+        $list = array();
+        $staffRows = Yii::app()->db->createCommand()
+            ->select("a.id,b.code,b.name,b.entry_time")
+            ->from("acc_plane a")
+            ->leftJoin("hr{$suffix}.hr_employee b","b.id=a.employee_id")
+            ->where("a.plane_year=:year and plane_month=:month and a.city in ({$cityList})",
+                array(":year"=>$year,":month"=>$month))->queryAll();
+        if($staffRows){
+            foreach ($staffRows as $row){
+                $list[$row[$keyStr]]=$row;
+            }
+        }
+        return $list;
     }
 }
