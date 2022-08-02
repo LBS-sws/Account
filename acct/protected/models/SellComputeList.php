@@ -222,16 +222,24 @@ class SellComputeList extends CListPageModel
         $status_dt = date("Y-m",strtotime($service['status_dt'])); //服务日期（服务表单的第一个日期:新增、更改、续约、终止）
         //$sign_dt = date("Y-m",strtotime($service['sign_dt'])); //签约日期
         $suffix = Yii::app()->params['envSuffix'];
+        if($type=="N"){
+            $dateSql="status='N' and date_format(first_dt,'%Y-%m')<'$status_dt'";
+        }else{
+            $dateSql="status='C' and date_format(status_dt,'%Y-%m')<'$status_dt'";
+        }
         $row = Yii::app()->db->createCommand()
             ->select("id,status,status_dt,first_dt,salesman_id,commission,royalty")->from("swoper{$suffix}.swo_service")
-            ->where("status='{$type}' and date_format(first_dt,'%Y-%m')<'$status_dt' and date_format(status_dt,'%Y-%m')<'$status_dt' and
+            ->where("{$dateSql} and
              salesman_id={$service['salesman_id']} and company_id={$service['company_id']} and 
              cust_type={$service['cust_type']} and cust_type_name={$service['cust_type_name']} and
              commission is not null and commission !=''")
             ->order("status_dt desc")->queryRow();
         //由於舊數據沒有保存提成點，所以需要重新查詢
-        if($row&&empty($row["royalty"])){
-            self::getServiceRoyalty($row);
+        if($row){
+            $royalty=floatval($row["royalty"]);
+            if(empty($royalty)){
+                self::getServiceRoyalty($row);
+            }
         }
         return $row?$row:array();
     }
