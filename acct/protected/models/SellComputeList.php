@@ -225,7 +225,7 @@ class SellComputeList extends CListPageModel
         if($type=="N"){
             $dateSql="status='N' and date_format(first_dt,'%Y-%m')<'$status_dt'";
         }else{
-            $dateSql="status='C' and date_format(status_dt,'%Y-%m')<'$status_dt'";
+            $dateSql="status='{$type}' and date_format(status_dt,'%Y-%m')<'$status_dt'";
         }
         $row = Yii::app()->db->createCommand()
             ->select("id,status,status_dt,first_dt,salesman_id,commission,royalty")->from("swoper{$suffix}.swo_service")
