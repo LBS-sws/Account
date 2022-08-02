@@ -223,13 +223,37 @@ class SellComputeList extends CListPageModel
         //$sign_dt = date("Y-m",strtotime($service['sign_dt'])); //签约日期
         $suffix = Yii::app()->params['envSuffix'];
         $row = Yii::app()->db->createCommand()
-            ->select("id,commission,royalty")->from("swoper{$suffix}.swo_service")
+            ->select("id,status,status_dt,first_dt,salesman_id,commission,royalty")->from("swoper{$suffix}.swo_service")
             ->where("status='{$type}' and date_format(first_dt,'%Y-%m')<'$status_dt' and date_format(status_dt,'%Y-%m')<'$status_dt' and
              salesman_id={$service['salesman_id']} and company_id={$service['company_id']} and 
              cust_type={$service['cust_type']} and cust_type_name={$service['cust_type_name']} and
              commission is not null and commission !=''")
             ->order("status_dt desc")->queryRow();
+        //由於舊數據沒有保存提成點，所以需要重新查詢
+        if($row&&empty($row["royalty"])){
+            self::getServiceRoyalty($row);
+        }
         return $row?$row:array();
+    }
+
+    //由於舊數據沒有保存提成點，需要查詢提成計算
+    public function getServiceRoyalty(&$service){
+        $suffix = Yii::app()->params['envSuffix'];
+        $time = $service["status"]=="N"?strtotime($service["first_dt"]):strtotime($service["status_dt"]);
+        $year = date("Y",$time);
+        $month = date("n",$time);
+        $row = Yii::app()->db->createCommand()
+            ->select("f.service_reward,f.point,f.new_calc")
+            ->from("acc_service_comm_dtl f")
+            ->leftJoin("acc_service_comm_hdr a","f.hdr_id=a.id")
+            ->leftJoin("hr{$suffix}.hr_employee b","b.code=a.employee_code")
+            ->where("b.id=:id and a.year_no=$year and a.month_no=$month",
+                array(":id"=>$service["salesman_id"]))->queryRow();
+        if($row){
+            $service["royalty"]=$row["service_reward"]+$row["point"]+$row["new_calc"];
+        }else{
+            $service=array();
+        }
     }
 
     public static function getNewCalc($sum_money,$date,$city,$type='fw'){
