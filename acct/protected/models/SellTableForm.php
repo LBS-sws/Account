@@ -91,7 +91,7 @@ class SellTableForm extends SellComputeForm{
                             if($row["uflag"]!="D"){
                                 $this->supplement_money+=$row["commission"];
                             }
-                            if(!empty($row["commission"])){
+                            if(!empty($row["commission"])&&!empty($row["date"])){
                                 $arr[]=$row;
                             }
                         }
