@@ -251,14 +251,19 @@ class SellComputeList extends CListPageModel
         $year = date("Y",$time);
         $month = date("n",$time);
         $row = Yii::app()->db->createCommand()
-            ->select("f.service_reward,f.point,f.new_calc")
+            ->select("f.hdr_id,f.service_reward,f.point,f.new_calc")
             ->from("acc_service_comm_dtl f")
             ->leftJoin("acc_service_comm_hdr a","f.hdr_id=a.id")
             ->leftJoin("hr{$suffix}.hr_employee b","b.code=a.employee_code")
             ->where("b.id=:id and a.year_no=$year and a.month_no=$month",
                 array(":id"=>$service["salesman_id"]))->queryRow();
         if($row){
-            $service["royalty"]=$row["service_reward"]+$row["point"]+$row["new_calc"];
+            $point = Yii::app()->db->createCommand()->select("id,point")
+                ->from("sales$suffix.sal_integral")
+                ->where("hdr_id='{$row["hdr_id"]}'")
+                ->queryRow();
+            $point = $point?floatval($point["point"]):floatval($row["point"]);
+            $service["royalty"]=$row["service_reward"]+$point+$row["new_calc"];
         }else{
             $service=array();
         }
