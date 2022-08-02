@@ -74,10 +74,10 @@ SellSearchController extends Controller
     }
 	
 	public static function allowReadWrite() {
-		return Yii::app()->user->validRWFunction('XS01');
+		return Yii::app()->user->validRWFunction('XS02');
 	}
 	
 	public static function allowReadOnly() {
-		return Yii::app()->user->validFunction('XS01');
+		return Yii::app()->user->validFunction('XS02');
 	}
 }
