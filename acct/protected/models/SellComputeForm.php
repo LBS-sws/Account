@@ -571,6 +571,7 @@ class SellComputeForm extends CFormModel
                 $amt_install = $row['amt_install'];
                 $amt_install = is_numeric($amt_install)?floatval($amt_install)*$installRate:"";
                 $amt_install = $row['commission']==="未计算"?"未计算":$amt_install;
+                $amt_install = is_numeric($row['commission'])&&$row['commission']<0?"不计算":$amt_install;
                 $html.="<td>".$amt_install."</td>";
                 $html.="</tr>";
                 $this->textSum++;
@@ -1631,12 +1632,14 @@ class SellComputeForm extends CFormModel
             ) and a.city='{$this->city}' and a.salesman_id={$this->employee_id} and a.amt_install+0>0")->queryAll();
         if($rows){
             foreach ($rows as $row){
-                $amt_sum = is_numeric($row['amt_install'])?floatval($row['amt_install']):0;
+                if($row["commission"]>=0){ //提成金額為負數，則不計算裝機費
+                    $amt_sum = is_numeric($row['amt_install'])?floatval($row['amt_install']):0;
 
-                $commission =$amt_sum*$installRate;
-                $commission = round($commission,2);
-                $install_amount+=$commission;//装机提成
-                $install_money+=$amt_sum;//装机业绩
+                    $commission =$amt_sum*$installRate;
+                    $commission = round($commission,2);
+                    $install_amount+=$commission;//装机提成
+                    $install_money+=$amt_sum;//装机业绩
+                }
             }
 
             Yii::app()->db->createCommand()->update("acc_service_comm_dtl",array(

@@ -455,6 +455,7 @@ class SellTableForm extends SellComputeForm{
         }
         $row["commission"]=is_numeric($row["commission"])?floatval($row["commission"]):0;
         $row["royalty"]=is_numeric($row["royalty"])?floatval($row["royalty"]):0;
+        $row["amt_install"]=$row["commission"]<0?0:$row["amt_install"];//提成為負數，不計算裝機費
         $row["rateInstall"]=$row["amt_install"]*$this->pro_rate_list["paper"];
         $row["rateInstall"]=round($row["rateInstall"],2);
         $row["rateMoney"]=$row["commission"]>=0?$row["commission"]*$row["royalty"]:$row["commission"];
