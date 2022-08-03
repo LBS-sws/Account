@@ -1287,6 +1287,7 @@ class SellComputeForm extends CFormModel
                     $thisRoyalty = $royalty;
                     $target = empty($this->bonus_other_rate)?1:0;//被跨区提成比例为零，放入奖金库
                     if(key_exists("history",$row)){ //金额变少了（需要历史提成）
+                        $row['amt_money'] = empty($row['all_number'])?0:$row['amt_money']/floatval($row['all_number'])*floatval($row['surplus']);
                         $target=0;//更改减少不需要放入奖金库
                         if(empty($row["history"])){//手动修改历史提成
                             $row["history"]["royalty"]=key_exists($row["id"],$royaltyList)?floatval($royaltyList[$row["id"]]):0.01;
