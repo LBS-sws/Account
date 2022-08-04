@@ -39,6 +39,7 @@ SellSearchController extends Controller
 	public function actionIndex($pageNum=0) 
 	{
 		$model = new SellComputeList();
+        SellComputeList::onlySearch($model);//驗證是否只能查看自己的提成
 		if (isset($_POST['SellComputeList'])) {
 			$model->attributes = $_POST['SellComputeList'];
 		} else {
@@ -56,6 +57,7 @@ SellSearchController extends Controller
     public function actionView($index)
     {
         $model = new SellComputeForm('view');
+        SellComputeList::onlySearch($model);//驗證是否只能查看自己的提成
         if (!$model->retrieveData($index,$this->con_bool)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
@@ -66,6 +68,7 @@ SellSearchController extends Controller
     public function actionList($index,$type='')
     {
         $model = new SellComputeForm($type);
+        SellComputeList::onlySearch($model);//驗證是否只能查看自己的提成
         if (!$model->retrieveData($index,$this->con_bool)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {

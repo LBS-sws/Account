@@ -7,6 +7,8 @@ class SellComputeList extends CListPageModel
 
     public $city;
 
+    public $onlySql="";//只允許查看自己的提成
+
     public static $sellComputeAttr=array(
         'service_reward'=>array('value'=>'service_reward','name'=>''),
         //'performance'=>array('value'=>'performance','name'=>''),
@@ -84,14 +86,14 @@ class SellComputeList extends CListPageModel
                 LEFT JOIN hr$suffix.hr_dept c on b.position=c.id  
                 LEFT JOIN security$suffix.sec_city e on a.city=e.code 
                 LEFT JOIN acc_service_comm_dtl f on f.hdr_id=a.id 
-				where {$citySql} and a.year_no= {$this->year} and a.month_no={$this->month} and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
+				where {$citySql} {$this->onlySql} and a.year_no= {$this->year} and a.month_no={$this->month} and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
 			";
 		$sql2 = "select count(a.id)
 				from acc_service_comm_hdr a 
 				LEFT JOIN hr$suffix.hr_employee b  on b.code=a.employee_code
                 LEFT JOIN hr$suffix.hr_dept c on b.position=c.id  
                 LEFT JOIN security$suffix.sec_city e on a.city=e.code 
-				where {$citySql} and a.year_no= {$this->year} and a.month_no={$this->month} and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
+				where {$citySql} {$this->onlySql} and a.year_no= {$this->year} and a.month_no={$this->month} and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -305,5 +307,29 @@ class SellComputeList extends CListPageModel
             }
         }
         return $rate;
+    }
+
+    public static function onlySearch(&$model){
+        if(Yii::app()->user->validFunction('CN09')){
+            $model->onlySql="";
+        }else{
+            $employeeList = self::getEmployeeListForUser();
+            $id = empty($employeeList)?0:$employeeList["id"];
+            $model->onlySql=" and b.id='{$id}'";//只能查詢自己的銷售提成計算
+        }
+    }
+
+    public static function getEmployeeListForUser($username=""){
+        $suffix = Yii::app()->params['envSuffix'];
+        if(empty($username)){
+            $username=Yii::app()->user->id;
+        }
+        $row = Yii::app()->db->createCommand()
+            ->select("b.id,b.code,b.name,b.city")
+            ->from("hr{$suffix}.hr_binding a")
+            ->leftJoin("hr{$suffix}.hr_employee b","a.employee_id=b.id")
+            ->where("a.user_id=:username",array(":username"=>$username))
+            ->queryRow();
+        return $row?$row:array();
     }
 }

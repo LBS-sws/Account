@@ -35,6 +35,8 @@ class SellComputeForm extends CFormModel
     private $textNum=0;//文本显示专用（已计算）
 
     private $old_calc=0;//兼容旧版的提成点（旧版未保存）
+
+    public $onlySql="";//只允許查看自己的提成
     //new,edit,end,performance,performanceedit,performanceend,renewal,renewalend,product,
     public static $viewList = array(
         'view'=>array('key'=>'view','name'=>'ALL'),
@@ -88,7 +90,7 @@ class SellComputeForm extends CFormModel
             ->select("a.*,b.code,b.name,b.group_type,b.id as employee_id")
             ->from("acc_service_comm_hdr a")
             ->leftJoin("hr{$suffix}.hr_employee b","b.code=a.employee_code")
-            ->where("a.id=:id {$sqlEpr}",array(":id"=>$index))->queryRow();
+            ->where("a.id=:id {$sqlEpr} {$this->onlySql}",array(":id"=>$index))->queryRow();
 		if ($row!==false) {
 			$this->id = $row['id'];
 			$this->employee_id = $row['employee_id'];
