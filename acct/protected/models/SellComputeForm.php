@@ -1099,7 +1099,7 @@ class SellComputeForm extends CFormModel
             "point"=>$point,
             "new_calc"=>$new_calc
         ));
-
+        $this->resetInstallSave();//刷新装机金额
         $this->simulationClick($for_bool,array("new"));
     }
 
@@ -1170,6 +1170,7 @@ class SellComputeForm extends CFormModel
             "new_calc"=>$new_calc
         ));
 
+        $this->resetInstallSave();//刷新装机金额
         $this->simulationClick($for_bool,array("new","edit"));
     }
 
@@ -1524,10 +1525,6 @@ class SellComputeForm extends CFormModel
         if(!empty($list)){
             $list['luu']=$uid;
             Yii::app()->db->createCommand()->update("acc_service_comm_dtl",$list,"hdr_id=:id",array(":id"=>$this->id));
-
-            if(key_exists('point',$list)||key_exists('new_money',$list)||key_exists('edit_money',$list)){
-                $this->resetInstallSave($data);//刷新装机金额
-            }
         }
     }
 
@@ -1624,7 +1621,7 @@ class SellComputeForm extends CFormModel
         $install_money=0;//装机业绩
 
         $rows = Yii::app()->db->createCommand()
-            ->select("a.id,a.amt_install")
+            ->select("a.id,a.amt_install,a.commission")
             ->from("swoper{$suffix}.swo_service a")
             ->where("a.commission is not null and (
             (a.status='N' and a.first_dt between '{$this->startDate}' and '{$this->endDate}') or 
