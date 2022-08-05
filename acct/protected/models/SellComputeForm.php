@@ -1101,7 +1101,9 @@ class SellComputeForm extends CFormModel
             "point"=>$point,
             "new_calc"=>$new_calc
         ));
-        $this->resetInstallSave();//刷新装机金额
+        if($for_bool){
+            $this->resetInstallSave();//刷新装机金额
+        }
         $this->simulationClick($for_bool,array("new"));
     }
 
@@ -1172,7 +1174,9 @@ class SellComputeForm extends CFormModel
             "new_calc"=>$new_calc
         ));
 
-        $this->resetInstallSave();//刷新装机金额
+        if($for_bool){
+            $this->resetInstallSave();//刷新装机金额
+        }
         $this->simulationClick($for_bool,array("new","edit"));
     }
 
@@ -1542,7 +1546,7 @@ class SellComputeForm extends CFormModel
                 "performanceend"=>array("list"=>"performanceendList","save"=>"performanceendSave","royalty"=>"royaltys"),
                 "renewal"=>array("list"=>"renewalList","save"=>"renewalSave","royalty"=>"royalty"),
                 "renewalend"=>array("list"=>"endList","save"=>"renewalendSave","royalty"=>"royalty"),
-                "product"=>array("list"=>"productList","save"=>"productSave","royalty"=>"royalty"),
+                "product"=>array("list"=>"productList","save"=>"productSave","royalty"=>"commission"),
             );
             foreach ($clickMenu as $id=>$arr){
                 if(key_exists($id,$notIdList)){
