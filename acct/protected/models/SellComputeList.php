@@ -216,7 +216,7 @@ class SellComputeList extends CListPageModel
     }
 
     //查找变更前的服务 $service：当前服务 $type：变更前的服务类型(N:新增,C:续约)
-    public static function getBeforeServiceList($service,$type){
+    public static function getBeforeServiceList($service,$type,$sales_str="salesman_id"){
         $service['salesman_id']=empty($service['salesman_id'])?0:$service['salesman_id'];
         $service['company_id']=empty($service['company_id'])?0:$service['company_id'];
         $service['cust_type']=empty($service['cust_type'])?0:$service['cust_type'];
@@ -238,6 +238,10 @@ class SellComputeList extends CListPageModel
             ->order("status_dt desc")->queryRow();
         //由於舊數據沒有保存提成點，所以需要重新查詢
         if($row){
+            if($sales_str=="othersalesman_id"){ //跨區
+                $row["royalty"]=$row["royaltys"];
+                $row["salesman_id"]=$row["othersalesman_id"];
+            }
             $royalty=floatval($row["royalty"]);
             if(empty($royalty)){
                 self::getServiceRoyalty($row);

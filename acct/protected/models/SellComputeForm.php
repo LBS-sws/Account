@@ -604,7 +604,7 @@ class SellComputeForm extends CFormModel
                 $after_sum = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
                 $row['amt_money']=$after_sum-$before_sum;
                 if($row['amt_money']<0){
-                    $row['history']=SellComputeList::getBeforeServiceList($row,"N");
+                    $row['history']=SellComputeList::getBeforeServiceList($row,"N","othersalesman_id");
                 }
             }
         }
@@ -852,7 +852,7 @@ class SellComputeForm extends CFormModel
                 //变动金额 = (总金额/服务总次数) * 剩余次数
                 $row['amt_money']=empty($row['all_number'])?0:$row['amt_money']/$row['all_number']*$row['surplus'];
                 $row['amt_money']=round($row['amt_money'],2)*-1;
-                $row['history']=SellComputeList::getBeforeServiceList($row,"N");
+                $row['history']=SellComputeList::getBeforeServiceList($row,"N","othersalesman_id");
             }
         }
         return $rows?$rows:array();
