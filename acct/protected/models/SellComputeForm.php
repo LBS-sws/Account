@@ -560,7 +560,7 @@ class SellComputeForm extends CFormModel
                     if(!empty($row["history"])){//有历史提成
                         $html.="<td data-id='{$row['history']['id']}'>".floatval($row["history"]["royalty"])."</td>";
                         if(key_exists("oldSell",$row['history'])){//顯示舊數據信息
-                            $html.="<td class='hide'>".var_dump($row['history']["oldSell"])."</td>";
+                            $html.="<td class='hide'>".implode(",",$row['history']["oldSell"])."</td>";
                         }
                     }else{//没有历史提成
                         $royalty=empty($row['royalty'])?0.01:$row['royalty'];
@@ -661,7 +661,7 @@ class SellComputeForm extends CFormModel
                     if(!empty($row["history"])){//有历史提成
                         $html.="<td data-id='{$row['history']['id']}'>".floatval($row["history"]["royalty"])."</td>";
                         if(key_exists("oldSell",$row['history'])){//顯示舊數據信息
-                            $html.="<td class='hide'>".var_dump($row['history']["oldSell"])."</td>";
+                            $html.="<td class='hide'>".implode(",",$row['history']["oldSell"])."</td>";
                         }
                     }else{//没有历史提成
                         $royalty=empty($row['royalty'])?0.01:$row['royalty'];
@@ -763,7 +763,7 @@ class SellComputeForm extends CFormModel
                 if(key_exists("history",$row)&&!empty($row["history"])){ //有历史提成
                     $html.="<td data-id='{$row['history']['id']}'>".floatval($row["history"]["royalty"])."</td>";
                     if(key_exists("oldSell",$row['history'])){//顯示舊數據信息
-                        $html.="<td class='hide'>".var_dump($row['history']["oldSell"])."</td>";
+                        $html.="<td class='hide'>".implode(",",$row['history']["oldSell"])."</td>";
                     }
                 }else{
                     $royalty=empty($row['royalty'])?0.01:$row['royalty'];
@@ -825,7 +825,7 @@ class SellComputeForm extends CFormModel
                 if(key_exists("history",$row)&&!empty($row["history"])){ //有历史提成
                     $html.="<td data-id='{$row['history']['id']}'>".floatval($row["history"]["royalty"])."</td>";
                     if(key_exists("oldSell",$row['history'])){//顯示舊數據信息
-                        $html.="<td class='hide'>".var_dump($row['history']["oldSell"])."</td>";
+                        $html.="<td class='hide'>".implode(",",$row['history']["oldSell"])."</td>";
                     }
                 }else{
                     $royalty=empty($row['royalty'])?0.01:$row['royalty'];
@@ -913,7 +913,7 @@ class SellComputeForm extends CFormModel
                 if(key_exists("history",$row)&&!empty($row["history"])){ //有历史提成
                     $html.="<td data-id='{$row['history']['id']}'>".floatval($row["history"]["royalty"])."</td>";
                     if(key_exists("oldSell",$row['history'])){//顯示舊數據信息
-                        $html.="<td class='hide'>".var_dump($row['history']["oldSell"])."</td>";
+                        $html.="<td class='hide'>".implode(",",$row['history']["oldSell"])."</td>";
                     }
                 }else{
                     $royalty=empty($row['royalty'])?0.01:$row['royalty'];
