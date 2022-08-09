@@ -270,6 +270,12 @@ class SellComputeList extends CListPageModel
                 ->queryRow();
             $point = $point?floatval($point["point"]):floatval($row["point"]);
             $service["royalty"]=$row["service_reward"]+$point+$row["new_calc"];
+            $service["oldSell"]=array(
+                "hdr_id"=>$row["hdr_id"],
+                "service_reward"=>$row["service_reward"],
+                "point"=>$point,
+                "new_calc"=>$row["new_calc"]
+            );//調試異常，把內容顯示出來
         }else{
             $service=array();
         }

@@ -575,6 +575,9 @@ class SellComputeForm extends CFormModel
                 $amt_install = $row['commission']==="未计算"?"未计算":$amt_install;
                 $amt_install = is_numeric($row['commission'])&&$row['commission']<0?"不计算":$amt_install;
                 $html.="<td>".$amt_install."</td>";
+                if(key_exists("oldSell",$row)){
+                    $html.="<td class='hide'>".var_dump($row["oldSell"])."</td>";
+                }
                 $html.="</tr>";
                 $this->textSum++;
                 if($checkBool){
@@ -669,6 +672,9 @@ class SellComputeForm extends CFormModel
                 //獎金庫擴充
                 $row['commission'] = $row['target']==1?"奖金库":$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
+                if(key_exists("oldSell",$row)){
+                    $html.="<td class='hide'>".var_dump($row["oldSell"])."</td>";
+                }
                 $html.="</tr>";
                 $this->textSum++;
                 if($checkBool){
@@ -763,6 +769,9 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".$row['royalty']."</td>";
                 $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
+                if(key_exists("oldSell",$row)){
+                    $html.="<td class='hide'>".var_dump($row["oldSell"])."</td>";
+                }
                 $html.="</tr>";
                 $this->textSum++;
                 if($checkBool){
@@ -822,6 +831,9 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".$row['royalty']."</td>";
                 $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
+                if(key_exists("oldSell",$row)){
+                    $html.="<td class='hide'>".var_dump($row["oldSell"])."</td>";
+                }
                 $html.="</tr>";
                 $this->textSum++;
                 if($checkBool){
@@ -907,6 +919,9 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".$row['royalty']."</td>";
                 $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
+                if(key_exists("oldSell",$row)){
+                    $html.="<td class='hide'>".var_dump($row["oldSell"])."</td>";
+                }
                 $html.="</tr>";
                 $this->textSum++;
                 if($checkBool){
