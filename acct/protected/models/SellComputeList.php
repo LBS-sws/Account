@@ -257,7 +257,7 @@ class SellComputeList extends CListPageModel
         $year = date("Y",$time);
         $month = date("n",$time);
         $row = Yii::app()->db->createCommand()
-            ->select("f.hdr_id,f.service_reward,f.point,f.new_calc")
+            ->select("f.hdr_id,f.service_reward,f.point,f.new_calc,b.code,b.name")
             ->from("acc_service_comm_dtl f")
             ->leftJoin("acc_service_comm_hdr a","f.hdr_id=a.id")
             ->leftJoin("hr{$suffix}.hr_employee b","b.code=a.employee_code")
@@ -269,8 +269,9 @@ class SellComputeList extends CListPageModel
                 ->where("hdr_id=:id",array(":id"=>$row['hdr_id']))
                 ->queryRow();
             $point = $point?floatval($point["point"]):0;
+            $service_reward = ReportXS01Form::serviceReward($row["code"],$row["name"],"{$year}/{$month}");
             //$point = self::getOldPoint($service,$year,$month);
-            $service["royalty"]=$row["service_reward"]+$point+$row["new_calc"];
+            $service["royalty"]=$service_reward+$point+$row["new_calc"];
             $service["oldSell"]=array(
                 "hdr_id"=>"hdr_id:".$row["hdr_id"],
                 "service_reward"=>"service_reward:".$row["service_reward"],
