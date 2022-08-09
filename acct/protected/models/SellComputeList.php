@@ -268,9 +268,10 @@ class SellComputeList extends CListPageModel
                 ->from("sales$suffix.sal_integral")
                 ->where("hdr_id='{$row["hdr_id"]}'")
                 ->queryRow();
-            $point = $point?floatval($point["point"]):floatval($row["point"]);
+            $point = $point?floatval($point["point"]):0;
             $service["royalty"]=$row["service_reward"]+$point+$row["new_calc"];
             $service["oldSell"]=array(
+                "point_id"=>$point?$point["id"]:0,
                 "hdr_id"=>$row["hdr_id"],
                 "service_reward"=>$row["service_reward"],
                 "point"=>$point,
