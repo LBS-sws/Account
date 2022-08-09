@@ -559,6 +559,9 @@ class SellComputeForm extends CFormModel
                 if(key_exists("history",$row)){ //金额变少了（需要历史提成）
                     if(!empty($row["history"])){//有历史提成
                         $html.="<td data-id='{$row['history']['id']}'>".floatval($row["history"]["royalty"])."</td>";
+                        if(key_exists("oldSell",$row['history'])){//顯示舊數據信息
+                            $html.="<td class='hide'>".var_dump($row['history']["oldSell"])."</td>";
+                        }
                     }else{//没有历史提成
                         $royalty=empty($row['royalty'])?0.01:$row['royalty'];
                         $html.="<td>".TbHtml::numberField("royalty[{$row['id']}]",$royalty)."</td>";
@@ -575,9 +578,6 @@ class SellComputeForm extends CFormModel
                 $amt_install = $row['commission']==="未计算"?"未计算":$amt_install;
                 $amt_install = is_numeric($row['commission'])&&$row['commission']<0?"不计算":$amt_install;
                 $html.="<td>".$amt_install."</td>";
-                if(key_exists("oldSell",$row)){
-                    $html.="<td class='hide'>".var_dump($row["oldSell"])."</td>";
-                }
                 $html.="</tr>";
                 $this->textSum++;
                 if($checkBool){
@@ -660,6 +660,9 @@ class SellComputeForm extends CFormModel
                 if(key_exists("history",$row)){ //金额变少了（需要历史提成）
                     if(!empty($row["history"])){//有历史提成
                         $html.="<td data-id='{$row['history']['id']}'>".floatval($row["history"]["royalty"])."</td>";
+                        if(key_exists("oldSell",$row['history'])){//顯示舊數據信息
+                            $html.="<td class='hide'>".var_dump($row['history']["oldSell"])."</td>";
+                        }
                     }else{//没有历史提成
                         $royalty=empty($row['royalty'])?0.01:$row['royalty'];
                         $html.="<td>".TbHtml::numberField("royalty[{$row['id']}]",$royalty)."</td>";
@@ -672,9 +675,6 @@ class SellComputeForm extends CFormModel
                 //獎金庫擴充
                 $row['commission'] = $row['target']==1?"奖金库":$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
-                if(key_exists("oldSell",$row)){
-                    $html.="<td class='hide'>".var_dump($row["oldSell"])."</td>";
-                }
                 $html.="</tr>";
                 $this->textSum++;
                 if($checkBool){
@@ -762,6 +762,9 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".$row['amt_money']."</td>";
                 if(key_exists("history",$row)&&!empty($row["history"])){ //有历史提成
                     $html.="<td data-id='{$row['history']['id']}'>".floatval($row["history"]["royalty"])."</td>";
+                    if(key_exists("oldSell",$row['history'])){//顯示舊數據信息
+                        $html.="<td class='hide'>".var_dump($row['history']["oldSell"])."</td>";
+                    }
                 }else{
                     $royalty=empty($row['royalty'])?0.01:$row['royalty'];
                     $html.="<td>".TbHtml::numberField("royalty[{$row['id']}]",$royalty)."</td>";
@@ -769,9 +772,6 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".$row['royalty']."</td>";
                 $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
-                if(key_exists("oldSell",$row)){
-                    $html.="<td class='hide'>".var_dump($row["oldSell"])."</td>";
-                }
                 $html.="</tr>";
                 $this->textSum++;
                 if($checkBool){
@@ -824,6 +824,9 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".$row['amt_money']."</td>";
                 if(key_exists("history",$row)&&!empty($row["history"])){ //有历史提成
                     $html.="<td data-id='{$row['history']['id']}'>".floatval($row["history"]["royalty"])."</td>";
+                    if(key_exists("oldSell",$row['history'])){//顯示舊數據信息
+                        $html.="<td class='hide'>".var_dump($row['history']["oldSell"])."</td>";
+                    }
                 }else{
                     $royalty=empty($row['royalty'])?0.01:$row['royalty'];
                     $html.="<td>".TbHtml::numberField("royalty[{$row['id']}]",$royalty)."</td>";
@@ -831,9 +834,6 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".$row['royalty']."</td>";
                 $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
-                if(key_exists("oldSell",$row)){
-                    $html.="<td class='hide'>".var_dump($row["oldSell"])."</td>";
-                }
                 $html.="</tr>";
                 $this->textSum++;
                 if($checkBool){
@@ -912,6 +912,9 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".$row['amt_money']."</td>";
                 if(key_exists("history",$row)&&!empty($row["history"])){ //有历史提成
                     $html.="<td data-id='{$row['history']['id']}'>".floatval($row["history"]["royalty"])."</td>";
+                    if(key_exists("oldSell",$row['history'])){//顯示舊數據信息
+                        $html.="<td class='hide'>".var_dump($row['history']["oldSell"])."</td>";
+                    }
                 }else{
                     $royalty=empty($row['royalty'])?0.01:$row['royalty'];
                     $html.="<td>".TbHtml::numberField("royalty[{$row['id']}]",$royalty)."</td>";
@@ -919,9 +922,6 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".$row['royalty']."</td>";
                 $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
                 $html.="<td>".$row['commission']."</td>";
-                if(key_exists("oldSell",$row)){
-                    $html.="<td class='hide'>".var_dump($row["oldSell"])."</td>";
-                }
                 $html.="</tr>";
                 $this->textSum++;
                 if($checkBool){
