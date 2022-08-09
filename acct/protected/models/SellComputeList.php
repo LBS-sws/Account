@@ -230,7 +230,7 @@ class SellComputeList extends CListPageModel
             $dateSql="status='{$type}' and date_format(status_dt,'%Y-%m')<'$status_dt'";
         }
         $row = Yii::app()->db->createCommand()
-            ->select("id,status,status_dt,first_dt,salesman_id,othersalesman_id,commission,royalty,royaltys")->from("swoper{$suffix}.swo_service")
+            ->select("id,city,status,status_dt,first_dt,salesman_id,othersalesman_id,commission,royalty,royaltys")->from("swoper{$suffix}.swo_service")
             ->where("{$dateSql} and
              salesman_id={$service['salesman_id']} and company_id={$service['company_id']} and 
              cust_type={$service['cust_type']} and cust_type_name={$service['cust_type_name']} and
@@ -251,7 +251,7 @@ class SellComputeList extends CListPageModel
     }
 
     //由於舊數據沒有保存提成點，需要查詢提成計算
-    public function getServiceRoyalty(&$service){
+    public static function getServiceRoyalty(&$service){
         $suffix = Yii::app()->params['envSuffix'];
         $time = $service["status"]=="N"?strtotime($service["first_dt"]):strtotime($service["status_dt"]);
         $year = date("Y",$time);
@@ -266,20 +266,58 @@ class SellComputeList extends CListPageModel
         if($row){
             $point = Yii::app()->db->createCommand()->select("id,point")
                 ->from("sales$suffix.sal_integral")
-                ->where("hdr_id='{$row["hdr_id"]}'")
+                ->where("hdr_id=:id",array(":id"=>$row['hdr_id']))
                 ->queryRow();
             $point = $point?floatval($point["point"]):0;
+            //$point = self::getOldPoint($service,$year,$month);
             $service["royalty"]=$row["service_reward"]+$point+$row["new_calc"];
             $service["oldSell"]=array(
-                "point_id"=>$point?$point["id"]:0,
-                "hdr_id"=>$row["hdr_id"],
-                "service_reward"=>$row["service_reward"],
-                "point"=>$point,
-                "new_calc"=>$row["new_calc"]
+                "hdr_id"=>"hdr_id:".$row["hdr_id"],
+                "service_reward"=>"service_reward:".$row["service_reward"],
+                "point"=>"point:".$point,
+                "new_calc"=>"new_calc:".$row["new_calc"]
             );//調試異常，把內容顯示出來
         }else{
             $service=array();
         }
+    }
+
+    //獲取舊版銷售積分提成點
+    public static function getOldPoint($service,$year,$month){
+        $point = 0;
+        $suffix = Yii::app()->params['envSuffix'];
+        $staffRow = Yii::app()->db->createCommand()
+            ->select("a.user_id,f.manager_type,d.entry_time")
+            ->from("hr$suffix.hr_binding a")
+            ->leftJoin("hr$suffix.hr_employee d","d.id=a.employee_id")
+            ->leftJoin("hr$suffix.hr_dept f","f.id=d.position")
+            ->where("a.employee_id={$service["salesman_id"]} and f.manager_type in (1,2)")
+            ->queryRow();//員工及副經理才有销售提成激励点：f.manager_type in (1,2)
+        if($staffRow){
+            $salesBool = true;//是否需要銷售系統的銷售提成點數
+            $entry_time = date("Y-m-01",strtotime("{$staffRow['entry_time']} + 1 months"));
+            $startDate = date("Y-m-d",strtotime("{$year}-{$month}-01"));
+            if($entry_time>=$startDate){
+                //新入職員工需要判斷該員工是否在本月1號有銷售拜訪
+                $visitRow = Yii::app()->db->createCommand()->select("id")
+                    ->from("sales$suffix.sal_visit")
+                    ->where("city='{$service['city']}' and username=:id and visit_dt='{$startDate}'",array(":id"=>$staffRow["user_id"]))
+                    ->queryRow();
+                if(!$visitRow){
+                    $salesBool = false;//當月一號沒有銷售拜訪
+                }
+            }
+            if($salesBool){
+                $integralRow = Yii::app()->db->createCommand()->select("id,point")
+                    ->from("sales$suffix.sal_integral")
+                    ->where("city='{$service['city']}' and year={$year} and month={$month} and username=:id",array(":id"=>$staffRow["user_id"]))
+                    ->queryRow();
+                if($integralRow){
+                    $point = empty($integralRow['point'])?0:floatval($integralRow['point']);
+                }
+            }
+        }
+        return $point;
     }
 
     public static function getNewCalc($sum_money,$date,$city,$type='fw'){
