@@ -121,7 +121,9 @@ $this->pageTitle=Yii::app()->name . ' - SellTable Form';
                             <div class="media-body">
                                 <p><span style="color: red;">红色</span>标记的为跨区记录（年金额计算到业绩里，提成根据地区设置的比例计算）</p>
                                 <p><span style="color: blue;">蓝色</span>标记的为被跨区记录（年金额不计算到业绩里，提成满足跨区目标要求后，根据地区设置的比例计算）</p>
+                                <!--
                                 <p><span style="color: yellow;">黄色</span>标记的为提成点是零的续约服务</p>
+                                -->
                                 <p>甲醛、飘盈香客户归为IC类</p>
                                 <p>创新业务提成点：满足月销3桶洗地易+月新签蔚诺及隔油池金额大于2500</p>
                             </div>

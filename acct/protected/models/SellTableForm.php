@@ -327,6 +327,9 @@ class SellTableForm extends SellComputeForm{
         if($rows){
             $this->serviceList[]=array('title'=>Yii::t("salestable","customer service"));
             foreach ($rows as $row){
+                if(empty($row["royalty"])&&$row["status"]=="C"){
+                    continue;//續約提成點為零，不顯示在銷售提成表內
+                }
                 $row["amt_install"]=is_numeric($row["amt_install"])?floatval($row["amt_install"]):0;
                 $row['b4_amt_paid'] = is_numeric($row['b4_amt_paid'])?floatval($row['b4_amt_paid']):0;
                 $row["amt_paid"]=is_numeric($row["amt_paid"])?floatval($row["amt_paid"]):0;
