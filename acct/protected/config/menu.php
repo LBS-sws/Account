@@ -27,6 +27,28 @@ return array(
 			),
 		),
 	),
+	'Consult Fee'=>array( //咨詢費
+		'access'=>'CF',
+		'icon'=>'fa-briefcase',
+		'items'=>array(
+            'Consult Fee Apply'=>array(
+                'access'=>'CF01',
+                'url'=>'/consultApply/index',
+            ),
+            'Consult Fee Audit'=>array(
+                'access'=>'CF02',
+                'url'=>'/consultAudit/index',
+            ),
+            'Consult Fee Search'=>array(
+                'access'=>'CF04',
+                'url'=>'/consultSearch/index',
+            ),
+            'Consult Fee Set'=>array(
+                'access'=>'CF03',
+                'url'=>'/consultSet/index',
+            ),
+        )
+    ),
 	'Transaction'=>array(
 		'access'=>'XE',
 		'icon'=>'fa-exchange',

@@ -99,6 +99,16 @@ class Counter {
 //        $rtn = count($items);
         return $rtn;
     }
+
+
+    public static function countConsult() {
+	    $model = new ConsultAuditList();
+        $rtn=0;
+	    if(ConsultApplyList::staffCompanyForUsername($model)){
+            $rtn=$model->getCountConsult();
+        }
+        return $rtn;
+    }
 }
 
 ?>
