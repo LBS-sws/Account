@@ -9,11 +9,12 @@ class ConsultApplyForm extends CFormModel
     public $customer_code="";
     public $consult_money;
     public $apply_city;
-    public $audit_city;
+    public $audit_city="ZY";
     public $audit_date;
     public $status;
     public $remark;
     public $reject_remark;
+    public $staff_city;
     public $info_list = array(
         array('id'=>0,
             'consult_id'=>0,
@@ -77,6 +78,8 @@ class ConsultApplyForm extends CFormModel
         if (!$bool){
             $this->addError($attribute, "该账号未绑定员工，请与管理员联系");
             return false;
+        }else{
+            $this->staff_city=$this->apply_city;
         }
     }
 
@@ -118,6 +121,7 @@ class ConsultApplyForm extends CFormModel
 				 from acc_consult where id='".$index."' and (apply_city='{$this->apply_city}' or (audit_city='{$this->apply_city}' and status in (2,3)))";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
+            $this->staff_city=$this->apply_city;
 			$this->id = $row['id'];
 			$this->consult_code = $row['consult_code'];
             $this->apply_date = General::toDate($row['apply_date']);
@@ -311,6 +315,6 @@ class ConsultApplyForm extends CFormModel
 	}
 
 	public function isReady(){
-	    return $this->getScenario()=="view"||in_array($this->status,array(1,2));
+	    return $this->getScenario()=="view"||in_array($this->status,array(1,2))||$this->staff_city!=$this->apply_city;
     }
 }

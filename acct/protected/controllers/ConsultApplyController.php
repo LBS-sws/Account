@@ -101,6 +101,7 @@ class ConsultApplyController extends Controller
 	{
 		$model = new ConsultApplyForm('view');
         if(ConsultApplyList::staffCompanyForUsername($model)){
+            $model->staff_city = $model->apply_city;
             if (!$model->retrieveData($index)) {
                 throw new CHttpException(404,'The requested page does not exist.');
             } else {
@@ -115,6 +116,7 @@ class ConsultApplyController extends Controller
 	{
 		$model = new ConsultApplyForm('new');
         if(ConsultApplyList::staffCompanyForUsername($model)){
+            $model->staff_city = $model->apply_city;
             $this->render('form',array('model'=>$model,));
         }else{
             throw new CHttpException(404,'该账号未绑定员工，请与管理员联系');
@@ -125,6 +127,7 @@ class ConsultApplyController extends Controller
 	{
 		$model = new ConsultApplyForm('edit');
         if(ConsultApplyList::staffCompanyForUsername($model)){
+            $model->staff_city = $model->apply_city;
             if (!$model->retrieveData($index)) {
                 throw new CHttpException(404,'The requested page does not exist.');
             } else {
