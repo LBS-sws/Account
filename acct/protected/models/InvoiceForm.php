@@ -493,6 +493,17 @@ class InvoiceForm extends CFormModel
 
     //獲取pdf模板內容（包含發票單號、日期、技術員、總價）
     private function getPDFTable($model){
+        //2022-09-01年修改了發票抬頭
+        $logoImg = "images/lbs_pdf.jpg";
+        $logoCompany_tw="佳駿企業有限公司";
+        $logoCompany_en="Kai Jun Enterprises Ltd";
+        $newBool=false;
+        if(strtotime($model->invoice_dt)>=strtotime("2022-09-01")){
+            $logoImg = "images/lbs_pdf_new.jpg";
+            $logoCompany_tw="LBS (Macau) Limited";
+            $logoCompany_en="LBS (Macau) Limited";
+            $newBool=true;
+        }
         $info_style=$this->infoStyle;
         $html = "";
 //812px *572
@@ -501,7 +512,7 @@ class InvoiceForm extends CFormModel
 <table border="0" width="812px" cellspacing="0" cellpadding="0" style="line-height: 13px;">
 	<tr>
 		<td width="180px"> </td>
-		<td width="148px" rowspan="6" style="text-align: left;"><img width="111px"  src="images/lbs_pdf.jpg" ></td>
+		<td width="148px" rowspan="6" style="text-align: left;"><img width="111px"  src="'.$logoImg.'" ></td>
 		<td width="119px" rowspan="6" style="text-align: center;">
 		    <span style="color:red;font-size: 18px;">發票</span>
 		    <br>
@@ -516,8 +527,8 @@ class InvoiceForm extends CFormModel
 		    <span style="font-weight: bold;font-size: 9px;">INVOICNE NO.</span><br>
 		    <span style="'.$info_style.'">  '.$model->invoice_no.'</span>
 		</td>
-		<td><span>史偉莎澳門(由佳駿企業有限公司經營)</span></td>
-		<td><span >LBS Macau (O/B Kai Jun Enterprises Ltd.)</span></td>
+		<td><span>史偉莎澳門(由'.$logoCompany_tw.'經營)</span></td>
+		<td><span >LBS Macau (O/B '.$logoCompany_en.'.)</span></td>
 	</tr>
 	<tr>
 		<td><span>澳門慕拉士大馬路一八五至一九一號</span></td>
@@ -532,8 +543,8 @@ class InvoiceForm extends CFormModel
 		<td><span>Tel.: (853) 2871 9588 Fax: 2871 9727</span></td>
 	</tr>
 	<tr>
-		<td><span style="color:red;">(支票抬頭 “佳駿企業有限公司”)</span></td>
-		<td><span style="color:red;">(Cheque payable to“Kai Jun Enterprises Ltd.”)</span></td>
+		<td><span style="color:red;">(支票抬頭 “'.$logoCompany_tw.'”)</span></td>
+		<td><span style="color:red;">(Cheque payable to“'.$logoCompany_en.'.”)</span></td>
 	</tr>
 </table>
 ';
@@ -688,14 +699,24 @@ class InvoiceForm extends CFormModel
         </td>
     </tr>
     <tr>
-        <td width="10px;"></td>
-        <td width="90px;"><img width="90px" src="images/pay.jpg"/></td>
+        <td width="10px;"></td>';
+        $html.='<td width="90px;" height="90px;">';
+        if($newBool){//2022-09-01刪除二維碼
+            $html.="&nbsp;";
+        }else{
+            $html.='<img width="90px" src="images/pay.jpg"/>';
+        }
+        $html.='</td>
         <td> </td>
     </tr>
     <tr>
-        <td></td>
-        <td style="text-align: center">付款可掃二維碼</td>
-        <td> </td>
+        <td></td>';
+        if($newBool){//2022-09-01刪除二維碼
+            $html.='<td style="text-align: center">&nbsp;</td>';
+        }else{
+            $html.='<td style="text-align: center">付款可掃二維碼</td>';
+        }
+        $html.='<td> </td>
     </tr>
     <tr><td colspan="3" style="line-height: 10px;" height="10px;"></td></tr>
 </table>
