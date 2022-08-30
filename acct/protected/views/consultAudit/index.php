@@ -32,7 +32,7 @@ $this->pageTitle=Yii::app()->name . ' - ConsultAudit';
 				'height'=>'600',
 				'search'=>array(
 							'consult_code',
-							'customer_code',
+							//'customer_code',
 							'apply_city',
 							'audit_city',
 						),

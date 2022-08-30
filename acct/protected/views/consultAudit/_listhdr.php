@@ -10,11 +10,13 @@
 			;
 		?>
 	</th>
+    <!--刪除客戶識別號
 	<th>
 		<?php echo TbHtml::link($this->getLabelName('customer_code').$this->drawOrderArrow('customer_code'),'#',$this->createOrderLink('consultAudit-list','customer_code'))
 			;
 		?>
 	</th>
+    -->
 	<th>
 		<?php echo TbHtml::link($this->getLabelName('consult_money').$this->drawOrderArrow('consult_money'),'#',$this->createOrderLink('consultAudit-list','consult_money'))
 			;

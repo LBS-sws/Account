@@ -30,12 +30,6 @@ $this->pageTitle=Yii::app()->name . ' - ConsultSearch';
         'viewdtl'=>'//consultSearch/_listdtl',
         'gridsize'=>'24',
         'height'=>'600',
-        'search'=>array(
-            'consult_code',
-            'customer_code',
-            'apply_city',
-            'audit_city',
-        ),
         'advancedSearch'=>true,
         'hasDateButton'=>true,
     ));

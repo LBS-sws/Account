@@ -28,7 +28,7 @@ class ConsultSearchList extends CListPageModel
         $search = array(
             'apply_date'=>"date_format(apply_date,'%Y/%m/%d')",
             'consult_code'=>'consult_code',
-            'customer_code'=>'customer_code',
+            //'customer_code'=>'customer_code',
             'apply_city'=>'apply_city',
             'audit_city'=>'audit_city',
         );
