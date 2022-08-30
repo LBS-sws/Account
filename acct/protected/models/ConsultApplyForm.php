@@ -253,8 +253,8 @@ class ConsultApplyForm extends CFormModel
 				break;
 			case 'new':
 				$sql = "insert into acc_consult(
-						apply_date, customer_code, consult_money, apply_city, audit_city, remark, city, lcu, lcd) values (
-						:apply_date, :customer_code, :consult_money, :apply_city, :audit_city, :remark, :city, :lcu, :lcd)";
+						apply_date, customer_code, consult_money, apply_city, audit_city, status, remark, city, lcu, lcd) values (
+						:apply_date, :customer_code, :consult_money, :apply_city, :audit_city, :status, :remark, :city, :lcu, :lcd)";
 				break;
 			case 'edit':
 				$sql = "update acc_consult set 

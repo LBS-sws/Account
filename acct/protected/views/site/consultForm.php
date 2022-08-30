@@ -27,6 +27,7 @@
         ); ?>
     </div>
 </div>
+<!-- 刪除客戶識別號
 <div class="form-group">
     <?php echo $form->labelEx($model,'customer_code',array('class'=>"col-lg-2 control-label")); ?>
     <div class="col-lg-5">
@@ -35,6 +36,7 @@
         ); ?>
     </div>
 </div>
+-->
 <div class="form-group">
     <?php echo $form->labelEx($model,'apply_city',array('class'=>"col-lg-2 control-label")); ?>
     <div class="col-lg-3">

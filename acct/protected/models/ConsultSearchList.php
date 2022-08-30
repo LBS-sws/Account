@@ -23,6 +23,17 @@ class ConsultSearchList extends CListPageModel
 			'reject_remark'=>Yii::t('consult','reject remark'),
 		);
 	}
+
+    public function searchColumns() {
+        $search = array(
+            'apply_date'=>"date_format(apply_date,'%Y/%m/%d')",
+            'consult_code'=>'consult_code',
+            'customer_code'=>'customer_code',
+            'apply_city'=>'apply_city',
+            'audit_city'=>'audit_city',
+        );
+        return $search;
+    }
 	
 	public function retrieveDataByPage($pageNum=1)
 	{
@@ -38,31 +49,15 @@ class ConsultSearchList extends CListPageModel
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
-			$svalue = str_replace("'","\'",$this->searchValue);
-			switch ($this->searchField) {
-				case 'consult_code':
-					$clause .= General::getSqlConditionClause('consult_code',$svalue);
-					break;
-				case 'apply_date':
-					$clause .= General::getSqlConditionClause('apply_date',$svalue);
-					break;
-				case 'customer_code':
-					$clause .= General::getSqlConditionClause('customer_code',$svalue);
-					break;
-				case 'consult_money':
-					$clause .= General::getSqlConditionClause('consult_money',$svalue);
-					break;
-				case 'apply_city':
-					$clause .= General::getSqlConditionClause('apply_city',$svalue);
-					break;
-				case 'audit_city':
-					$clause .= General::getSqlConditionClause('audit_city',$svalue);
-					break;
-				case 'status':
-					$clause .= General::getSqlConditionClause('status',$svalue);
-					break;
-			}
+            if ($this->isAdvancedSearch()) {
+                $clause = $this->buildSQLCriteria();
+            } else {
+                $svalue = str_replace("'","\'",$this->searchValue);
+                $columns = $this->searchColumns();
+                $clause .= General::getSqlConditionClause($columns[$this->searchField],$svalue);
+            }
 		}
+        $clause .= $this->getDateRangeCondition('apply_date');
 		
 		$order = "";
 		if (!empty($this->orderField)) {

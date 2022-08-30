@@ -23,21 +23,23 @@ $this->pageTitle=Yii::app()->name . ' - ConsultSearch';
 </section>
 
 <section class="content">
-	<?php $this->widget('ext.layout.ListPageWidget', array(
-			'title'=>Yii::t('consult','Search List'),
-			'model'=>$model,
-				'viewhdr'=>'//consultSearch/_listhdr',
-				'viewdtl'=>'//consultSearch/_listdtl',
-				'gridsize'=>'24',
-				'height'=>'600',
-				'search'=>array(
-							'consult_code',
-							'customer_code',
-							'apply_city',
-							'audit_city',
-						),
-		));
-	?>
+    <?php $this->widget('ext.layout.ListPageWidget', array(
+        'title'=>Yii::t('consult','Search List'),
+        'model'=>$model,
+        'viewhdr'=>'//consultSearch/_listhdr',
+        'viewdtl'=>'//consultSearch/_listdtl',
+        'gridsize'=>'24',
+        'height'=>'600',
+        'search'=>array(
+            'consult_code',
+            'customer_code',
+            'apply_city',
+            'audit_city',
+        ),
+        'advancedSearch'=>true,
+        'hasDateButton'=>true,
+    ));
+    ?>
 </section>
 <?php
 	echo $form->hiddenField($model,'pageNum');
