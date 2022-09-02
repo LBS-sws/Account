@@ -106,6 +106,16 @@ $('table').on('change','[id^=\"ConsultApplyForm\"]',function() {
 	var n=$(this).attr('id').split('_');
 	$('#ConsultApplyForm_'+n[1]+'_'+n[2]+'_uflag').val('Y');
 });
+
+$('#tblDetail').delegate('.good_money','keyup change',function(){
+    var sum=0;
+    $('.good_money').each(function(){
+        var number = $(this).val();
+        number = number!=''&&!isNaN(number)?parseFloat(number):0;
+        sum+=number;
+    });
+    $('#consult_money').val(sum);
+});
 ";
 Yii::app()->clientScript->registerScript('setFlag',$js,CClientScript::POS_READY);
 
