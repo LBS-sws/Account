@@ -14,4 +14,5 @@ return array(
 	'Payroll File Rollback'=>array('access'=>'CN11',),
     'Sales commission table Approval'=>array('access'=>'CN12',),
     'Batch deletion of invoices'=>array('access'=>'CN13',),
+    'Consult Fee Replace'=>array('access'=>'CN14',),
 );
