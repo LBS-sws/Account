@@ -129,6 +129,7 @@ class ConsultSearchForm extends CFormModel
 		$transaction=$connection->beginTransaction();
 		try {
 			$this->saveDataForSql($connection);
+			$this->saveHistory();
 			$transaction->commit();
 		}
 		catch(Exception $e) {
@@ -137,6 +138,17 @@ class ConsultSearchForm extends CFormModel
 			throw new CHttpException(404,'Cannot update.');
 		}
 	}
+
+    protected function saveHistory(){
+        $uid = Yii::app()->user->id;
+        Yii::app()->db->createCommand()->insert("acc_consult_history", array(
+            "consult_id" => $this->id,
+            "record_username" => $uid,
+            "lcu" => $uid,
+            "record_date" => date("Y-m-d H:i:s"),
+            "record_status" => 4,
+        ));
+    }
 
 	protected function saveDataForSql(&$connection)
 	{

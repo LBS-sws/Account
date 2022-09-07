@@ -41,6 +41,9 @@ $this->pageTitle=Yii::app()->name . ' - ConsultSearch Form';
                         'name'=>'btnFile','id'=>'btnFile','data-toggle'=>'modal','data-target'=>'#fileuploadconsu',)
                 );
                 ?>
+                <?php echo TbHtml::button('<span class="fa fa-calendar"></span> '.Yii::t('consult','History'), array(
+                    'data-toggle'=>'modal','data-target'=>'#historydialog'));
+                ?>
             </div>
 	</div></div>
 
@@ -72,6 +75,7 @@ $this->pageTitle=Yii::app()->name . ' - ConsultSearch Form';
 		</div>
 	</div>
 </section>
+<?php $this->renderPartial('//site/history',array('tableHtml'=>ConsultApplyForm::getHistoryHtml($model->id))); ?>
 
 <?php $this->renderPartial('//site/fileupload',array('model'=>$model,
     'form'=>$form,

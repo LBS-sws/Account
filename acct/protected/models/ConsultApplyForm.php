@@ -74,12 +74,16 @@ class ConsultApplyForm extends CFormModel
 	}
 
     public function validateStaff($attribute, $params){
-	    $bool = ConsultApplyList::staffCompanyForUsername($this);
-        if (!$bool){
-            $this->addError($attribute, "该账号未绑定员工，请与管理员联系");
-            return false;
-        }else{
+	    if(Yii::app()->user->validFunction('CN14')){//代申請
             $this->staff_city=$this->apply_city;
+        }else{
+            $bool = ConsultApplyList::staffCompanyForUsername($this);
+            if (!$bool){
+                $this->addError($attribute, "该账号未绑定员工，请与管理员联系");
+                return false;
+            }else{
+                $this->staff_city=$this->apply_city;
+            }
         }
     }
 
@@ -116,9 +120,10 @@ class ConsultApplyForm extends CFormModel
 	public function retrieveData($index)
 	{
 		$suffix = Yii::app()->params['envSuffix'];
+        $uid = Yii::app()->user->id;
 		$sql = "select *,
 				docman$suffix.countdoc('consu',id) as consucountdoc
-				 from acc_consult where id='".$index."' and (apply_city='{$this->apply_city}' or (audit_city='{$this->apply_city}' and status in (2,3)))";
+				 from acc_consult where id='".$index."' and (lcu = '{$uid}' or apply_city='{$this->apply_city}' or (audit_city='{$this->apply_city}' and status in (2,3)))";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
             $this->staff_city=$this->apply_city;
@@ -153,6 +158,40 @@ class ConsultApplyForm extends CFormModel
 		    return false;
         }
 	}
+
+	public static function getHistoryHtml($id){
+        $historyRows = Yii::app()->db->createCommand()->select("*")->from("acc_consult_history")
+            ->where("consult_id=:consult_id",array(":consult_id"=>$id))
+            ->order("record_date asc")
+            ->queryAll();
+        $table = "<table class='table table-bordered table-striped table-hover'>";
+        $table.="<thead><tr>";
+        $table.="<th>".Yii::t("consult","record date")."</th>";
+        $table.="<th>".Yii::t("consult","record username")."</th>";
+        $table.="<th>".Yii::t("consult","record status")."</th>";
+        $table.="<th>".Yii::t("consult","record remark")."</th>";
+        $table.="</tr></thead><tbody>";
+        if($historyRows){
+            //0：草稿 1：已發送 2：已審核 3：已拒絕 4:退回
+            $statusList = array(
+                1=>Yii::t("consult","Sent"),
+                2=>Yii::t("consult","Audited"),
+                3=>Yii::t("consult","Rejected"),
+                4=>Yii::t("consult","Back"),
+            );
+            foreach ($historyRows as $row){
+                $status = key_exists($row["record_status"],$statusList)?$statusList[$row["record_status"]]:"";
+                $table.="<tr>";
+                $table.="<td>".$row["record_date"]."</td>";
+                $table.="<td>".$row["record_username"]."</td>";
+                $table.="<td>".$status."</td>";
+                $table.="<td>".$row["record_remark"]."</td>";
+                $table.="</tr>";
+            }
+        }
+        $table.= "</tbody></table>";
+        return $table;
+    }
 	
 	public function saveData()
 	{
@@ -161,6 +200,7 @@ class ConsultApplyForm extends CFormModel
 		try {
 			$this->saveDataForSql($connection);
             $this->saveInfo($connection);
+            $this->saveHistory();
             $this->updateDocman($connection,'CONSU');
 			$transaction->commit();
 		}
@@ -182,6 +222,19 @@ class ConsultApplyForm extends CFormModel
         }
     }
 
+    protected function saveHistory(){
+        if($this->status==1){ //发送状态，需要记录
+            $uid = Yii::app()->user->id;
+            Yii::app()->db->createCommand()->insert("acc_consult_history", array(
+                "consult_id" => $this->id,
+                "record_username" => $uid,
+                "lcu" => $uid,
+                "record_date" => date("Y-m-d H:i:s"),
+                "record_status" => $this->status,
+                "record_remark" => $this->remark,
+            ));
+        }
+    }
     protected function saveInfo(&$connection){
         $uid = Yii::app()->user->id;
         foreach ($this->info_list as $row) {
@@ -315,6 +368,9 @@ class ConsultApplyForm extends CFormModel
 	}
 
 	public function isReady(){
-	    return $this->getScenario()=="view"||in_array($this->status,array(1,2))||$this->staff_city!=$this->apply_city;
+        if(Yii::app()->user->validFunction('CN14')){
+            $this->staff_city = $this->apply_city;
+        }
+	    return $this->getScenario()=="view"||in_array($this->status,array(1,2))||($this->staff_city!=$this->apply_city);
     }
 }

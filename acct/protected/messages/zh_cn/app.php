@@ -190,6 +190,7 @@ return array(
     'Plane Set Year'=>'年资及对应的奖金',
     'Plane Set Other'=>'直升机外另计的项目',
     'Consult Fee'=>'咨询费',
+    'Consult Fee Replace'=>'咨询费（补贴）代申请',
     'Consult Fee Apply'=>'咨询费（补贴）申请',
     'Consult Fee Audit'=>'咨询费（补贴）审核',
     'Consult Fee Search'=>'咨询费（补贴）查询',

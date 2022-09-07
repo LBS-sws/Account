@@ -27,13 +27,18 @@ class ConsultApplyList extends CListPageModel
 	public function retrieveDataByPage($pageNum=1)
 	{
 		$suffix = Yii::app()->params['envSuffix'];
+        $uid = Yii::app()->user->id;
+        $sqlEpr="";
+		if(Yii::app()->user->validFunction('CN14')){//CN14
+            $sqlEpr=" lcu='{$uid}' or ";
+        }
 		$sql1 = "select * 
 				from acc_consult 
-				where (apply_city='{$this->apply_city}' or (audit_city='{$this->apply_city}' and status in (2,3))) 
+				where ({$sqlEpr} apply_city='{$this->apply_city}' or (audit_city='{$this->apply_city}' and status in (2,3))) 
 			";
 		$sql2 = "select count(id)
 				from acc_consult 
-				where (apply_city='{$this->apply_city}' or (audit_city='{$this->apply_city}' and status in (2,3)))
+				where ({$sqlEpr} apply_city='{$this->apply_city}' or (audit_city='{$this->apply_city}' and status in (2,3)))
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -88,8 +93,8 @@ class ConsultApplyList extends CListPageModel
                     'apply_date'=>General::toDate($record['apply_date']),
                     'customer_code'=>$record['customer_code'],
                     'consult_money'=>floatval($record['consult_money']),
-                    'apply_city'=>$record['apply_city'],
-                    'audit_city'=>$record['audit_city'],
+                    'apply_city'=>General::getCityName($record['apply_city']),
+                    'audit_city'=>General::getCityName($record['audit_city']),
                     'status'=>$arr['status'],
                     'color'=>$arr['color'],
                 );
@@ -117,12 +122,12 @@ class ConsultApplyList extends CListPageModel
 
     public static function getCityList($city=""){
         $suffix = Yii::app()->params['envSuffix'];
-        $sql="SELECT code FROM security{$suffix}.sec_city WHERE code not in (SELECT region FROM security{$suffix}.sec_city WHERE region != '')";
+        $sql="SELECT code,name FROM security{$suffix}.sec_city WHERE code not in (SELECT region FROM security{$suffix}.sec_city WHERE region != '')";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
         $arr=array(""=>"");
         if($rows){
             foreach ($rows as $row){
-                $arr[$row["code"]]=$row["code"];
+                $arr[$row["code"]]=$row["name"];
             }
         }
         if(!empty($city)&&!key_exists($city,$arr)){

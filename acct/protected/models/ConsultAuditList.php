@@ -87,8 +87,8 @@ class ConsultAuditList extends CListPageModel
                     'apply_date'=>General::toDate($record['apply_date']),
                     'customer_code'=>$record['customer_code'],
                     'consult_money'=>floatval($record['consult_money']),
-                    'apply_city'=>$record['apply_city'],
-                    'audit_city'=>$record['audit_city'],
+                    'apply_city'=>General::getCityName($record['apply_city']),
+                    'audit_city'=>General::getCityName($record['audit_city']),
                     'status'=>Yii::t("consult","Pending"),
                     'color'=>" text-primary",
                 );

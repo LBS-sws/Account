@@ -40,8 +40,8 @@
 <div class="form-group">
     <?php echo $form->labelEx($model,'apply_city',array('class'=>"col-lg-2 control-label")); ?>
     <div class="col-lg-3">
-        <?php echo $form->textField($model, 'apply_city',
-            array('readonly'=>(true))
+        <?php echo $form->dropDownList($model, 'apply_city',ConsultApplyList::getCityList($model->apply_city),
+            array('readonly'=>($model->isReady()||!Yii::app()->user->validFunction('CN14')),'id'=>'apply_city')
         ); ?>
     </div>
 </div>

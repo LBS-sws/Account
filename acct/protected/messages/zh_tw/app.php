@@ -185,6 +185,7 @@ return array(
     'Plane Set Year'=>'年資及對應的獎金',
     'Plane Set Other'=>'直升機外另計的項目',
     'Consult Fee'=>'咨詢費',
+    'Consult Fee Replace'=>'咨詢費（補貼）代申請',
     'Consult Fee Apply'=>'咨詢費（補貼）申請',
     'Consult Fee Audit'=>'咨詢費（補貼）審核',
     'Consult Fee Search'=>'咨詢費（補貼）查詢',

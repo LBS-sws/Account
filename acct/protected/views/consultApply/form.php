@@ -57,6 +57,11 @@ $this->pageTitle=Yii::app()->name . ' - ConsultApply Form';
                         'name'=>'btnFile','id'=>'btnFile','data-toggle'=>'modal','data-target'=>'#fileuploadconsu',)
                 );
                 ?>
+                <?php if ($model->scenario!='new'): ?>
+                    <?php echo TbHtml::button('<span class="fa fa-calendar"></span> '.Yii::t('consult','History'), array(
+                        'data-toggle'=>'modal','data-target'=>'#historydialog'));
+                    ?>
+                <?php endif ?>
             </div>
 	</div></div>
 
@@ -96,12 +101,14 @@ $this->pageTitle=Yii::app()->name . ' - ConsultApply Form';
     'ronly'=>($model->isReady()),
 ));
 ?>
+<?php $this->renderPartial('//site/history',array('tableHtml'=>ConsultApplyForm::getHistoryHtml($model->id))); ?>
 <?php $this->renderPartial('//site/removedialog'); ?>
 
 <?php
 Script::genFileUpload($model,$form->id,'CONSU');
 
 $js = "
+
 $('table').on('change','[id^=\"ConsultApplyForm\"]',function() {
 	var n=$(this).attr('id').split('_');
 	$('#ConsultApplyForm_'+n[1]+'_'+n[2]+'_uflag').val('Y');

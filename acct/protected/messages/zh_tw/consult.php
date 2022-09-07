@@ -7,6 +7,7 @@ return array(
     'show'=>'顯示',
     'hide'=>'隱藏',
     'Goods List'=>'商品列表',
+    'Replace List'=>'代申請列表',
     'Apply List'=>'申請列表',
     'Audit List'=>'審核列表',
     'Search List'=>'已審核列表',
@@ -30,5 +31,11 @@ return array(
     'remark'=>'備注',
     'reject remark'=>'拒絕原因',
     'Are you sure to back?'=>'妳確定要退回草稿狀態嗎？',
+    'record date'=>'操作時間',
+    'record username'=>'操作人員',
+    'record status'=>'操作狀態',
+    'record remark'=>'操作備註',
+    'Sent'=>'已發送',
+    'History'=>'歷史記錄',
 );
 ?>
