@@ -226,18 +226,23 @@ class SellComputeList extends CListPageModel
         $suffix = Yii::app()->params['envSuffix'];
         if($type=="N"){
             $dateSql="status='N' and date_format(first_dt,'%Y-%m')<'$status_dt'";
+        }elseif($type=="C"){//續約終止：必須終止前一個客戶服務時續約
+            $dateSql="date_format(status_dt,'%Y-%m')<'$status_dt'";
         }else{
             $dateSql="status='{$type}' and date_format(status_dt,'%Y-%m')<'$status_dt'";
         }
         $row = Yii::app()->db->createCommand()
             ->select("id,city,status,status_dt,first_dt,salesman_id,othersalesman_id,commission,royalty,royaltys")->from("swoper{$suffix}.swo_service")
-            ->where("{$dateSql} and
+            ->where("{$dateSql} and id!={$service['id']} and 
              salesman_id={$service['salesman_id']} and company_id={$service['company_id']} and 
              cust_type={$service['cust_type']} and cust_type_name={$service['cust_type_name']} and
              commission is not null and commission !=''")
             ->order("status_dt desc")->queryRow();
         //由於舊數據沒有保存提成點，所以需要重新查詢
         if($row){
+            if($type=="C"&&$row["status"]!="C"){ //如果終止服務前一個服務不是續約，則終止服務不是續約終止
+                return array();
+            }
             if($sales_str=="othersalesman_id"){ //跨區
                 $row["royalty"]=$row["royaltys"];
                 $row["salesman_id"]=$row["othersalesman_id"];
