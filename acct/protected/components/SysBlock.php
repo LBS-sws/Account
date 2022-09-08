@@ -277,7 +277,7 @@ class SysBlock {
         $row = Yii::app()->db->createCommand($sql)->queryRow();
         if ($row===false) return true;
 
-        $sql = "select count(a.id) from charity$suffix.cy_credit_request a
+        $sql = "select a.id from charity$suffix.cy_credit_request a
                 LEFT JOIN hr$suffix.hr_employee d ON a.employee_id = d.id
                 where (d.city IN ($city_allow) AND a.state = 1) and a.type_state='2' 
 			 and a.apply_date <= '$lastdate' limit 1
@@ -304,7 +304,7 @@ class SysBlock {
         $row = Yii::app()->db->createCommand($sql)->queryRow();
         if ($row===false) return true;
 
-        $sql = "select count(a.id) from charity$suffix.cy_credit_request a
+        $sql = "select a.id from charity$suffix.cy_credit_request a
                 LEFT JOIN hr$suffix.hr_employee d ON a.employee_id = d.id
                 where (d.city IN ($city_allow) AND a.state = 1) and a.type_state='1' 
 			 and a.apply_date <= '$lastdate' limit 1
