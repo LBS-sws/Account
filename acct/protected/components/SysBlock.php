@@ -168,13 +168,18 @@ class SysBlock {
 
     /**
     每年12月30日, 驗證 用户有学分确认权限的未及时处理完, false: 未处理
+     * 2022/09/07 限制修改成：每个月倒数第二天限制专员和审核人必须审核完当前地区所有的申请记录
      **/
     public function isCreditConfirmed() {
         $uid = Yii::app()->user->id;
         $city = Yii::app()->user->city();
         $city_allow = Yii::app()->user->city_allow();
         $suffix = Yii::app()->params['envSuffix'];
-        $lastdate = date('m-d')=='12-31' ? date('Y-m-d') : date('Y-m-d',strtotime('last year December 31st'));
+        $monthFastDay = date("Y-m-01");//当月第一天
+        $monthLastDay = date("Y-m-d",strtotime($monthFastDay."+1 months -3 day"));//每个月倒数第二天
+        $lastdate = date("Y-m-d")>=$monthLastDay?$monthLastDay:date("Y-m-d",strtotime("{$monthFastDay} -1 day"));
+
+        //$lastdate = date('m-d')=='12-31' ? date('Y-m-d') : date('Y-m-d',strtotime('last year December 31st'));
         $year = date("Y", strtotime($lastdate));
         $month = date("m", strtotime($lastdate));
 
@@ -196,13 +201,18 @@ class SysBlock {
 
     /**
     每年12月30日, 驗證 用户有学分审核权限的未及时处理完, false: 未处理
+     * 2022/09/07 限制修改成：每个月倒数第二天限制专员和审核人必须审核完当前地区所有的申请记录
      **/
     public function isCreditApproved() {
         $uid = Yii::app()->user->id;
         $city = Yii::app()->user->city();
         $city_allow = Yii::app()->user->city_allow();
         $suffix = Yii::app()->params['envSuffix'];
-        $lastdate = date('m-d')=='12-31' ? date('Y-m-d') : date('Y-m-d',strtotime('last year December 31st'));
+        $monthFastDay = date("Y-m-01");//当月第一天
+        $monthLastDay = date("Y-m-d",strtotime($monthFastDay."+1 months -3 day"));//每个月倒数第二天
+        $lastdate = date("Y-m-d")>=$monthLastDay?$monthLastDay:date("Y-m-d",strtotime("{$monthFastDay} -1 day"));
+
+        //$lastdate = date('m-d')=='12-31' ? date('Y-m-d') : date('Y-m-d',strtotime('last year December 31st'));
         $year = date("Y", strtotime($lastdate));
         $month = date("m", strtotime($lastdate));
 
@@ -217,6 +227,87 @@ class SysBlock {
                 LEFT JOIN hr$suffix.hr_employee d ON a.employee_id = d.id
                 where d.city='$city' AND a.state = 4 and a.apply_date <= '$lastdate'
 				limit 1
+			";
+        $row = Yii::app()->db->createCommand($sql)->queryRow();
+        return ($row===false);
+    }
+
+    /**
+    每个月倒数第二天限制专员和审核人必须审核完当前地区所有的锦旗记录, false: 未处理
+     **/
+    public function isPrizeApproved () {
+        $uid = Yii::app()->user->id;
+        $city = Yii::app()->user->city();
+        $city_allow = Yii::app()->user->city_allow();
+        $suffix = Yii::app()->params['envSuffix'];
+        $monthFastDay = date("Y-m-01");//当月第一天
+        $monthLastDay = date("Y-m-d",strtotime($monthFastDay."+1 months -3 day"));//每个月倒数第二天
+        $lastdate = date("Y-m-d")>=$monthLastDay?$monthLastDay:date("Y-m-d",strtotime("{$monthFastDay} -1 day"));
+
+        $sql = "select a_control from security$suffix.sec_user_access 
+				where username='$uid' and system_id='hr' and a_read_write like '%ZG07%'
+			";
+        $row = Yii::app()->db->createCommand($sql)->queryRow();
+        if ($row===false) return true;
+
+        $sql = "select a.id from hr$suffix.hr_prize a 
+                LEFT JOIN hr$suffix.hr_employee b ON a.employee_id = b.id
+                where a.status =1 AND b.city IN ($city_allow) and a.prize_date <= '$lastdate'
+				limit 1
+			";
+        $row = Yii::app()->db->createCommand($sql)->queryRow();
+        return ($row===false);
+    }
+
+    /**
+    每个月倒数第二天限制专员和审核人必须审核完当前地区所有的慈善分记录, false: 未处理
+     **/
+    public function isCharityApproved () {
+        $uid = Yii::app()->user->id;
+        $city = Yii::app()->user->city();
+        $city_allow = Yii::app()->user->city_allow();
+        $suffix = Yii::app()->params['envSuffix'];
+        $monthFastDay = date("Y-m-01");//当月第一天
+        $monthLastDay = date("Y-m-d",strtotime($monthFastDay."+1 months -3 day"));//每个月倒数第二天
+        $lastdate = date("Y-m-d")>=$monthLastDay?$monthLastDay:date("Y-m-d",strtotime("{$monthFastDay} -1 day"));
+
+        $sql = "select a_control from security$suffix.sec_user_access 
+				where username='$uid' and system_id='ch' and a_read_write like '%GA01%'
+			";
+        $row = Yii::app()->db->createCommand($sql)->queryRow();
+        if ($row===false) return true;
+
+        $sql = "select count(a.id) from charity$suffix.cy_credit_request a
+                LEFT JOIN hr$suffix.hr_employee d ON a.employee_id = d.id
+                where (d.city IN ($city_allow) AND a.state = 1) and a.type_state='2' 
+			 and a.apply_date <= '$lastdate' limit 1
+			";
+        $row = Yii::app()->db->createCommand($sql)->queryRow();
+        return ($row===false);
+    }
+
+    /**
+    每个月倒数第二天限制专员和审核人必须审核完当前地区所有的慈善分记录, false: 未处理
+     **/
+    public function isCharityConfirmed () {
+        $uid = Yii::app()->user->id;
+        $city = Yii::app()->user->city();
+        $city_allow = Yii::app()->user->city_allow();
+        $suffix = Yii::app()->params['envSuffix'];
+        $monthFastDay = date("Y-m-01");//当月第一天
+        $monthLastDay = date("Y-m-d",strtotime($monthFastDay."+1 months -3 day"));//每个月倒数第二天
+        $lastdate = date("Y-m-d")>=$monthLastDay?$monthLastDay:date("Y-m-d",strtotime("{$monthFastDay} -1 day"));
+
+        $sql = "select a_control from security$suffix.sec_user_access 
+				where username='$uid' and system_id='ch' and a_read_write like '%GA03%'
+			";
+        $row = Yii::app()->db->createCommand($sql)->queryRow();
+        if ($row===false) return true;
+
+        $sql = "select count(a.id) from charity$suffix.cy_credit_request a
+                LEFT JOIN hr$suffix.hr_employee d ON a.employee_id = d.id
+                where (d.city IN ($city_allow) AND a.state = 1) and a.type_state='1' 
+			 and a.apply_date <= '$lastdate' limit 1
 			";
         $row = Yii::app()->db->createCommand($sql)->queryRow();
         return ($row===false);
