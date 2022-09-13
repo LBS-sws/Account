@@ -2607,10 +2607,10 @@ class ReportXS01List extends CListPageModel
 //                $sqljf = "select amt_paid,all_number from acc_service_comm_copy where id='$ai'";
 //                $fj_model =  Yii::app()->db->createCommand($sqljf)->queryRow();
 //                $fj = $fj_model['amt_paid']*$fj_model['all_number'];
-                $sqlct="update acc_service_comm_copy set commission=0,other_commission=0  where id='$ai'";
+                $sqlct="update acc_service_comm_copy set commission=NULL ,other_commission=NULL  where id='$ai'";
 
             }else{
-                $sqlct="update swoper$suffix.swo_service set commission=0,other_commission=0  where id='$ai'";
+                $sqlct="update swoper$suffix.swo_service set commission=NULL,other_commission=NULL  where id='$ai'";
 //                $sqljf = "select hdr_id from swoper$suffix.swo_service where id='$ai'";
             }
 //            $fj =  Yii::app()->db->createCommand($sqljf)->queryRow();
