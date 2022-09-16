@@ -252,7 +252,7 @@ class SysBlock {
 
         $sql = "select a.id from hr$suffix.hr_prize a 
                 LEFT JOIN hr$suffix.hr_employee b ON a.employee_id = b.id
-                where a.status =1 AND b.city IN ($city_allow) and a.prize_date <= '$lastdate'
+                where a.status =1 AND b.city IN ($city_allow) and a.lcd <= '$lastdate'
 				limit 1
 			";
         $row = Yii::app()->db->createCommand($sql)->queryRow();
