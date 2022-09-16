@@ -29,7 +29,7 @@ class RptReimbReminder extends CReport {
 				left outer join acc_request_info f on f.req_id = a.id and f.field_id='ref_no'
 				WHERE workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>'ED' 
 				and workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>''
-				and datediff('$start_dt', a.req_dt) > 59
+				and datediff('$start_dt', a.req_dt) > 29
 				and a.city='$city' and a.status='Y'
 				order by a.id
 			";
@@ -71,8 +71,8 @@ class RptReimbReminder extends CReport {
 //
 		$cc = array();
 		
-		$subject = Yii::t('report','Summary Report - Reimbursement Not Completed Over 2 Months').' ('.General::getCityName($city).') - '.General::toDate($date);
-		$desc = Yii::t('report','Summary Report - Reimbursement Not Completed Over 2 Months').' ('.General::getCityName($city).') - '.General::toDate($date);
+		$subject = Yii::t('report','Summary Report - Reimbursement Not Completed Over 1 Month').' ('.General::getCityName($city).') - '.General::toDate($date);
+		$desc = Yii::t('report','Summary Report - Reimbursement Not Completed Over 1 Month').' ('.General::getCityName($city).') - '.General::toDate($date);
 		
 		$param = array(
 				'from_addr'=>Yii::app()->params['systemEmail'],

@@ -53,7 +53,7 @@ return array(
 	'Daily Receipt Overview Report'=>'每天收款总览',
 	'Daily Reimbursement Approval Summary'=>'每日报销审核汇总',
 	'Daily Request Approval Summary'=>'每日费用申请审核汇总',
-	'Summary Report - Reimbursement Not Completed Over 2 Months'=>'超过2个月未完成报销明細汇总',
+	'Summary Report - Reimbursement Not Completed Over 1 Month'=>'超过1个月未完成报销明細汇总',
 	
 	'Transaction List'=>'交易记录',
 	'Consolidated Notification Report'=>'综合通知报表',
