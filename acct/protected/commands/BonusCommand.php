@@ -3,6 +3,7 @@ class BonusCommand extends CConsoleCommand
 {
     public function run($args)
     {
+        return true;//不需要每月計算獎金池
         $date = empty($args) ? date("Y-m-d") : $args[0];
         $day = date("d", strtotime($date));
         $months = date("m", strtotime($date));
