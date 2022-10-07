@@ -1612,7 +1612,7 @@ class SellComputeForm extends CFormModel
             $year++;
             $month = 1;
         }
-        $month = $month>10?$month:"0".$month;
+        $month = $month>=10?$month:"0".$month;
         $bonusRow = Yii::app()->db->createCommand()->select("id,money")->from("acc_bonus")
             ->where("city='$this->city' and year='{$year}' and month='{$month}'")
             ->queryRow();
