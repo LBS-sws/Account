@@ -1659,12 +1659,12 @@ class SellComputeForm extends CFormModel
                     $install_money+=$amt_sum;//装机业绩
                 }
             }
-
-            Yii::app()->db->createCommand()->update("acc_service_comm_dtl",array(
-                "install_amount"=>$install_amount,
-                "install_money"=>$install_money
-            ),"hdr_id=:id",array(":id"=>$this->id));
         }
+
+        Yii::app()->db->createCommand()->update("acc_service_comm_dtl",array(
+            "install_amount"=>$install_amount,
+            "install_money"=>$install_money
+        ),"hdr_id=:id",array(":id"=>$this->id));
     }
 
 	public function isReadOnly(){
