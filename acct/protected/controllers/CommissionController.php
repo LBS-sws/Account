@@ -29,8 +29,12 @@ class CommissionController extends Controller
                 'expression'=>array('CommissionController','allowReadWrite'),
             ),
             array('allow',//超過兩個月後，不允許計算
-                'actions'=>array('save','clear','add','newsave','editsave','endsave','performancesave','performanceeditsave','performanceendsave','renewalsave','renewalendsave','productsave'),
+                'actions'=>array('clear'),
                 'expression'=>array('CommissionController','allowEditDate'),
+            ),
+            array('allow',//不允許使用舊版的銷售提成計算
+                'actions'=>array('save','clear','add','newsave','editsave','endsave','performancesave','performanceeditsave','performanceendsave','renewalsave','renewalendsave','productsave'),
+                'expression'=>array('CommissionController','allowEditOld'),
             ),
             array('allow',
                 'actions'=>array('view','index','index_s','edit','end','test','remove'),
@@ -679,6 +683,10 @@ class CommissionController extends Controller
         }else{
             return false;
         }
+    }
+
+    public static function allowEditOld() {//不允許使用舊版的銷售提成計算
+        return false;
     }
 
     public function position($index){
