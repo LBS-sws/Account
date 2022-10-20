@@ -44,6 +44,9 @@ $this->pageTitle=Yii::app()->name . ' - Invoice';
                 ?>
             </div>
             <div class="btn-group pull-right" role="group">
+                <?php echo TbHtml::button('<span class="fa fa-edit"></span> '.Yii::t('invoice','Bulk Edit'), array(
+                'data-toggle'=>'modal','data-target'=>'#bulkEditDialog'));
+                ?>
                 <?php
                     echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('invoice','Export'), array(
                         'id'=>'btnExportData',
@@ -75,6 +78,7 @@ $this->pageTitle=Yii::app()->name . ' - Invoice';
     echo $form->hiddenField($model,'orderType');
     echo $form->hiddenField($model,'filter');
 ?>
+<?php $this->renderPartial('//invoice/_bulk'); ?>
 <?php $this->endWidget(); ?>
 <?php $this->renderPartial('//invoice/_type'); ?>
 <?php

@@ -49,5 +49,7 @@ return array(
 	'Export'=>'匯出',
 	'Product Code'=>'服务/产品编号',
 	'Product Name'=>'服务/产品名稱',
+    'Bulk Edit'=>'批量修改發票時間',
+    'Bulk Date'=>'發票時間',
 );
 ?>

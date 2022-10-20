@@ -30,7 +30,7 @@ class InvoiceController extends Controller
 			),
 */
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','add','down','AllDelete','print'),
+				'actions'=>array('new','edit','delete','save','add','down','AllDelete','print','bulkEdit'),
 				'expression'=>array('InvoiceController','allowReadWrite'),
 			),
 			array('allow', 
@@ -131,6 +131,24 @@ class InvoiceController extends Controller
             foreach ($_POST['InvoiceList']['attr'] as $a){
                 $model->deleteData($a);
             }
+            $this->redirect(Yii::app()->createUrl('invoice/index'));
+        }else{
+            Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','No Record Found'));
+            $this->redirect(Yii::app()->createUrl('invoice/index'));
+        }
+
+    }
+
+	public function actionBulkEdit()
+    {
+        $model = new InvoiceForm;
+        if(isset($_POST['InvoiceList']['attr'])&&isset($_POST['InvoiceList']['bulkDate'])){
+            $bulkDate = General::toDate($_POST['InvoiceList']['bulkDate']);
+            $idList = array();
+            foreach ($_POST['InvoiceList']['attr'] as $a){
+                $idList[]=is_numeric($a)?$a:0;
+            }
+            $model->bulkStartDate($idList,$bulkDate);
             $this->redirect(Yii::app()->createUrl('invoice/index'));
         }else{
             Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','No Record Found'));

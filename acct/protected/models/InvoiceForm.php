@@ -491,6 +491,15 @@ class InvoiceForm extends CFormModel
         Yii::app()->db->createCommand($sql1)->execute();
     }
 
+    public function bulkStartDate($idList,$bulkDate){
+        $uid = Yii::app()->user->id;
+        $idList = implode(",",$idList);
+        Yii::app()->db->createCommand()->update("acc_invoice",array(
+            "invoice_dt"=>$bulkDate,
+            "luu"=>$uid
+        ),"id in ({$idList})");
+    }
+
     //獲取pdf模板內容（包含發票單號、日期、技術員、總價）
     private function getPDFTable($model){
         //2022-09-01年修改了發票抬頭
