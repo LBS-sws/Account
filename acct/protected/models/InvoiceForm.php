@@ -507,7 +507,7 @@ class InvoiceForm extends CFormModel
         $logoCompany_tw="佳駿企業有限公司";
         $logoCompany_en="Kai Jun Enterprises Ltd";
         $newBool=false;
-        if(strtotime($model->invoice_dt)>=strtotime("2022-09-01")){
+        if(strtotime($model->invoice_dt)>=strtotime("3022-09-01")){//2022-10-22日说不需要新版的发票抬头（新发票抬头是2022-09-01）
             $logoImg = "images/lbs_pdf_new.jpg";
             $logoCompany_tw="LBS (Macau) Limited";
             $logoCompany_en="LBS (Macau) Limited";
