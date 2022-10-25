@@ -17,6 +17,7 @@ class InvoiceList extends CListPageModel
             'name_zh'=>Yii::t('invoice','Delivery Company'),
             'payment_term'=>Yii::t('invoice','Payment Term'),
             'city_name'=>Yii::t('misc','City'),
+			'staff_name'=>Yii::t('invoice','technician'),
 		);
 	}
 	
@@ -162,6 +163,7 @@ class InvoiceList extends CListPageModel
             'customer_code'=>"a.customer_code",
             'name_zh'=>"a.name_zh",
             'payment_term'=>"a.payment_term",
+            'staff_name'=>"a.staff_name",
 
         );
         if (!Yii::app()->user->isSingleCity()) $search['city_name'] = 'b.name';
