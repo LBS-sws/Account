@@ -76,6 +76,7 @@ class InvoiceList extends CListPageModel
 					'customer_code'=>$record['customer_code'],
 					'invoice_to_name'=>$record['invoice_to_name'],
 					'name_zh'=>$record['name_zh'],
+					'staff_name'=>$record['staff_name'],
 					'payment_term'=>$record['payment_term'],
 				);
 			}
