@@ -51,6 +51,7 @@ class PlaneAllotList extends CListPageModel
 	public function retrieveDataByPage($pageNum=1)
 	{
 	    $this->setJobList();
+        $leaveDate = date("Y-m-d",strtotime("{$this->year}-{$this->month}-01"));
         $entryDate = date("Y-m-d",strtotime("{$this->year}-{$this->month}-01 + 1 months - 1 day"));
 		$suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city();
@@ -59,13 +60,13 @@ class PlaneAllotList extends CListPageModel
 				 LEFT JOIN hr{$suffix}.hr_dept b ON a.department=b.id
 				 LEFT JOIN hr{$suffix}.hr_dept d ON a.position=d.id
 				 LEFT JOIN acc_plane f ON a.id=f.employee_id and f.plane_year={$this->year} and f.plane_month={$this->month} 
-				where a.staff_status=0 and replace(a.entry_time,'/', '-')<='{$entryDate}' and d.dept_class='Technician' and a.city='{$city}'  
+				where (a.staff_status=0 or (a.staff_status=-1 and replace(a.leave_time,'/', '-')>='{$leaveDate}')) and replace(a.entry_time,'/', '-')<='{$entryDate}' and d.dept_class='Technician' and a.city='{$city}'  
 			";
 		$sql2 = "select count(a.id)
 				from hr{$suffix}.hr_employee a 
 				 LEFT JOIN hr{$suffix}.hr_dept b ON a.department=b.id
 				 LEFT JOIN hr{$suffix}.hr_dept d ON a.position=d.id
-				where a.staff_status=0 and replace(a.entry_time,'/', '-')<='{$entryDate}' and d.dept_class='Technician' and a.city='{$city}'   
+				where (a.staff_status=0 or (a.staff_status=-1 and replace(a.leave_time,'/', '-')>='{$leaveDate}')) and replace(a.entry_time,'/', '-')<='{$entryDate}' and d.dept_class='Technician' and a.city='{$city}'   
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -151,10 +152,11 @@ class PlaneAllotList extends CListPageModel
         $suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city();
         $uid = Yii::app()->user->id;
+        $leaveDate = date("Y-m-d",strtotime("{$this->year}-{$this->month}-01"));
         $staffBool = Yii::app()->db->createCommand()->select("a.id,a.name")
             ->from("hr{$suffix}.hr_employee a")
             ->leftJoin("hr{$suffix}.hr_dept d","a.position=d.id")
-            ->where("a.id=:id and a.staff_status=0 and d.dept_class='Technician' and a.city='{$city}'",array(":id"=>$id))->queryRow();
+            ->where("a.id=:id and (a.staff_status=0 or (a.staff_status=-1 and replace(a.leave_time,'/', '-')>='{$leaveDate}')) and d.dept_class='Technician' and a.city='{$city}'",array(":id"=>$id))->queryRow();
         if($staffBool){
             $planeBool = $planeRow = Yii::app()->db->createCommand()->select("id")->from("acc_plane")
                 ->where("employee_id=:id and plane_year={$this->year} and plane_month={$this->month}",array(":id"=>$id))->queryRow();
