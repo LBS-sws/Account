@@ -190,8 +190,8 @@ WHERE workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>'ED' and workflow$
             $allEmail[] = $recordss['email'];
         }
         //地區負責人
-        $cityMax = $this->getAllCityToMinCity($record['city']);
-        $this->addEmailForCityList($cityMax,$allEmail);
+        //$cityMax = $this->getAllCityToMinCity($record['city']);// 2022-11-29不需要查詢上級城市
+        $this->addEmailForCityList(array($record['city']),$allEmail);
     }
 }
 
