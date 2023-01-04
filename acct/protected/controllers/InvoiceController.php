@@ -30,7 +30,7 @@ class InvoiceController extends Controller
 			),
 */
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','add','down','AllDelete','print','bulkEdit'),
+				'actions'=>array('new','edit','delete','save','add','down','AllDelete','print','bulkEdit','bulkHeadType'),
 				'expression'=>array('InvoiceController','allowReadWrite'),
 			),
 			array('allow', 
@@ -149,6 +149,24 @@ class InvoiceController extends Controller
                 $idList[]=is_numeric($a)?$a:0;
             }
             $model->bulkStartDate($idList,$bulkDate);
+            $this->redirect(Yii::app()->createUrl('invoice/index'));
+        }else{
+            Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','No Record Found'));
+            $this->redirect(Yii::app()->createUrl('invoice/index'));
+        }
+
+    }
+
+	public function actionBulkHeadType()
+    {
+        $model = new InvoiceForm;
+        if(isset($_POST['InvoiceList']['attr'])&&isset($_POST['InvoiceList']['bulkHeadType'])){
+            $bulkHeadType = $_POST['InvoiceList']['bulkHeadType'];
+            $idList = array();
+            foreach ($_POST['InvoiceList']['attr'] as $a){
+                $idList[]=is_numeric($a)?$a:0;
+            }
+            $model->bulkHeadType($idList,$bulkHeadType);
             $this->redirect(Yii::app()->createUrl('invoice/index'));
         }else{
             Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','No Record Found'));

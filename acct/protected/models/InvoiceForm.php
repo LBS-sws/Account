@@ -11,6 +11,7 @@ class InvoiceForm extends CFormModel
 	public $id;
 	public $invoice_no;////账单编号
 	public $invoice_dt;//账单日期
+	public $head_type=0;//發票抬頭類型 0：佳骏有限公司 1：LBS (Macau) Limited
 	public $payment_term;//付款方式
 	public $customer_code;//客户编号
 	public $invoice_to_name;//发票公司
@@ -64,6 +65,7 @@ class InvoiceForm extends CFormModel
             'id'=>Yii::t('invoice','Record ID'),
             'invoice_no'=>Yii::t('invoice','Number'),
             'invoice_dt'=>Yii::t('invoice','Date'),
+            'head_type'=>Yii::t('invoice','head type'),
             'customer_code'=>Yii::t('invoice','Customer Account'),
             'invoice_to_name'=>Yii::t('invoice','Invoice Company'),
             'payment_term'=>Yii::t('invoice','Payment Term'),
@@ -102,7 +104,7 @@ class InvoiceForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('id,type,generated_by,old_no,name_zh,tel,addr,sales_name,staff_name
+			array('id,type,head_type,generated_by,old_no,name_zh,tel,addr,sales_name,staff_name
 			,bowl,baf,hand,urinal,hsd,td,sink,abhsd,ptd,ttl,aerosal,toiletRoom
 			,payment_term,remarks,invoice_to_tel,invoice_to_addr,invoice_to_name,invoice_amt
 			,invoice_no,invoice_dt,customer_code','safe'),
@@ -150,6 +152,7 @@ class InvoiceForm extends CFormModel
                 $this->type = $type;
                 $this->id = $row['id'];
 				$this->customer_code = $row['customer_code'];
+				$this->head_type = $row['head_type'];
                 $this->invoice_dt = General::toDate($row['invoice_dt']);
 				$this->payment_term = $row['payment_term'];
 
@@ -354,6 +357,7 @@ class InvoiceForm extends CFormModel
 			case 'edit':
 				$sql = "update acc_invoice set                                                                                                            
                             invoice_dt=:invoice_dt,                                                                                                             
+                            head_type=:head_type,                                                                                                             
                             payment_term=:payment_term,                                                                                                             
                             name_zh=:name_zh,                                                                                                              
                             addr=:addr,                                                                                                              
@@ -384,6 +388,8 @@ class InvoiceForm extends CFormModel
 		$command=$connection->createCommand($sql);
 		if (strpos($sql,':invoice_dt')!==false)
 			$command->bindParam(':invoice_dt',$this->invoice_dt,PDO::PARAM_STR);
+		if (strpos($sql,':head_type')!==false)
+			$command->bindParam(':head_type',$this->head_type,PDO::PARAM_STR);
 		if (strpos($sql,':payment_term')!==false)
 			$command->bindParam(':payment_term',$this->payment_term,PDO::PARAM_STR);
 		if (strpos($sql,':invoice_to_name')!==false)
@@ -500,6 +506,15 @@ class InvoiceForm extends CFormModel
         ),"id in ({$idList})");
     }
 
+    public function bulkHeadType($idList,$bulkHeadType){
+        $uid = Yii::app()->user->id;
+        $idList = implode(",",$idList);
+        Yii::app()->db->createCommand()->update("acc_invoice",array(
+            "head_type"=>$bulkHeadType,
+            "luu"=>$uid
+        ),"id in ({$idList})");
+    }
+
     //獲取pdf模板內容（包含發票單號、日期、技術員、總價）
     private function getPDFTable($model){
         //2022-09-01年修改了發票抬頭
@@ -507,7 +522,7 @@ class InvoiceForm extends CFormModel
         $logoCompany_tw="佳駿企業有限公司";
         $logoCompany_en="Kai Jun Enterprises Ltd";
         $newBool=false;
-        if(strtotime($model->invoice_dt)>=strtotime("3022-09-01")){//2022-10-22日说不需要新版的发票抬头（新发票抬头是2022-09-01）
+        if($model->head_type==1){//
             $logoImg = "images/lbs_pdf_new.jpg";
             $logoCompany_tw="LBS (Macau) Limited";
             $logoCompany_en="LBS (Macau) Limited";

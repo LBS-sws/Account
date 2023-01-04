@@ -51,5 +51,7 @@ return array(
 	'Product Name'=>'服务/产品名稱',
     'Bulk Edit'=>'批量修改發票時間',
     'Bulk Date'=>'發票時間',
+    'head type'=>'發票擡頭',
+    'Bulk Head Type'=>'批量修改發票擡頭',
 );
 ?>

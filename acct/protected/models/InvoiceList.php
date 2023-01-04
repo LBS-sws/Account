@@ -12,6 +12,7 @@ class InvoiceList extends CListPageModel
 		return array(	
 			'invoice_no'=>Yii::t('invoice','Number'),
 			'invoice_dt'=>Yii::t('invoice','Date'),
+            'head_type'=>Yii::t('invoice','head type'),
 			'customer_code'=>Yii::t('invoice','Customer Account'),
 			'invoice_to_name'=>Yii::t('invoice','Invoice Company'),
             'name_zh'=>Yii::t('invoice','Delivery Company'),
@@ -72,6 +73,7 @@ class InvoiceList extends CListPageModel
 					'number'=>$number,
 					'invoice_no'=>$record['invoice_no'],
 					'city_name'=>$record['city_name'],
+					'head_type'=>empty($record['head_type'])?"佳駿企業有限公司":"LBS (Macau) Limited",
 					'invoice_dt'=>$dates,
 					'customer_code'=>$record['customer_code'],
 					'invoice_to_name'=>$record['invoice_to_name'],

@@ -9,5 +9,6 @@
 	<td><?php echo $this->record['staff_name']; ?></td>
 	<td><?php echo $this->record['payment_term']; ?></td>
 	<td><?php echo $this->record['name_zh']; ?></td>
+	<td><?php echo $this->record['head_type']; ?></td>
 
 </tr>
