@@ -518,7 +518,8 @@ class InvoiceForm extends CFormModel
     //獲取pdf模板內容（包含發票單號、日期、技術員、總價）
     private function getPDFTable($model){
         //2022-09-01年修改了發票抬頭
-        $logoImg = "images/lbs_pdf.jpg";
+        //$logoImg = "images/lbs_pdf.jpg";
+        $logoImg = "images/lbs_pdf_new.jpg";
         $logoCompany_tw="佳駿企業有限公司";
         $logoCompany_en="Kai Jun Enterprises Ltd";
         $newBool=false;
@@ -728,7 +729,8 @@ class InvoiceForm extends CFormModel
         if($newBool){//2022-09-01刪除二維碼
             $html.="&nbsp;";
         }else{
-            $html.='<img width="90px" src="images/pay.jpg"/>';
+            //$html.='<img width="90px" src="images/pay.jpg"/>';
+            $html.="&nbsp;";
         }
         $html.='</td>
         <td> </td>
@@ -738,7 +740,8 @@ class InvoiceForm extends CFormModel
         if($newBool){//2022-09-01刪除二維碼
             $html.='<td style="text-align: center">&nbsp;</td>';
         }else{
-            $html.='<td style="text-align: center">付款可掃二維碼</td>';
+            $html.='<td style="text-align: center">&nbsp;</td>';
+            //$html.='<td style="text-align: center">付款可掃二維碼</td>';
         }
         $html.='<td> </td>
     </tr>

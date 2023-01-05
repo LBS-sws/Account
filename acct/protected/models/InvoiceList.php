@@ -167,6 +167,7 @@ class InvoiceList extends CListPageModel
             'name_zh'=>"a.name_zh",
             'payment_term'=>"a.payment_term",
             'staff_name'=>"a.staff_name",
+            'head_type'=>"(case a.head_type when 0 then '佳駿企業有限公司' else 'LBS (Macau) Limited' end)",
 
         );
         if (!Yii::app()->user->isSingleCity()) $search['city_name'] = 'b.name';
