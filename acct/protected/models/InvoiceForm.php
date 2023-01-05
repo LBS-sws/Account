@@ -222,6 +222,19 @@ class InvoiceForm extends CFormModel
 
     }
 
+    protected function getLastHeadType($invoice_dt,$customer_code){
+        $head_type = 0;
+        $record = Yii::app()->db->createCommand()->select("head_type")->from("acc_invoice")
+            ->where("invoice_dt<=:invoice_dt and customer_code=:customer_code",array(
+                "invoice_dt"=>$invoice_dt,
+                "customer_code"=>$customer_code
+            ))->order("invoice_dt desc,id desc")->queryRow();
+        if($record){
+            $head_type = $record["head_type"];
+        }
+        return $head_type;
+    }
+
     /**
      * @param $connection
      * @param $arr
@@ -237,6 +250,10 @@ class InvoiceForm extends CFormModel
                 if(!$records){
 //        $sql="insert into acc_invoice (dates,payment_term,customer_po_no,customer_account,salesperson,sales_order_no,sales_order_date,ship_via,invoice_company,invoice_address,invoice_tel,delivery_company,delivery_address,delivery_tel,description,quantity,unit_price,disc,amount,sub_total,gst,total_amount,generated_by,lcu,luu) value ()";
                     $uid = Yii::app()->user->id;
+                    $invoice_dt = key_exists("invoice_dt",$a)?$a["invoice_dt"]:"";
+                    $customer_code = key_exists("customer_code",$a)?$a["customer_code"]:"";
+                    //$name_zh = key_exists("name_zh",$a)?$a["name_zh"]:"";
+                    $head_type = $this->getLastHeadType($invoice_dt,$customer_code);
                     Yii::app()->db->createCommand()->insert("acc_invoice",array(
                         'customer_code'=>key_exists("customer_code",$a)?$a["customer_code"]:"",
                         'invoice_dt'=>key_exists("invoice_dt",$a)?$a["invoice_dt"]:null,
@@ -253,6 +270,7 @@ class InvoiceForm extends CFormModel
                         'addr'=>key_exists("addr",$a)?$a["addr"]:"",
                         'tel'=>key_exists("tel",$a)?$a["tel"]:"",
                         'name_zh'=>key_exists("name_zh",$a)?$a["name_zh"]:"",
+                        'head_type'=>$head_type,
                         'city'=>$this->city,
                         'lcu'=>$uid
                     ));
