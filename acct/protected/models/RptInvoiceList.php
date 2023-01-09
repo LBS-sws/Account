@@ -6,6 +6,7 @@ class RptInvoiceList extends CReport {
 		return array(
             'invoice_no'=>array('label'=>Yii::t('invoice','Number'),'width'=>20,'align'=>'L'),
             'invoice_dt'=>array('label'=>Yii::t('invoice','Date'),'width'=>15,'align'=>'C'),
+            'head_type'=>array('label'=>Yii::t('invoice','head type'),'width'=>25,'align'=>'L'),
             'customer_code'=>array('label'=>Yii::t('invoice','Customer Account'),'width'=>20,'align'=>'L'),
             'name_zh'=>array('label'=>Yii::t('invoice','Delivery Company'),'width'=>30,'align'=>'L'),
             'addr'=>array('label'=>Yii::t('invoice','Delivery Address'),'width'=>40,'align'=>'L'),

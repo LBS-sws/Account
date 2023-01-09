@@ -127,6 +127,7 @@ class InvoiceList extends CListPageModel
 					'invoice_dt'=>date('Y/m/d',strtotime($record['invoice_dt'])),
 					'customer_code'=>$record['customer_code'],
 					'name_zh'=>$record['name_zh'],
+                    'head_type'=>empty($record['head_type'])?"佳駿企業有限公司":"LBS (Macau) Limited",
 					'addr'=>$record['addr'],
 					'tel'=>$record['tel'],
 					'sales_name'=>$record['sales_name'],
