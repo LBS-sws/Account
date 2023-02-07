@@ -38,6 +38,11 @@ $this->pageTitle=Yii::app()->name . ' - SellTable Form';
 		<?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
 				'submit'=>Yii::app()->createUrl('sellTable/index')));
 		?>
+        <?php if ($model->examine == 'A'): ?>
+            <?php echo TbHtml::button('<span class="fa fa-reply-all"></span> '.Yii::t('misc','Rollback'), array(
+                'submit'=>Yii::app()->createUrl('sellTable/break')));
+            ?>
+        <?php endif ?>
         <?php if ($model->getReadonly()): ?>
             <?php echo TbHtml::button('<span class="fa fa-save"></span> '.Yii::t('misc','Save'), array(
                 'submit'=>Yii::app()->createUrl('sellTable/save')));

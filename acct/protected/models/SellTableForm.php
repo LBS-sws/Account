@@ -109,6 +109,11 @@ class SellTableForm extends SellComputeForm{
                         $this->addError($attribute, "权限异常或多次提交，请刷新重试");
                     }
                     break;
+                case "break"://退回
+                    if($this->examine!="A"||$this->getScenario()!="edit"){
+                        $this->addError($attribute, "权限异常或多次提交，请刷新重试");
+                    }
+                    break;
             }
             $this->setScenario($scenario);
         }else{
@@ -898,6 +903,11 @@ class SellTableForm extends SellComputeForm{
                 Yii::app()->db->createCommand()->update("acc_product",array(
                     "examine"=>"S",
                     "ject_remark"=>$this->ject_remark,
+                ),"id=:id",array(":id"=>$this->examine_row["id"]));
+                break;
+            case "break"://退回
+                Yii::app()->db->createCommand()->update("acc_product",array(
+                    "examine"=>"N",
                 ),"id=:id",array(":id"=>$this->examine_row["id"]));
                 break;
         }

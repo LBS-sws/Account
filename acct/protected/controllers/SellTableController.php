@@ -25,7 +25,7 @@ SellTableController extends Controller
 	{
 		return array(
             array('allow',
-                'actions'=>array('audit','ject'),
+                'actions'=>array('audit','ject','break'),
                 'expression'=>array('SellTableController','allowAudit'),
             ),
             array('allow',
@@ -144,6 +144,23 @@ SellTableController extends Controller
     {
         if (isset($_POST['SellTableForm'])) {
             $model = new SellTableForm("ject");
+            $model->attributes = $_POST['SellTableForm'];
+            if ($model->validate()) {
+                $model->saveData();
+                $model->scenario = 'edit';
+                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+            }
+            $this->redirect(Yii::app()->createUrl('sellTable/edit',array('index'=>$model->id)));
+        }
+    }
+
+    public function actionBreak()
+    {
+        if (isset($_POST['SellTableForm'])) {
+            $model = new SellTableForm("break");
             $model->attributes = $_POST['SellTableForm'];
             if ($model->validate()) {
                 $model->saveData();
