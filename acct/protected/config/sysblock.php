@@ -1,5 +1,11 @@
 <?php
 return array(
+    'drs.H01' => array(//日报表系统-月报表总结提交
+        'validation'=>'isMonthDispatch',
+        'system'=>'drs',
+        'function'=>'H01',
+        'message'=>Yii::t('block','Please complete Report System - Sales Summary Report Submission before using other functions.'),
+    ),
     'ops.YA03' => array(
         'validation'=>'isSalesSummaryApproved',
         'system'=>'ops',
