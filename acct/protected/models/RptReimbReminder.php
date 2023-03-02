@@ -127,17 +127,20 @@ class RptReimbReminder extends CReport {
 				."</th><th>".Yii::t('report','Request Date')
 				."</th><th>".Yii::t('report','Amount')
 				."</th><th>".Yii::t('report','Status')
+				."</th><th>".Yii::t('trans','Details')
 				."</th></tr>\n";
 		foreach ($this->result as $record) {
 			$rdate = General::toDate($record['req_dt']);
 			$status = $record['wfstatusdesc'];
 			$refno = $record['field_value'];
 			$amount = number_format($record['amount'],2);
+			$detail = $record['item_desc'];
 			
 			$output .= "<tr><td>".$refno
 					."</td><td>".$rdate
 					."</td><td align='right'>".$amount
 					."</td><td>".$status
+					."</td><td>".$detail
 					."</td></tr>\n";
 		}
 		$output .= "</table>";
