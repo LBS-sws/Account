@@ -21,7 +21,7 @@ class DocMan {
     public $closeButtonName = 'btnUploadClose';
     public $widgetName = 'fileupload';
 
-    public $imageMaxSize = 512000;
+    public $imageMaxSize = 1024000;
     public $docMaxSize = 8388608;
 
     protected $baseDir;
