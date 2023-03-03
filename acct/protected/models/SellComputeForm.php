@@ -1791,15 +1791,39 @@ class SellComputeForm extends CFormModel
         return 0;
     }
 
-    //非餐饮提成点数
+    //非餐饮提成点数:月金额（可不同服务累加）大于等于minMoney
     private function getRenewalRateForB($service){
+        $date = date("Y/m",strtotime($service["status_dt"]));
+        $suffix = Yii::app()->params['envSuffix'];
         $minMoney=1000;//最低的月金额
         if(in_array($this->city,array("GZ","SH","SZ","BJ"))){ //一线城市
             $minMoney=2000;
         }
-        if($service["month_money"]>=$minMoney){
+        $month_money = 0;
+        $rows = Yii::app()->db->createCommand()
+            ->select("id,paid_type,amt_paid,ctrt_period")
+            ->from("swoper{$suffix}.swo_service")
+            ->where("date_format(status_dt,'%Y/%m') = '{$date}'and company_id=:company_id and salesman_id=:salesman_id and status='C'",
+                array(":company_id"=>$service["company_id"],":salesman_id"=>$service["salesman_id"])
+            )->queryAll();
+        if($rows){
+            foreach ($rows as $row){
+                $row["ctrt_period"] = empty($row["ctrt_period"])?0:floatval($row["ctrt_period"]);
+                $row["amt_paid"] = empty($row["amt_paid"])?0:floatval($row["amt_paid"]);
+                if($row["paid_type"]!="M"){
+                    $money = !empty($row["ctrt_period"])?$row["amt_paid"]/$row["ctrt_period"]:0;
+                }else{
+                    $money = $row["amt_paid"];
+                }
+                $month_money+=is_numeric($money)?$money:0;
+            }
+        }
+        if($month_money>=$minMoney){//2023-03-03年修改金额允许同公司累加
             return 0.01;
         }
+/*        if($service["month_money"]>=$minMoney){
+            return 0.01;
+        }*/
         return 0;
     }
 
