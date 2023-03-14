@@ -674,6 +674,22 @@ class General {
         }
         return array("value"=>$plane,"id"=>$id);
     }
+
+    /*
+     * 加载日报表系统的SysBlock文件
+     * @return str
+     */
+    public static function includeDrsSysBlock(){
+        $systemList = require(Yii::app()->basePath.'/config/system.php');
+        foreach ($systemList as $row){
+            if($row["name"]=="Daily Report"){//读取日报表系统的公共文件
+                $objName = end(explode("/",$row["webroot"]));
+                $configPath = dirname(Yii::app()->basePath)."/../{$objName}/protected";
+                include_once($configPath."/components/SysBlock.php");
+                return true;
+            }
+        }
+    }
 }
 
 ?>
