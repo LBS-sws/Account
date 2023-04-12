@@ -33,6 +33,13 @@ class Controller extends CController
 		$session = Yii::app()->session;
 		if (isset($session['lang']))
 			Yii::app()->language = $session['lang'];
+        if (!Yii::app()->user->isGuest) {//切換系統
+            $uname = Yii::app()->user->name;
+            if(!empty($uname)&&$session['system']!=Yii::app()->params['systemId']){
+                $session['system'] = Yii::app()->params['systemId'];
+                Yii::app()->user->saveUserOption($uname, 'system', Yii::app()->params['systemId']);
+            }
+        }
 	}
 
     public function beforeAction($action) {
