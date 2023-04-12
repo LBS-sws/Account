@@ -1,4 +1,4 @@
-<tr class='clickable-row' data-href='<?php echo $this->getLink('XE04', 'cashinaudit/view', 'cashinaudit/view', array('index'=>$this->record['id']));?>'>
+<tr class='clickable-row' data-href='<?php echo $this->getLink('XE04', (empty($this->record['audit_user'])?'cashinaudit/edit':'cashinaudit/view'), 'cashinaudit/view', array('index'=>$this->record['id']));?>'>
 <?php if (!Yii::app()->user->isSingleCity()) : ?>
 	<td><?php echo $this->record['city_name']; ?></td>
 <?php endif ?>

@@ -24,7 +24,7 @@ class CashinauditController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('new','view','confirm','listfile','filedownload','viewdetail'),
+				'actions'=>array('new','view','confirm','save','edit','listfile','filedownload','viewdetail'),
 				'expression'=>array('CashinauditController','allowReadWrite'),
 			),
 			array('allow', 
@@ -57,7 +57,7 @@ class CashinauditController extends Controller
 	public function actionConfirm()
 	{
 		if (isset($_POST['CashinAuditForm'])) {
-			$model = new CashinAuditForm($_POST['CashinAuditForm']['scenario']);
+			$model = new CashinAuditForm('confirm');
 			$model->attributes = $_POST['CashinAuditForm'];
 			if ($model->validate()) {
 				$model->confirm();
@@ -66,9 +66,25 @@ class CashinauditController extends Controller
 			} else {
 				$message = CHtml::errorSummary($model);
 				Dialog::message(Yii::t('dialog','Validation Message'), $message);
-				$model->newData();
 				$model->audit_user = '';
 				$model->audit_user_pwd = '';
+				$this->render('form',array('model'=>$model,));
+			}
+		}
+	}
+
+	public function actionSave() {
+		if (isset($_POST['CashinAuditForm'])) {
+			$model = new CashinAuditForm($_POST['CashinAuditForm']['scenario']);
+			if ($_POST['CashinAuditForm']['scenario']=='edit') $model->newData();
+			$model->attributes = $_POST['CashinAuditForm'];
+			if ($model->validate()) {
+				$model->save();
+				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+				$this->redirect(Yii::app()->createUrl('cashinaudit/edit',array('index'=>$model->hdr_id)));
+			} else {
+				$message = CHtml::errorSummary($model);
+				Dialog::message(Yii::t('dialog','Validation Message'), $message);
 				$this->render('form',array('model'=>$model,));
 			}
 		}
@@ -84,6 +100,15 @@ class CashinauditController extends Controller
 		}
 	}
 	
+	public function actionEdit($index) {
+		$model = new CashinAuditForm('edit');
+		if (!$model->retrieveData($index)) {
+			throw new CHttpException(404,Yii::t('dialog','Unable to open this record. Maybe you don\'t have corresponding access right.'));
+		} else {
+			$this->render('form',array('model'=>$model,));
+		}
+	}
+
 	public function actionNew()
 	{
 		$model = new CashinAuditForm('new');

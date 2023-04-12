@@ -32,6 +32,9 @@ $this->pageTitle=Yii::app()->name . ' - Cash Checking Form';
 				'submit'=>Yii::app()->createUrl('cashinaudit/index'))); 
 		?>
 <?php if (!$model->isReadOnly()): ?>
+		<?php echo TbHtml::button('<span class="fa fa-save"></span> '.Yii::t('misc',($model->scenario=='new'?'Save':'Refresh')), array(
+			'submit'=>Yii::app()->createUrl('cashinaudit/save'),)); 
+		?>
 		<?php echo TbHtml::button('<span class="fa fa-check"></span> '.Yii::t('misc','Confirm'), array(
 			'id'=>'btnConfirm'));
 		?>
