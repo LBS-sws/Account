@@ -271,10 +271,15 @@ class PayreqController extends Controller
 	
 	protected function checkCashAudit() {
 		$city = Yii::app()->user->city();
+
+		$sql = "select acct_id from acc_trans_type_def where trans_type_code='CASHIN' and city='$city'";
+		$row = Yii::app()->db->createCommand($sql)->queryRow();
+		$acct_id = ($row===false) ? 2 : $row['acct_id'];
+
 		$sql = "select a.trans_dt 
 				from acc_trans a
 				left outer join acc_trans_audit_dtl x on a.id=x.trans_id 
-				where x.trans_id is null and a.acct_id=2 and a.city='$city' 
+				where x.trans_id is null and a.acct_id=$acct_id and a.city='$city' 
 				and a.status <> 'V' 
 				order by a.trans_dt
 				limit 1
@@ -288,7 +293,7 @@ class PayreqController extends Controller
 		
 		$sql = "select (a.audit_dt + interval 1 day) as calc_dt
 				from acc_trans_audit_hdr a
-				where a.acct_id=2 and a.city='$city' 
+				where a.acct_id=$acct_id and a.city='$city' 
 				order by a.audit_dt desc 
 				limit 1
 			";

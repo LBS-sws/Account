@@ -95,8 +95,13 @@ class CashinAuditForm extends CListPageModel
 		$citylist = Yii::app()->user->city_allow();
 		$user = Yii::app()->user->id;
 		$date = General::toMyDate($this->audit_dt);
-		$acctId = $this->acct_id;
 		$city = Yii::app()->user->city();
+
+//		$acctId = $this->acct_id;
+		$sql = "select acct_id from acc_trans_type_def where trans_type_code='CASHIN' and city='$city'";
+		$row = Yii::app()->db->createCommand($sql)->queryRow();
+		$acctId = ($row===false) ? $this->acct_id : $row['acct_id'];
+
 		$version = Yii::app()->params['version'];
 		$citystr = ($version=='intl' ? ' and a.city=e.city ' : '');
 		$sql = "select AccountBalance(a.id,'$city','2010-01-01','$date') as balance, 
