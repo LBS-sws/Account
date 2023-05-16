@@ -216,7 +216,7 @@ class AccountForm extends CFormModel
 		$city = Yii::app()->user->city();
 		$sql = "select a.id from acc_trans a 
 				where a.trans_type_code<>'OPEN' and a.acct_id=$index 
-				and a.city='$city'
+				and a.city='$city' and a.status<>'V'
 				limit 1
 			";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
