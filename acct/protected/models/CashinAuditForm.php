@@ -2,7 +2,7 @@
 
 class CashinAuditForm extends CListPageModel
 {
-	public $hdr_id;
+	public $hdr_id = 0;
 	public $acct_id;
 	public $audit_dt;
 	public $req_user;
@@ -20,7 +20,8 @@ class CashinAuditForm extends CListPageModel
 	public function rules()	{
 		$rtn1 = parent::rules();
 		$rtn2 = array(
-			array('audit_dt, req_user, audit_user', 'required'),
+			array('audit_dt, req_user', 'required'),
+			array('audit_user', 'safe'),
 			array('audit_user','validateAuditRight'),
 			array('audit_user_pwd','validatePassword'),
 			array('acct_id, city, city_name, balance, hdr_id, id_list, req_user_name, int_fee','safe'),
@@ -62,26 +63,30 @@ class CashinAuditForm extends CListPageModel
 	}
 	
 	public function validateAuditRight($attribute, $params) {
-		$user=User::model()->find('LOWER(username)=?',array($this->audit_user));
-		$flag = empty($user) ;
-		if (!$flag) {
-			$access = $user->accessRights();
-			$sid = Yii::app()->user->system();
-			$flag = (strpos($access['control'][$sid],'CN01')===false);
-		}
-		if ($flag) {
-			$this->addError($attribute, Yii::t('trans','Access denied'));
+		if ($this->scenario=='confirm') {
+			$user=User::model()->find('LOWER(username)=?',array($this->audit_user));
+			$flag = empty($user) ;
+			if (!$flag) {
+				$access = $user->accessRights();
+				$sid = Yii::app()->user->system();
+				$flag = (strpos($access['control'][$sid],'CN01')===false);
+			}
+			if ($flag) {
+				$this->addError($attribute, Yii::t('trans','Access denied'));
+			}
 		}
 	}
 
 	public function validatePassword($attribute, $params) {
-		$code = General::authenticate($this->audit_user,$this->audit_user_pwd);
-		switch ($code) {
-			case UserIdentity::ERROR_PASSWORD_INVALID:
-			case UserIdentity::ERROR_USERNAME_INVALID:
-				$this->addError($attribute, Yii::t('dialog','Incorrect username or password.'));
-				break;
-			default:
+		if ($this->scenario=='confirm') {
+			$code = General::authenticate($this->audit_user,$this->audit_user_pwd);
+			switch ($code) {
+				case UserIdentity::ERROR_PASSWORD_INVALID:
+				case UserIdentity::ERROR_USERNAME_INVALID:
+					$this->addError($attribute, Yii::t('dialog','Incorrect username or password.'));
+					break;
+				default:
+			}
 		}
 	}
 	
@@ -90,8 +95,13 @@ class CashinAuditForm extends CListPageModel
 		$citylist = Yii::app()->user->city_allow();
 		$user = Yii::app()->user->id;
 		$date = General::toMyDate($this->audit_dt);
-		$acctId = $this->acct_id;
 		$city = Yii::app()->user->city();
+
+//		$acctId = $this->acct_id;
+		$sql = "select acct_id from acc_trans_type_def where trans_type_code='CASHIN' and city='$city'";
+		$row = Yii::app()->db->createCommand($sql)->queryRow();
+		$acctId = ($row===false) ? $this->acct_id : $row['acct_id'];
+
 		$version = Yii::app()->params['version'];
 		$citystr = ($version=='intl' ? ' and a.city=e.city ' : '');
 		$sql = "select AccountBalance(a.id,'$city','2010-01-01','$date') as balance, 
@@ -104,16 +114,18 @@ class CashinAuditForm extends CListPageModel
 			";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
-			$this->hdr_id = 0;
+			//$this->hdr_id = 0;
 			$this->acct_id = $row['id'];
-			$this->city_name = $row['city_name'];
 			$this->balance = $row['balance'];
-			$this->req_user = $user;
-			$this->req_user_name = $row['req_user_name'];
+			if ($this->hdr_id==0) {
+				$this->req_user = $user;
+				$this->req_user_name = $row['req_user_name'];
+				$this->city = $city;
+				$this->city_name = $row['city_name'];
+			}
 			$this->audit_user = '';
 			$this->audit_user_name = '';
 			$this->balance = $row['balance'];
-			$this->city = $city;
 		}
 
 		$sql = "select a.id, a.trans_dt, e.trans_type_desc, a.status, b.field_value as pay_subject, 
@@ -172,9 +184,16 @@ class CashinAuditForm extends CListPageModel
 		$suffix = Yii::app()->params['envSuffix'];
 		$citylist = Yii::app()->user->city_allow();
 		$date = General::toMyDate($this->audit_dt);
-		$acctId = $this->acct_id;
+//		$acctId = $this->acct_id;
+
+		$city = Yii::app()->user->city();
+		$sql = "select acct_id from acc_trans_type_def where trans_type_code='CASHIN' and city='$city'";
+		$row = Yii::app()->db->createCommand($sql)->queryRow();
+		$acctId = ($row===false) ? $this->acct_id : $row['acct_id'];
+
 		$sql = "select x.id, y.disp_name as req_user_name, z.disp_name as audit_user_name, x.balance, 
-				x.acct_id, a.acct_no, a.acct_name, a.bank_name, b.name as city_name, x.city, x.audit_dt 
+				x.acct_id, a.acct_no, a.acct_name, a.bank_name, b.name as city_name, x.city, x.audit_dt,
+				x.req_user, x.audit_user
 				from acc_trans_audit_hdr x 
 				inner join acc_account a on x.acct_id=a.id 
 				inner join security$suffix.sec_city b on b.code=x.city 
@@ -194,7 +213,9 @@ class CashinAuditForm extends CListPageModel
 //			$this->bank_name = $row['bank_name'];
 			$this->city_name = $row['city_name'];
 			$this->balance = $row['balance'];
+			$this->req_user = $row['req_user'];
 			$this->req_user_name = $row['req_user_name'];
+			$this->audit_user = $row['audit_user'];
 			$this->audit_user_name = $row['audit_user_name'];
 			$this->balance = $row['balance'];
 			$this->city = $row['city'];
@@ -334,16 +355,37 @@ class CashinAuditForm extends CListPageModel
 		}
 	}
 	
+	public function save() {
+		$connection = Yii::app()->db;
+		$transaction=$connection->beginTransaction();
+		try {
+			$this->saveHeader($connection);
+			$this->saveDetail($connection);
+			$transaction->commit();
+		}
+		catch(Exception $e) {
+			$transaction->rollback();
+			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
+		}
+	}
+
 	protected function saveHeader(&$connection) {
-		$sql = "insert into acc_trans_audit_hdr(
+		$sql = $this->hdr_id==0 
+			? "insert into acc_trans_audit_hdr(
 					audit_dt, acct_id, balance, req_user, audit_user, city, lcu, luu
 				) values (
 					:audit_dt, :acct_id, :balance, :req_user, :audit_user, :city, :lcu, :luu
-				)";
+				)"
+			: "update acc_trans_audit_hdr set 
+					audit_dt = :audit_dt, acct_id = :acct_id, balance = :balance, req_user = :req_user, audit_user = :audit_user, luu = :luu
+				where id = :id
+				";
 		$city = Yii::app()->user->city();
 		$uid = Yii::app()->user->id;
 
 		$command=$connection->createCommand($sql);
+		if (strpos($sql,':id')!==false)
+			$command->bindParam(':id',$this->hdr_id,PDO::PARAM_INT);
 		if (strpos($sql,':audit_dt')!==false)
 			$command->bindParam(':audit_dt',$this->audit_dt,PDO::PARAM_STR);
 		if (strpos($sql,':acct_id')!==false)
@@ -364,7 +406,7 @@ class CashinAuditForm extends CListPageModel
 			$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
 		$command->execute();
 
-		if ($this->scenario=='new')
+		if ($this->hdr_id==0)
 			$this->hdr_id = Yii::app()->db->getLastInsertID();
 		return true;
 	}
@@ -374,6 +416,9 @@ class CashinAuditForm extends CListPageModel
 		$idList = $this->id_list;
 		$uid = Yii::app()->user->id;
 		if (!empty($idList)) {
+			$sql = "delete from acc_trans_audit_dtl where hdr_id=$hdrId";
+			$connection->createCommand($sql)->execute();
+
 			$sql = "insert into acc_trans_audit_dtl(
 						hdr_id, trans_id, lcu, luu
 					)  select $hdrId, id, '$uid', '$uid' from acc_trans where id in ($idList)
@@ -384,6 +429,6 @@ class CashinAuditForm extends CListPageModel
 	}
 
 	public function isReadOnly() {
-		return ($this->scenario=='view');
+		return ($this->scenario=='view') || !empty($this->audit_user);
 	}
 }
