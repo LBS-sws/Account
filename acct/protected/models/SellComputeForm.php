@@ -1689,7 +1689,7 @@ class SellComputeForm extends CFormModel
                 //新入職員工需要判斷該員工是否在本月1號有銷售拜訪
                 $visitRow = Yii::app()->db->createCommand()->select("id")
                     ->from("sales$suffix.sal_visit")
-                    ->where("city='{$this->city}' and username=:id and visit_dt='{$this->startDate}'",array(":id"=>$staffRow["user_id"]))
+                    ->where("city='{$this->city}' and username=:id and visit_dt<='{$this->startDate}'",array(":id"=>$staffRow["user_id"]))
                     ->queryRow();
                 if(!$visitRow){
                     $salesBool = false;//當月一號沒有銷售拜訪
