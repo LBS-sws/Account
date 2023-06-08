@@ -216,7 +216,7 @@ class SellComputeList extends CListPageModel
     }
 
     //查找变更前的服务 $service：当前服务 $type：变更前的服务类型(N:新增,C:续约)
-    public static function getBeforeServiceList($service,$type,$sales_str="salesman_id"){
+    public static function getBeforeServiceList($service,$type,$sales_str="salesman_id",$group_type=0){
         $service['salesman_id']=empty($service['salesman_id'])?0:$service['salesman_id'];
         $service['company_id']=empty($service['company_id'])?0:$service['company_id'];
         $service['cust_type']=empty($service['cust_type'])?0:$service['cust_type'];
@@ -251,8 +251,49 @@ class SellComputeList extends CListPageModel
             if(empty($royalty)){
                 self::getServiceRoyalty($row);
             }
+            self::setSpanRateForService($row,$group_type);
         }
         return $row?$row:array();
+    }
+
+    //设置跨区客户服务的跨区提成比例
+    public static function setSpanRateForService(&$serviceRow,$group_type){
+        if(!in_array($group_type,array(0,1,2))||empty($serviceRow["othersalesman_id"])){
+            return false;//无组别或者没有跨区的客户服务不需要查跨区提成比例
+        }
+        if($serviceRow["status"]=="N"){
+            $timer = strtotime($serviceRow["first_dt"]);
+        }else{
+            $timer = strtotime($serviceRow["status_dt"]);
+        }
+        $year = date("Y",$timer);
+        $month = date("n",$timer);
+        $city = $serviceRow["city"];
+        $suffix = Yii::app()->params['envSuffix'];
+        $row = Yii::app()->db->createCommand()
+            ->select("*")->from("sales{$suffix}.sal_performance")
+            ->where("city=:city and ((year={$year} and month<={$month}) or year<{$year})",array(":city"=>$city))
+            ->order("year desc,month desc")->queryRow();
+        if($row){
+            $span_rate=0.5;
+            $span_other_rate=0.5;
+            switch ($group_type) {
+                case 0://0:无
+                    $span_rate = floatval($row["spanning"]);
+                    $span_other_rate = floatval($row["otherspanning"]);
+                    break;
+                case 1:
+                    $span_rate = floatval($row["business_spanning"]);
+                    $span_other_rate = floatval($row["business_otherspanning"]);
+                    break;
+                case 2:
+                    $span_rate = floatval($row["restaurant_spanning"]);
+                    $span_other_rate = floatval($row["restaurant_otherspanning"]);
+                    break;
+            }
+            $serviceRow["span_rate"]=$span_rate;
+            $serviceRow["span_other_rate"]=$span_other_rate;
+        }
     }
 
     //由於舊數據沒有保存提成點，需要查詢提成計算

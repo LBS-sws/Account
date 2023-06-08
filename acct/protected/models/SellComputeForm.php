@@ -501,7 +501,7 @@ class SellComputeForm extends CFormModel
                 $after_sum = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
                 $row['amt_money']=$after_sum-$before_sum;
                 if($row['amt_money']<0){
-                    $row['history']=SellComputeList::getBeforeServiceList($row,"N");
+                    $row['history']=SellComputeList::getBeforeServiceList($row,"N","salesman_id",$this->group_type);
                 }
             }
         }
@@ -607,7 +607,7 @@ class SellComputeForm extends CFormModel
                 $after_sum = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
                 $row['amt_money']=$after_sum-$before_sum;
                 if($row['amt_money']<0){
-                    $row['history']=SellComputeList::getBeforeServiceList($row,"N","othersalesman_id");
+                    $row['history']=SellComputeList::getBeforeServiceList($row,"N","othersalesman_id",$this->group_type);
                 }
             }
         }
@@ -706,9 +706,9 @@ class SellComputeForm extends CFormModel
                 //变动金额 = (总金额/服务总次数) * 剩余次数
                 $row['amt_money']=empty($row['all_number'])?0:$row['amt_money']/$row['all_number']*$row['surplus'];
                 $row['amt_money']=round($row['amt_money'],2)*-1;
-                $arr = SellComputeList::getBeforeServiceList($row,'C');
+                $arr = SellComputeList::getBeforeServiceList($row,'C',"salesman_id",$this->group_type);
                 if(empty($arr)){
-                    $arr = !$checkBool?SellComputeList::getBeforeServiceList($row,'N'):array();
+                    $arr = !$checkBool?SellComputeList::getBeforeServiceList($row,'N',"salesman_id",$this->group_type):array();
                     $row["history"]=$arr;
                     $list['stop'][]=$row;
                 }else{//续约终止
@@ -864,7 +864,7 @@ class SellComputeForm extends CFormModel
                 //变动金额 = (总金额/服务总次数) * 剩余次数
                 $row['amt_money']=empty($row['all_number'])?0:$row['amt_money']/$row['all_number']*$row['surplus'];
                 $row['amt_money']=round($row['amt_money'],2)*-1;
-                $row['history']=SellComputeList::getBeforeServiceList($row,"N","othersalesman_id");
+                $row['history']=SellComputeList::getBeforeServiceList($row,"N","othersalesman_id",$this->group_type);
             }
         }
         return $rows?$rows:array();
@@ -1168,7 +1168,8 @@ class SellComputeForm extends CFormModel
             //开始修改
             foreach ($updateRows as $updateRow){
                 if(!empty($updateRow['othersalesman'])){ //跨区服务
-                    $updateRow['amt_money'] *=$this->span_rate;
+                    $span_rate=isset($updateRow['span_rate'])?$updateRow['span_rate']:$this->span_rate;
+                    $updateRow['amt_money'] *=$span_rate;
                 }
                 $updateRow['amt_money'] = round($updateRow['amt_money'],2);
                 $updateRoyalty=key_exists("history",$updateRow)?$updateRow["history"]["royalty"]:$royalty;
@@ -1210,7 +1211,8 @@ class SellComputeForm extends CFormModel
                         $row["history"]["royalty"]=key_exists($row["id"],$royaltyList)?floatval($royaltyList[$row["id"]]):0.01;
                     }
                     if(!empty($row['othersalesman'])){ //跨区服务
-                        $row['amt_money'] *= $this->span_rate;
+                        $span_rate=isset($row['span_rate'])?$row['span_rate']:$this->span_rate;
+                        $row['amt_money'] *= $span_rate;
                     }
                     $row['amt_money'] = round($row['amt_money'],2);
                     $commission =$row['amt_money']*$row["history"]["royalty"];
@@ -1259,7 +1261,8 @@ class SellComputeForm extends CFormModel
                     $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
                     $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
                     $amt_sum = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
-                    $amt_sum*=$this->span_other_rate;//跨区
+                    $span_other_rate = isset($row["span_other_rate"])?$row["span_other_rate"]:$this->span_other_rate;
+                    $amt_sum*=$span_other_rate;//跨区
                     $commission =$amt_sum*$royalty;
                     $commission = round($commission,2);
                     $out_money+=$target==1?0:$amt_sum;//跨区业绩
@@ -1317,7 +1320,8 @@ class SellComputeForm extends CFormModel
                         }
                         $thisRoyalty=$row["history"]["royalty"];
                     }
-                    $row['amt_money'] =$row['amt_money']*$this->span_other_rate;//跨区
+                    $span_other_rate = isset($row["span_other_rate"])?$row["span_other_rate"]:$this->span_other_rate;
+                    $row['amt_money'] =$row['amt_money']*$span_other_rate;//跨区
                     $row['amt_money'] = round($row['amt_money'],2);
                     $commission =$row['amt_money']*$thisRoyalty;
                     $commission = round($commission,2);
@@ -1361,7 +1365,8 @@ class SellComputeForm extends CFormModel
                     if(empty($row["history"])){//手动修改历史提成
                         $row["history"]["royalty"]=key_exists($row["id"],$royaltyList)?floatval($royaltyList[$row["id"]]):0.01;
                     }
-                    $row['amt_money'] *= $this->span_other_rate;//跨区服务
+                    $span_other_rate = isset($row["span_other_rate"])?$row["span_other_rate"]:$this->span_other_rate;
+                    $row['amt_money'] *= $span_other_rate;//跨区服务
                     $row['amt_money'] = round($row['amt_money'],2);
                     $commission =$row['amt_money']*$row["history"]["royalty"];
                     $commission = round($commission,2);
@@ -1454,7 +1459,8 @@ class SellComputeForm extends CFormModel
                         $row["history"]["royalty"]=key_exists($row["id"],$royaltyList)?floatval($royaltyList[$row["id"]]):0.01;
                     }
                     if(!empty($row['othersalesman'])){ //跨区服务
-                        $row['amt_money'] *= $this->span_rate;
+                        $span_rate=isset($row['span_rate'])?$row['span_rate']:$this->span_rate;
+                        $row['amt_money'] *= $span_rate;
                     }
                     $row['amt_money'] = round($row['amt_money'],2);
                     $commission =$row['amt_money']*$row["history"]["royalty"];
