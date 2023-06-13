@@ -7,6 +7,7 @@ class SellComputeForm extends CFormModel
 	public $employee_id;
 	public $employee_code;
 	public $employee_name;
+	public $office_name;
 	public $group_type;
 	public $performance;
 	public $all_amount;
@@ -59,6 +60,7 @@ class SellComputeForm extends CFormModel
 		return array(
             'employee_name'=>Yii::t('commission','employee_name'),
             'group_type'=>Yii::t('commission','group_type'),
+            'office_name'=>Yii::t('commission','office_name'),
             'year'=>Yii::t('commission','saleyear'),
             'city_name'=>Yii::t('commission','city'),
 		);
@@ -87,15 +89,17 @@ class SellComputeForm extends CFormModel
         }
 		$suffix = Yii::app()->params['envSuffix'];
         $row = Yii::app()->db->createCommand()
-            ->select("a.*,b.code,b.name,b.group_type,b.id as employee_id")
+            ->select("a.*,b.code,b.name,b.group_type,b.id as employee_id,f.name as office_name")
             ->from("acc_service_comm_hdr a")
             ->leftJoin("hr{$suffix}.hr_employee b","b.code=a.employee_code")
+            ->leftJoin("hr{$suffix}.hr_office f","f.id=b.office_id")
             ->where("a.id=:id {$sqlEpr} {$this->onlySql}",array(":id"=>$index))->queryRow();
 		if ($row!==false) {
 			$this->id = $row['id'];
 			$this->employee_id = $row['employee_id'];
 			$this->employee_code = $row['code'];
 			$this->employee_name = $row['name'];
+			$this->office_name = $row['office_name'];
 			$this->staff = "{$row['name']} ({$row['code']})";
 			$this->year = $row['year_no'];
 			$this->month = $row['month_no'];

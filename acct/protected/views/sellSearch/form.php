@@ -74,6 +74,14 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute Form';
                             </div>
                         </div>
                         <div class="form-group" >
+                            <label class="col-sm-5 control-label"><?php echo Yii::t('commission','office_name'); ?></label>
+                            <div class="col-sm-7">
+                                <?php echo $form->textField($model, 'office_name',
+                                    array('size'=>50,'maxlength'=>100,'readonly'=>(true))
+                                ); ?>
+                            </div>
+                        </div>
+                        <div class="form-group" >
                             <label class="col-sm-5 control-label"><?php echo Yii::t('commission','group_type'); ?></label>
                             <div class="col-sm-7">
                                 <?php echo TbHtml::textField("group_type",SellComputeForm::getGroupName($model->group_type),array('readonly'=>true));?>
