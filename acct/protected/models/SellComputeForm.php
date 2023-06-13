@@ -87,9 +87,10 @@ class SellComputeForm extends CFormModel
         }else{
             $sqlEpr = "";
         }
+        $localOffice = Yii::t("commission","local office");
 		$suffix = Yii::app()->params['envSuffix'];
         $row = Yii::app()->db->createCommand()
-            ->select("a.*,b.code,b.name,b.group_type,b.id as employee_id,f.name as office_name")
+            ->select("a.*,b.code,b.name,b.group_type,b.id as employee_id,if(b.office_id=0,'{$localOffice}',f.name) as office_name")
             ->from("acc_service_comm_hdr a")
             ->leftJoin("hr{$suffix}.hr_employee b","b.code=a.employee_code")
             ->leftJoin("hr{$suffix}.hr_office f","f.id=b.office_id")

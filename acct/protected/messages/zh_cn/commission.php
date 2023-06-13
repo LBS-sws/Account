@@ -88,5 +88,6 @@ return array(
     'install money'=>'装机金额',
     'install amount'=>'装机提成',
     'office_name'=>'办事处',
+    'local office'=>'本部',
 );
 ?>
