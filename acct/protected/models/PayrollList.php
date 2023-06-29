@@ -10,6 +10,7 @@ class PayrollList extends CListPageModel
 			'city_name'=>Yii::t('misc','City'),
 			'wfstatusdesc'=>Yii::t('misc','Status'),
 			'file1countdoc'=>Yii::t('trans','Files'),
+            'amt_total'=>Yii::t('trans','Total'),
 		);
 	}
 	
@@ -26,13 +27,17 @@ class PayrollList extends CListPageModel
 							when 'PA' then '2PA' 
 							when 'PS' then '0PS' 
 							when 'ED' then '3ED' 
-					end) as wfstatus,
+					end) as wfstatus,f.data_value as amt_total,
 					workflow$suffix.RequestStatusDesc($cityarg 'PAYROLL',a.id,a.lcd) as wfstatusdesc
-				from acc_payroll_file_hdr a inner join security$suffix.sec_city b on a.city=b.code 
+				from acc_payroll_file_hdr a 
+				LEFT join security$suffix.sec_city b on a.city=b.code 
+				LEFT join acc_payroll_file_dtl f on f.hdr_id=a.id and f.data_field='amt_total'
 				where a.city in ($citylist)
 			";
 		$sql2 = "select count(a.id)
-				from acc_payroll_file_hdr a inner join security$suffix.sec_city b on a.city=b.code 
+				from acc_payroll_file_hdr a 
+				LEFT join security$suffix.sec_city b on a.city=b.code 
+				LEFT join acc_payroll_file_dtl f on f.hdr_id=a.id and f.data_field='amt_total'
 				where a.city in ($citylist)
 			";
 		$clause = "";
@@ -75,6 +80,7 @@ class PayrollList extends CListPageModel
 						'year_no'=>$record['year_no'],
 						'month_no'=>$record['month_no'],
 						'city'=>$record['city'],
+                        'amt_total'=>$record['amt_total'],
 						'city_name'=>$record['city_name'],
 						'wfstatusdesc'=>(empty($record['wfstatusdesc'])?Yii::t('misc','Draft'):$record['wfstatusdesc']) ,
 						'wfstatus'=> $wfstatus,

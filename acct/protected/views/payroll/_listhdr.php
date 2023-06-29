@@ -25,6 +25,11 @@
 	</th>
 -->
 	<th>
+		<?php echo TbHtml::link($this->getLabelName('amt_total').$this->drawOrderArrow('amt_total'),'#',$this->createOrderLink('payroll-list','amt_total'))
+			;
+		?>
+	</th>
+	<th>
 		<?php echo TbHtml::link($this->getLabelName('wfstatusdesc').$this->drawOrderArrow('wfstatusdesc'),'#',$this->createOrderLink('payroll-list','status'))
 			;
 		?>

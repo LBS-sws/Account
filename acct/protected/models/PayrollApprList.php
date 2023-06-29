@@ -10,6 +10,7 @@ class PayrollApprList extends CListPageModel
 			'city_name'=>Yii::t('misc','City'),
 			'wfstatusdesc'=>Yii::t('misc','Status'),
 			'file1countdoc'=>Yii::t('trans','Files'),
+            'amt_total'=>Yii::t('trans','Total'),
 		);
 	}
 	
@@ -33,16 +34,20 @@ class PayrollApprList extends CListPageModel
 		$city = Yii::app()->user->city_allow();
 		$version = Yii::app()->params['version'];
 		$cityarg = ($version=='intl' ? 'a.city,' : '');
-		$sql1 = "select a.*, b.name as city_name, 
+		$sql1 = "select a.*, b.name as city_name,f.data_value as amt_total, 
 					docman$suffix.countdoc('PAYFILE1',a.id) as file1countdoc,
 					workflow$suffix.RequestStatusDesc($cityarg 'PAYROLL',a.id,a.lcd) as wfstatusdesc
-				from acc_payroll_file_hdr a, security$suffix.sec_city b 
-				where a.city in ($city) and a.city=b.code 
+				from acc_payroll_file_hdr a
+				LEFT join security$suffix.sec_city b on a.city=b.code 
+				LEFT join acc_payroll_file_dtl f on f.hdr_id=a.id and f.data_field='amt_total' 
+				where a.city in ($city) 
 				and a.id in ($list)
 			";
 		$sql2 = "select count(a.id)
-				from acc_payroll_file_hdr a, security$suffix.sec_city b 
-				where a.city in ($city) and a.city=b.code 
+				from acc_payroll_file_hdr a 
+				LEFT join security$suffix.sec_city b on a.city=b.code 
+				LEFT join acc_payroll_file_dtl f on f.hdr_id=a.id and f.data_field='amt_total' 
+				where a.city in ($city) 
 				and a.id in ($list)
 			";
 
@@ -80,15 +85,16 @@ class PayrollApprList extends CListPageModel
 		$this->attr = array();
 		if (count($records) > 0) {
 			foreach ($records as $k=>$record) {
-				$this->attr[] = array(
-						'id'=>$record['id'],
-						'year_no'=>$record['year_no'],
-						'month_no'=>$record['month_no'],
-						'city'=>$record['city'],
-						'city_name'=>$record['city_name'],
-						'wfstatusdesc'=>(empty($record['wfstatusdesc'])?Yii::t('misc','Draft'):$record['wfstatusdesc']),
-						'file1countdoc'=>$record['file1countdoc'],
-				);
+                $this->attr[] = array(
+                    'id'=>$record['id'],
+                    'year_no'=>$record['year_no'],
+                    'month_no'=>$record['month_no'],
+                    'amt_total'=>$record['amt_total'],
+                    'city'=>$record['city'],
+                    'city_name'=>$record['city_name'],
+                    'wfstatusdesc'=>(empty($record['wfstatusdesc'])?Yii::t('misc','Draft'):$record['wfstatusdesc']),
+                    'file1countdoc'=>$record['file1countdoc'],
+                );
 			}
 		}
 		$session = Yii::app()->session;
