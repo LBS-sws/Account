@@ -36,6 +36,7 @@ class ApprReqList extends CListPageModel
 			'payreqcountdoc'=>Yii::t('misc','Attachment'),
 			'taxcountdoc'=>Yii::t('trans','Tax Slip'),
 			'acct_type_desc'=>Yii::t('trans','Paid Account'),
+			'confirm_dt'=>'确认日期',
 		);
 	}
 	
@@ -48,6 +49,7 @@ class ApprReqList extends CListPageModel
 		$list = ($this->type=='P')
 				? $wf->getPendingRequestIdList('PAYMENT', 'PA', Yii::app()->user->id)
 				: $wf->getPendingStandbyRequestIdList('PAYMENT', 'PA', Yii::app()->user->id);
+		$procId = $wf->getProcessVersionId('PAYMENT', date('Y-m-d'));
 		if (empty($list)) $list = '0';
 		
 		$suffix = Yii::app()->params['envSuffix'];
@@ -58,7 +60,8 @@ class ApprReqList extends CListPageModel
 					b.name as city_name, a.amount, a.status, f.field_value as ref_no,g.field_value as int_fee,
 					h.field_value as item_code, k.acct_type_desc,
 					docman$suffix.countdoc('payreq',a.id) as payreqcountdoc,
-					docman$suffix.countdoc('tax',a.id) as taxcountdoc
+					docman$suffix.countdoc('tax',a.id) as taxcountdoc,
+					w3.lud as confirm_dt
 				from acc_request a inner join security$suffix.sec_city b on a.city=b.code
 					inner join acc_trans_type e on a.trans_type_code=e.trans_type_code $citystr 
 					inner join security$suffix.sec_user c on a.req_user = c.username
@@ -68,9 +71,14 @@ class ApprReqList extends CListPageModel
 					left outer join acc_request_info i on a.id=i.req_id and i.field_id='acct_id'
 					left outer join acc_account j on j.id=i.field_value
 					left outer join acc_account_type k on k.id=j.acct_type_id
+					left outer join workflow$suffix.wf_request w1 on w1.doc_id=a.id and w1.proc_ver_id=$procId
+					left outer join workflow$suffix.wf_state w2 on w2.proc_ver_id=w1.proc_ver_id and w2.code='PB'
+					left outer join workflow$suffix.wf_request_resp_user w3 on w3.request_id=w1.id and w3.current_state=w2.id and w3.status='C'
+					left outer join workflow$suffix.wf_request_resp_user w4 on w4.request_id=w1.id and w4.current_state=w2.id and w4.status='C' and w4.id > w3.id
 				where a.city in ($city)
 				and a.id in ($list)
-				and e.trans_cat='OUT' 
+				and e.trans_cat='OUT'
+				and w4.id is null
 			";
 		$sql2 = "select count(a.id)
 				from acc_request a inner join security$suffix.sec_city b on a.city=b.code
@@ -169,6 +177,7 @@ class ApprReqList extends CListPageModel
 					'payreqcountdoc'=>$record['payreqcountdoc'],
 					'taxcountdoc'=>$record['taxcountdoc'],
 					'acct_type_desc'=>$record['acct_type_desc'],
+					'confirm_dt'=>General::toDate($record['confirm_dt']),
 				);
 			}
 		}

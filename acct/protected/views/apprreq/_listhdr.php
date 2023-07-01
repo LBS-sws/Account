@@ -15,6 +15,11 @@
 		?>
 	</th>
 	<th>
+		<?php echo TbHtml::link($this->getLabelName('confirm_dt').$this->drawOrderArrow('confirm_dt'),'#',$this->createOrderLink('request-list','confirm_dt'))
+			;
+		?>
+	</th>
+	<th>
 		<?php echo TbHtml::link($this->getLabelName('user_name').$this->drawOrderArrow('user_name'),'#',$this->createOrderLink('request-list','user_name'))
 			;
 		?>

@@ -30,8 +30,12 @@
 			echo TbHtml::hiddenField($this->getFieldName('payreqcountdoc'), $this->record['payreqcountdoc']);
 			echo TbHtml::hiddenField($this->getFieldName('taxcountdoc'), $this->record['taxcountdoc']);
 			echo TbHtml::hiddenField($this->getFieldName('acct_type_desc'), $this->record['acct_type_desc']);
+			echo TbHtml::hiddenField($this->getFieldName('confirm_dt'), $this->record['confirm_dt']);
 		?>
 		<?php echo $this->record['req_dt']; ?>
+	</td>
+	<td <?php echo $cls_str;?>>
+		<?php echo $this->record['confirm_dt']; ?>
 	</td>
 	<td <?php echo $cls_str;?>>
 		<?php echo $this->record['user_name']; ?>
