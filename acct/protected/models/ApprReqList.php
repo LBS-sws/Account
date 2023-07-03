@@ -36,7 +36,7 @@ class ApprReqList extends CListPageModel
 			'payreqcountdoc'=>Yii::t('misc','Attachment'),
 			'taxcountdoc'=>Yii::t('trans','Tax Slip'),
 			'acct_type_desc'=>Yii::t('trans','Paid Account'),
-			'confirm_dt'=>'确认日期',
+			'confirm_dt'=>Yii::t('trans','Confirm Date'),
 		);
 	}
 	
