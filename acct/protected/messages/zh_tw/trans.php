@@ -218,5 +218,6 @@ return array(
 'Total'=>'本月共計',
 'Please fill in amount'=>'請填寫金額',
 'Approval Date'=>'審核時間',
+'Confirm Date'=>'確認日期',
 );
 ?>
