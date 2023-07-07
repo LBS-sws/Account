@@ -37,7 +37,7 @@ class CommissionController extends Controller
                 'expression'=>array('CommissionController','allowEditOld'),
             ),
             array('allow',
-                'actions'=>array('view','index','index_s','edit','end','test','remove'),
+                'actions'=>array('view','index','index_s','edit','end','test','remove','deleteOne'),
                 'expression'=>array('CommissionController','allowReadOnly'),
             ),
             array('deny',  // deny all users
@@ -59,6 +59,23 @@ class CommissionController extends Controller
                     array(':id'=>$row['id']));
             }
             echo "success";
+        }else{
+            echo "don't have data";
+        }
+    }
+
+    //刪除某條數據的数据
+    public function actionDeleteOne($id=0){
+        $row = Yii::app()->db->createCommand()->select("id,year_no,month_no,employee_code,employee_name")
+            ->from("acc_service_comm_hdr")
+            ->where("id=:id",array(':id'=>$id))
+            ->queryRow();
+        if($row){
+            Yii::app()->db->createCommand()->delete('acc_service_comm_hdr', 'id=:id',
+                array(':id'=>$id));
+            echo $row["employee_name"]." (".$row["employee_code"].")"." - ".$row["year_no"]."/".$row["month_no"];
+            echo "<br/>";
+            echo "delete success!";
         }else{
             echo "don't have data";
         }
