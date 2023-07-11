@@ -51,4 +51,14 @@
 			;
 		?>
 	</th>
+    <th>
+        <?php echo TbHtml::link($this->getLabelName('payreqcountdoc'),'#',$this->createOrderLink('request-list','payreqcountdoc'))
+        ;
+        ?>
+    </th>
+    <th>
+        <?php echo TbHtml::link($this->getLabelName('taxcountdoc'),'#',$this->createOrderLink('request-list','taxcountdoc'))
+        ;
+        ?>
+    </th>
 </tr>

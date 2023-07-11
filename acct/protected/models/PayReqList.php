@@ -16,6 +16,8 @@ class PayReqList extends CListPageModel
 			'wfstatusdesc'=>Yii::t('trans','Flow Status'),
 			'int_fee'=>Yii::t('trans','Integrated Fee'),
 			'acct_type_desc'=>Yii::t('trans','Paid Account'),
+            'payreqcountdoc'=>Yii::t('misc','Attachment'),
+            'taxcountdoc'=>Yii::t('trans','Tax Slip'),
 		);
 	}
 	
@@ -58,7 +60,9 @@ class PayReqList extends CListPageModel
 							when 'PS' then '6PS' 
 							when 'ED' then '7ED' 
 					end) as wfstatus,
-					workflow$suffix.RequestStatusDesc('PAYMENT',a.id,a.req_dt) as wfstatusdesc
+					workflow$suffix.RequestStatusDesc('PAYMENT',a.id,a.req_dt) as wfstatusdesc,
+					docman$suffix.countdoc('payreq',a.id) as payreqcountdoc,
+					docman$suffix.countdoc('tax',a.id) as taxcountdoc
 				from acc_request a inner join security$suffix.sec_city b on a.city=b.code
 					inner join acc_trans_type e on a.trans_type_code=e.trans_type_code $citystr
 					left outer join acc_request_info f on a.id=f.req_id and f.field_id='ref_no'
@@ -110,7 +114,7 @@ class PayReqList extends CListPageModel
 			$order .= " order by ".$orderf." ";
 			if ($this->orderType=='D') $order .= "desc ";
 		}
-		if ($order=="") $order = "order by wfstatus, req_dt desc";
+		if ($order=="") $order = "order by wfstatus, req_dt desc,a.id desc";
 
 		$sql = $sql2.$clause;
 		$this->totalRow = Yii::app()->db->createCommand($sql)->queryScalar();
@@ -144,6 +148,8 @@ class PayReqList extends CListPageModel
 						'int_fee'=>($record['int_fee']=='Y' ? Yii::t('misc','Yes') : Yii::t('misc','No')),
 						'acct_type_desc'=>$record['acct_type_desc'],
 						'trans_id'=>$record['trans_id'],
+                        'payreqcountdoc'=>$record['payreqcountdoc'],
+                        'taxcountdoc'=>$record['taxcountdoc'],
 					);
 				}
 			}

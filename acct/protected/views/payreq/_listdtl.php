@@ -29,4 +29,24 @@
 	<td><?php echo $strikeB.$this->record['ref_no'].$strikeE; ?></td>
 	<td><?php echo $strikeB.$this->record['int_fee'].$strikeE; ?></td>
 	<td><?php echo $strikeB.$this->record['wfstatusdesc'].$strikeE; ?></td>
+    <td class="stopTd">
+        <?php
+        echo TbHtml::button($this->record['payreqcountdoc'],
+            array(
+                'class'=>'btn-xs',
+                'onclick'=>'javascript:showattm('.$this->record['id'].');',
+            )
+        );
+        ?>
+    </td>
+    <td class="stopTd">
+        <?php
+        echo TbHtml::button($this->record['taxcountdoc'],
+            array(
+                'class'=>'btn-xs',
+                'onclick'=>'javascript:showtax('.$this->record['id'].');',
+            )
+        );
+        ?>
+    </td>
 </tr>

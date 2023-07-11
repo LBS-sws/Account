@@ -52,11 +52,70 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request';
 	echo $form->hiddenField($model,'orderType');
 	echo $form->hiddenField($model,'filter');
 ?>
+<?php $this->renderPartial('//site/fileviewx',array('model'=>$model,
+    'form'=>$form,
+    'doctype'=>'PAYREQ',
+    'header'=>Yii::t('dialog','File Attachment'),
+));
+?>
+<?php $this->renderPartial('//site/fileviewx',array('model'=>$model,
+    'form'=>$form,
+    'doctype'=>'TAX',
+    'header'=>Yii::t('trans','Tax Slip'),
+));
+?>
 <?php $this->endWidget(); ?>
 
 <?php
-	$js = Script::genTableRowClick();
+Script::genFileDownload($model,$form->id,'PAYREQ');
+Script::genFileDownload($model,$form->id,'TAX');
+$js="
+$('.stopTd').click(function(e){
+    e.stopPropagation();
+});
+";
+	$js.= Script::genTableRowClick();
 	Yii::app()->clientScript->registerScript('rowClick',$js,CClientScript::POS_READY);
+
+$link = Yii::app()->createAbsoluteUrl("apprreq");
+$js = <<<EOF
+function showattm(docid) {
+	var data = "docId="+docid;
+	var link = "$link"+"/listfile";
+	$.ajax({
+		type: 'GET',
+		url: link,
+		data: data,
+		success: function(data) {
+			$("#fileviewpayreq").html(data);
+			$('#fileuploadpayreq').modal('show');
+		},
+		error: function(data) { // if error occured
+			alert("Error occured.please try again");
+		},
+		dataType:'html'
+	});
+}
+
+function showtax(docid) {
+	var data = "docId="+docid;
+	var link = "$link"+"/listtax";
+	$.ajax({
+		type: 'GET',
+		url: link,
+		data: data,
+		success: function(data) {
+			$("#fileviewtax").html(data);
+			$('#fileuploadtax').modal('show');
+		},
+		error: function(data) { // if error occured
+			alert("Error occured.please try again");
+		},
+		dataType:'html'
+	});
+}
+EOF;
+Yii::app()->clientScript->registerScript('fileview',$js,CClientScript::POS_HEAD);
 ?>
 
 

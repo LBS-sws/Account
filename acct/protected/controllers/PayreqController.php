@@ -28,7 +28,7 @@ class PayreqController extends Controller
 				'expression'=>array('PayreqController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view','check','filedownload','void'),
+				'actions'=>array('index','view','check','filedownload','void','listtax','Listfile'),
 				'expression'=>array('PayreqController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -248,6 +248,15 @@ class PayreqController extends Controller
 		}
 	}
 
+    public function actionListfile($docId) {
+        $d = new DocMan('PAYREQ',$docId,'ApprReqList');
+        echo $d->genFileListView();
+    }
+
+    public function actionListtax($docId) {
+        $d = new DocMan('TAX',$docId,'ApprReqList');
+        echo $d->genFileListView();
+    }
 	/**
 	 * Performs the AJAX validation.
 	 * @param CModel the model to be validated
