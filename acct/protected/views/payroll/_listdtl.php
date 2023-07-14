@@ -9,5 +9,5 @@
 	<td><?php echo $this->record['file1countdoc']; ?></td>
 -->
 	<td><?php echo $this->record['amt_total']; ?></td>
-	<td><?php echo $this->record['wfstatusdesc']; ?></td>
+	<td data-status="<?php echo $this->record['wfstatus']; ?>"><?php echo $this->record['wfstatusdesc']; ?></td>
 </tr>

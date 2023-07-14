@@ -80,7 +80,7 @@ class PayrollList extends CListPageModel
 						'year_no'=>$record['year_no'],
 						'month_no'=>$record['month_no'],
 						'city'=>$record['city'],
-                        'amt_total'=>$record['amt_total'],
+                        'amt_total'=>$wfstatus=="3ED"?$record['amt_total']:"",
 						'city_name'=>$record['city_name'],
 						'wfstatusdesc'=>(empty($record['wfstatusdesc'])?Yii::t('misc','Draft'):$record['wfstatusdesc']) ,
 						'wfstatus'=> $wfstatus,
