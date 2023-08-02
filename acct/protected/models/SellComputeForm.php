@@ -1266,7 +1266,7 @@ class SellComputeForm extends CFormModel
                     $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
                     $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
                     $amt_sum = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
-                    $span_other_rate = isset($row["span_other_rate"])?$row["span_other_rate"]:$this->span_other_rate;
+                    $span_other_rate = isset($row["history"]["span_other_rate"])?$row["history"]["span_other_rate"]:$this->span_other_rate;
                     $amt_sum*=$span_other_rate;//跨区
                     $commission =$amt_sum*$royalty;
                     $commission = round($commission,2);
@@ -1325,7 +1325,7 @@ class SellComputeForm extends CFormModel
                         }
                         $thisRoyalty=$row["history"]["royalty"];
                     }
-                    $span_other_rate = isset($row["span_other_rate"])?$row["span_other_rate"]:$this->span_other_rate;
+                    $span_other_rate = isset($row["history"]["span_other_rate"])?$row["history"]["span_other_rate"]:$this->span_other_rate;
                     $row['amt_money'] =$row['amt_money']*$span_other_rate;//跨区
                     $row['amt_money'] = round($row['amt_money'],2);
                     $commission =$row['amt_money']*$thisRoyalty;
@@ -1370,7 +1370,7 @@ class SellComputeForm extends CFormModel
                     if(empty($row["history"])){//手动修改历史提成
                         $row["history"]["royalty"]=key_exists($row["id"],$royaltyList)?floatval($royaltyList[$row["id"]]):0.01;
                     }
-                    $span_other_rate = isset($row["span_other_rate"])?$row["span_other_rate"]:$this->span_other_rate;
+                    $span_other_rate = isset($row["history"]["span_other_rate"])?$row["history"]["span_other_rate"]:$this->span_other_rate;
                     $row['amt_money'] *= $span_other_rate;//跨区服务
                     $row['amt_money'] = round($row['amt_money'],2);
                     $commission =$row['amt_money']*$row["history"]["royalty"];
