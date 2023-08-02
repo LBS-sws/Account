@@ -1173,7 +1173,7 @@ class SellComputeForm extends CFormModel
             //开始修改
             foreach ($updateRows as $updateRow){
                 if(!empty($updateRow['othersalesman'])){ //跨区服务
-                    $span_rate=isset($updateRow['span_rate'])?$updateRow['span_rate']:$this->span_rate;
+                    $span_rate=isset($updateRow["history"]['span_rate'])?$updateRow["history"]['span_rate']:$this->span_rate;
                     $updateRow['amt_money'] *=$span_rate;
                 }
                 $updateRow['amt_money'] = round($updateRow['amt_money'],2);
@@ -1216,7 +1216,7 @@ class SellComputeForm extends CFormModel
                         $row["history"]["royalty"]=key_exists($row["id"],$royaltyList)?floatval($royaltyList[$row["id"]]):0.01;
                     }
                     if(!empty($row['othersalesman'])){ //跨区服务
-                        $span_rate=isset($row['span_rate'])?$row['span_rate']:$this->span_rate;
+                        $span_rate=isset($row["history"]['span_rate'])?$row["history"]['span_rate']:$this->span_rate;
                         $row['amt_money'] *= $span_rate;
                     }
                     $row['amt_money'] = round($row['amt_money'],2);
@@ -1464,7 +1464,7 @@ class SellComputeForm extends CFormModel
                         $row["history"]["royalty"]=key_exists($row["id"],$royaltyList)?floatval($royaltyList[$row["id"]]):0.01;
                     }
                     if(!empty($row['othersalesman'])){ //跨区服务
-                        $span_rate=isset($row['span_rate'])?$row['span_rate']:$this->span_rate;
+                        $span_rate=isset($row["history"]['span_rate'])?$row["history"]['span_rate']:$this->span_rate;
                         $row['amt_money'] *= $span_rate;
                     }
                     $row['amt_money'] = round($row['amt_money'],2);
