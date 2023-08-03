@@ -69,6 +69,14 @@ $this->pageTitle=Yii::app()->name . ' - Report';
 				</div>
 			</div>
 
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'acct_id',array('class'=>"col-sm-2 control-label")); ?>
+				<div class="col-sm-3">
+					<?php echo $form->dropDownList($model, 'acct_id', General::getAccountList(Yii::app()->user->city_allow()),
+						array('disabled'=>($model->scenario=='view'))
+					); ?>
+				</div>
+			</div>
 		</div>
 	</div>
 </section>
