@@ -20,5 +20,7 @@ return array(
     'Please complete Charity System - Audit Charity Credit Confirmation before using other functions.'
     =>'在使用其他功能前，请先完成慈善分系统-慈善分专员审核。',
     'EveryYearForExamination'=>'亲爱的同事，为巩固技术服务知识和服务品质,请于次月底完成一年一次的培训测验<br/>要求：答题正确率为85%, 否则需继续测验',
+    'Please update the regional recruitment plan if there is any change. If it has been updated, ignore this information.'
+    =>'如地区招聘计划有变动，请及时更新。如已更新，请忽略此信息。',
 );
 ?>
