@@ -1035,8 +1035,8 @@ class SellTableForm extends SellComputeForm{
         $objWriter->save('php://output');
         $output = ob_get_clean();
         spl_autoload_register(array('YiiBase','autoload'));
-        $time=time();
-        $str="templates_TurnoverExcel_".$time.".xlsx";
+        $str="销售提成表-".$this->employee_name;
+        $filename= iconv('utf-8','gbk//ignore',$str);
         header("Pragma: public");
         header("Expires: 0");
         header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
@@ -1044,7 +1044,7 @@ class SellTableForm extends SellComputeForm{
         header("Content-Type:application/vnd.ms-execl");
         header("Content-Type:application/octet-stream");
         header("Content-Type:application/download");;
-        header('Content-Disposition:attachment;filename="'.$str.'"');
+        header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
         header("Content-Transfer-Encoding:binary");
         echo $output;
     }
