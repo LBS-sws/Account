@@ -9,6 +9,7 @@ class RptReimbursement extends CReport {
 		$start_dt = $this->criteria['START_DT'];
 		$end_dt = $this->criteria['END_DT'];
 		$ref_no = $this->criteria['REF_NO'];
+		$acct_id = $this->criteria['ACCT_ID'];
 		$city = $this->criteria['CITY'];
 		$currcode = City::getCurrency($city);
 		$currname = Currency::getName($currcode); 
@@ -25,18 +26,21 @@ class RptReimbursement extends CReport {
 		$suffix = Yii::app()->params['envSuffix'];
 		
 		if (empty($ref_no)) {
+			$join_acct_id = empty($acct_id) ? "" : "inner join acc_request_info c on a.id=c.req_id and c.field_id='acct_id' ";
+			$cond_acct_id = empty($acct_id) ? "" : "and c.field_value='$acct_id' ";
 			$sql = "select a.*, 
 						workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'SI') as sts_dt1,
 						workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'S') as sts_dt2,
 						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PC') as acctstaff,
 						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PS') as approver1,
 						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PA') as approver2
-					from acc_request a
+					from acc_request a $join_acct_id
 					where a.city='$city' and a.status<>'V'
 					and ((workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'SI')>='".General::toDate($start_dt)." 00:00:00' 
 					and workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'SI')<='".General::toDate($end_dt)." 23:59:59')
 					or (workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'S')>='".General::toDate($start_dt)." 00:00:00' 
 					and workflow$suffix.RequestStatusDate('PAYMENT',a.id,a.req_dt,'S')<='".General::toDate($end_dt)." 23:59:59'))
+					$cond_acct_id
 				";
 		} else {
 			$sql = "select a.*, 
@@ -46,7 +50,7 @@ class RptReimbursement extends CReport {
 						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PS') as approver1,
 						workflow$suffix.ActionPerson('PAYMENT',a.id,a.req_dt,'PA') as approver2
 					from acc_request a 
-					inner join acc_request_info b on a.id=b.req_id and b.field_id='REF_NO' 
+					inner join acc_request_info b on a.id=b.req_id and b.field_id='ref_no' 
 					where a.city='$city' and a.status<>'V' 
 				";
 			$sql .= (strpos($ref_no,'%')===false) ? " and b.field_value='$ref_no'" : " and b.field_value like '$ref_no'";
