@@ -221,7 +221,7 @@ class DocMan {
                 $this->saveFile($connection, 'insert', $data);
             }
             $transaction->commit();
-
+            $this->resetModelFileNumber();
         } catch(Exception $e) {
             $transaction->rollback();
             throw new CHttpException(404,'Cannot update.'.$e->getMessage());
@@ -270,6 +270,7 @@ class DocMan {
                 );
                 $this->saveFile($connection, 'delete', $data);
                 $transaction->commit();
+                $this->resetModelFileNumber();
             } catch(Exception $e) {
                 $transaction->rollback();
                 throw new CHttpException(404,'Cannot update.');
@@ -508,8 +509,9 @@ class DocMan {
         $suffix = Yii::app()->params['envSuffix'];
         $docId = $this->docId;
         $sql = "update docman$suffix.dm_master set doc_id=$docId where id=$masterId";
-        var_dump($sql);
+        //var_dump($sql);
         $connection->createCommand($sql)->execute();
+        $this->resetModelFileNumber();
     }
 
 /*
@@ -590,6 +592,15 @@ class DocMan {
         $path .= '/'.$tmp;
         if (!file_exists($path)) mkdir($path);
         return $path;
+    }
+
+    //由於列表需要顯示附件數量，導致列表打開太慢，所以保存附件數量
+    public function resetModelFileNumber(){
+        $model = new $this->formId();
+        $funList = get_class_methods($model);
+        if(in_array("resetFileSum",$funList)){
+            $model->resetFileSum($this->docId);
+        }
     }
 }
 ?>

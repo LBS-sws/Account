@@ -61,8 +61,8 @@ class PayReqList extends CListPageModel
 							when 'ED' then '7ED' 
 					end) as wfstatus,
 					workflow$suffix.RequestStatusDesc('PAYMENT',a.id,a.req_dt) as wfstatusdesc,
-					docman$suffix.countdoc('payreq',a.id) as payreqcountdoc,
-					docman$suffix.countdoc('tax',a.id) as taxcountdoc
+					a.doc_count_req as payreqcountdoc,
+					a.doc_count_tax as taxcountdoc
 				from acc_request a inner join security$suffix.sec_city b on a.city=b.code
 					inner join acc_trans_type e on a.trans_type_code=e.trans_type_code $citystr
 					left outer join acc_request_info f on a.id=f.req_id and f.field_id='ref_no'

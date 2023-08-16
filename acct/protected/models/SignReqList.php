@@ -37,9 +37,9 @@ class SignReqList extends CListPageModel
 		$sql1 = "select a.id, a.req_dt, e.trans_type_desc, a.item_desc, a.payee_name, c.disp_name as user_name,
 					b.name as city_name, a.amount, a.status, f.field_value as ref_no, g.field_value as int_fee, 
 					h.field_value as item_code, k.acct_type_desc,
-					docman$suffix.countdoc('payreq',a.id) as payreqcountdoc,
-					docman$suffix.countdoc('payreal',a.id) as payrealcountdoc,
-					docman$suffix.countdoc('tax',a.id) as taxcountdoc
+					a.doc_count_real as payrealcountdoc,
+					a.doc_count_req as payreqcountdoc,
+					a.doc_count_tax as taxcountdoc
 				from acc_request a inner join security$suffix.sec_city b on a.city=b.code
 					inner join acc_trans_type e on a.trans_type_code=e.trans_type_code $citystr 
 					inner join security$suffix.sec_user c on a.req_user = c.username
