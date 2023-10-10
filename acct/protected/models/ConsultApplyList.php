@@ -3,6 +3,7 @@
 class ConsultApplyList extends CListPageModel
 {
     public $apply_city;
+    public $plus_city;//暂属城市
 	/**
 	 * Declares customized attribute labels.
 	 * If not declared here, an attribute would have a label that is
@@ -32,13 +33,15 @@ class ConsultApplyList extends CListPageModel
 		if(Yii::app()->user->validFunction('CN14')){//CN14
             $sqlEpr=" lcu='{$uid}' or ";
         }
+        $city_allow = "'{$this->apply_city}'";
+		$city_allow.=empty($this->plus_city)?"":",'{$this->plus_city}'";
 		$sql1 = "select * 
 				from acc_consult 
-				where ({$sqlEpr} apply_city='{$this->apply_city}' or (audit_city='{$this->apply_city}' and status in (2,3))) 
+				where ({$sqlEpr} apply_city in ({$city_allow}) or (audit_city in ({$city_allow}) and status in (2,3))) 
 			";
 		$sql2 = "select count(id)
 				from acc_consult 
-				where ({$sqlEpr} apply_city='{$this->apply_city}' or (audit_city='{$this->apply_city}' and status in (2,3)))
+				where ({$sqlEpr} apply_city in ({$city_allow}) or (audit_city in ({$city_allow}) and status in (2,3)))
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -147,6 +150,17 @@ class ConsultApplyList extends CListPageModel
             ->queryRow();
         if($row){
             $model->apply_city=$row["city"];
+            $plus_city=array();//暂属城市
+            $cityRows = Yii::app()->db->createCommand()->select("city")
+                ->from("hr{$suffix}.hr_plus_city")
+                ->where("employee_id=:employee_id",array(":employee_id"=>$row["id"]))
+                ->queryAll();
+            if($cityRows){
+                foreach ($cityRows as $cityRow){
+                    $plus_city[]=$cityRow["city"];
+                }
+            }
+            $model->plus_city=empty($plus_city)?"":implode("','",$plus_city);
             if(isset($model->customer_code)){
                 $company = Yii::app()->db->createCommand()->select("taxpayer_num")->from("hr{$suffix}.hr_company")
                     ->where("city=:city",array(":city"=>$row["city"]))

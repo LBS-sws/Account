@@ -10,6 +10,7 @@ class ConsultApplyForm extends CFormModel
     public $consult_money;
     public $apply_city;
     public $audit_city="ZY";
+    public $plus_city;//暂属城市
     public $audit_date;
     public $status;
     public $remark;
@@ -121,9 +122,11 @@ class ConsultApplyForm extends CFormModel
 	{
 		$suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
+        $city_allow = "'{$this->apply_city}'";
+        $city_allow.=empty($this->plus_city)?"":",'{$this->plus_city}'";
 		$sql = "select *,
 				docman$suffix.countdoc('consu',id) as consucountdoc
-				 from acc_consult where id='".$index."' and (lcu = '{$uid}' or apply_city='{$this->apply_city}' or (audit_city='{$this->apply_city}' and status in (2,3)))";
+				 from acc_consult where id='".$index."' and (lcu = '{$uid}' or apply_city in ({$city_allow}) or (audit_city in ({$city_allow}) and status in (2,3)))";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
             $this->staff_city=$this->apply_city;

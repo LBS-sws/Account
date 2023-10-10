@@ -10,6 +10,7 @@ class ConsultAuditForm extends CFormModel
     public $consult_money;
     public $apply_city;
     public $audit_city;
+    public $plus_city;//暂属城市
     public $audit_date;
     public $status;
     public $remark;
@@ -89,8 +90,10 @@ class ConsultAuditForm extends CFormModel
 
     public function validateID($attribute, $params) {
         $id = $this->$attribute;
+        $city_allow = "'{$this->apply_city}'";
+        $city_allow.=empty($this->plus_city)?"":",'{$this->plus_city}'";
         $row = Yii::app()->db->createCommand()->select("id")->from("acc_consult")
-            ->where("id=:id and status=1 and audit_city=:city",array(":id"=>$id,":city"=>$this->apply_city))->queryRow();
+            ->where("id=:id and status=1 and audit_city in ({$city_allow})",array(":id"=>$id))->queryRow();
         if(!$row){
             $this->addError($attribute, "咨询单异常，请刷新重试");
             return false;
@@ -100,9 +103,11 @@ class ConsultAuditForm extends CFormModel
 	public function retrieveData($index)
 	{
 		$suffix = Yii::app()->params['envSuffix'];
+        $city_allow = "'{$this->apply_city}'";
+        $city_allow.=empty($this->plus_city)?"":",'{$this->plus_city}'";
 		$sql = "select *,
 				docman$suffix.countdoc('consu',id) as consucountdoc
-				 from acc_consult where id='".$index."' and audit_city='{$this->apply_city}' and status=1";
+				 from acc_consult where id='".$index."' and audit_city in ({$city_allow}) and status=1";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->id = $row['id'];

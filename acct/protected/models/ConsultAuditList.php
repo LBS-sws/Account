@@ -3,6 +3,7 @@
 class ConsultAuditList extends CListPageModel
 {
     public $apply_city;
+    public $plus_city;//暂属城市
 	/**
 	 * Declares customized attribute labels.
 	 * If not declared here, an attribute would have a label that is
@@ -27,13 +28,15 @@ class ConsultAuditList extends CListPageModel
 	public function retrieveDataByPage($pageNum=1)
 	{
 		$suffix = Yii::app()->params['envSuffix'];
+        $city_allow = "'{$this->apply_city}'";
+        $city_allow.=empty($this->plus_city)?"":",'{$this->plus_city}'";
 		$sql1 = "select * 
 				from acc_consult 
-				where audit_city='{$this->apply_city}' and status=1 
+				where audit_city in ({$city_allow}) and status=1 
 			";
 		$sql2 = "select count(id)
 				from acc_consult 
-				where audit_city='{$this->apply_city}' and status=1  
+				where audit_city in ({$city_allow}) and status=1 
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -101,9 +104,11 @@ class ConsultAuditList extends CListPageModel
 
 	public function getCountConsult(){
         //$suffix = Yii::app()->params['envSuffix'];
+        $city_allow = "'{$this->apply_city}'";
+        $city_allow.=empty($this->plus_city)?"":",'{$this->plus_city}'";
         $sql = "select count(id)
 				from acc_consult 
-				where audit_city='{$this->apply_city}' and status=1  
+				where audit_city in ($city_allow) and status=1  
 			";
         $rtn = Yii::app()->db->createCommand($sql)->queryScalar();
         return $rtn;

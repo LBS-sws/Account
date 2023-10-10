@@ -10,6 +10,7 @@ class ConsultSearchForm extends CFormModel
     public $consult_money;
     public $apply_city;
     public $audit_city;
+    public $plus_city;//暂属城市
     public $audit_date;
     public $status;
     public $remark;
