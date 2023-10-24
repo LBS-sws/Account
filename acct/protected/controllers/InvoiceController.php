@@ -127,8 +127,10 @@ class InvoiceController extends Controller
 	public function actionAllDelete()
     {
         $model = new InvoiceForm;
-        if(isset($_POST['InvoiceList']['attr'])){
-            foreach ($_POST['InvoiceList']['attr'] as $a){
+        if(!empty($_POST['InvoiceList']['checkList'])){
+            $checkList = $_POST['InvoiceList']['checkList'];
+            $checkList = explode(",",$checkList);
+            foreach ($checkList as $a){
                 $model->deleteData($a);
             }
             $this->redirect(Yii::app()->createUrl('invoice/index'));
@@ -142,12 +144,10 @@ class InvoiceController extends Controller
 	public function actionBulkEdit()
     {
         $model = new InvoiceForm;
-        if(isset($_POST['InvoiceList']['attr'])&&isset($_POST['InvoiceList']['bulkDate'])){
+        if(!empty($_POST['InvoiceList']['checkList'])&&isset($_POST['InvoiceList']['bulkDate'])){
             $bulkDate = General::toDate($_POST['InvoiceList']['bulkDate']);
-            $idList = array();
-            foreach ($_POST['InvoiceList']['attr'] as $a){
-                $idList[]=is_numeric($a)?$a:0;
-            }
+            $checkList = $_POST['InvoiceList']['checkList'];
+            $idList = explode(",",$checkList);
             $model->bulkStartDate($idList,$bulkDate);
             $this->redirect(Yii::app()->createUrl('invoice/index'));
         }else{
@@ -160,12 +160,10 @@ class InvoiceController extends Controller
 	public function actionBulkHeadType()
     {
         $model = new InvoiceForm;
-        if(isset($_POST['InvoiceList']['attr'])&&isset($_POST['InvoiceList']['bulkHeadType'])){
+        if(!empty($_POST['InvoiceList']['checkList'])&&isset($_POST['InvoiceList']['bulkHeadType'])){
             $bulkHeadType = $_POST['InvoiceList']['bulkHeadType'];
-            $idList = array();
-            foreach ($_POST['InvoiceList']['attr'] as $a){
-                $idList[]=is_numeric($a)?$a:0;
-            }
+            $checkList = $_POST['InvoiceList']['checkList'];
+            $idList = explode(",",$checkList);
             $model->bulkHeadType($idList,$bulkHeadType);
             $this->redirect(Yii::app()->createUrl('invoice/index'));
         }else{
@@ -178,10 +176,12 @@ class InvoiceController extends Controller
     public function actionDown()
     {
         $model = new InvoiceForm;
-        if(isset($_POST['InvoiceList']['attr'])){
+        if(!empty($_POST['InvoiceList']['checkList'])){
             ini_set('memory_limit','500M');
             $address = array();
-            foreach ($_POST['InvoiceList']['attr'] as $a){
+            $checkList = $_POST['InvoiceList']['checkList'];
+            $checkList = explode(",",$checkList);
+            foreach ($checkList as $a){
                 $model->retrieveData($a);
                 $address[]=$model->allDowns($model);
             }
@@ -196,8 +196,11 @@ class InvoiceController extends Controller
     public function actionPrint()
     {
         $model = new InvoiceForm;
-        if(isset($_POST['InvoiceList']['attr'])){
-            ini_set('memory_limit','500M');
+        if (!empty($_POST['InvoiceList']['checkList'])) {
+            $checkList = $_POST['InvoiceList']['checkList'];
+            $checkList = explode(",",$checkList);
+            $_POST['InvoiceList']['attr'] = $checkList;
+            ini_set('memory_limit', '500M');
             $model->allPrints();
             Yii::app()->end();
         }else{

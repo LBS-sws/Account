@@ -1,5 +1,5 @@
 <tr class='clickable-row' data-href='<?php echo $this->getLink('XI01', 'invoice/edit', 'invoice/view', array('index'=>$this->record['id']));?>'>
-    <td class="che"> <input value="<?php echo $this->record['id']; ?>"  type="checkbox" name="InvoiceList[attr][]" ></td>
+    <td class="che"> <input value="<?php echo $this->record['id']; ?>"  type="checkbox"></td>
     <?php if (!Yii::app()->user->isSingleCity()) : ?>
         <td><?php echo $this->record['city_name']; ?></td>
     <?php endif ?>

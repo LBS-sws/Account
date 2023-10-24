@@ -80,6 +80,7 @@ $this->pageTitle=Yii::app()->name . ' - Invoice';
     echo $form->hiddenField($model,'orderField');
     echo $form->hiddenField($model,'orderType');
     echo $form->hiddenField($model,'filter');
+    echo TbHtml::hiddenField('InvoiceList[checkList]','',array("id"=>"attrStr"));
 ?>
 <?php $this->renderPartial('//invoice/_bulk'); ?>
 <?php $this->renderPartial('//invoice/_bulkHeadType'); ?>
@@ -96,13 +97,25 @@ e.stopPropagation();
 
 $('body').on('click','#all',function() {
 	var val = $(this).prop('checked');
-	$('input[type=checkbox][name*=\"InvoiceList[attr][]\"]').prop('checked',val);
+	$('.che').children('input[type=checkbox]').prop('checked',val);
 });
 
 $('#btnPrints').on('click',function(){
     $('#Invoice-list').prop('target','_blank');
     jQuery.yii.submitForm(this,'".Yii::app()->createUrl('invoice/print')."',{});
     $('#Invoice-list').prop('target','_self');
+});
+
+$('#Invoice-list').submit(function(){
+    var list = [];
+    $('input[type=checkbox]:checked').each(function(){
+        var id = $(this).val();
+        if(id!=''&&list.indexOf(id)==-1&&$(this).parent('td.che').length==1){
+            list.push(id);
+        }
+    });
+    list = list.join(',');
+    $('#attrStr').val(list);
 });
 ";
 Yii::app()->clientScript->registerScript('selectAll',$js,CClientScript::POS_READY);
