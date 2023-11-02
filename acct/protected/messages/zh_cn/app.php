@@ -24,6 +24,7 @@ return array(
 	'Charitable Credit'=>'慈善分系统',
 	'Service Report'=>'服务报告系统',
 	'Investment'=>'投资管理系统',
+	'Project progress'=>'项目跟进系统',
 
 	'Data Entry'=>'数据输入',
 	'Misc'=>'其他',
@@ -163,7 +164,7 @@ return array(
     'Year'=>'年',
     'Month'=>'月',
     'Money'=>'总金额',
-	
+
 	'Payroll File'=>'工资表',
 	'Payroll File Approval'=>'工资审核',
 	'Payroll File Rollback'=>'工資表退回',
