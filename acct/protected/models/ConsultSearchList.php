@@ -22,6 +22,7 @@ class ConsultSearchList extends CListPageModel
 			'status'=>Yii::t('consult','status'),
 			'remark'=>Yii::t('consult','remark'),
 			'reject_remark'=>Yii::t('consult','reject remark'),
+            'countdoc'=>Yii::t('misc','Attachment'),
 		);
 	}
 
@@ -40,7 +41,8 @@ class ConsultSearchList extends CListPageModel
 	{
 		$suffix = Yii::app()->params['envSuffix'];
         $cityList = Yii::app()->user->city_allow();
-		$sql1 = "select * 
+		$sql1 = "select * ,
+				docman$suffix.countdoc('consu',id) as countdoc
 				from acc_consult 
 				where (apply_city in ({$cityList}) or audit_city in ({$cityList})) and status=2 
 			";
@@ -80,6 +82,7 @@ class ConsultSearchList extends CListPageModel
 			foreach ($records as $k=>$record) {
                 $this->attr[] = array(
                     'id'=>$record['id'],
+                    'countdoc'=>$record['countdoc'],
                     'consult_code'=>$record['consult_code'],
                     'apply_date'=>General::toDate($record['apply_date']),
                     'customer_code'=>$record['customer_code'],

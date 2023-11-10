@@ -28,7 +28,7 @@ class ConsultSearchController extends Controller
 				'expression'=>array('ConsultSearchController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view','filedownload'),
+				'actions'=>array('index','view','filedownload','listfile'),
 				'expression'=>array('ConsultSearchController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -103,6 +103,11 @@ class ConsultSearchController extends Controller
         } else {
             throw new CHttpException(404,'Record not found.');
         }
+    }
+
+    public function actionListfile($docId) {
+        $d = new DocMan('CONSU',$docId,'ConsultSearchForm');
+        echo $d->genFileListView();
     }
 
     public static function allowReadWrite() {

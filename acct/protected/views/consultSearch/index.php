@@ -41,9 +41,44 @@ $this->pageTitle=Yii::app()->name . ' - ConsultSearch';
 	echo $form->hiddenField($model,'orderField');
 	echo $form->hiddenField($model,'orderType');
 ?>
+<?php $this->renderPartial('//site/fileviewx',array('model'=>$model,
+    'form'=>$form,
+    'doctype'=>'CONSU',
+    'header'=>Yii::t('dialog','File Attachment'),
+));
+?>
 <?php $this->endWidget(); ?>
 
 <?php
-	$js = Script::genTableRowClick();
-	Yii::app()->clientScript->registerScript('rowClick',$js,CClientScript::POS_READY);
+Script::genFileDownload($model,$form->id,'CONSU');
+
+$link = Yii::app()->createAbsoluteUrl("ConsultSearch");
+$js = <<<EOF
+function showconsu(docid) {
+	var data = "docId="+docid;
+	var link = "$link"+"/listfile";
+	$.ajax({
+		type: 'GET',
+		url: link,
+		data: data,
+		success: function(data) {
+			$("#fileviewconsu").html(data);
+			$('#fileuploadconsu').modal('show');
+		},
+		error: function(data) { // if error occured
+			alert("Error occured.please try again");
+		},
+		dataType:'html'
+	});
+}
+EOF;
+Yii::app()->clientScript->registerScript('fileview',$js,CClientScript::POS_HEAD);
+
+$js="
+$('.stopTd').click(function(e){
+    e.stopPropagation();
+});
+";
+$js.= Script::genTableRowClick();
+Yii::app()->clientScript->registerScript('rowClick',$js,CClientScript::POS_READY);
 ?>

@@ -22,6 +22,7 @@ class ConsultApplyList extends CListPageModel
 			'status'=>Yii::t('consult','status'),
 			'remark'=>Yii::t('consult','remark'),
 			'reject_remark'=>Yii::t('consult','reject remark'),
+            'countdoc'=>Yii::t('misc','Attachment'),
 		);
 	}
 	
@@ -35,7 +36,8 @@ class ConsultApplyList extends CListPageModel
         }
         $city_allow = "'{$this->apply_city}'";
 		$city_allow.=empty($this->plus_city)?"":",'{$this->plus_city}'";
-		$sql1 = "select * 
+		$sql1 = "select * ,
+				docman$suffix.countdoc('consu',id) as countdoc
 				from acc_consult 
 				where ({$sqlEpr} apply_city in ({$city_allow}) or (audit_city in ({$city_allow}) and status in (2,3))) 
 			";
@@ -92,6 +94,7 @@ class ConsultApplyList extends CListPageModel
 			    $arr = self::getStatusArr($record);
                 $this->attr[] = array(
                     'id'=>$record['id'],
+                    'countdoc'=>$record['countdoc'],
                     'consult_code'=>$record['consult_code'],
                     'apply_date'=>General::toDate($record['apply_date']),
                     'customer_code'=>$record['customer_code'],

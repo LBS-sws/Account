@@ -37,4 +37,9 @@
 			;
 		?>
 	</th>
+    <th>
+        <?php echo TbHtml::link($this->getLabelName('countdoc').$this->drawOrderArrow('countdoc'),'#',$this->createOrderLink('consultSearch-list','countdoc'))
+        ;
+        ?>
+    </th>
 </tr>

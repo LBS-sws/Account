@@ -98,7 +98,8 @@ $this->pageTitle=Yii::app()->name . ' - ConsultApply Form';
     'form'=>$form,
     'doctype'=>'CONSU',
     'header'=>Yii::t('dialog','File Attachment'),
-    'ronly'=>($model->isReady()),
+    'ronly'=>(false),
+    'nodelete'=>!($model->scenario=='new'||$model->status == 0||$model->status == 3),
 ));
 ?>
 <?php $this->renderPartial('//site/history',array('tableHtml'=>ConsultApplyForm::getHistoryHtml($model->id))); ?>

@@ -257,6 +257,8 @@ function $dlfuncid(mid, did, fid) {
 }
 		";
 		Yii::app()->clientScript->registerScript('downloadfile1'.$doctype,$str,CClientScript::POS_HEAD);
+
+        self::showImgFun();
 	}
 	
 	public static function genFileUpload($model, $formname, $doctype) {
@@ -351,6 +353,35 @@ $('#$btnid').on('click', function() {
 });
 		";
 		Yii::app()->clientScript->registerScript('fileUpload'.$doctype,$str,CClientScript::POS_READY);
+
+        self::showImgFun();
 	}
+
+	public static function showImgFun(){
+	    $js = "
+            //图片预览
+            $('body').delegate('td.search_box_img','click',function(){
+                if($(this).find('img.hide').length==1){
+                    var imgSrc = $(this).find('img.hide').eq(0).attr('src');
+                    if($('body').children('#search_box_img_div').length==0){
+                        var divHtml = '';
+                        divHtml+=\"<div id='search_box_img_div' role='dialog' tabindex='-1' class='text-center modal fade'>\";
+                        //divHtml+=\"<div data-dismiss='modal' style='position: absolute;background:rgba(0, 0, 0, 0.5);left: 0px;top: 0px;right:0px;height: 30px;line-height: 30px;'>\";
+                        //divHtml+=\"<span style='float: right;margin-right: 10px;font-size: 40px;color: rgba(255,255,255,.7);'>×</span>\";
+                        //divHtml+=\"</div>\";
+                        divHtml+=\"<div data-dismiss='modal' class='box_img_div_0' style='padding-top: 50px;'></div></div>\";
+                        $('body').append(divHtml);
+                    }
+                    divHtml+='<img src=\"'+imgSrc+'\">';
+                    $('#search_box_img_div>.box_img_div_0').html(divHtml);
+                    $('#search_box_img_div').modal('show');
+                }else{
+                    alert('图片不存在!');
+                }
+            });
+	    ";
+
+        Yii::app()->clientScript->registerScript('showImgFun',$js,CClientScript::POS_READY);
+    }
 }
 ?>

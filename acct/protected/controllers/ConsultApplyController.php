@@ -28,7 +28,7 @@ class ConsultApplyController extends Controller
 				'expression'=>array('ConsultApplyController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view','filedownload'),
+				'actions'=>array('index','view','filedownload','listfile'),
 				'expression'=>array('ConsultApplyController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -165,7 +165,11 @@ class ConsultApplyController extends Controller
             $docman->masterId = $model->docMasterId[strtolower($doctype)];
             if (isset($_FILES[$docman->inputName])) $docman->files = $_FILES[$docman->inputName];
             $docman->fileUpload();
-            echo $docman->genTableFileList(false);
+            if($_POST['ConsultApplyForm']['scenario']=='new'||$model->status == 0||$model->status == 3){
+                echo $docman->genTableFileList(false);
+            }else{
+                echo $docman->genTableFileList(false,true);
+            }
         } else {
             echo "NIL";
         }
@@ -179,7 +183,11 @@ class ConsultApplyController extends Controller
             $docman = new DocMan($model->docType,$model->id,'ConsultApplyForm');
             $docman->masterId = $model->docMasterId[strtolower($doctype)];
             $docman->fileRemove($model->removeFileId[strtolower($doctype)]);
-            echo $docman->genTableFileList(false);
+            if($_POST['ConsultApplyForm']['scenario']=='new'||$model->status == 0||$model->status == 3){
+                echo $docman->genTableFileList(false);
+            }else{
+                echo $docman->genTableFileList(false,true);
+            }
         } else {
             echo "NIL";
         }
@@ -195,6 +203,11 @@ class ConsultApplyController extends Controller
         } else {
             throw new CHttpException(404,'Record not found.');
         }
+    }
+
+    public function actionListfile($docId) {
+        $d = new DocMan('CONSU',$docId,'ConsultApplyForm');
+        echo $d->genFileListView();
     }
 
     public static function allowReadWrite() {

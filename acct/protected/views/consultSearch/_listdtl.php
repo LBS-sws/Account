@@ -9,4 +9,14 @@
 	<td><?php echo $this->record['apply_city']; ?></td>
 	<td><?php echo $this->record['audit_city']; ?></td>
 	<td><?php echo $this->record['status']; ?></td>
+    <td class="stopTd">
+        <?php
+        echo TbHtml::button($this->record['countdoc'],
+            array(
+                'class'=>'btn-xs',
+                'onclick'=>'javascript:showconsu('.$this->record['id'].');',
+            )
+        );
+        ?>
+    </td>
 </tr>
