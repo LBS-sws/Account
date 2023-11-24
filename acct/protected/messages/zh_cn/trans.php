@@ -219,5 +219,13 @@ return array(
 	'Please fill in amount'=>'请填写金额',
 	'Approval Date'=>'审核时间',
 	'Confirm Date'=>'确认日期',
+
+	'Serial number'=>'序号',
+	'Area'=>'区域',
+	' Year'=>'年',
+	' Month'=>'月',
+	'down'=>'下载',
+	'To'=>'至',
+	'Search date'=>'起止日期',
 );
 ?>

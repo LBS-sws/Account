@@ -218,6 +218,13 @@ return array(
 'Total'=>'本月共計',
 'Please fill in amount'=>'請填寫金額',
 'Approval Date'=>'審核時間',
-'Confirm Date'=>'確認日期',
+
+    'Serial number'=>'序號',
+    'Area'=>'區域',
+    ' Year'=>'年',
+    ' Month'=>'月',
+    'down'=>'下載',
+    'To'=>'至',
+    'Search date'=>'起止日期',
 );
 ?>

@@ -28,7 +28,7 @@ class PayrollController extends Controller
 				'expression'=>array('PayrollController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view','filedownload','rollback'),
+				'actions'=>array('index','view','filedownload','rollback','downExcel'),
 				'expression'=>array('PayrollController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -37,7 +37,13 @@ class PayrollController extends Controller
 		);
 	}
 
-	public function actionIndex($pageNum=0) 
+	public function actionDownExcel(){
+		$model = new PayrollList;
+        $model->downExcel();
+        $this->redirect(Yii::app()->createUrl('payroll/index'));
+	}
+
+	public function actionIndex($pageNum=0)
 	{
 		$model = new PayrollList;
 		if (isset($_POST['PayrollList'])) {

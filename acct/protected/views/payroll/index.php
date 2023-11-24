@@ -16,6 +16,18 @@ $this->pageTitle=Yii::app()->name . ' - Payroll File';
 </section>
 
 <section class="content">
+    <div class="box">
+        <div class="box-body">
+            <div class="btn-group pull-right" role="group">
+                <?php
+                echo TbHtml::button('<span class="fa fa-down"></span> '.Yii::t('trans','down'), array(
+                        'data-toggle'=>'modal','data-target'=>'#downPayDialog',)
+                );
+                ?>
+            </div>
+        </div>
+    </div>
+
 	<?php 
 		$search = array(
 							'year_no',
@@ -50,4 +62,6 @@ echo TbHtml::button('dummyButton', array('style'=>'display:none','disabled'=>tru
 	$js = Script::genTableRowClick();
 	Yii::app()->clientScript->registerScript('rowClick',$js,CClientScript::POS_READY);
 ?>
+
+<?php $this->renderPartial('//payroll/downPay'); ?>
 

@@ -2,6 +2,8 @@
 
 class PayrollList extends CListPageModel
 {
+    private $excelColumn=array();
+
 	public function attributeLabels()
 	{
 		return array(	
@@ -92,4 +94,180 @@ class PayrollList extends CListPageModel
 		$session['criteria_xs05'] = $this->getCriteria();
 		return true;
 	}
+
+    public static function getYearList(){
+	    $year = date("Y");
+	    $list = array();
+	    for ($i=2020;$i<=$year;$i++){
+            $list[$i] = "".$i.Yii::t("trans"," Year");
+        }
+        return $list;
+    }
+
+    public static function getMonthList(){
+	    $list = array();
+	    for ($i=1;$i<=12;$i++){
+            $list[$i] = "".$i.Yii::t("trans"," Month");
+        }
+        return $list;
+    }
+
+    public static function getCityList(){
+        $citylist = Yii::app()->user->city_allow();
+
+        $suffix = Yii::app()->params['envSuffix'];
+        $sql = "select * from security$suffix.sec_city where code in($citylist)";
+        $rows = Yii::app()->db->createCommand($sql)->queryAll();
+	    $list = array();
+	    if($rows){
+	        foreach ($rows as $row){
+	            $list[$row["code"]] = $row["name"];
+            }
+        }
+        return $list;
+    }
+
+    private function getTopArr($post){
+        $exprList = array();
+        $bgList = array("#44546A","#C65911");
+        $bg_i=0;
+        $date = $post["startDate"];
+        while ($date<=$post["endDate"]){
+            $this->excelColumn[]=$date;
+            $list = explode("-",$date);
+            $year = $list[0];
+            $month = intval($list[1]);
+            if(!key_exists($year,$exprList)){
+                $bgKey = $bg_i%2;
+                $exprList[$year]=array(
+                    "name"=>$year.Yii::t("trans"," Year"),
+                    "background"=>$bgList[$bgKey],
+                    "color"=>"#ffffff",
+                    "colspan"=>array()
+                );
+                $bg_i++;
+            }
+            $exprList[$year]["colspan"][]=array("name"=>"".$month.Yii::t("trans"," Month"));
+
+            $date = date("Y-m",strtotime("{$date}-01 + 1 months"));//#
+        }
+
+        $topList=array(
+            array("name"=>Yii::t("trans","Serial number"),"rowspan"=>2,"background"=>"#161616","color"=>"#ffffff"),//序号
+            array("name"=>Yii::t("trans","Area"),"rowspan"=>2,"background"=>"#161616","color"=>"#ffffff"),//区域
+            array("name"=>Yii::t("trans","City"),"rowspan"=>2,"background"=>"#161616","color"=>"#ffffff"),//城市
+        );
+        $topList = array_merge($topList,$exprList);
+
+        return $topList;
+    }
+
+    private function getPostData(){
+        $city = key_exists("city",$_POST)?$_POST["city"]:Yii::app()->user->city();
+        $startYear = key_exists("year_start",$_POST)?$_POST["year_start"]:date("Y");
+        $endYear = key_exists("year_end",$_POST)?$_POST["year_end"]:date("Y");
+        $startMonth = key_exists("month_start",$_POST)?$_POST["month_start"]:date("n");
+        $endMonth = key_exists("month_end",$_POST)?$_POST["month_end"]:date("n");
+        $startData = date("Y-m",strtotime("{$startYear}-{$startMonth}-01"));
+        $endData = date("Y-m",strtotime("{$endYear}-{$endMonth}-01"));
+        if($startData>$endData){
+            return false;
+        }else{
+            return array(
+                "city"=>$city,
+                "startYear"=>$startYear,
+                "endYear"=>$endYear,
+                "startMonth"=>$startMonth,
+                "endMonth"=>$endMonth,
+                "startDate"=>$startData,
+                "endDate"=>$endData,
+            );
+        }
+    }
+
+    private function getExcelData($post){
+//workflow$suffix.RequestStatus($cityarg 'PAYROLL',a.id,a.lcd)
+        $searchCity = $post["city"];
+        $searchCity = City::model()->getDescendantList($searchCity);
+        $searchCity .= (empty($searchCity)) ? "'{$post["city"]}'" : ",'{$post['city']}'";
+        $suffix = Yii::app()->params['envSuffix'];
+        $city_allow = Yii::app()->user->city_allow();
+        $version = Yii::app()->params['version'];
+        $cityarg = ($version=='intl' ? 'b.city,' : '');
+        $pay_date = "DATE_FORMAT(CONCAT(b.year_no,'-',b.month_no,'-01'),'%Y-%m')";
+        $rows = Yii::app()->db->createCommand()
+            ->select("a.data_value,b.city,b.year_no,b.month_no,
+            {$pay_date} as pay_date
+            ")
+            ->from("acc_payroll_file_dtl a")
+            ->leftJoin("acc_payroll_file_hdr b","a.hdr_id=b.id")
+            ->where("a.data_field='amt_total' and b.city in ({$city_allow}) and b.city in ({$searchCity})
+             and {$pay_date}>='{$post['startDate']}' and {$pay_date}<='{$post['endDate']}'
+             and workflow$suffix.RequestStatus($cityarg 'PAYROLL',b.id,b.lcd)='ED'
+             ")
+            //and workflow$suffix.RequestStatus($cityarg 'PAYROLL',b.id,b.lcd)='ED'
+            ->order("b.city asc,b.year_no asc,b.month_no asc")->queryAll();
+        $list = array();
+        if($rows){
+            $i=0;
+            foreach ($rows as $row){
+                $city = $row["city"];
+                $date = $row["pay_date"];
+                if (!key_exists($city,$list)){
+                    $cityList = $this->getCityListForCity($city);
+                    $i++;
+                    $list[$city]=array(
+                        "number"=>$i,
+                        "area"=>$cityList["area_name"],
+                        "city"=>$cityList["city_name"],
+                    );
+                    foreach ($this->excelColumn as $item){
+                        $list[$city][$item]="";
+                    }
+                }
+                $list[$city][$date]=$row["data_value"];
+            }
+        }
+        return $list;
+    }
+
+    private function getCityListForCity($city){
+        $areaName = "";
+        $cityName = $city;
+        $suffix = Yii::app()->params['envSuffix'];
+        $row = Yii::app()->db->createCommand()
+            ->select("a.name as city_name,b.name as area_name")
+            ->from("security{$suffix}.sec_city a")
+            ->leftJoin("security{$suffix}.sec_city b","a.region=b.code")
+            ->where("a.code = :code",array(":code"=>$city))->queryRow();
+        if($row){
+            $areaName = $row["area_name"];
+            $cityName = $row["city_name"];
+        }
+        return array(
+            "area_name"=>$areaName,
+            "city_name"=>$cityName,
+        );
+    }
+
+	public function downExcel(){
+        $post = $this->getPostData();
+        if($post!==false){
+            $headList = $this->getTopArr($post);
+            $excelData = $this->getExcelData($post);
+            $group["group"][]='attr';
+            $excel = new DownPay();
+            $excel->colTwo=3;
+            $excel->SetHeaderTitle("工资统计");
+            $str="单位名称:史伟莎集团\n - 中国区月度应发工资统计\n";
+            $str.="查询时间：{$post['startDate']} 至 {$post['endDate']}";
+            $excel->SetHeaderString($str);
+            $excel->init();
+            $excel->setSummaryHeader($headList,true);
+            $excel->setListData($excelData);
+            $excel->outExcel("工资统计");
+        }else{
+            $this->addError("pageNum", "开始时间不能大于结束时间！");
+        }
+    }
 }
