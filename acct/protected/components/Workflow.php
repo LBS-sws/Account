@@ -67,7 +67,7 @@ class Workflow {
 		$rtn = "";
 		$suffix = Yii::app()->params['envSuffix'];
 		$reqId = $this->request_id;
-		$sql = "select a.id, a.lcd, b.name, c.username as targetuser, d.id as resp_id, d.username as actionuser
+		$sql = "select a.id, a.lcd, b.code,b.name, c.username as targetuser, d.id as resp_id, d.username as actionuser
 				from workflow$suffix.wf_request_transit_log a
 				inner join workflow$suffix.wf_state b on a.new_state=b.id
 				left outer join workflow$suffix.wf_request_resp_user c on a.id=c.log_id 
