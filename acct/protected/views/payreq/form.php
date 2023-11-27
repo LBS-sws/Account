@@ -7,6 +7,12 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 'clientOptions'=>array('validateOnSubmit'=>true,),
 'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
 )); ?>
+<style>
+    .control-label.long_label{ padding: 7px 15px;word-break: keep-all;}
+    @media (min-width: 768px){
+        .form-horizontal .control-label.long_label { padding: 7px 0px;}
+    }
+</style>
 
 <section class="content-header">
 	<h1>
@@ -504,7 +510,7 @@ $js = "
         var html = '';
         if(tr.length>0){
             var dateStr = tr.children('td').eq(0).text();
-            html='<label class=\"col-sm-2 control-label\">报销单提交日期</label>';
+            html='<label class=\"col-sm-1 control-label long_label\">报销单提交日期</label>';
             html+='<div class=\"col-sm-3\">';
             html+='<div class=\"input-group date\">';
             html+='<div class=\"input-group-addon\"><i class=\"fa fa-calendar\"></i></div>';
