@@ -84,6 +84,7 @@ class Workflow {
 		} else {
 			$lid = 0;
 			$date = '';
+			$stateCode = '';
 			$state = '';
 			$user = '';
 			foreach ($rows as $row) {
@@ -95,12 +96,13 @@ class Workflow {
 					$lid = $row['id'];
 				}
 				if ($lid!=$row['id']) {
-					$rtn .= "<tr><td>$date</td><td>$state</td><td>$user</td></tr>";
+					$rtn .= "<tr data-code='{$stateCode}'><td>$date</td><td>$state</td><td>$user</td></tr>";
 					$lid = $row['id'];
 					$user = "";
 				}
 				$date = $row['lcd'];
 				$state = $row['name'];
+                $stateCode = $row['code'];
 				$u = $this->getDisplayName($row['targetuser']);
 				$user .= ($user=="" ? "" : ", ").(empty($u) ? $this->getDisplayName($row['actionuser']) : $u);
 			}

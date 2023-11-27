@@ -166,6 +166,7 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 						?>
 					</div>
 				</div>
+                <div id="tbflow_date"></div>
 			</div>
 
 			<div class="form-group">
@@ -495,6 +496,26 @@ Yii::app()->clientScript->registerScript('VoidRecord',$js,CClientScript::POS_REA
 
 $js = Script::genReadonlyField();
 Yii::app()->clientScript->registerScript('readonlyClass',$js,CClientScript::POS_READY);
+
+//已申请报销单的时间从流程里放到表单(js检查，后台不知道从哪获取)
+$js = "
+    if($('#tbflow_date').length>0){
+        var tr = $('#tblFlow tr[data-code=\"RE\"]');
+        var html = '';
+        if(tr.length>0){
+            var dateStr = tr.children('td').eq(0).text();
+            html='<label class=\"col-sm-2 control-label\">报销单提交日期</label>';
+            html+='<div class=\"col-sm-3\">';
+            html+='<div class=\"input-group date\">';
+            html+='<div class=\"input-group-addon\"><i class=\"fa fa-calendar\"></i></div>';
+            html+='<input class=\"form-control\" value=\"'+dateStr+'\" readonly=\"readonly\">';
+            html+='</div>';
+            html+='</div>';
+            $('#tbflow_date').html(html);
+        }
+    }
+";
+Yii::app()->clientScript->registerScript('tblFlowDate',$js,CClientScript::POS_READY);
 ?>
 
 <?php $this->endWidget(); ?>
