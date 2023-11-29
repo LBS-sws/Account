@@ -57,7 +57,7 @@ function lookupclear() {
 EOF;
 		return $str;
 	}
- 
+
 	public static function genLookupButton($btnName, $lookupType, $codeField, $valueField, $multiselect=false) {
 		$multiflag = $multiselect ? 'true' : 'false';
 		$str = <<<EOF
@@ -77,7 +77,7 @@ $('#$btnName').on('click',function() {
 EOF;
 		return $str;
 	}
- 
+
 	public static function genLookupButtonEx($btnName, $lookupType, $codeField, $valueField, $otherFields=array(), $multiselect=false, $paramFields=array()) {
 		$others = '';
 		if (!empty($otherFields)) {
@@ -93,7 +93,7 @@ EOF;
 		}
 		$multiflag = $multiselect ? 'true' : 'false';
 		$lookuptypeStmt = ($lookupType!=='*') ? "$('#lookuptype').val('$lookupType');" : '';
-		
+
 		$str = <<<EOF
 $('#$btnName').on('click',function() {
 	var code = $("input[id*='$codeField']").attr("id");
@@ -141,7 +141,7 @@ $('#btnLookup').on('click',function(){
 EOF;
 		return $str;
 	}
-	
+
 	public static function genLookupSearchEx($flag=false) {
 		$mesg = Yii::t('dialog','No Record Found');
 		$link = Yii::app()->createAbsoluteUrl("lookup");
@@ -244,7 +244,7 @@ function deletedata() {
 		";
 		return $str;
 	}
-	
+
 	public static function genFileDownload($model, $formname, $doctype) {
 		$doc = new DocMan($doctype,0,get_class($model));
 		$ctrlname = Yii::app()->controller->id;
@@ -260,7 +260,7 @@ function $dlfuncid(mid, did, fid) {
 
         self::showImgFun();
 	}
-	
+
 	public static function genFileUpload($model, $formname, $doctype) {
 		$doc = new DocMan($doctype,$model->id,get_class($model));
 
@@ -275,7 +275,7 @@ function $dlfuncid(mid, did, fid) {
 		$btnid = $doc->uploadButtonName;
 		$typeid = strtolower($doctype);
 		$modelname = get_class($model);
-		
+
 		$str = "
 function $rmfuncid(id) {
 	if (confirm('$msg')) {
@@ -358,29 +358,37 @@ $('#$btnid').on('click', function() {
 	}
 
 	public static function showImgFun(){
+        Yii::app()->clientScript->registerCssFile(Yii::app()->baseUrl . "/css/viewer.css");//图片阅读
+        Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/js/viewer.js", CClientScript::POS_END);//图片阅读
 	    $js = "
-            //图片预览
-            $('body').delegate('td.search_box_img','click',function(){
-                if($(this).find('img.hide').length==1){
-                    var imgSrc = $(this).find('img.hide').eq(0).attr('src');
-                    if($('body').children('#search_box_img_div').length==0){
-                        var divHtml = '';
-                        divHtml+=\"<div id='search_box_img_div' role='dialog' tabindex='-1' class='text-center modal fade'>\";
-                        //divHtml+=\"<div data-dismiss='modal' style='position: absolute;background:rgba(0, 0, 0, 0.5);left: 0px;top: 0px;right:0px;height: 30px;line-height: 30px;'>\";
-                        //divHtml+=\"<span style='float: right;margin-right: 10px;font-size: 40px;color: rgba(255,255,255,.7);'>×</span>\";
-                        //divHtml+=\"</div>\";
-                        divHtml+=\"<div data-dismiss='modal' class='box_img_div_0' style='padding-top: 50px;'></div></div>\";
-                        $('body').append(divHtml);
-                    }
-                    divHtml+='<img src=\"'+imgSrc+'\">';
-                    $('#search_box_img_div>.box_img_div_0').html(divHtml);
-                    $('#search_box_img_div').modal('show');
-                }else{
-                    alert('图片不存在!');
+            $('body').on('click','.viewer-canvas',function(){
+                $(this).parent('.viewer-container').remove();
+            });
+            $('body').on('click','.viewer-canvas *',function(e){
+                e.stopPropagation();
+            });
+            $('body').on('click','.search_box_img',function(){
+                var clickText = $(this).text();
+                if($('#viewer-ul').length>0){
+                    $('#viewer-ul').remove();
                 }
+                var list = $('<ul id=\"viewer-ul\" class=\"hide\"></ul>');
+                $(this).parents('table:first').find('img').each(function(){
+                    var title = $(this).parents('td.search_box_img').eq(0).text();
+                    var li = $('<li></li>');
+                    var img = $('<img>');
+                    img.attr({ src:$(this).attr('src'),alt:title });
+                    if(title == clickText){
+                        img.addClass('click_viewer_img');
+                    }
+                    li.html(img);
+                    list.append(li);
+                });
+                $('body').append(list);
+                list.viewer({ url: 'src'});
+                list.find('.click_viewer_img').trigger('click');
             });
 	    ";
-
         Yii::app()->clientScript->registerScript('showImgFun',$js,CClientScript::POS_READY);
     }
 }
