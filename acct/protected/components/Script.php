@@ -362,6 +362,7 @@ $('#$btnid').on('click', function() {
         Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/js/viewer.js", CClientScript::POS_END);//图片阅读
 	    $js = "
             $('body').on('click','.viewer-canvas',function(){
+                $('body').removeClass('viewer-open');
                 $(this).parent('.viewer-container').remove();
             });
             $('body').on('click','.viewer-canvas *',function(e){
