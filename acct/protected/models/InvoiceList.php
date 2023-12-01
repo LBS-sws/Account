@@ -95,9 +95,9 @@ class InvoiceList extends CListPageModel
 		$sql1 = "
 			SELECT a.*, b.name as city_name, c.product_code, c.product_name, c.unit, c.qty, c.unit_price, c.amount,
 				e.name as generated_by
-			FROM acc_invoice a 
+			FROM acc_invoice_type c 
+			LEFT JOIN acc_invoice a ON a.id = c.invoice_id
             LEFT JOIN security$suffix.sec_city b ON a.city = b.code
-			LEFT JOIN acc_invoice_type c ON a.id = c.invoice_id
 			LEFT JOIN hr$suffix.hr_binding d ON a.lcu = d.user_id
 			LEFT JOIN hr$suffix.hr_employee e ON e.id = d.employee_id
             where a.city in ($city) 
