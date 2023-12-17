@@ -26,6 +26,13 @@ return array(
 		'name'=>'Sales',
 		'icon'=>'fa fa-suitcase',
 	),
+	'nu'=>array(
+		'webroot'=>'http://192.168.3.32/nu',
+		'name'=>'New United',
+		'icon'=>'fa fa-suitcase',
+		'param'=>'/admin',
+		'script'=>'goNewUnited',
+	),
 //	'quiz'=>array(
 //		'webroot'=>'http://192.168.3.22/qz-new',
 //		'name'=>'Quiz',
