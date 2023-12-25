@@ -2,10 +2,10 @@ function remoteLoginTwApp(id,url,home) {
 	var homeurl = home+'/ajax/remotelogin';
 	var appurl = url+'/remote/lbsremote.php';
 	var wid = "view"+id;
-    $.ajax({
-		type: 'GET', 
+	$.ajax({
+		type: 'GET',
 		url: homeurl,
-		dataType: 'json', 
+		dataType: 'json',
 		success: function(json) {
 			var x = json;
 			var data = json;
@@ -14,32 +14,32 @@ function remoteLoginTwApp(id,url,home) {
 				var skey = data.sk;
 				var key = data.ky;
 				var lang = data.lang;
-				
+
 				var form = document.createElement("form");
 				form.setAttribute("method", "post");
 				form.setAttribute("action", appurl);
-				
+
 				form.setAttribute("target", wid);
 
-				var hiddenField1 = document.createElement("input"); 
+				var hiddenField1 = document.createElement("input");
 				hiddenField1.setAttribute("type", "hidden");
 				hiddenField1.setAttribute("name", "lbstwid");
 				hiddenField1.setAttribute("value", id);
 				form.appendChild(hiddenField1);
-	
-				var hiddenField2 = document.createElement("input"); 
+
+				var hiddenField2 = document.createElement("input");
 				hiddenField2.setAttribute("type", "hidden");
 				hiddenField2.setAttribute("name", "lbstwkey");
 				hiddenField2.setAttribute("value", key);
 				form.appendChild(hiddenField2);
 
-				var hiddenField3 = document.createElement("input"); 
+				var hiddenField3 = document.createElement("input");
 				hiddenField3.setAttribute("type", "hidden");
 				hiddenField3.setAttribute("name", "lbstwlang");
 				hiddenField3.setAttribute("value", lang);
 				form.appendChild(hiddenField3);
 
-				var hiddenField4 = document.createElement("input"); 
+				var hiddenField4 = document.createElement("input");
 				hiddenField4.setAttribute("type", "hidden");
 				hiddenField4.setAttribute("name", "lbstwskey");
 				hiddenField4.setAttribute("value", skey);
@@ -49,7 +49,7 @@ function remoteLoginTwApp(id,url,home) {
 
 				window.open('', wid);
 
-				form.submit();	
+				form.submit();
 			}
 		},
 		error: function(xhr, status, error) {
@@ -57,15 +57,15 @@ function remoteLoginTwApp(id,url,home) {
 		}
 	});
 }
-	
+
 function remoteLoginOnlib(id,url,home) {
 	var homeurl = home+'/ajax/remoteloginonlib';
 	var appurl = url+'/restapi/index.php/rlogin';
 	var wid = "view"+id;
-    $.ajax({
-		type: 'GET', 
+	$.ajax({
+		type: 'GET',
 		url: homeurl,
-		dataType: 'json', 
+		dataType: 'json',
 		success: function(json) {
 			var rtn = json;
 			if (json!='') {
@@ -74,26 +74,26 @@ function remoteLoginOnlib(id,url,home) {
 //				}, 'json');
 				var id = json.id;
 				var pass = json.pwd;
-				
+
 				var form = document.createElement("form");
 				form.setAttribute("method", "post");
 				form.setAttribute("action", appurl);
-				
+
 				form.setAttribute("target", wid);
 
-				var hiddenField1 = document.createElement("input"); 
+				var hiddenField1 = document.createElement("input");
 				hiddenField1.setAttribute("type", "hidden");
 				hiddenField1.setAttribute("name", "user");
 				hiddenField1.setAttribute("value", id);
 				form.appendChild(hiddenField1);
-	
-				var hiddenField2 = document.createElement("input"); 
+
+				var hiddenField2 = document.createElement("input");
 				hiddenField2.setAttribute("type", "hidden");
 				hiddenField2.setAttribute("name", "pass");
 				hiddenField2.setAttribute("value", pass);
 				form.appendChild(hiddenField2);
 
-				var hiddenField3 = document.createElement("input"); 
+				var hiddenField3 = document.createElement("input");
 				hiddenField3.setAttribute("type", "hidden");
 				hiddenField3.setAttribute("name", "url");
 				hiddenField3.setAttribute("value", url);
@@ -103,7 +103,7 @@ function remoteLoginOnlib(id,url,home) {
 
 				window.open('', wid);
 
-				form.submit();	
+				form.submit();
 			}
 		},
 		error: function(xhr, status, error) {

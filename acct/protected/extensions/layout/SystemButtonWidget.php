@@ -1,8 +1,8 @@
 <?php
 class SystemButtonWidget extends CWidget {
-	public function run() {
+    public function run() {
 // System Change Button
-		$js = <<<EOF
+        $js = <<<EOF
 $(function () {
   $('[data-toggle=\"tooltip\"]').tooltip()
 });
@@ -11,13 +11,13 @@ $('#btnSysChange').on('click',function() {
 	$('#syschangedialog').modal('show');
 });
 EOF;
-		$incl_js = false;
-		foreach (General::systemMapping() as $id=>$value) {
-			if (Yii::app()->user->validSystem($id)) {
-				$oid = 'btnSys'.$id;
-				$url = $value['webroot'];
-				if (!isset($value['script'])) {
-					$temp = '$("#'.$oid.'").on("click",function(){$("#syschangedialog").modal("hide");window.location="'.$url.'";});';
+        $incl_js = false;
+        foreach (General::systemMapping() as $id=>$value) {
+            if (Yii::app()->user->validSystem($id)) {
+                $oid = 'btnSys'.$id;
+                $url = $value['webroot'];
+                if (!isset($value['script'])) {
+                    $temp = '$("#'.$oid.'").on("click",function(){$("#syschangedialog").modal("hide");window.location="'.$url.'";});';
                 }elseif($id=='nu'){
                     $url = $value['webroot'].$value['param'];
                     $incl_js = true;
@@ -39,21 +39,21 @@ EOF;
                     //拼接
                     $temp = '$("#'.$oid.'").on("click",function(){$("#syschangedialog").modal("hide");'.$value['script'].'("'.$id.'","'.$url.'","'.$homeurl.'","'.$encryptedString.'","'.$data['user_id'].'");});';
                 } else {
-					$func_name = $value['script'];
-					$lang = Yii::app()->language;
-					$homeurl = Yii::app()->createUrl("");
-					$incl_js = true;
-					$temp = '$("#'.$oid.'").on("click",function(){$("#syschangedialog").modal("hide");'.$func_name.'("'.$id.'","'.$url.'","'.$homeurl.'");});';
-				}
-				$js .= $temp;
-			}
-		}
-	
-		if ($incl_js) {
-			$sfile = Yii::app()->baseUrl.'/js/systemlink.js';
-			Yii::app()->clientScript->registerScriptFile($sfile,CClientScript::POS_HEAD);
-		}
-		Yii::app()->clientScript->registerScript('systemchange',$js,CClientScript::POS_READY);
+                    $func_name = $value['script'];
+                    $lang = Yii::app()->language;
+                    $homeurl = Yii::app()->createUrl("");
+                    $incl_js = true;
+                    $temp = '$("#'.$oid.'").on("click",function(){$("#syschangedialog").modal("hide");'.$func_name.'("'.$id.'","'.$url.'","'.$homeurl.'");});';
+                }
+                $js .= $temp;
+            }
+        }
+
+        if ($incl_js) {
+            $sfile = Yii::app()->baseUrl.'/js/systemlink.js';
+            Yii::app()->clientScript->registerScriptFile($sfile,CClientScript::POS_HEAD);
+        }
+        Yii::app()->clientScript->registerScript('systemchange',$js,CClientScript::POS_READY);
 // End - System Chnage Button
-	}
+    }
 }
