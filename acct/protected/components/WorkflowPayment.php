@@ -30,50 +30,32 @@ class WorkflowPayment extends WorkflowDMS {
 		$value = $this->getRequestData('AMOUNT');
 		$amount = (empty($value)||!is_numeric($value)) ? 0 : $value;
 		$listappr = array();
-		if ($amount > 6000) {
-//			$approver = $this->getApprover('regionHead'); //$this->seekBoss('CN');
-//			$listappr[$approver] = 'A';
-//			$this->assignRespUser($approver);
-		} elseif ($amount > 3000) {
-			$approver1 = $this->getApprover('regionDirector');
-			$listappr[$approver1] = 'A';
-
-		} elseif ($amount > 1000) {
-			$approver1 = $this->getApprover('regionDirectorA');
-			$listappr[$approver1] = 'A';
-			$approver0 = $this->getApprover('regionDirector');
-			if (!isset($listappr[$approver0])) $listappr[$approver0] = 'S';
-
-		} elseif ($amount > 500) {
-			$approver2 = $this->getApprover('regionMgr');
-			$listappr[$approver2] = 'A';
-			$approver1 = $this->getApprover('regionDirectorA');
-			if (!isset($listappr[$approver1])) $listappr[$approver1] = 'S';
-			$approver0 = $this->getApprover('regionDirector');
-			if (!isset($listappr[$approver0])) $listappr[$approver0] = 'S';
-
-		} else {
-			$approver2 = $this->getApprover('regionSuper');
-			if (!empty($approver2)) $listappr[$approver2] = 'A';
-			$approver1 = $this->getApprover('regionMgrA');
-			if (!isset($listappr[$approver1])) $listappr[$approver1] = 'A';
-			$approver0 = $this->getApprover('regionMgr');
-			if (!isset($listappr[$approver0])) $listappr[$approver0] = 'S';
-			$approver3 = $this->getApprover('regionDirectorA');
-			if (!isset($listappr[$approver3])) $listappr[$approver3] = 'S';
-			$approver4 = $this->getApprover('regionDirector');
-			if (!isset($listappr[$approver4])) $listappr[$approver4] = 'S';
-		}
-		$listappr = $this->assignment($payee, $listappr);
-
-		$approver = $this->getApprover('regionHead'); //$this->seekBoss('CN');
-		if (empty($listappr)) {
-			$this->assignRespUser($approver);
-			$listappr[$approver] = 'A';
-		} else {
-			$this->assignRespStandbyUser($approver);
-			$listappr[$approver] = 'S';
-		}
+        $userMaxList = array(
+            array('keyStr'=>'regionSuper','maxNum'=>500),//地区主管
+            array('keyStr'=>'regionMgrA','maxNum'=>500),//地区副总经理
+            array('keyStr'=>'regionMgr','maxNum'=>1000),//地区总经理
+            array('keyStr'=>'regionHeight','maxNum'=>2000),//高级总经理
+            array('keyStr'=>'regionDirectorA','maxNum'=>3000),//区域副总监
+            array('keyStr'=>'regionDirector','maxNum'=>6000),//区域总监
+            array('keyStr'=>'regionHead','maxNum'=>999999),//区域领导
+        );
+        $bool = true;
+        foreach ($userMaxList as $item){
+            $maxNum = $item["maxNum"];
+            if($maxNum==999999||$amount<$maxNum){
+                $state = $bool?"A":"S";//直接处理的审核人为A，间接处理为Q
+                $approver = $this->getApprover($item["keyStr"]);
+                if (!empty($approver) && !array_key_exists($approver, $listappr)) {
+                    $bool = false;
+                    $listappr[$approver] = $state;
+                    if($state=="A"){
+                        $this->assignRespUser($approver);
+                    }else{
+                        $this->assignRespStandbyUser($approver);
+                    }
+                }
+            }
+        }
 
 		$this->assignDelegatedUser($listappr);
 	}

@@ -38,12 +38,26 @@ $this->pageTitle=Yii::app()->name . ' - Approver Form';
 			<?php echo $form->hiddenField($model, 'city'); ?>
 
 <?php
+            $maxList=array(
+                'regionSuper'=>500,
+                'regionMgrA'=>500,
+                'regionMgr'=>1000,
+                'regionHeight'=>2000,//高级总经理
+                'regionDirectorA'=>3000,
+                'regionDirector'=>6000,
+                'regionHead'=>999999,
+            );
 	foreach ($model->dynfields as $field) {
+        $text = key_exists($field,$maxList)?$maxList[$field]:"error";
+        $text = $text==999999?"所有付款申请":"付款申请 ".$text." 以内";
 		echo '<div class="form-group">';
 		echo $form->labelEx($model,$field,array('class'=>"col-sm-2 control-label"));
 		echo '<div class="col-sm-6">';
 		echo $form->dropDownList($model, $field, General::getEmailListboxData(),
 			array('disabled'=>($model->scenario=='view')));
+		echo '</div>';
+		echo '<div class="col-sm-4">';
+		echo "<p class='form-control-static text-danger'>{$text}</p>";
 		echo '</div>';
 		echo '</div>';
 	}

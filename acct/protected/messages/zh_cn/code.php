@@ -50,6 +50,7 @@ return array(
 	'Region Supervisor'=>'地区主管',
 	'Region A.Manager'=>'地区副总经理',
 	'Region Manager'=>'地区总经理',
+	'Region Height'=>'高级总经理',
 	'Region A.Director'=>'区域副总监',
 	'Region Director'=>'区域总监',
 	'Region Head'=>'区域领导',

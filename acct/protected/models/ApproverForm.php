@@ -7,6 +7,7 @@ class ApproverForm extends CFormModel
 	public $regionSuper;
 	public $regionMgrA;
 	public $regionMgr;
+	public $regionHeight;
 	public $regionDirectorA;
 	public $regionDirector;
 	public $regionHead;
@@ -14,6 +15,7 @@ class ApproverForm extends CFormModel
 					'regionSuper',
 					'regionMgrA',
 					'regionMgr',
+					'regionHeight',//高级总经理
 					'regionDirectorA',
 					'regionDirector',
 					'regionHead',
@@ -25,6 +27,7 @@ class ApproverForm extends CFormModel
 			'regionSuper'=>Yii::t('code','Region Supervisor'),
 			'regionMgrA'=>Yii::t('code','Region A.Manager'),
 			'regionMgr'=>Yii::t('code','Region Manager'),
+			'regionHeight'=>Yii::t('code','Region Height'),
 			'regionDirectorA'=>Yii::t('code','Region A.Director'),
 			'regionDirector'=>Yii::t('code','Region Director'),
 			'regionHead'=>Yii::t('code','Region Head'),
@@ -36,7 +39,7 @@ class ApproverForm extends CFormModel
 	 */
 	public function rules()	{
 		return array(
-			array('city, regionSuper, regionMgrA, regionMgr, regionDirectorA, regionDirector, regionHead','safe'), 
+			array('city, regionSuper, regionMgrA, regionMgr,regionHeight, regionDirectorA, regionDirector, regionHead','safe'),
 		);
 	}
 
