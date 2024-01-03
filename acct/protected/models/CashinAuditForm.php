@@ -201,8 +201,10 @@ class CashinAuditForm extends CListPageModel
 				left outer join security$suffix.sec_user y on x.req_user=y.username
 				left outer join security$suffix.sec_user z on x.audit_user=z.username
 				where (a.city in ($citylist) or a.city = '99999')
-				and x.id=$index and x.acct_id=$acctId
+				and x.id=$index
 			";
+		// 由于不知道acct_id有什么用，不做限制（2024/01/03）
+		// and x.id=$index and x.acct_id=$acctId
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->hdr_id = $row['id'];
