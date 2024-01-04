@@ -218,4 +218,17 @@ class ConfReqForm extends CFormModel
 	public function isReadOnly() {
 		return true;
 	}
+
+    //由於列表需要顯示附件數量，導致列表打開太慢，所以保存附件數量
+    public function resetFileSum($id=0){
+        $id = empty($id)||!is_numeric($id)?0:$id;
+        $suffix = Yii::app()->params['envSuffix'];
+        $sql = "update acc_request set
+          doc_count_req=docman{$suffix}.countdoc('payreq',{$id}),
+          doc_count_real=docman{$suffix}.countdoc('payreal',{$id}),
+          doc_count_tax=docman{$suffix}.countdoc('tax',{$id})
+          WHERE id={$id}
+        ";
+        Yii::app()->db->createCommand($sql)->execute();
+    }
 }
