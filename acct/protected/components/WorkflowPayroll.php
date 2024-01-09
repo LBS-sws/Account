@@ -15,28 +15,40 @@ class WorkflowPayroll extends WorkflowDMS {
 	}
 
 	public function getApproverList() {
-		$right_ad = $this->hasRight($this->approvers['regionDirectorA'], 'XS06');
-		$right_m = $this->hasRight($this->approvers['regionMgr'], 'XS06');
-		$right_am = $this->hasRight($this->approvers['regionMgrA'], 'XS06');
-		$right_s = $this->hasRight($this->approvers['regionSuper'], 'XS06');
+	    //由于高级总经理是后续添加的，所以可能是空
+	    $user_height = isset($this->approvers['regionHeight'])?$this->approvers['regionHeight']:"";
+		$right_ad = $this->hasRight($this->approvers['regionDirectorA'], 'XS06');//区域副总监
+		$right_m = $this->hasRight($this->approvers['regionMgr'], 'XS06');//地区总经理
+		$right_h = $this->hasRight($user_height, 'XS06');//高级总经理
+		$right_am = $this->hasRight($this->approvers['regionMgrA'], 'XS06');//地区副总经理
+		$right_s = $this->hasRight($this->approvers['regionSuper'], 'XS06');//地区主管
 
-		$lv_1 = array();
+		$lv_1 = array();//地区总经理、地区副总经理、地区主管
 		if ($right_m) $lv_1[] = $this->approvers['regionMgr'];
 		if (!in_array($this->approvers['regionMgrA'], $lv_1) && $right_am) $lv_1[] = $this->approvers['regionMgrA'];
 		if (!in_array($this->approvers['regionSuper'], $lv_1) && $right_s) $lv_1[] = $this->approvers['regionSuper'];
 
+        //区域副总监如果在lv_1，删除区域副总监的lv_1权限
 		$key = array_search($this->approvers['regionDirectorA'], $lv_1);
+		if ($key!==false) unset($lv_1[$key]);
+        //高级总经理如果在lv_1，删除高级总经理的lv_1权限
+		$key = array_search($user_height, $lv_1);
 		if ($key!==false) unset($lv_1[$key]);
 //		$key = array_search($this->approvers['regionDirector'], $lv_1);
 //		if ($key!==false) unset($lv_1[$key]);
 
 		$lv_2 = array();
+		//区域总监!=区域副总监,把区域副总监放到lv_2
 		if ($this->approvers['regionDirector']!=$this->approvers['regionDirectorA']) {
 //			if (empty($lv_1)) {
 //				$lv_1[] = $this->approvers['regionDirectorA'];
 //			} else {
 				if ($right_ad) $lv_2[] = $this->approvers['regionDirectorA'];
 //			}
+		}
+		//区域总监!=高级总经理,把高级总经理放到lv_2
+		if ($this->approvers['regionDirector']!=$user_height&&!in_array($user_height,$lv_2)) {
+            if ($right_h) $lv_2[] = $user_height;
 		}
 
 		$lv_3 = array();
