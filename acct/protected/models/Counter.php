@@ -57,18 +57,17 @@ class Counter {
 		$rtn = 0;
 		$wf = new WorkflowPayroll;
 		$wf->connection = Yii::app()->db;
-		$list1 = $wf->getPendingRequestIdList('PAYROLL', 'PA', Yii::app()->user->id);
-		$list2 = $wf->getPendingRequestIdList('PAYROLL', 'PB', Yii::app()->user->id);
-		$list3 = $wf->getPendingRequestIdList('PAYROLL', 'PC', Yii::app()->user->id);
-		$list4 = $wf->getPendingRequestIdList('PAYROLL', 'P1', Yii::app()->user->id);
-		$list5 = $wf->getPendingRequestIdList('PAYROLL', 'P2', Yii::app()->user->id);
-		$items1 = empty($list1) ? array() : explode(',',$list1);
-		$items2 = empty($list2) ? array() : explode(',',$list2);
-		$items3 = empty($list3) ? array() : explode(',',$list3);
-		$items4 = empty($list4) ? array() : explode(',',$list4);
-		$items5 = empty($list5) ? array() : explode(',',$list5);
-		$rtn = count($items1) + count($items2) + count($items3) + count($items4) + count($items5);
-		
+
+        $arrPix = array("PA","PB","PC","PD","PE","P1","P2","P3","P4");
+        $rtn = 0;
+        foreach ($arrPix as $pix){
+            $listTemp = $wf->getPendingRequestIdList('PAYROLL',$pix, Yii::app()->user->id);
+            if(!empty($listTemp)){
+                $listTemp=explode(',',$listTemp);
+                $rtn+=count($listTemp);
+            }
+        }
+        
 		return $rtn;
 	}
 

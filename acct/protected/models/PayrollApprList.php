@@ -18,18 +18,17 @@ class PayrollApprList extends CListPageModel
 	{
 		$wf = new WorkflowPayroll;
 		$wf->connection = Yii::app()->db;
-		$list1 = $wf->getPendingRequestIdList('PAYROLL', 'PA', Yii::app()->user->id);
-		$list2 = $wf->getPendingRequestIdList('PAYROLL', 'PB', Yii::app()->user->id);
-		$list3 = $wf->getPendingRequestIdList('PAYROLL', 'PC', Yii::app()->user->id);
-		$list4 = $wf->getPendingRequestIdList('PAYROLL', 'P1', Yii::app()->user->id);
-		$list5 = $wf->getPendingRequestIdList('PAYROLL', 'P2', Yii::app()->user->id);
-		$list = '0';
-		if (!empty($list1)) $list = $list1;
-		if (!empty($list2)) $list = $list=='0' ? $list2 : $list.','.$list2;
-		if (!empty($list3)) $list = $list=='0' ? $list3 : $list.','.$list3;
-		if (!empty($list4)) $list = $list=='0' ? $list4 : $list.','.$list4;
-		if (!empty($list5)) $list = $list=='0' ? $list5 : $list.','.$list5;
-		
+		$arrPix = array("PA","PB","PC","PD","PE","P1","P2","P3","P4");
+        $list = "";
+		foreach ($arrPix as $pix){
+            $listTemp = $wf->getPendingRequestIdList('PAYROLL',$pix, Yii::app()->user->id);
+            if(!empty($listTemp)){
+                $list=empty($list)?"":",";
+                $list.=$listTemp;
+            }
+        }
+        $list=empty($list)?0:$list;
+
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city_allow();
 		$version = Yii::app()->params['version'];

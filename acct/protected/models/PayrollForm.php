@@ -204,7 +204,22 @@ class PayrollForm extends CFormModel
 		$connection = $wf->openConnection();
 		try {
 			if ($wf->startProcess('PAYROLL',$this->id,$this->lcd)) {
-				$action = ($this->wfstatus=='PC'||$this->wfstatus=='P2') ? 'RDAPPROVE' : (($this->wfstatus=='PB'||$this->wfstatus=='P1') ? 'APPROVE' : 'RHAPPROVE');
+			    switch ($this->wfstatus){
+                    case "PC"://有待副总监审核
+                    case "PD"://有待高级总经理审核
+                    case "PE"://有待高级总经理/副总监审核
+                    case "P2"://有待副总监再审核
+                    case "P3"://有待高级总经理再审核
+                    case "P4"://有待高级总经理/副总监再审核
+                        $action="RDAPPROVE";//副总监批准工资表
+                        break;
+                    case "PB"://有待主管审核
+                    case "P1"://有待主管再审核
+                        $action="APPROVE";//总部批准报表
+                        break;
+                    default:
+                        $action="RHAPPROVE";//总监批准工资表
+                }
 				$wf->takeAction($action,$this->reason_accept);
 			}
 			$wf->transaction->commit();
@@ -221,7 +236,22 @@ class PayrollForm extends CFormModel
 		$connection = $wf->openConnection();
 		try {
 			if ($wf->startProcess('PAYROLL',$this->id,$this->lcd)) {
-				$action = ($this->wfstatus=='PC'||$this->wfstatus=='P2') ? 'RDDENY' : (($this->wfstatus=='PB'||$this->wfstatus=='P1') ? 'DENY' : 'RHDENY');
+                switch ($this->wfstatus){
+                    case "PC"://有待副总监审核
+                    case "PD"://有待高级总经理审核
+                    case "PE"://有待高级总经理/副总监审核
+                    case "P2"://有待副总监再审核
+                    case "P3"://有待高级总经理再审核
+                    case "P4"://有待高级总经理/副总监再审核
+                        $action="RDDENY";//副总监批准工资表
+                        break;
+                    case "PB"://有待主管审核
+                    case "P1"://有待主管再审核
+                        $action="DENY";//总部批准报表
+                        break;
+                    default:
+                        $action="RHDENY";//总监批准工资表
+                }
 				$wf->takeAction($action,$this->reason_reject);
 			}
 			$wf->transaction->commit();
