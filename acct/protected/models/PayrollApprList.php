@@ -23,7 +23,7 @@ class PayrollApprList extends CListPageModel
 		foreach ($arrPix as $pix){
             $listTemp = $wf->getPendingRequestIdList('PAYROLL',$pix, Yii::app()->user->id);
             if(!empty($listTemp)){
-                $list=empty($list)?"":",";
+                $list.=empty($list)?"":",";
                 $list.=$listTemp;
             }
         }

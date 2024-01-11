@@ -67,7 +67,7 @@ class Counter {
                 $rtn+=count($listTemp);
             }
         }
-        
+
 		return $rtn;
 	}
 
