@@ -18,13 +18,13 @@ class Workflow {
 		$rtn = true;
 		$suffix = Yii::app()->params['envSuffix'];
 		$this->proc_id = $this->getProcessId($procCode, $reqDate);
-		$procId = $this->proc_id;
+		$procId = $this->proc_id;//项目类型
 		$sql = "select id, current_state from workflow$suffix.wf_request
 				where proc_ver_id=$procId and doc_id=$docId
 			";
-		$row = $this->connection->createCommand($sql)->queryRow();
-		if ($row===false) {
-			$stateId = $this->getStateId($procId,'ST');
+		$row = $this->connection->createCommand($sql)->queryRow();//查找文档的最新状态
+		if ($row===false) {//没有该文档则新建文档的开始
+			$stateId = $this->getStateId($procId,'ST');//开始状态的id
 			if ($stateId!=0) {
 				$sql2 = "insert into workflow$suffix.wf_request(proc_ver_id, current_state, doc_id)
 						values($procId, $stateId, $docId)

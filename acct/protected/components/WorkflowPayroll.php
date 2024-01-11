@@ -4,14 +4,51 @@ class WorkflowPayroll extends WorkflowDMS {
 
 	protected $approver_list;
 
-	protected $functions = array('hasLevelOne', 'hasLevelTwo');
+	protected $functions = array('hasLevelOne','hasLevelTwo','hasNoHeight','hasHeight','hasTwoPeople');
 
 	public function hasLevelOne() {
 		return !empty($this->approver_list[1]);
 	}
 
-	public function hasLevelTwo() {
-		return !empty($this->approver_list[2]);
+	public function hasLevelTwo() {//验证第二层是否为空
+        return !empty($this->approver_list[2]);
+	}
+
+	public function hasNoHeight() {//验证第二层是否是区域副总监
+	    if(!empty($this->approver_list[2])){
+            $user_height = isset($this->approvers['regionHeight'])?$this->approvers['regionHeight']:"";
+
+            $count = count($this->approver_list[2]);
+            if($count==2){ //第二层有两个人
+	            return false;
+            }elseif($count==1&&$user_height==$this->approver_list[2][0]){
+                return false;//第二层有1个人且这个人是高级总经理
+            }
+            return true;
+        }
+        return false;
+	}
+
+    public function hasHeight() {//验证第二层是否是高级总经理
+        if(!empty($this->approver_list[2])){
+            $user_height = isset($this->approvers['regionHeight'])?$this->approvers['regionHeight']:"";
+
+            $count = count($this->approver_list[2]);
+            if($count==1&&$user_height==$this->approver_list[2][0]){
+                return true;//第二层有1个人且这个人是高级总经理
+            }
+            return false;
+        }
+        return false;
+    }
+
+	public function hasTwoPeople() {//验证第二层是否是两个人
+	    if(!empty($this->approver_list[2])){
+            if(count($this->approver_list[2])>1){ //第二层有两个人
+	            return true;
+            }
+        }
+        return false;
 	}
 
 	public function getApproverList() {
@@ -70,8 +107,8 @@ class WorkflowPayroll extends WorkflowDMS {
 		}
 	}
 
-	public function toADirector() {
-		foreach ($this->approver_list[2] as $user) {
+	public function toADirector() {//发送给副经理
+        foreach ($this->approver_list[2] as $user) {
 			$this->assignRespUser($user);
 //			foreach ($this->getDelegated("'$user'") as $dele) {
 //				$this->assignRespUser($dele);
@@ -94,7 +131,7 @@ class WorkflowPayroll extends WorkflowDMS {
 	}
 
 	public function route($type='') {
-		$transit = $this->getTransitionList();
+		$transit = $this->getTransitionList();//获取项目的所有状态
 		$prefix = $type=='denied' ? 'D' : ($type=='accepted' ? 'A' : null);
 		
 		$this->approvers = $this->getApprovers();
@@ -107,7 +144,7 @@ class WorkflowPayroll extends WorkflowDMS {
 		while ($flag) {
 			$cnt++;
 			$choice = array();
-			foreach ($transit as $item) {
+			foreach ($transit as $item) { //循环判断当前状态的逻辑在哪里
 				if ($item['from_code']==$match) $choice[$item['to_code']] = array('condition'=>$item['state_cond'],'to'=>$item['resp_party']);
 			}
 
