@@ -4,7 +4,7 @@ class WorkflowPayroll extends WorkflowDMS {
 
 	protected $approver_list;
 
-	protected $functions = array('hasLevelOne','hasLevelTwo','hasNoHeight','hasHeight','hasTwoPeople');
+	protected $functions = array('hasLevelOne','hasLevelTwo','hasNoHeight','hasHeight','hasTwoPeople','auditIsHeight');
 
 	public function hasLevelOne() {
 		return !empty($this->approver_list[1]);
@@ -46,6 +46,18 @@ class WorkflowPayroll extends WorkflowDMS {
 	    if(!empty($this->approver_list[2])){
             if(count($this->approver_list[2])>1){ //第二层有两个人
 	            return true;
+            }
+        }
+        return false;
+	}
+
+	public function auditIsHeight() {//验证审核人是否是高级经理
+        if(!empty($this->approver_list[2])&&count($this->approver_list[2])>1){ //第二层有两个人
+            $uid = Yii::app()->user->id;
+            //由于高级总经理是后续添加的，所以可能是空
+            $user_height = isset($this->approvers['regionHeight'])?$this->approvers['regionHeight']:"";
+            if($user_height==$uid){
+                return true;
             }
         }
         return false;
@@ -155,9 +167,14 @@ class WorkflowPayroll extends WorkflowDMS {
 					$strtmp = substr($code,0,1);
 					if ($strtmp=='A' || $strtmp=='D') {		// state start with 'A' or 'D'
 						if ($strtmp===$prefix) {
-							$path[$code] = $item['to'];
+                            if (empty($item['condition']) || $this->evaluate($item['condition'])) {
+                                $path[$code] = $item['to'];
+                                $match = $code;
+                                break;
+                            }
+/*							$path[$code] = $item['to'];
 							$match = $code;
-							break;
+							break;*/
 						}
 					} elseif ($strtmp=='P') {		// state start with 'P'
 //						if (empty($item['condition']) || (method_exists($this,$item['condition']) && call_user_func(array($this,$item['condition'])))) {
