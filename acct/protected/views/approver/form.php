@@ -53,8 +53,14 @@ $this->pageTitle=Yii::app()->name . ' - Approver Form';
 		echo '<div class="form-group">';
 		echo $form->labelEx($model,$field,array('class'=>"col-sm-2 control-label"));
 		echo '<div class="col-sm-6">';
-		echo $form->dropDownList($model, $field, General::getEmailListboxData(),
-			array('disabled'=>($model->scenario=='view')));
+		$optionList = General::getEmailListboxData();
+		if($field=="regionHeight"){
+            echo $form->dropDownList($model, $field, $optionList,
+                array('disabled'=>($model->scenario=='view'),'empty'=>''));
+        }else{
+            echo $form->dropDownList($model, $field, $optionList,
+                array('disabled'=>($model->scenario=='view')));
+        }
 		echo '</div>';
 		echo '<div class="col-sm-4">';
 		echo "<p class='form-control-static text-danger'>{$text}</p>";
