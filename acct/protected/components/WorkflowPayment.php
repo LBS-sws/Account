@@ -45,7 +45,7 @@ class WorkflowPayment extends WorkflowDMS {
             if($maxNum==999999||$amount<$maxNum){
                 $state = $bool?"A":"S";//直接处理的审核人为A，间接处理为Q
                 $approver = $this->getApprover($item["keyStr"]);
-                if (!empty($approver) && !array_key_exists($approver, $listappr)) {
+                if (!empty($approver)&&$payee!=$approver && !array_key_exists($approver, $listappr)) {
                     $bool = false;
                     $listappr[$approver] = $state;
                     if($state=="A"){
