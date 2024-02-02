@@ -197,7 +197,8 @@ class InvoiceForm extends CFormModel
 //        $this->city='SG';
         $start=$date['start'];
         $end=$date['end'];
-        $model=new Invoice;
+        //$model=new Invoice;//2024年改用新版U系统
+        $model=new SystemU();
         /*模擬數據-start*/
         //$this->city="NN";
         //$start="2021-06-01";
@@ -223,7 +224,7 @@ class InvoiceForm extends CFormModel
     }
 
     protected function getLastHeadType($invoice_dt,$customer_code){
-        $head_type = 0;
+        $head_type = 1;
         $record = Yii::app()->db->createCommand()->select("head_type")->from("acc_invoice")
             ->where("invoice_dt<=:invoice_dt and customer_code=:customer_code",array(
                 "invoice_dt"=>$invoice_dt,
