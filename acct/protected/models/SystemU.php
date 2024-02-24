@@ -1,8 +1,10 @@
 <?php
 //获取新版U系统数据的所有接口
 class SystemU {
-    public static $IP="118.89.46.224";//LBS服务器IP
-    //public static $IP="113.76.108.3";//LBS服务器IP
+
+    public static function getCurlIP(){
+        return Yii::app()->params['uCurlIP'];
+    }
 
     //获取发票内容
     public static function getData($city, $start, $end, $customer='',$printBool=false) {
@@ -450,7 +452,7 @@ class SystemU {
         $rtn = array('message'=>'', 'data'=>array());
         $key = self::generate_key();
         $root = Yii::app()->params['uCurlRootURL'];
-        $url = $root.'/api/lbs.GetUServiceMoney_month/index';
+        $url = $root.'/api/lbs.GetUServiceMoneyMonth/index';
         $data = array(
             "key"=>$key,
             "year"=>$year,
@@ -548,7 +550,7 @@ class SystemU {
 
     //生成key,每10分钟一变
     public static function generate_key(){
-        $ip = self::$IP;
+        $ip = self::getCurlIP();
         $interval = 600; // 10分钟的秒数
         $secret_key = '5dd6f4b8ea2eda324a5629325e8868a8'; // 加密密钥
 
@@ -575,7 +577,7 @@ class SystemU {
         echo "<br/>";
         echo "响应时长：".$curlDateLength."(秒)";
         echo "<br/>";
-        echo "请求IP：".self::$IP;
+        echo "请求IP：".self::getCurlIP();
         echo "<br/>";
         echo "请求url：{$url}";
         echo "<br/>";
@@ -584,12 +586,24 @@ class SystemU {
         var_dump($data);
         echo "<br/>";
         echo "<br/>";
-        echo "响应数据：";
-        echo "<br/>";
-        echo $out;
-        echo "<br/>";
-        echo "<br/>";
-        echo "<br/>";
+        $bool = true;
+        if(json_decode($out,true)!==false){
+            $json = json_decode($out,true);
+            if(isset($json["code"])&&isset($json["data"])&&$json["code"]==200){
+                $bool = false;
+                echo "返回数组：";
+                echo "<br/>";
+                var_dump($json["data"]);
+            }
+        }
+        if($bool){
+            echo "响应数据：";
+            echo "<br/>";
+            echo $out;
+            echo "<br/>";
+            echo "<br/>";
+            echo "<br/>";
+        }
         die();
     }
 
