@@ -197,13 +197,8 @@ class InvoiceForm extends CFormModel
 //        $this->city='SG';
         $start=$date['start'];
         $end=$date['end'];
-        //$model=new Invoice;//2024年改用新版U系统
-        $model=new SystemU();
-        /*模擬數據-start*/
-        //$this->city="NN";
-        //$start="2021-06-01";
-        //$end="2021-06-05";
-        /*模擬數據-end*/
+        $model=new Invoice;//2024年改用新版U系统
+        //$model=new SystemU();
         $arr=$model->getData($this->city,$start,$end);
 //        print_r('<pre>');
         //print_r($arr);
