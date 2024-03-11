@@ -22,5 +22,9 @@ return array(
     'EveryYearForExamination'=>'亲爱的同事，为巩固技术服务知识和服务品质,请于次月底完成一年一次的培训测验<br/>要求：答题正确率为85%, 否则需继续测验',
     'Please update the regional recruitment plan if there is any change. If it has been updated, ignore this information.'
     =>'如地区招聘计划有变动，请及时更新。如已更新，请忽略此信息。',
+    'Please enter the data of the previous month\'s report in a timely manner and save it. If it is not entered by the 15th, the system will be locked.'
+    =>'请及时录入上月月报表数据并保存，15日仍未录入，则锁定系统。',
+    'Before using other functions, please enter the data from the previous month\'s report and save it.'
+    =>'在使用其他功能前，请先录入上月月报表数据并保存。',
 );
 ?>

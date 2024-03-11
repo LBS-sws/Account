@@ -22,5 +22,9 @@ return array(
     'EveryYearForExamination'=>'親愛的同事，為鞏固技術服務只是和服務品質,請於次月底完成一年一次的培訓測驗<br/>要求：答題正確率為85%, 否則需繼續測驗',
     'Please update the regional recruitment plan if there is any change. If it has been updated, ignore this information.'
     =>'如地區招聘計劃有變動，請及時更新。如已更新，請忽略此信息。',
+    'Please enter the data of the previous month\'s report in a timely manner and save it. If it is not entered by the 15th, the system will be locked.'
+    =>'請及時錄入上月月報表數據並保存，15日仍未錄入，則鎖定系統。',
+    'Before using other functions, please enter the data from the previous month\'s report and save it.'
+    =>'在使用其他功能前，請先錄入上月月報表數據並保存。',
 );
 ?>
