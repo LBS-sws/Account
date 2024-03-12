@@ -135,14 +135,17 @@ $this->pageTitle=Yii::app()->name . ' - T3 Balance Checking Form';
 //if (!isset($data['acct_type_desc'])) {
 //var_dump($data);
 //Yii::app()->end();
-//}		
+//}
+        $balance_test = key_exists("balance_test",$data)?$data["balance_test"]:0;
+        $balance = key_exists("bal_month_end",$data)?$data["bal_month_end"]:0;
+        $balance_class = floatval($balance)!=floatval($balance_test)?"has-error":"";
 		$str = $cnt.'. ('.$data['acct_type_desc'].') '.$data['acct_name']
 			.(empty($data['bank_name']) ? '' : ' - ').$data['bank_name'].' '.Yii::t('trans','Balance');
 		echo  TbHtml::label($str,$id_prefix.'_bal_month_end');
 		echo '</div>';
-		echo '<div class="col-sm-2">';
+		echo "<div class=\"col-sm-2 {$balance_class}\">";
 		echo TbHtml::numberField($name_prefix.'[bal_month_end]',$data['bal_month_end'],
-				array('maxlength'=>100,'readonly'=>true)
+				array('maxlength'=>100,'readonly'=>true,'data-balance'=>$balance_test)
 			);		
 		echo '</div>';
 		echo '<div class="col-sm-2">';

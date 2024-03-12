@@ -195,7 +195,11 @@ class T3AuditForm extends CFormModel
 		$suffix = Yii::app()->params['envSuffix'];
 		$idlist = '';
 		$index = $this->id;
-		$sql = "select a.*, b.bank_name, b.acct_name, c.acct_type_desc
+        $city = $this->city;
+        $tdt = $this->audit_year.'/'.$this->audit_month.'/1 00:00:00';
+        $date = date('Y/m/d', strtotime(date('Y-m-d H:i:s', strtotime($tdt.' +1 month')).' -1 day'));
+
+        $sql = "select AccountBalance(b.id,'$city','2010-01-01','$date') as balance,a.*, b.bank_name, b.acct_name, c.acct_type_desc
 				from acc_t3_audit_dtl a
 				left outer join acc_account b on a.acct_id=b.id
 				left outer join acc_account_type c on b.acct_type_id=c.id
@@ -212,6 +216,7 @@ class T3AuditForm extends CFormModel
 									'bal_month_end'=>$row['bal_month_end'],
 									'bal_t3'=>$row['bal_t3'],
 									'bal_lbs'=>$row['bal_month_end'],
+									'balance_test'=>$row['balance'],
 									'bal_adj'=>0,
 									'bal_adj_id'=>0,
 									'tot_adj_t'=>0,
@@ -226,12 +231,8 @@ class T3AuditForm extends CFormModel
 				$idlist .= $idlist=='' ? $row['acct_id'] : ','.$row['acct_id'];
 			}
 		}
-
 		if ($this->isReadOnly()) return true;
-		
-		$city = $this->city;
-		$tdt = $this->audit_year.'/'.$this->audit_month.'/1 00:00:00';
-		$date = date('Y/m/d', strtotime(date('Y-m-d H:i:s', strtotime($tdt.' +1 month')).' -1 day'));
+
 		$sql = "select AccountBalance(a.id,'$city','2010-01-01','$date') as balance, 
 				a.id, a.acct_no, a.acct_name, a.bank_name, b.acct_type_desc 
 				from acc_account a
@@ -242,25 +243,26 @@ class T3AuditForm extends CFormModel
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
 		if (count($rows) > 0) {
 			foreach ($rows as $i=>$row) {
-				$this->record[] = array(
-									'acct_id'=>$row['id'],
-									'acct_type_desc'=>$row['acct_type_desc'],
-									'acct_name'=>$row['acct_name'],
-									'bank_name'=>$row['bank_name'],
-									'bal_month_end'=>$row['balance'],
-									'bal_t3'=>0,
-									'bal_lbs'=>$row['balance'],
-									'bal_adj'=>0,
-									'bal_adj_id'=>0,
-									'tot_adj_t'=>0,
-									'tot_tr_lnr'=>0,
-									'tot_tp_lnp'=>0,
-									'tot_adj_l'=>0,
-									'tot_lr_tnr'=>0,
-									'tot_lp_tnp'=>0,
-									'lbsrecord'=>array(),
-									't3record'=>array(),
-								);
+                $this->record[] = array(
+                    'acct_id'=>$row['id'],
+                    'acct_type_desc'=>$row['acct_type_desc'],
+                    'acct_name'=>$row['acct_name'],
+                    'bank_name'=>$row['bank_name'],
+                    'bal_month_end'=>$row['balance'],
+                    'balance_test'=>$row['balance'],
+                    'bal_t3'=>0,
+                    'bal_lbs'=>$row['balance'],
+                    'bal_adj'=>0,
+                    'bal_adj_id'=>0,
+                    'tot_adj_t'=>0,
+                    'tot_tr_lnr'=>0,
+                    'tot_tp_lnp'=>0,
+                    'tot_adj_l'=>0,
+                    'tot_lr_tnr'=>0,
+                    'tot_lp_tnp'=>0,
+                    'lbsrecord'=>array(),
+                    't3record'=>array(),
+                );
 			}
 		}
 			
@@ -319,8 +321,8 @@ class T3AuditForm extends CFormModel
 				$this->record[$i]['tot_adj_t'] = $this->record[$i]['bal_t3'] - $this->record[$i]['tot_tr_lnr'] + $this->record[$i]['tot_tp_lnp'];
 				$this->record[$i]['tot_adj_l'] = $this->record[$i]['bal_lbs'] - $this->record[$i]['tot_lr_tnr'] + $this->record[$i]['tot_lp_tnp'];
 			}
-			empty($this->record[$i]['t3record']) && $this->record[$i]['t3record'] = array(array('id'=>'0','adjtype'=>'','amount'=>'','remarks'=>'','uflag'=>'N'));
-			empty($this->record[$i]['lbsrecord']) && $this->record[$i]['lbsrecord'] = array(array('id'=>'0','adjtype'=>'','amount'=>'','remarks'=>'','uflag'=>'N'));
+			//empty($this->record[$i]['t3record']) && $this->record[$i]['t3record'] = array(array('id'=>'0','adjtype'=>'','amount'=>'','remarks'=>'','uflag'=>'N'));
+			//empty($this->record[$i]['lbsrecord']) && $this->record[$i]['lbsrecord'] = array(array('id'=>'0','adjtype'=>'','amount'=>'','remarks'=>'','uflag'=>'N'));
 		}
 		return true;
 	}
