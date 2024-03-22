@@ -197,8 +197,8 @@ class InvoiceForm extends CFormModel
 //        $this->city='SG';
         $start=$date['start'];
         $end=$date['end'];
-        $model=new Invoice;//2024年改用新版U系统
-        //$model=new SystemU();
+        //$model=new Invoice;//2024年1月29日年大陆版使用了新的U系统
+        $model=new SystemU();
         $arr=$model->getData($this->city,$start,$end);
 //        print_r('<pre>');
         //print_r($arr);
@@ -239,10 +239,12 @@ class InvoiceForm extends CFormModel
         if(!empty($arr['data'])){
             foreach ($arr['data'] as $a){
                 $invoice_no = key_exists("invoice_no",$a)?$a["invoice_no"]:"";
-                $invoice_no = end(explode($this->city,$invoice_no));
+                $city_not_no = explode($this->city,$invoice_no);
+                $invoice_no = end($city_not_no);
 //	        $sql_s="select id from acc_invoice where dates='".$invoice_dt."' and customer_account='".$a['customer_code']."' and invoice_no='".$a['invoice_no']."'";
                 $sql_s="select id from acc_invoice where invoice_no='".$invoice_no."' and customer_code='".$a['customer_code']."' and city='$this->city'";
                 $records = Yii::app()->db->createCommand($sql_s)->queryRow();
+
                 if(!$records){
 //        $sql="insert into acc_invoice (dates,payment_term,customer_po_no,customer_account,salesperson,sales_order_no,sales_order_date,ship_via,invoice_company,invoice_address,invoice_tel,delivery_company,delivery_address,delivery_tel,description,quantity,unit_price,disc,amount,sub_total,gst,total_amount,generated_by,lcu,luu) value ()";
                     $uid = Yii::app()->user->id;
@@ -280,6 +282,9 @@ class InvoiceForm extends CFormModel
                         $old_no = key_exists("invoice_no",$a)?array($a["invoice_no"]):array();//发票编号多个编号用,分割
                         $remarks="";//發票的特別說明
                         foreach ($a["line"] as $line){
+                            if(!is_array($line)){//不是数组跳出循环
+                                continue;
+                            }
                             if(key_exists("staff_id",$line)){
                                 $arr['staff_id'] = $line["staff_id"];
                             }
@@ -329,9 +334,11 @@ class InvoiceForm extends CFormModel
                                 }
                             }
                         }
+						$old_no = implode(",",$old_no);
+						$old_no = mb_strlen($old_no,'UTF-8')>240?mb_substr($old_no,0,240,'UTF-8'):$old_no;
                         $updateArr=array(
                             'invoice_no'=>$invoice_no,
-                            'old_no'=>implode(",",$old_no),
+                            'old_no'=>$old_no,
                             'invoice_amt'=>$invoice_amt,
                             'luu'=>null,
                             'page_num'=>$number,
