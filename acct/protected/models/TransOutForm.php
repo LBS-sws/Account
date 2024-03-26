@@ -47,6 +47,11 @@ class TransOutForm extends CFormModel
 	public $files;
 	public $removeFileId = 0;
 
+    public $lcu;
+    public $luu;
+    public $lcd;
+    public $lud;
+
 	public function init() {
 		$this->trans_dt = date('Y/m/d');
 		$this->trans_type_code = '';
@@ -75,13 +80,18 @@ class TransOutForm extends CFormModel
 			'reason'=>Yii::t('trans','Reason'),
 			'req_ref_no'=>Yii::t('trans','Request Ref. No.'),
 			'city'=>Yii::t('trans','City'),
+
+            'lcu'=>Yii::t('trans','lcu'),
+            'luu'=>Yii::t('trans','luu'),
+            'lcd'=>Yii::t('trans','lcd'),
+            'lud'=>Yii::t('trans','lud'),
 		);
 	}
 
 	public function rules()
 	{
 		return array(
-			array('trans_type_code, trans_dt, acct_id, payer_name, payer_type, amount','required'),
+			array('trans_type_code, trans_dt, acct_id, payer_name, payer_type, amount,lcu,luu,lcd,lud','required'),
 			array('id, trans_desc, payer_id, cheque_no, invoice_no, status,acct_code,item_code, citem_desc
 					no_of_attm, docType, files, removeFileId, status_desc, city, int_fee, reason, req_ref_no
 				','safe'), 
@@ -122,6 +132,10 @@ class TransOutForm extends CFormModel
 				$this->posted = (!empty($row['trans_id']));
 				$this->city = $row['city'];
 				$this->no_of_attm['trans'] = $row['transcountdoc'];
+                $this->lcd = $row['lcd'];
+                $this->lud = $row['lud'];
+                $this->lcu = $row['lcu'];
+                $this->luu = $row['luu'];
 				break;
 			}
 		}

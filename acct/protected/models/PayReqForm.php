@@ -58,6 +58,11 @@ class PayReqForm extends CFormModel
 	public $wfCode = 'PAYMENT';
 	public $wfIdField = 'id';
 	public $wfDateField = 'req_dt';
+
+	public $lcu;
+	public $luu;
+	public $lcd;
+	public $lud;
 	
 	public function init() {
 		$this->req_dt = date('Y/m/d');
@@ -90,12 +95,17 @@ class PayReqForm extends CFormModel
 			'reason'=>Yii::t('trans','Reason'),
 			'reason_cf'=>Yii::t('trans','Reason'),
 			'int_fee'=>Yii::t('trans','Integrated Fee'),
+
+            'lcu'=>Yii::t('trans','lcu'),
+            'luu'=>Yii::t('trans','luu'),
+            'lcd'=>Yii::t('trans','lcd'),
+            'lud'=>Yii::t('trans','lud'),
 		);
 	}
 
 	public function rules() {
 		return array(
-			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount, item_code, pitem_desc, acct_code','required'),
+			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount, item_code, pitem_desc, acct_code,lcu,luu,lcd,lud','required'),
 			array('acct_id','validateAcctId'),
 			array('id, item_desc, payee_id, status, status_desc, acct_code_desc, int_fee, city, reason, reason_cf','safe'), 
 			array('files, removeFileId, docMasterId, no_of_attm','safe'), 
@@ -151,6 +161,10 @@ class PayReqForm extends CFormModel
 				$this->no_of_attm['payreq'] = $row['payreqcountdoc'];
 				$this->no_of_attm['tax'] = $row['taxcountdoc'];
 				$this->city = $row['city'];
+                $this->lcd = $row['lcd'];
+                $this->lud = $row['lud'];
+                $this->lcu = $row['lcu'];
+                $this->luu = $row['luu'];
 				break;
 			}
 		

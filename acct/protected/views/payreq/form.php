@@ -352,6 +352,38 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 				</div>
 			</div>
 <?php endif ?>
+
+            <?php if ($model->scenario!='new'): ?>
+                <legend>&nbsp;</legend>
+                <div class="form-group">
+                    <?php echo $form->labelEx($model,'lcu',array('class'=>"col-sm-2 control-label")); ?>
+                    <div class="col-sm-2">
+                        <?php echo $form->textField($model, 'lcu',
+                            array('readonly'=>(true))
+                        ); ?>
+                    </div>
+                    <?php echo $form->labelEx($model,'lcd',array('class'=>"col-sm-2 control-label")); ?>
+                    <div class="col-sm-2">
+                        <?php echo $form->textField($model, 'lcd',
+                            array('readonly'=>(true))
+                        ); ?>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <?php echo $form->labelEx($model,'luu',array('class'=>"col-sm-2 control-label")); ?>
+                    <div class="col-sm-2">
+                        <?php echo $form->textField($model, 'luu',
+                            array('readonly'=>(true))
+                        ); ?>
+                    </div>
+                    <?php echo $form->labelEx($model,'lud',array('class'=>"col-sm-2 control-label")); ?>
+                    <div class="col-sm-2">
+                        <?php echo $form->textField($model, 'lud',
+                            array('readonly'=>(true))
+                        ); ?>
+                    </div>
+                </div>
+            <?php endif ?>
 		</div>
 	</div>
 </section>

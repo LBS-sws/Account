@@ -63,6 +63,10 @@ class TransInForm extends CFormModel
 	public $files;
 	public $removeFileId = 0;
 
+    public $lcu;
+    public $luu;
+    public $lcd;
+    public $lud;
 
 	public function init() {
 		$this->trans_dt = date('Y/m/d');
@@ -99,13 +103,18 @@ class TransInForm extends CFormModel
 			'detail'=>Yii::t('trans','Details'),
 			'remarks'=>Yii::t('trans','Remarks 2'),
 			't3_doc_no'=>Yii::t('trans','T3 Document No.'),
+
+            'lcu'=>Yii::t('trans','lcu'),
+            'luu'=>Yii::t('trans','luu'),
+            'lcd'=>Yii::t('trans','lcd'),
+            'lud'=>Yii::t('trans','lud'),
 		);
 	}
 
 	public function rules()
 	{
 		return array(
-			array('trans_type_code, trans_dt, acct_id, payer_name, payer_type, amount, acct_code, item_code, citem_desc','required'),
+			array('trans_type_code, trans_dt, acct_id, payer_name, payer_type, amount, acct_code, item_code, citem_desc,lcu,luu,lcd,lud','required'),
 			array('trans_dt','validateTransDate'),
 			array('acct_id','compare','compareValue'=>0,'operator'=>'>','message'=>Yii::t('trans','Account cannot be empty')),
 			array('year_no, month_no','numerical','allowEmpty'=>true,'integerOnly'=>true),
@@ -216,6 +225,10 @@ class TransInForm extends CFormModel
 				$this->posted = (!empty($row['trans_id']));
 				$this->city = $row['city'];
 				$this->no_of_attm['trans'] = $row['transcountdoc'];
+                $this->lcd = $row['lcd'];
+                $this->lud = $row['lud'];
+                $this->lcu = $row['lcu'];
+                $this->luu = $row['luu'];
 				break;
 			}
 		}
