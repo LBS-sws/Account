@@ -105,10 +105,10 @@ class PayReqForm extends CFormModel
 
 	public function rules() {
 		return array(
-			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount, item_code, pitem_desc, acct_code,lcu,luu,lcd,lud','required'),
+			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount, item_code, pitem_desc, acct_code','required'),
 			array('acct_id','validateAcctId'),
 			array('id, item_desc, payee_id, status, status_desc, acct_code_desc, int_fee, city, reason, reason_cf','safe'), 
-			array('files, removeFileId, docMasterId, no_of_attm','safe'), 
+			array('files, removeFileId, docMasterId, no_of_attm,lcu,luu,lcd,lud','safe'),
 				
 		);
 	}

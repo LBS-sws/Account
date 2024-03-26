@@ -91,9 +91,9 @@ class TransOutForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('trans_type_code, trans_dt, acct_id, payer_name, payer_type, amount,lcu,luu,lcd,lud','required'),
+			array('trans_type_code, trans_dt, acct_id, payer_name, payer_type, amount','required'),
 			array('id, trans_desc, payer_id, cheque_no, invoice_no, status,acct_code,item_code, citem_desc
-					no_of_attm, docType, files, removeFileId, status_desc, city, int_fee, reason, req_ref_no
+					no_of_attm, docType, files, removeFileId, status_desc, city, int_fee, reason, req_ref_no,lcu,luu,lcd,lud
 				','safe'), 
 		);
 	}
