@@ -260,6 +260,10 @@ return array(
 				'access'=>'XC07',
 				'url'=>'/delegate/index',
 			),
+            'Invoice Email'=>array(//发票邮箱
+                'access'=>'XC09',
+                'url'=>'/invoiceEmail/index',
+            ),
 			'Notification Option'=>array(
 				'access'=>'XC08',
 				'url'=>'/site/notifyopt',

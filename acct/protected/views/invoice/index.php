@@ -104,6 +104,7 @@ $('#btnPrints').on('click',function(){
     $('#Invoice-list').prop('target','_blank');
     jQuery.yii.submitForm(this,'".Yii::app()->createUrl('invoice/print')."',{});
     $('#Invoice-list').prop('target','_self');
+    location.reload();
 });
 
 $('#Invoice-list').submit(function(){

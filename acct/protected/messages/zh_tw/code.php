@@ -60,5 +60,10 @@ return array(
 
 'Delegated User'=>'授權帳戶',
 'Delegation Form'=>'授權表單',
+
+'effect date'=>'生效時間',
+    'print email'=>'郵件狀態',
+    'send'=>'已發送',
+    'none'=>'無',
 );
 ?>

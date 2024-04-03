@@ -19,6 +19,7 @@ class InvoiceList extends CListPageModel
             'payment_term'=>Yii::t('invoice','Payment Term'),
             'city_name'=>Yii::t('misc','City'),
 			'staff_name'=>Yii::t('invoice','technician'),
+			'print_email'=>Yii::t('code','print email'),
 		);
 	}
 	
@@ -80,6 +81,7 @@ class InvoiceList extends CListPageModel
 					'name_zh'=>$record['name_zh'],
 					'staff_name'=>$record['staff_name'],
 					'payment_term'=>$record['payment_term'],
+					'print_email'=>empty($record['print_email'])?Yii::t("code","none"):Yii::t("code","send"),
 				);
 			}
 		}

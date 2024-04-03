@@ -44,5 +44,10 @@
 			;
 		?>
 	</th>
+	<th>
+		<?php echo TbHtml::link($this->getLabelName('print_email').$this->drawOrderArrow('a.print_email'),'#',$this->createOrderLink('Invoice-list','a.print_email'))
+			;
+		?>
+	</th>
 
 </tr>

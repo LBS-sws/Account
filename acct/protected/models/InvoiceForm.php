@@ -29,6 +29,7 @@ class InvoiceForm extends CFormModel
     public $type=array();//详细记录
     public $generated_by;//生成账单人员
     public $remarks;//特别说明
+    public $print_email;//是否发送邮件 0：未发送 1：已发送
 
     public $bowl;//
     public $baf;//
@@ -183,6 +184,8 @@ class InvoiceForm extends CFormModel
                 $this->ttl = empty($row['ttl'])?0:$row['ttl'];
                 $this->aerosal = empty($row['aerosal'])?0:$row['aerosal'];
                 $this->toiletRoom = empty($row['toiletRoom'])?0:$row['toiletRoom'];
+
+                $this->print_email = $row['print_email'];
 
                 $this->city = $row['city'];
 				$this->generated_by = $this->getNames($row['lcu']);
@@ -915,6 +918,78 @@ class InvoiceForm extends CFormModel
         }
         $outstring =$pdf->Output($address, 'I');
         return $address;
+    }
+
+    //发送邮件
+    public function sendPrintEmail(){
+        $pdf = new MyPDF2('L', 'mm', 'A4', true, 'UTF-8', false);
+        $model = new InvoiceForm();
+        $model->resetPDFConfig($pdf,$model);
+        $emailList = array();
+        foreach ($_POST['InvoiceList']['attr'] as $a){
+            $model->retrieveData($a);
+            if(empty($model->print_email)){//没有发送邮件
+                Yii::app()->db->createCommand()->update("acc_invoice",array(
+                    "print_email"=>1
+                ),"id=".$model->id);//修改状态
+                $emailList[]=$model->getAttributes();
+                $pdf->AddPage();
+                $tbl = $model->getPDFTable($model);
+                $pdf->writeHTML($tbl, true, false, false, false, '');
+                $model->insertModelForPDF($pdf,$model);
+            }
+        }
+        if(empty($emailList)){//没有需要发送的邮件
+            return false;
+        }
+        $output = $pdf->Output("print_email.pdf", 'S');
+        return $this->sendEmail($emailList,$output);
+    }
+
+    private function sendEmail($emailList,$output){
+        $date = date_format(date_create("now"),"Y-m-d");
+        $row = Yii::app()->db->createCommand()->select("email_text")->from("acc_invoice_email")
+            ->where("start_dt<='{$date}'")->order("start_dt desc")->queryRow();
+        if($row){
+            $row["email_text"] = trim($row["email_text"]);
+            $email = empty($row["email_text"])?array():explode(";",$row["email_text"]);
+            $title = "{$date}发票打印";
+            $message = $this->getEmailHtml($emailList);
+            $emailModel = new Email($title,$message,$title);
+            $emailModel->addToAddrEmail($email);
+            $emailModel->insertAttr("{$title}.pdf",$output);
+            $emailModel->sent();
+            return true;
+        }else{
+            return false;
+        }
+    }
+    private function getEmailHtml($emailList){
+        $html = "<p><b>发票打印明细：</b></p>";
+        $html.= "<table border='1' width='1000px'><thead><tr>";
+        $html.="<th>发票编号</th>";
+        $html.="<th>发票日期</th>";
+        $html.="<th>客户编号</th>";
+        $html.="<th>服务公司</th>";
+        $html.="<th>发票抬头</th>";
+        $html.="<th>金额</th>";
+        $html.="</tr></thead><tbody>";
+        foreach ($emailList as $row){
+            $html.="<tr>";
+            $html.="<td>".$row["invoice_no"]."</td>";
+            $html.="<td>".$row["invoice_dt"]."</td>";
+            $html.="<td>".$row["customer_code"]."</td>";
+            $html.="<td>".$row["name_zh"]."</td>";
+            if(empty($row['head_type'])){
+                $html.="<td>佳駿企業有限公司</td>";
+            }else{
+                $html.="<td>LBS (Macau) Limited</td>";
+            }
+            $html.="<td>".$row["invoice_amt"]."</td>";
+            $html.="</tr>";
+        }
+        $html.="</tbody></table>";
+        return $html;
     }
 
     //下載全部

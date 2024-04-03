@@ -201,6 +201,7 @@ class InvoiceController extends Controller
             $checkList = explode(",",$checkList);
             $_POST['InvoiceList']['attr'] = $checkList;
             ini_set('memory_limit', '500M');
+            $model->sendPrintEmail();
             $model->allPrints();
             Yii::app()->end();
         }else{

@@ -193,5 +193,7 @@ return array(
     'Consult Fee Audit'=>'咨詢費（補貼）審核',
     'Consult Fee Search'=>'咨詢費（補貼）查詢',
     'Consult Fee Set'=>'商品設置',
+
+    'Invoice Email'=>'發票郵箱設置',
 );
 ?>

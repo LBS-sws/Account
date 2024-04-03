@@ -198,5 +198,7 @@ return array(
     'Consult Fee Audit'=>'咨询费（补贴）审核',
     'Consult Fee Search'=>'咨询费（补贴）查询',
     'Consult Fee Set'=>'商品设置',
+
+	'Invoice Email'=>'发票邮箱设置',
 );
 ?>
