@@ -72,5 +72,59 @@ class RptInvoiceList extends CReport {
 		$this->data = $tmp;
 		return $this->exportExcel();
 	}
+
+	public function resetDataForList($emailList){
+		$this->data=array();
+		if(!empty($emailList)){
+			foreach ($emailList as $list){
+                $records = Yii::app()->db->createCommand()
+					->select("product_code,product_name,unit,qty,unit_price,amount")
+					->from("acc_invoice_type")->where("invoice_id=:id",array(":id"=>$list["id"]))->queryAll();
+                if($records){
+                    //$list['invoice_dt'] = date('Y/m/d',strtotime($list['invoice_dt']));
+                    $list['head_type'] = empty($list['head_type'])?"佳駿企業有限公司":"LBS (Macau) Limited";
+                    $list['city_name'] = General::getCityName($list["city"]);
+                	foreach ($records as $record){
+                        $temp = array(
+                            'invoice_no'=>$list['invoice_no'],
+                            'invoice_dt'=>$list['invoice_dt'],
+                            'customer_code'=>$list['customer_code'],
+                            'name_zh'=>$list['name_zh'],
+                            'head_type'=>$list['head_type'],
+                            'addr'=>$list['addr'],
+                            'tel'=>$list['tel'],
+                            'sales_name'=>$list['sales_name'],
+                            'staff_name'=>$list['staff_name'],
+                            'payment_term'=>$list['payment_term'],
+                            'bowl'=>$list['bowl'],
+                            'baf'=>$list['baf'],
+                            'hand'=>$list['hand'],
+                            'urinal'=>$list['urinal'],
+                            'hsd'=>$list['hsd'],
+                            'td'=>$list['td'],
+                            'sink'=>$list['sink'],
+                            'abhsd'=>$list['abhsd'],
+                            'ptd'=>$list['ptd'],
+                            'ttl'=>$list['ttl'],
+                            'aerosal'=>$list['aerosal'],
+                            'toiletRoom'=>$list['toiletRoom'],
+                            'product_code'=>$record['product_code'],
+                            'product_name'=>$record['product_name'],
+                            'qty'=>$record['qty'],
+                            'unit_price'=>$record['unit_price'],
+                            'amount'=>$record['amount'],
+                            'invoice_amt'=>$list['invoice_amt'],
+                            'generated_by'=>$list['generated_by'],
+                        );
+                        $this->data[]=$temp;
+					}
+				}
+			}
+		}
+	}
+
+	public function getExportExcel(){
+        return $this->exportExcel();
+	}
 }
 ?>

@@ -52,6 +52,10 @@ class InvoiceForm extends CFormModel
     public $unit_price;
     public $amount;
     public $disc;
+    public $lcu;
+    public $luu;
+    public $lcd;
+    public $lud;
 
     private $infoStyle="font-weight: bold;font-size: 14px;";
 
@@ -946,11 +950,20 @@ class InvoiceForm extends CFormModel
         return $this->sendEmail($emailList,$output);
     }
 
+    private function sendExcel($emailList){
+        $objData = new RptInvoiceList;
+        $objData->resetDataForList($emailList);
+        return $objData->getExportExcel();
+    }
+
     private function sendEmail($emailList,$output){
         $date = date_format(date_create("now"),"Y-m-d");
         $row = Yii::app()->db->createCommand()->select("email_text")->from("acc_invoice_email")
             ->where("start_dt<='{$date}'")->order("start_dt desc")->queryRow();
         if($row){
+            //2024-04-11需要额外加上excel（开始）
+            $outExcel = $this->sendExcel($emailList);
+            //2024-04-11需要额外加上excel（结束）
             $row["email_text"] = trim($row["email_text"]);
             $email = empty($row["email_text"])?array():explode(";",$row["email_text"]);
             $title = "{$date}发票打印";
@@ -958,6 +971,7 @@ class InvoiceForm extends CFormModel
             $emailModel = new Email($title,$message,$title);
             $emailModel->addToAddrEmail($email);
             $emailModel->insertAttr("{$title}.pdf",$output);
+            $emailModel->insertAttr("{$date}发票.xlsx",$outExcel);
             $emailModel->sent();
             return true;
         }else{
