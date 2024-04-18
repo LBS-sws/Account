@@ -243,6 +243,13 @@ $this->pageTitle=Yii::app()->name . ' - Invoice Form';
                 </div>
             </div>
 
+            <?php
+                $readonly="";
+                if($model->print_email==1){
+                    $readonly=" readonly ";
+                }
+            ?>
+
            <?php $i=1;foreach ($model['type'] as $value){ ?>
                <div class="type_mian">
                <div class="form-group">
@@ -256,13 +263,13 @@ $this->pageTitle=Yii::app()->name . ' - Invoice Form';
                    </div>
                    <label class="col-sm-2 control-label" for="InvoiceForm_disc"><?php echo Yii::t('invoice','Quantity');?></label>
                    <div class="col-sm-2">
-                       <input min="0" name="InvoiceForm[type][<?php echo $i;?>][qty]" id="InvoiceForm_quantity<?php echo $i;?>" class="input-40 form-control qty" type="number" value="<?php echo $value['qty'];?>">
+                       <input min="0" name="InvoiceForm[type][<?php echo $i;?>][qty]" id="InvoiceForm_quantity<?php echo $i;?>" class="input-40 form-control qty" type="number" <?php echo $readonly;?> value="<?php echo $value['qty'];?>">
                    </div>
                </div>
                <div class="form-group">
                    <label class="col-sm-2 control-label" for="InvoiceForm_disc"><?php echo Yii::t('invoice','Unit Price');?></label>
                    <div class="col-sm-2">
-                       <input min="0" name="InvoiceForm[type][<?php echo $i;?>][unit_price]" id="InvoiceForm_unit_price<?php echo $i;?>" class="input-40 form-control unit_price" type="number" value="<?php echo floatval($value['unit_price']);?>">
+                       <input min="0" name="InvoiceForm[type][<?php echo $i;?>][unit_price]" id="InvoiceForm_unit_price<?php echo $i;?>" class="input-40 form-control unit_price" <?php echo $readonly;?> type="number" value="<?php echo floatval($value['unit_price']);?>">
                    </div>
                    <label class="col-sm-2 control-label" for="InvoiceForm_disc"><?php echo Yii::t('invoice','Amount');?></label>
                    <div class="col-sm-2">

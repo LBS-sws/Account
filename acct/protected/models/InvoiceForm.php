@@ -29,7 +29,7 @@ class InvoiceForm extends CFormModel
     public $type=array();//详细记录
     public $generated_by;//生成账单人员
     public $remarks;//特别说明
-    public $print_email;//是否发送邮件 0：未发送 1：已发送
+    public $print_email=0;//是否发送邮件 0：未发送 1：已发送
 
     public $bowl;//
     public $baf;//
