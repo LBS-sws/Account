@@ -6,10 +6,12 @@ class TableView2Widget extends CWidget
 	public $gridsize;
 	public $viewhdr;
 	public $viewdtl;
+	public $viewFoot='';
 	public $height='100';
 	public $codelist = array();
 	public $tableidx = '';
-	
+	public $tableClass = '';
+
 	protected $record;
 	protected $recordptr;
 
@@ -17,7 +19,8 @@ class TableView2Widget extends CWidget
 	{
 		$field=$this->attribute;
 		$idx = $this->tableidx;
-		$layout = "<table id='tblDetail$idx' class='table table-hover'><thead>";
+		$tableClass = $this->tableClass;
+		$layout = "<table id='tblDetail$idx' class='table table-hover {$tableClass}'><thead>";
 		$layout .= $this->render($this->viewhdr, null, true);
 		$layout .= "</thead>";
 		$layout .= "<tbody>";
@@ -36,7 +39,11 @@ class TableView2Widget extends CWidget
 				$odd = !($odd);
 			}
 		}
-		$layout .= "</tbody></table>";
+		$layout .= "</tbody>";
+		if(!empty($this->viewFoot)){
+		    $layout.="<tfoot>".$this->render($this->viewFoot, $this->record, true)."</tfoot>";
+        }
+		$layout .="</table>";
 		echo $layout;
 	}
 

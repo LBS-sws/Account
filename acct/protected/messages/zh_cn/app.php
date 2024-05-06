@@ -200,5 +200,13 @@ return array(
     'Consult Fee Set'=>'商品设置',
 
 	'Invoice Email'=>'发票邮箱设置',
+
+	'Daily expense'=>'日常费用报销',
+	'Expense Apply'=>'日常费用申请',
+	'Expense Confirm'=>'日常费用确认',
+	'Expense Audit'=>'日常费用审核',
+	'Expense Search'=>'日常费用查询',
+	'Expense Set Form'=>'费用归属设置',
+	'Expense Set Audit'=>'指定审核人',
 );
 ?>

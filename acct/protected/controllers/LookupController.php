@@ -26,7 +26,7 @@ class LookupController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('company','supplier','staff','product','companyex','supplierex','staffex','productex','template',
+				'actions'=>array('employeeex','company','supplier','staff','product','companyex','supplierex','staffex','productex','template',
 						'account','accountex','accountitemin','accountiteminex','accountitemout','accountitemoutex'
 					),
 				'users'=>array('@'),
@@ -36,6 +36,36 @@ class LookupController extends Controller
 			),
 		);
 	}
+
+    public function actionEmployeeex($search,$searchType="")
+    {
+        $suffix = Yii::app()->params['envSuffix'];
+        $city_allow = Yii::app()->user->city_allow();
+        $result = array();
+        $searchx = str_replace("'","\'",$search);
+        $records = Yii::app()->db->createCommand()->select("id,code,name")
+            ->from("hr{$suffix}.hr_employee")
+            ->where("(name like '%$searchx%' or code like '%$searchx%') and staff_status=0 and city in ($city_allow)")->queryAll();
+        $notArr = array();
+        switch ($searchType){
+            case "expense"://日常费用报销
+                $list = Yii::app()->db->createCommand()->select("employee_id")
+                    ->from("hr_appoint")->queryAll();
+                $notArr = $list?array_column($list,"employee_id"):array();
+                break;
+        }
+        if (count($records) > 0) {
+            foreach ($records as $k=>$record) {
+                if(!in_array($record['id'],$notArr)){
+                    $result[] = array(
+                        'id'=>$record['id'],
+                        'value'=>$record['name']." ({$record['code']})",
+                    );
+                }
+            }
+        }
+        print json_encode($result);
+    }
 
 	/**
 	 * Lists all models.

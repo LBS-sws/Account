@@ -49,6 +49,36 @@ return array(
             ),
         )
     ),
+	'Daily expense'=>array( //日常费用报销
+		'access'=>'DE',
+		'icon'=>'fa-glass',
+		'items'=>array(
+            'Expense Apply'=>array(//报销申请
+                'access'=>'DE01',
+                'url'=>'/expenseApply/index',
+            ),
+            'Expense Confirm'=>array(//报销确认
+                'access'=>'DE02',
+                'url'=>'/expenseConfirm/index',
+            ),
+            'Expense Audit'=>array(//报销审核
+                'access'=>'DE03',
+                'url'=>'/expenseAudit/index',
+            ),
+            'Expense Search'=>array(//报销查询
+                'access'=>'DE04',
+                'url'=>'/expenseSearch/index',
+            ),
+            'Expense Set Form'=>array(//费用归属设置
+                'access'=>'DE05',
+                'url'=>'/expenseSetName/index',
+            ),
+            'Expense Set Audit'=>array(//指定审核人
+                'access'=>'DE06',
+                'url'=>'/expenseSetAudit/index',
+            ),
+        )
+    ),
 	'Transaction'=>array(
 		'access'=>'XE',
 		'icon'=>'fa-exchange',

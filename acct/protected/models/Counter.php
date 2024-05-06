@@ -108,6 +108,24 @@ class Counter {
         }
         return $rtn;
     }
+
+    public static function countExpenseApply() {
+	    $model = new ExpenseApplyList();
+        $rtn=$model->getCountConsult();
+        return $rtn;
+    }
+
+    public static function countExpenseConfirm() {
+	    $model = new ExpenseConfirmList();
+        $rtn=$model->getCountConsult();
+        return $rtn;
+    }
+
+    public static function countExpenseAudit() {
+	    $model = new ExpenseAuditList();
+        $rtn=$model->getCountConsult();
+        return $rtn;
+    }
 }
 
 ?>

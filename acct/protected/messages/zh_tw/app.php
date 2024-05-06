@@ -195,5 +195,13 @@ return array(
     'Consult Fee Set'=>'商品設置',
 
     'Invoice Email'=>'發票郵箱設置',
+
+    'Daily expense'=>'日常費用報銷',
+    'Expense Apply'=>'日常費用申請',
+    'Expense Confirm'=>'日常費用確認',
+    'Expense Audit'=>'日常費用審核',
+    'Expense Search'=>'日常費用查詢',
+    'Expense Set Form'=>'費用歸屬設置',
+    'Expense Set Audit'=>'指定審核人',
 );
 ?>
