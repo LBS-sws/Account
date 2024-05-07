@@ -60,8 +60,8 @@ class ExpenseApplyController extends Controller
 		if (isset($_POST['ExpenseApplyForm'])) {
 			$model = new ExpenseApplyForm($_POST['ExpenseApplyForm']['scenario']);
 			$model->attributes = $_POST['ExpenseApplyForm'];
+            $model->status_type=0;
 			if ($model->validate()) {
-			    $model->status_type=0;
 				$model->saveData();
 				$model->scenario = 'edit';
 				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
@@ -79,8 +79,8 @@ class ExpenseApplyController extends Controller
 		if (isset($_POST['ExpenseApplyForm'])) {
 			$model = new ExpenseApplyForm($_POST['ExpenseApplyForm']['scenario']);
 			$model->attributes = $_POST['ExpenseApplyForm'];
+            $model->status_type=2;
 			if ($model->validate()) {
-			    $model->status_type=1;
 				$model->saveData();
 				$model->scenario = 'edit';
 				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));

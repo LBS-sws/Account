@@ -30,14 +30,14 @@ class ExpenseSearchList extends CListPageModel
 				LEFT JOIN hr{$suffix}.hr_employee b ON a.employee_id=b.id
 				LEFT JOIN hr{$suffix}.hr_dept f ON b.department=f.id
 				LEFT JOIN security{$suffix}.sec_city g ON g.code=a.city
-				where a.status_type=9 and a.city in ({$city_allow}) 
+				where a.status_type=9 and (a.city in ({$city_allow}) or FIND_IN_SET('{$uid}',a.audit_user))
 			";
 		$sql2 = "select count(a.id)
 				from acc_expense a 
 				LEFT JOIN hr{$suffix}.hr_employee b ON a.employee_id=b.id
 				LEFT JOIN hr{$suffix}.hr_dept f ON b.department=f.id
 				LEFT JOIN security{$suffix}.sec_city g ON g.code=a.city
-				where a.status_type=9 and a.city in ({$city_allow}) 
+				where a.status_type=9 and (a.city in ({$city_allow}) or FIND_IN_SET('{$uid}',a.audit_user))
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {

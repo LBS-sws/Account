@@ -64,8 +64,48 @@ class ExpenseApplyForm extends CFormModel
             array('employee_id','validateEmployee'),
             array('id','validateID'),
             array('infoDetail','validateInfo'),
+            array('status_type','validateStatus'),
 		);
 	}
+
+    public function validateStatus($attribute, $params) {//验证是否有审核人
+	    if($this->status_type!=2){
+	        return true;
+        }
+        $this->audit_user=array();
+        $this->audit_json=array();
+        $this->current_username="";
+        $auditRows = Yii::app()->db->createCommand()->select("a.*")
+            ->from("acc_set_audit_info a")
+            ->leftJoin("acc_set_audit b","a.set_id=b.id")
+            ->where("b.employee_id=:id",array(":id"=>$this->employee_id))
+            ->order("a.z_index asc")->queryAll();
+        if($auditRows){
+            foreach ($auditRows as $row){
+                if(empty($row["amt_bool"])){//不限制金额
+                    $this->audit_user[]=$row["audit_user"];
+                    $this->audit_json[]=array("audit_user"=>$row["audit_user"],"audit_tag"=>$row["audit_tag"]);
+                }else{//限制金额
+                    $amtMin = floatval($row["amt_min"]);
+                    $amtMax = floatval($row["amt_max"]);
+                    if($this->amt_money>=$amtMin&&$this->amt_money<=$amtMax){
+                        $this->audit_user[]=$row["audit_user"];
+                        $this->audit_json[]=array("audit_user"=>$row["audit_user"],"audit_tag"=>$row["audit_tag"]);
+                    }
+                }
+            }
+            if(empty($this->audit_user)){
+                $this->addError($attribute, "报销金额（{$this->amt_money}）异常，请与管理员联系");
+                return false;
+            }
+            $this->current_username = $this->audit_user[0];
+            $this->audit_user = implode(",",$this->audit_user);
+            $this->audit_json = json_encode($this->audit_json);
+        }else{
+            $this->addError($attribute, "该员工没有指定审核人，请与管理员联系");
+            return false;
+        }
+    }
 
     public function validateInfo($attribute, $params) {
         $updateList = array();
@@ -392,10 +432,19 @@ class ExpenseApplyForm extends CFormModel
 	}
 
 	protected function saveHistory($connection){
-        if($this->status_type==1){
+        if($this->status_type==2){
+            $connection->createCommand()->update("acc_expense", array(
+                "audit_user"=>$this->audit_user,
+                "audit_json"=>$this->audit_json,
+                "current_username"=>$this->current_username,
+                "current_num"=>0,
+            ), "id=:id", array(":id" =>$this->id));
+
             $connection->createCommand()->delete('acc_expense_audit', 'exp_id=:id',array(":id"=>$this->id));
+
             $history_text=array();
-            $history_text[]="<span>报销申请</span>";
+            $history_text[]="<span>报销申请，等待审核</span>";
+            $history_text[]="<span>审核人：{$this->audit_user}</span>";
             $connection->createCommand()->insert("acc_expense_history", array(
                 "exp_id"=>$this->id,
                 "history_text"=>implode("<br/>",$history_text),

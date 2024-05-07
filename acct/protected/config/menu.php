@@ -57,10 +57,11 @@ return array(
                 'access'=>'DE01',
                 'url'=>'/expenseApply/index',
             ),
+            /*
             'Expense Confirm'=>array(//报销确认
                 'access'=>'DE02',
                 'url'=>'/expenseConfirm/index',
-            ),
+            ),*/
             'Expense Audit'=>array(//报销审核
                 'access'=>'DE03',
                 'url'=>'/expenseAudit/index',

@@ -35,8 +35,9 @@ class ExpenseSearchForm extends ExpenseApplyForm
 	public function retrieveData($index)
 	{
 		$suffix = Yii::app()->params['envSuffix'];
+        $uid = Yii::app()->user->id;
         $city_allow = Yii::app()->user->city_allow();
-		$sql = "select * from acc_expense where id='".$index."' and city in ({$city_allow}) and status_type=9";
+		$sql = "select * from acc_expense where id='".$index."' and (city in ({$city_allow}) or FIND_IN_SET('{$uid}',audit_user)) and status_type=9";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->id = $index;
