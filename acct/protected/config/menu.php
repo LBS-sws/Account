@@ -66,6 +66,10 @@ return array(
                 'access'=>'DE03',
                 'url'=>'/expenseAudit/index',
             ),
+            'Expense Payment'=>array(//报销扣款
+                'access'=>'DE07',
+                'url'=>'/expensePayment/index',
+            ),
             'Expense Search'=>array(//报销查询
                 'access'=>'DE04',
                 'url'=>'/expenseSearch/index',
