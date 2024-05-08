@@ -73,7 +73,7 @@ class ExpenseConfirmForm extends ExpenseApplyForm
 	{
 		$suffix = Yii::app()->params['envSuffix'];
         $city_allow = Yii::app()->user->city_allow();
-		$sql = "select * from acc_expense where id='".$index."' and city in ({$city_allow}) and status_type in (1,2)";
+		$sql = "select *,docman$suffix.countdoc('expen',id) as expendoc from acc_expense where id='".$index."' and city in ({$city_allow}) and status_type in (1,2)";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->id = $index;
@@ -85,6 +85,11 @@ class ExpenseConfirmForm extends ExpenseApplyForm
             $this->amt_money = $row['amt_money'];
             $this->remark = $row['remark'];
             $this->reject_note = $row['reject_note'];
+            $this->payment_date = $row['payment_date'];
+            $this->payment_type = $row['payment_type'];
+            $this->payment_id = $row['payment_id'];
+            $this->acc_id = $row['acc_id'];
+            $this->no_of_attm['expen'] = $row['expendoc'];
             $sql = "select * from acc_expense_info where exp_id='".$index."'";
             $infoRows = Yii::app()->db->createCommand($sql)->queryAll();
             if($infoRows){

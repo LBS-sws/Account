@@ -11,6 +11,7 @@ return array(
     array('code'=>'DE01','function'=>'Counter::countExpenseApply','color'=>'bg-yellow'),
     array('code'=>'DE02','function'=>'Counter::countExpenseConfirm','color'=>'bg-green'),
     array('code'=>'DE03','function'=>'Counter::countExpenseAudit','color'=>'bg-blue'),
+    array('code'=>'DE07','function'=>'Counter::countExpensePayment','color'=>'bg-orange'),
 );
 
 ?>

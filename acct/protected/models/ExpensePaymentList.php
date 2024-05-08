@@ -1,6 +1,6 @@
 <?php
 
-class ExpenseApplyList extends CListPageModel
+class ExpensePaymentList extends CListPageModel
 {
 	/**
 	 * Declares customized attribute labels.
@@ -24,19 +24,21 @@ class ExpenseApplyList extends CListPageModel
 	{
 		$suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
+        $city_allow = Yii::app()->user->city_allow();
+        $city = Yii::app()->user->city();
 		$sql1 = "select a.*,g.name as city_name,f.name as department_name,b.code as employee_code,b.name as employee_name 
 				from acc_expense a 
 				LEFT JOIN hr{$suffix}.hr_employee b ON a.employee_id=b.id
 				LEFT JOIN hr{$suffix}.hr_dept f ON b.department=f.id
 				LEFT JOIN security{$suffix}.sec_city g ON g.code=a.city
-				where a.lcu='{$uid}' 
+				where a.status_type=8 and a.city = '{$city}' 
 			";
 		$sql2 = "select count(a.id)
 				from acc_expense a 
 				LEFT JOIN hr{$suffix}.hr_employee b ON a.employee_id=b.id
 				LEFT JOIN hr{$suffix}.hr_dept f ON b.department=f.id
 				LEFT JOIN security{$suffix}.sec_city g ON g.code=a.city
-				where a.lcu='{$uid}' 
+				where a.status_type=8 and a.city = '{$city}' 
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -87,54 +89,22 @@ class ExpenseApplyList extends CListPageModel
                     'apply_date'=>General::toDate($record['apply_date']),
                     'amt_money'=>$record['amt_money'],
                     'status_type'=>$record['status_type'],
-                    'color'=>self::getColorForStatusType($record['status_type']),
-                    'status_str'=>self::getStatusStrForStatusType($record['status_type']),
+                    'color'=>$record['status_type']==8?"bg-yellow":"",
+                    'status_str'=>ExpenseApplyList::getStatusStrForStatusType($record['status_type']),
                 );
 			}
 		}
 		$session = Yii::app()->session;
-		$session['expenseApply_c01'] = $this->getCriteria();
+		$session['expensePayment_c01'] = $this->getCriteria();
 		return true;
 	}
 
-	public static function getColorForStatusType($status_type){
-	    $list = array(
-	        0=>" ",//草稿
-	        1=>" text-primary",//待确认
-	        2=>" text-primary",//待审核
-	        7=>" text-danger",//已拒绝
-	        8=>" text-info",//待扣款
-	        9=>" text-muted",//已完成
-        );
-	    if(key_exists($status_type,$list)){
-	        return $list[$status_type];
-        }else{
-            return "";
-        }
-    }
-
-	public static function getStatusStrForStatusType($status_type){
-	    $list = array(
-	        0=>Yii::t("give","draft"),//草稿
-	        1=>Yii::t("give","wait confirm"),//待确认
-	        2=>Yii::t("give","wait audit"),//待审核
-	        7=>Yii::t("give","rejected"),//已拒绝
-	        8=>Yii::t("give","wait payment"),//待扣款
-	        9=>Yii::t("give","finish"),//已完成
-        );
-        if(key_exists($status_type,$list)){
-            return $list[$status_type];
-        }else{
-            return $status_type;
-        }
-    }
-
     public function getCountConsult(){
         //$suffix = Yii::app()->params['envSuffix'];
-        $uid = Yii::app()->user->id;
+        $city = Yii::app()->user->city();
         $sql = "select count(id)
 				from acc_expense 
-				where lcu='{$uid}' and status_type=7  
+				where status_type=8 and city='{$city}'
 			";
         $rtn = Yii::app()->db->createCommand($sql)->queryScalar();
         return $rtn;

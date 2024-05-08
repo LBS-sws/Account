@@ -52,7 +52,7 @@ class ExpenseAuditForm extends ExpenseApplyForm
 		$suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
         $city_allow = Yii::app()->user->city_allow();
-		$sql = "select * from acc_expense where id='".$index."' and status_type=2 and FIND_IN_SET('{$uid}',audit_user)";
+		$sql = "select *,docman$suffix.countdoc('expen',id) as expendoc from acc_expense where id='".$index."' and status_type in (2,8) and FIND_IN_SET('{$uid}',audit_user)";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->id = $index;
@@ -65,6 +65,11 @@ class ExpenseAuditForm extends ExpenseApplyForm
             $this->amt_money = $row['amt_money'];
             $this->remark = $row['remark'];
             $this->reject_note = $row['reject_note'];
+            $this->payment_date = $row['payment_date'];
+            $this->payment_type = $row['payment_type'];
+            $this->payment_id = $row['payment_id'];
+            $this->acc_id = $row['acc_id'];
+            $this->no_of_attm['expen'] = $row['expendoc'];
             $sql = "select * from acc_expense_info where exp_id='".$index."'";
             $infoRows = Yii::app()->db->createCommand($sql)->queryAll();
             if($infoRows){
@@ -112,7 +117,7 @@ class ExpenseAuditForm extends ExpenseApplyForm
             $this->current_username = $auditUser[$this->current_num];
         }else{
             //审核完成
-            $this->status_type=9;
+            $this->status_type=8;
         }
     }
 
@@ -204,9 +209,10 @@ class ExpenseAuditForm extends ExpenseApplyForm
                     "lcu"=>$uid
                 ));
                 break;
-            case 9://已完成
+            case 8://已审核
                 $history_text=array();
-                $history_text[]="<span>已完成</span>";
+                $history_text[]="<span>已审核，等待城市扣款</span>";
+                $history_text[]="<span>扣款城市：".General::getCityName($this->city)."</span>";
                 $connection->createCommand()->insert("acc_expense_history", array(
                     "exp_id"=>$this->id,
                     "history_type"=>2,

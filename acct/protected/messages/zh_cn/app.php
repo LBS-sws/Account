@@ -208,5 +208,6 @@ return array(
 	'Expense Search'=>'日常费用查询',
 	'Expense Set Form'=>'费用归属设置',
 	'Expense Set Audit'=>'指定审核人',
+	'Expense Payment'=>'日常费用扣款',
 );
 ?>

@@ -44,14 +44,18 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseAudit Form';
 <?php endif ?>
 	</div>
 
-            <?php if ($model->scenario!='new'): ?>
-                <div class="btn-group pull-right" role="group">
-                    <?php echo TbHtml::button('<span class="fa fa-list"></span> '.Yii::t('give','Flow Info'), array(
-                            'data-toggle'=>'modal','data-target'=>'#flowinfodialog',)
-                    );
-                    ?>
-                </div>
-            <?php endif ?>
+            <div class="btn-group pull-right" role="group">
+                <?php echo TbHtml::button('<span class="fa fa-list"></span> '.Yii::t('give','Flow Info'), array(
+                        'data-toggle'=>'modal','data-target'=>'#flowinfodialog',)
+                );
+                ?>
+                <?php
+                $counter = ($model->no_of_attm['expen'] > 0) ? ' <span id="docexpen" class="label label-info">'.$model->no_of_attm['expen'].'</span>' : ' <span id="docexpen"></span>';
+                echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('misc','Attachment').$counter, array(
+                        'name'=>'btnFile','id'=>'btnFile','data-toggle'=>'modal','data-target'=>'#fileuploadexpen',)
+                );
+                ?>
+            </div>
 	</div></div>
 
 	<div class="box box-info">
@@ -70,6 +74,13 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseAudit Form';
 </section>
 
 <?php $this->renderPartial('//expenseApply/expenseHistory',array("model"=>$model)); ?>
+
+<?php $this->renderPartial('//site/fileupload',array('model'=>$model,
+    'form'=>$form,
+    'doctype'=>'EXPEN',
+    'header'=>Yii::t('dialog','File Attachment'),
+    'ronly'=>$model->readonly(),
+));?>
 
 <?php
 $content="<div class=\"form-group\">";
@@ -93,6 +104,7 @@ $this->widget('bootstrap.widgets.TbModal', array(
 ?>
 
 <?php
+Script::genFileUpload($model,$form->id,'EXPEN');
 $language = Yii::app()->language;
 
 $js = "

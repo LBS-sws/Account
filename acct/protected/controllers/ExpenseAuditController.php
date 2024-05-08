@@ -28,7 +28,7 @@ class ExpenseAuditController extends Controller
 				'expression'=>array('ExpenseAuditController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view'),
+				'actions'=>array('index','view','filedownload'),
 				'expression'=>array('ExpenseAuditController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -66,6 +66,7 @@ class ExpenseAuditController extends Controller
 				Dialog::message(Yii::t('dialog','Information'), Yii::t('give','Audit Done'));
                 $this->redirect(Yii::app()->createUrl('expenseAudit/index'));
 			} else {
+                $model->scenario = 'edit';
 				$message = CHtml::errorSummary($model);
 				Dialog::message(Yii::t('dialog','Validation Message'), $message);
 				$this->render('form',array('model'=>$model,));
@@ -85,6 +86,7 @@ class ExpenseAuditController extends Controller
 				Dialog::message(Yii::t('dialog','Information'), Yii::t('give','Reject Done'));
 				$this->redirect(Yii::app()->createUrl('expenseAudit/index'));
 			} else {
+                $model->scenario = 'edit';
 				$message = CHtml::errorSummary($model);
 				Dialog::message(Yii::t('dialog','Validation Message'), $message);
 				$this->render('form',array('model'=>$model,));
@@ -111,6 +113,18 @@ class ExpenseAuditController extends Controller
 			$this->render('form',array('model'=>$model,));
 		}
 	}
+
+    public function actionFileDownload($mastId, $docId, $fileId, $doctype) {
+        $sql = "select id from acc_expense where id = $docId";
+        $row = Yii::app()->db->createCommand($sql)->queryRow();
+        if ($row!==false) {
+            $docman = new DocMan($doctype,$docId,'ExpenseAuditForm');
+            $docman->masterId = $mastId;
+            $docman->fileDownload($fileId);
+        } else {
+            throw new CHttpException(404,'Record not found.');
+        }
+    }
 	
 	public static function allowReadWrite() {
 		return Yii::app()->user->validRWFunction('DE03');

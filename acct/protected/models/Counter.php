@@ -126,6 +126,12 @@ class Counter {
         $rtn=$model->getCountConsult();
         return $rtn;
     }
+
+    public static function countExpensePayment() {
+	    $model = new ExpensePaymentList();
+        $rtn=$model->getCountConsult();
+        return $rtn;
+    }
 }
 
 ?>

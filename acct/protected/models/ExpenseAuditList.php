@@ -30,14 +30,14 @@ class ExpenseAuditList extends CListPageModel
 				LEFT JOIN hr{$suffix}.hr_employee b ON a.employee_id=b.id
 				LEFT JOIN hr{$suffix}.hr_dept f ON b.department=f.id
 				LEFT JOIN security{$suffix}.sec_city g ON g.code=a.city
-				where a.status_type=2 and FIND_IN_SET('{$uid}',a.audit_user)
+				where a.status_type in (2,8) and FIND_IN_SET('{$uid}',a.audit_user)
 			";
 		$sql2 = "select count(a.id)
 				from acc_expense a 
 				LEFT JOIN hr{$suffix}.hr_employee b ON a.employee_id=b.id
 				LEFT JOIN hr{$suffix}.hr_dept f ON b.department=f.id
 				LEFT JOIN security{$suffix}.sec_city g ON g.code=a.city
-				where a.status_type in (1,2) and FIND_IN_SET('{$uid}',a.audit_user)
+				where a.status_type in (2,8) and FIND_IN_SET('{$uid}',a.audit_user)
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -79,6 +79,11 @@ class ExpenseAuditList extends CListPageModel
 		$this->attr = array();
 		if (count($records) > 0) {
 			foreach ($records as $k=>$record) {
+			    if($record['status_type']==2){
+                    $color = $record['current_username']==$uid?"bg-yellow":"";
+                }else{
+                    $color = ExpenseApplyList::getColorForStatusType($record['status_type']);
+                }
                 $this->attr[] = array(
                     'id'=>$record['id'],
                     'city'=>$record['city_name'],
@@ -88,7 +93,7 @@ class ExpenseAuditList extends CListPageModel
                     'apply_date'=>General::toDate($record['apply_date']),
                     'amt_money'=>$record['amt_money'],
                     'status_type'=>$record['status_type'],
-                    'color'=>$record['current_username']==$uid?"bg-yellow":"",
+                    'color'=>$color,
                     'status_str'=>ExpenseApplyList::getStatusStrForStatusType($record['status_type']),
                 );
 			}
@@ -99,21 +104,11 @@ class ExpenseAuditList extends CListPageModel
 	}
 
     public function getCountConsult(){
-        $suffix = Yii::app()->params['envSuffix'];
-        $uid = Yii::app()->user->id;
-        $city_allow = Yii::app()->user->city_allow();
-        $sql1 = "select a.*,g.name as city_name,f.name as department_name,b.code as employee_code,b.name as employee_name 
-				from acc_expense a 
-				LEFT JOIN hr{$suffix}.hr_employee b ON a.employee_id=b.id
-				LEFT JOIN hr{$suffix}.hr_dept f ON b.department=f.id
-				LEFT JOIN security{$suffix}.sec_city g ON g.code=a.city
-				where a.status_type=2 and FIND_IN_SET('{$uid}',a.audit_user)
-			";
         //$suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
         $sql = "select count(id)
 				from acc_expense 
-				where status_type=2 and FIND_IN_SET('{$uid}',audit_user)
+				where status_type=2 and current_username = '{$uid}'
 			";
         $rtn = Yii::app()->db->createCommand($sql)->queryScalar();
         return $rtn;

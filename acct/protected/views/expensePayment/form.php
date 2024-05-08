@@ -1,9 +1,9 @@
 <?php
-$this->pageTitle=Yii::app()->name . ' - ExpenseConfirm Form';
+$this->pageTitle=Yii::app()->name . ' - ExpensePayment Form';
 ?>
 
 <?php $form=$this->beginWidget('TbActiveForm', array(
-'id'=>'ExpenseConfirm-form',
+'id'=>'ExpensePayment-form',
 'enableClientValidation'=>true,
 'clientOptions'=>array('validateOnSubmit'=>true,),
 'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
@@ -16,7 +16,7 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseConfirm Form';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('app','Expense Confirm'); ?></strong>
+		<strong><?php echo Yii::t('app','Expense Payment'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
@@ -31,11 +31,11 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseConfirm Form';
 	<div class="box"><div class="box-body">
 	<div class="btn-group" role="group">
 		<?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
-				'submit'=>Yii::app()->createUrl('expenseConfirm/index')));
+				'submit'=>Yii::app()->createUrl('expensePayment/index')));
 		?>
-<?php if ($model->status_type==1): ?>
+<?php if ($model->status_type==8): ?>
             <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Approve'), array(
-                'submit'=>Yii::app()->createUrl('expenseConfirm/audit')));
+                'submit'=>Yii::app()->createUrl('expensePayment/audit')));
             ?>
             <?php echo TbHtml::button('<span class="fa fa-remove"></span> '.Yii::t('misc','Deny'), array(
                     'data-toggle'=>'modal','data-target'=>'#denyDialog',)
@@ -66,6 +66,8 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseConfirm Form';
 			<?php echo $form->hiddenField($model, 'status_type'); ?>
             <?php echo CHtml::hiddenField('dtltemplate'); ?>
 
+            <?php $this->renderPartial('//expenseApply/expenseAcc',array("model"=>$model,"form"=>$form)); ?>
+
             <?php $this->renderPartial('//expenseApply/expenseForm',array("model"=>$model,"form"=>$form)); ?>
 
             <?php $this->renderPartial('//expenseApply/expenseAudit',array("model"=>$model,"form"=>$form)); ?>
@@ -79,7 +81,8 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseConfirm Form';
     'form'=>$form,
     'doctype'=>'EXPEN',
     'header'=>Yii::t('dialog','File Attachment'),
-    'ronly'=>$model->readonly(),
+    'ronly'=>$model->getReadyForAcc(),
+    'delBtn'=>false
 ));?>
 
 <?php
@@ -95,7 +98,32 @@ $this->widget('bootstrap.widgets.TbModal', array(
     'header'=>Yii::t('misc','Deny'),
     'content'=>$content,
     'footer'=>array(
-        TbHtml::button(Yii::t('dialog','OK'), array('color'=>TbHtml::BUTTON_COLOR_PRIMARY,'submit'=>Yii::app()->createUrl('expenseConfirm/reject'))),
+        TbHtml::button(Yii::t('dialog','OK'), array('color'=>TbHtml::BUTTON_COLOR_PRIMARY,'submit'=>Yii::app()->createUrl('expensePayment/reject'))),
+        TbHtml::button(Yii::t('dialog','Cancel'), array('data-dismiss'=>'modal','color'=>TbHtml::BUTTON_COLOR_PRIMARY)),
+    ),
+    'show'=>false,
+));
+
+$content="<div class=\"form-group\">";
+$content.=Tbhtml::label(Yii::t("give","Current City"),'',array('class'=>"col-lg-3 control-label"));
+$content.="<div class=\"col-lg-6\">";
+$content.= Tbhtml::textField("shift[city]",General::getCityName($model->city),
+    array('readonly'=>true)
+);
+$content.="</div></div>";
+$content.="<div class=\"form-group\">";
+$content.=Tbhtml::label(Yii::t("give","Shift City"),'',array('class'=>"col-lg-3 control-label"));
+$content.="<div class=\"col-lg-6\">";
+$content.=$form->dropDownList($model, 'shift_city',General::getCityListWithNoDescendant(),
+    array('readonly'=>false)
+);
+$content.="</div></div>";
+$this->widget('bootstrap.widgets.TbModal', array(
+    'id'=>'shiftDialog',
+    'header'=>Yii::t('give','Shift City'),
+    'content'=>$content,
+    'footer'=>array(
+        TbHtml::button(Yii::t('dialog','OK'), array('color'=>TbHtml::BUTTON_COLOR_PRIMARY,'submit'=>Yii::app()->createUrl('expensePayment/shift'))),
         TbHtml::button(Yii::t('dialog','Cancel'), array('data-dismiss'=>'modal','color'=>TbHtml::BUTTON_COLOR_PRIMARY)),
     ),
     'show'=>false,
@@ -239,6 +267,10 @@ $('.changeNumber').trigger('change');
 ";
 Yii::app()->clientScript->registerScript('changeAmt',$js,CClientScript::POS_READY);
 
+$js = Script::genDatePicker(array(
+    'ExpensePaymentForm_payment_date',
+));
+Yii::app()->clientScript->registerScript('datePick',$js,CClientScript::POS_READY);
 $js = Script::genReadonlyField();
 Yii::app()->clientScript->registerScript('readonlyClass',$js,CClientScript::POS_READY);
 ?>

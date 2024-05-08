@@ -203,5 +203,6 @@ return array(
     'Expense Search'=>'日常費用查詢',
     'Expense Set Form'=>'費用歸屬設置',
     'Expense Set Audit'=>'指定審核人',
+    'Expense Payment'=>'日常費用扣款',
 );
 ?>

@@ -14,9 +14,16 @@ class ExpenseApplyForm extends CFormModel
 	public $city;
 	public $status_type=0;
 	public $amt_money;
+	public $payment_id;
+	public $payment_type;
+	public $payment_date;
 	public $acc_id;
 	public $remark;
 	public $reject_note;
+	public $lcu;
+	public $luu;
+	public $lcd;
+	public $lud;
 
 	public $infoDetail=array(
 	    array(
@@ -31,6 +38,15 @@ class ExpenseApplyForm extends CFormModel
             "uflag"=>"N",
         )
     );
+
+
+    public $no_of_attm = array(
+        'expen'=>0
+    );
+    public $docType = 'EXPEN';
+    public $docMasterId = 0;
+    public $files;
+    public $removeFileId = 0;
 
 	/**
 	 * Declares customized attribute labels.
@@ -50,6 +66,10 @@ class ExpenseApplyForm extends CFormModel
             'status_type'=>Yii::t('give','status type'),
             'remark'=>Yii::t('give','remark'),
             'reject_note'=>Yii::t('give','reject note'),
+            'payment_id'=>Yii::t('give','Payment Account'),
+            'acc_id'=>Yii::t('give','Payment Account'),
+            'payment_type'=>Yii::t('give','Payment Type'),
+            'payment_date'=>Yii::t('give','Payment Date'),
 		);
 	}
 
@@ -65,7 +85,8 @@ class ExpenseApplyForm extends CFormModel
             array('id','validateID'),
             array('infoDetail','validateInfo'),
             array('status_type','validateStatus'),
-		);
+            array('no_of_attm, docType, files, removeFileId, docMasterId','safe'),
+        );
 	}
 
     public function validateStatus($attribute, $params) {//验证是否有审核人
@@ -224,6 +245,56 @@ class ExpenseApplyForm extends CFormModel
         return $rows;
     }
 
+    public static function getTransTypeList() {
+        $list = array();
+        $rows = Yii::app()->db->createCommand()->select("trans_type_code,trans_type_desc")
+            ->from("acc_trans_type")
+            ->where("trans_cat='OUT'")
+            ->queryAll();
+        if($rows){
+            foreach ($rows as $row){
+                $list[$row['trans_type_code']] = $row["trans_type_desc"];
+            }
+        }
+        return $list;
+    }
+
+    public static function getTransStrForCode($code) {
+        $row = Yii::app()->db->createCommand()->select("trans_type_code,trans_type_desc")
+            ->from("acc_trans_type")
+            ->where("trans_type_code=:code",array(":code"=>$code))
+            ->queryRow();
+        if($row){
+            return $row["trans_type_desc"];
+        }
+        return $code;
+    }
+
+    public static function getAccountListForCity($city) {
+        $list = array();
+        $rows = Yii::app()->db->createCommand()->select("a.*,b.acct_type_desc")
+            ->from("acc_account a")
+            ->leftJoin("acc_account_type b","a.acct_type_id=b.id")
+            ->where("a.city=:city and a.status='Y'",array(":city"=>$city))->queryAll();
+        if($rows){
+            foreach ($rows as $row){
+                $list[$row['id']] = "(".$row["acct_type_desc"].")".$row["acct_name"]." ".$row["acct_no"]."(".$row["bank_name"].")";
+            }
+        }
+        return $list;
+    }
+
+    public static function getAccountStrForID($id) {
+        $row = Yii::app()->db->createCommand()->select("a.*,b.acct_type_desc")
+            ->from("acc_account a")
+            ->leftJoin("acc_account_type b","a.acct_type_id=b.id")
+            ->where("a.id=:id",array(":id"=>$id))->queryRow();
+        if($row){
+            return "(".$row["acct_type_desc"].")".$row["acct_name"]." ".$row["acct_no"]."(".$row["bank_name"].")";
+        }
+        return $id;
+    }
+
     public static function getAmtTypeOne(){
         return array(
             0=>"本地费用",
@@ -255,7 +326,7 @@ class ExpenseApplyForm extends CFormModel
 	{
 		$suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
-		$sql = "select * from acc_expense where id='".$index."' and lcu='{$uid}'";
+		$sql = "select *,docman$suffix.countdoc('expen',id) as expendoc from acc_expense where id='".$index."' and lcu='{$uid}'";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->id = $index;
@@ -267,6 +338,7 @@ class ExpenseApplyForm extends CFormModel
             $this->amt_money = $row['amt_money'];
             $this->remark = $row['remark'];
             $this->reject_note = $row['reject_note'];
+            $this->no_of_attm['expen'] = $row['expendoc'];
             $sql = "select * from acc_expense_info where exp_id='".$index."'";
             $infoRows = Yii::app()->db->createCommand($sql)->queryAll();
             if($infoRows){
@@ -298,6 +370,7 @@ class ExpenseApplyForm extends CFormModel
 		try {
 			$this->saveDataForSql($connection);
 			$this->saveDataForInfo($connection);
+            $this->updateDocman($connection,'EXPEN');
 			$transaction->commit();
 		}
 		catch(Exception $e) {
@@ -306,6 +379,17 @@ class ExpenseApplyForm extends CFormModel
 			throw new CHttpException(404,'Cannot update.');
 		}
 	}
+
+    protected function updateDocman(&$connection, $doctype) {
+        if ($this->scenario=='new') {
+            $docidx = strtolower($doctype);
+            if ($this->docMasterId[$docidx] > 0) {
+                $docman = new DocMan($doctype,$this->id,get_class($this));
+                $docman->masterId = $this->docMasterId[$docidx];
+                $docman->updateDocId($connection, $this->docMasterId[$docidx]);
+            }
+        }
+    }
 
 	protected function saveDataForInfo(&$connection)
 	{
@@ -455,5 +539,22 @@ class ExpenseApplyForm extends CFormModel
 
 	public function readonly(){
         return $this->getScenario()=='view'||!in_array($this->status_type,array(0,7));
+    }
+
+	public function getReadyForAcc(){
+        return true;
+    }
+
+    //由於列表需要顯示附件數量，導致列表打開太慢，所以保存附件數量
+    public function resetFileSum($id=0){
+        $id = empty($id)||!is_numeric($id)?0:$id;
+        if(!empty($id)){
+            $suffix = Yii::app()->params['envSuffix'];
+            $sql = "update acc_expense set
+              exp_one_num=docman{$suffix}.countdoc('expen',{$id})
+              WHERE id={$id}
+            ";
+            Yii::app()->db->createCommand($sql)->execute();
+        }
     }
 }
