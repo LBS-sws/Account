@@ -551,7 +551,8 @@ class ExpenseApplyForm extends CFormModel
         if(!empty($id)){
             $suffix = Yii::app()->params['envSuffix'];
             $sql = "update acc_expense set
-              exp_one_num=docman{$suffix}.countdoc('expen',{$id})
+              exp_one_num=docman{$suffix}.countdoc('expen',{$id}),
+              lud=lud
               WHERE id={$id}
             ";
             Yii::app()->db->createCommand($sql)->execute();
