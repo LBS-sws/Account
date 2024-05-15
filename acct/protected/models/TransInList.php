@@ -24,6 +24,7 @@ class TransInList extends CListPageModel
 				'acct_type_desc'=>'c.acct_type_desc',
 				'bank_name'=>'d.bank_name',
 				'acct_no'=>'d.acct_no',
+				'amount'=>'a.amount',
 				'int_fee'=>"(select case g.field_value when 'Y' then '".Yii::t('misc','Yes')."' 
 							else '".Yii::t('misc','No')."' 
 						end) ",
