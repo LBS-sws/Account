@@ -131,6 +131,7 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 			<?php echo $form->hiddenField($model, 'status'); ?>
 			<?php echo $form->hiddenField($model, 'wfstatus'); ?>
 			<?php echo $form->hiddenField($model, 'req_user'); ?>
+			<?php echo $form->hiddenField($model, 'city'); ?>
 
 <?php if (!Yii::app()->user->isSingleCity()) : ?>
 			<div class="form-group">
@@ -206,7 +207,7 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request Form';
 <?php else: ?>
 					<?php 
 						$list0 = array(0=>Yii::t('misc','-- None --'));
-						$list1 = General::getAccountList();
+						$list1 = General::getAccountList($model->city);
 						$list = $list0 + $list1;
 						echo $form->dropDownList($model, 'acct_id', $list,array('disabled'=>($model->isReadOnly()))); 
 					?>

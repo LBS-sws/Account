@@ -157,6 +157,10 @@ class PayreqController extends Controller
 	
 	public function actionNew($index=0)
 	{
+        $city = key_exists("city",$_GET)?$_GET["city"]:"";
+        $city_allow = Yii::app()->user->city_allow();
+        $city =strpos("'{$city_allow}'","'{$city}'")!==false?$city:Yii::app()->user->city();
+
 		if (!$this->checkCashAudit()) {
 			Dialog::message(Yii::t('dialog','Information'), Yii::t('trans','Please carry out Cash In Audit Function before apply for new request'));
 			$this->redirect(Yii::app()->createUrl('payreq/index'));
@@ -168,6 +172,7 @@ class PayreqController extends Controller
 		}
 		
 		$model = new PayReqForm('new');
+		$model->city = $city;
 		if ($index!==0 && $model->retrieveData($index)) {
 			$model->id = 0;
 			$model->ref_no = '';
@@ -279,9 +284,11 @@ class PayreqController extends Controller
 	}
 	
 	protected function checkCashAudit() {
-		$city = Yii::app()->user->city();
+	    $city = key_exists("city",$_GET)?$_GET["city"]:"";
+        $city_allow = Yii::app()->user->city_allow();
+        $city =strpos("'{$city_allow}'","'{$city}'")!==false?$city:Yii::app()->user->city();
 
-		$sql = "select acct_id from acc_trans_type_def where trans_type_code='CASHIN' and city='$city'";
+        $sql = "select acct_id from acc_trans_type_def where trans_type_code='CASHIN' and city='$city'";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		$acct_id = ($row===false) ? 2 : $row['acct_id'];
 
@@ -316,7 +323,10 @@ class PayreqController extends Controller
 	}
 	
 	protected function checkT3Audit() {
-		$city = Yii::app()->user->city();
+        $city = key_exists("city",$_GET)?$_GET["city"]:"";
+        $city_allow = Yii::app()->user->city_allow();
+        $city =strpos("'{$city_allow}'","'{$city}'")!==false?$city:Yii::app()->user->city();
+
 		$day = date('d');
 		if ($day > 10) {
 			$end_dt = strtotime("last day of previous month");

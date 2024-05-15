@@ -73,5 +73,8 @@ return array(
 'Saving' => '保存中',
 'Invalid file type.'=>'無效的文件類型.',
 'Advice'=>'温馨提示',
+
+    'Select City'=>'選擇城市',
+    'City'=>'城市',
 );
 ?>

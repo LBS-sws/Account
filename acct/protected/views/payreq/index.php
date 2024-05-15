@@ -27,7 +27,7 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request';
 	<div class="btn-group" role="group">
 		<?php 
 				echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('misc','Add Record'), array(
-					'submit'=>Yii::app()->createUrl('payreq/new'), 
+                    'id'=>'openCitySelectDialog'
 				)); 
 		?>
 	</div>
@@ -66,9 +66,12 @@ $this->pageTitle=Yii::app()->name . ' - Payment Request';
 ?>
 <?php $this->endWidget(); ?>
 
+<?php $this->renderPartial('//site/citySelect',array("submitUrl"=>Yii::app()->createUrl('payreq/new'))); ?>
 <?php
 Script::genFileDownload($model,$form->id,'PAYREQ');
 Script::genFileDownload($model,$form->id,'TAX');
+//
+echo TbHtml::button("",array('submit'=>'hide','class'=>'hide'));
 $js="
 $('.stopTd').click(function(e){
     e.stopPropagation();
