@@ -50,7 +50,7 @@ return array(
 	'Payment Receive Daily Report'=>'每日收款择要',
 	'No Record'=>'没有相关记录',
 	'Account Name'=>'账户名称',
-	'Daily Receipt Overview Report'=>'每天收款总览',
+	'Daily Receipt Overview Report'=>'每日收款总览',
 	'Daily Reimbursement Approval Summary'=>'每日报销审核汇总',
 	'Daily Request Approval Summary'=>'每日费用申请审核汇总',
 	'Summary Report - Reimbursement Not Completed Over 1 Month'=>'超过1个月未完成报销明細汇总',

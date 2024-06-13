@@ -147,11 +147,10 @@ class RptReceiptOverview extends CReport {
 	protected function printReport($username) {
 		$user=User::model()->find('LOWER(username)=?',array($username));
 		if ($user===null) return '';
-		
-		$city = City::model()->find('code=?',array($user->city));
-		$city_allow = City::model()->getDescendantList($user->city);
-		$cstr = $user->city;
-		$city_allow .= (empty($city_allow)) ? "'$cstr'" : ",'$cstr'";
+
+        $cstr = $user->city;
+        $city_allow = str_replace(",","','",$user->look_city);//将,号替换成','
+        $city_allow = empty($city_allow)? "'$cstr'" : "'{$city_allow}'";
 		
 		$output = "<table border=0 style='table-layout:fixed;width:350px;'>\n";
 		$colcnt = 0;
@@ -162,7 +161,7 @@ class RptReceiptOverview extends CReport {
 				$line = '';
 				$colcnt = 0;
 			}				
-			if (strpos($city_allow,$key)!==false) {
+			if (strpos($city_allow,"'{$key}'")!==false) {
 				$ytd_in_pct = $value['income_ytd']==0 ? 0 : round($value['balance_ytd_in']/$value['income_ytd']*100,2);
 				$mtd_in_pct = $value['income_mtd']==0 ? 0 : round($value['balance_mtd_in']/$value['income_mtd']*100,2);
 				

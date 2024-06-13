@@ -12,7 +12,8 @@ class RptAccountStatus extends CReport {
 		$this->submitEmail($output);
 		return $output;
 	}
-		public function retrieveData() {
+	
+	public function retrieveData() {
 		$start_dt = $this->criteria['TARGET_DT'].' 00:00:00';
 		$end_dt = $this->criteria['TARGET_DT'].' 23:59:59';
 		$month_start_dt = date("Y", strtotime($start_dt)).'/'.date("m", strtotime($start_dt)).'/01 00:00:00';
@@ -76,7 +77,8 @@ class RptAccountStatus extends CReport {
 			";
 		$this->result2 = Yii::app()->db->createCommand($sql)->queryAll();
 		
-		return true;	}
+		return true;
+	}
 
 	public function getReportName() {
 		$city_name = isset($this->criteria) ? ' - '.General::getCityName($this->criteria['CITY']) : '';
@@ -131,7 +133,7 @@ class RptAccountStatus extends CReport {
 		$suffix = Yii::app()->params['envSuffix'];
 		$sql = "select a.username from security$suffix.sec_user_access a, security$suffix.sec_user b
 				where a.a_read_only like '%$right%' or a.a_read_write like '%$right%'
-				and a.username=b.username and b.city in ($citylist) and b.status='A'
+				and a.username=b.username and (FIND_IN_SET('{$city}',b.look_city) or b.city in ($citylist)) and b.status='A'
 			";
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
 		if (!empty($rows)) {

@@ -11,7 +11,8 @@ class RptReimbReminder extends CReport {
 		}
 		return $output;
 	}
-		public function retrieveData() {
+	
+	public function retrieveData() {
 		$start_dt = $this->criteria['TARGET_DT'].' 00:00:00';
 		$end_dt = $this->criteria['TARGET_DT'].' 23:59:59';
 		$month_start_dt = date("Y", strtotime($start_dt)).'/'.date("m", strtotime($start_dt)).'/01 00:00:00';
@@ -35,7 +36,8 @@ class RptReimbReminder extends CReport {
 			";
 		$this->result = Yii::app()->db->createCommand($sql)->queryAll();
 
-		return !empty($this->result);	}
+		return !empty($this->result);
+	}
 
 	public function getReportName() {
 		$city_name = isset($this->criteria) ? ' - '.General::getCityName($this->criteria['CITY']) : '';
@@ -97,14 +99,14 @@ class RptReimbReminder extends CReport {
 		$sql = $rw ?
 			"select a.username from security$suffix.sec_user_access a, security$suffix.sec_user b
 				where a.a_read_write like '%$right%'
-				and a.username=b.username and b.city in ($citylist) and b.status='A'
+				and a.username=b.username and (FIND_IN_SET('{$city}',b.look_city) or b.city in ($citylist)) and b.status='A'
 				and a.system_id='acct'
 			"
 			:
 			"select a.username from security$suffix.sec_user_access a, security$suffix.sec_user b
 				where (a.a_read_only like '%$right%' or a.a_read_write like '%$right%'
 				or a.a_control like '%$right%')
-				and a.username=b.username and b.city in ($citylist) and b.status='A'
+				and a.username=b.username and (FIND_IN_SET('{$city}',b.look_city) or b.city in ($citylist)) and b.status='A'
 				and a.system_id='acct'
 			";
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
