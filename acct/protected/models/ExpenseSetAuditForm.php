@@ -94,7 +94,7 @@ class ExpenseSetAuditForm extends CFormModel
             "部门负责人"=>"部门负责人",
             "财务部"=>"财务部",
             "总经理"=>"总经理",
-            "额外审核人"=>"额外审核人",
+            "审核人"=>"审核人",
         );
     }
 
@@ -114,9 +114,7 @@ class ExpenseSetAuditForm extends CFormModel
             ->from("security{$suffix}.sec_user_access a")
             ->leftJoin("security{$suffix}.sec_user b","a.username=b.username")
             ->where("a.system_id='{$systemId}' and 
-            (a.username=:username or (
-                b.city in ({$city_allow}) and (a.a_read_write like '%DE03%')
-            ))
+            (a.username=:username or a.a_read_write like '%DE03%')
             ",array(
                 ":username"=>$username
             ))

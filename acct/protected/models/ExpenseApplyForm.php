@@ -13,6 +13,7 @@ class ExpenseApplyForm extends CFormModel
 	public $current_num;
 	public $current_username;
 	public $city;
+	public $apply_city;
 	public $status_type=0;
 	public $amt_money;
 	public $payment_id;
@@ -221,6 +222,7 @@ class ExpenseApplyForm extends CFormModel
 			$this->exp_code = $row['exp_code'];
 			$this->apply_date = General::toDate($row['apply_date']);
             $this->city = $row['city'];
+            $this->apply_city = $row['apply_city'];
             $this->status_type = $row['status_type'];
             $this->amt_money = $row['amt_money'];
             $this->remark = $row['remark'];
@@ -271,6 +273,7 @@ class ExpenseApplyForm extends CFormModel
 			$this->exp_code = $row['exp_code'];
 			$this->apply_date = General::toDate($row['apply_date']);
             $this->city = $row['city'];
+            $this->apply_city = $row['apply_city'];
             $this->status_type = $row['status_type'];
             $this->amt_money = $row['amt_money'];
             $this->remark = $row['remark'];
@@ -590,8 +593,8 @@ EOF;
 				break;
 			case 'new':
 				$sql = "insert into acc_expense(
-						employee_id,table_type,apply_date, city, status_type, amt_money, remark, reject_note, lcu, lcd) values (
-						:employee_id,:table_type,:apply_date, :city, :status_type, :amt_money, :remark, null, :lcu, :lcd)";
+						employee_id,table_type,apply_date, city, apply_city, status_type, amt_money, remark, reject_note, lcu, lcd) values (
+						:employee_id,:table_type,:apply_date, :city, :apply_city, :status_type, :amt_money, :remark, null, :lcu, :lcd)";
 				break;
 			case 'edit':
 				$sql = "update acc_expense set 
@@ -625,6 +628,8 @@ EOF;
 
 		if (strpos($sql,':city')!==false)
 			$command->bindParam(':city',$this->city,PDO::PARAM_STR);
+		if (strpos($sql,':apply_city')!==false)
+			$command->bindParam(':apply_city',$this->city,PDO::PARAM_STR);
 		if (strpos($sql,':lcu')!==false)
 			$command->bindParam(':lcu',$uid,PDO::PARAM_STR);
 		if (strpos($sql,':luu')!==false)
@@ -696,7 +701,7 @@ EOF;
     }
 
     //對pdf進行默認設置
-    private function resetPDFConfig(&$pdf,$model){
+    protected function resetPDFConfig(&$pdf,$model){
         $pdf->SetTitle($model->exp_code);
         $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
         $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
