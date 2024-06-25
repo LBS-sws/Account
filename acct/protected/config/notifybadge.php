@@ -12,6 +12,9 @@ return array(
     array('code'=>'DE02','function'=>'Counter::countExpenseConfirm','color'=>'bg-green'),
     array('code'=>'DE03','function'=>'Counter::countExpenseAudit','color'=>'bg-blue'),
     array('code'=>'DE07','function'=>'Counter::countExpensePayment','color'=>'bg-orange'),
+    array('code'=>'RT01','function'=>'Counter::countRemitApply','color'=>'bg-yellow'),
+    array('code'=>'RT02','function'=>'Counter::countRemitAudit','color'=>'bg-blue'),
+    array('code'=>'RT03','function'=>'Counter::countRemitPayment','color'=>'bg-orange'),
 );
 
 ?>

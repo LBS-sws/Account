@@ -3,6 +3,7 @@
 class ExpenseApplyForm extends CFormModel
 {
 	/* User Fields */
+	protected $table_type=1;
 	public $id;
 	public $exp_code;
 	public $employee_id;
@@ -47,6 +48,8 @@ class ExpenseApplyForm extends CFormModel
     public $docMasterId = 0;
     public $files;
     public $removeFileId = 0;
+    public $tableDetail=array();
+    protected $fileList=array();
 
 	/**
 	 * Declares customized attribute labels.
@@ -79,15 +82,20 @@ class ExpenseApplyForm extends CFormModel
 	public function rules()
 	{
 		return array(
-            array('id,exp_code,employee_id,apply_date,city,status_type,amt_money,remark,reject_note','safe'),
+            array('id,exp_code,tableDetail,employee_id,apply_date,city,status_type,amt_money,remark,reject_note','safe'),
 			array('employee_id,apply_date','required'),
             array('employee_id','validateEmployee'),
             array('id','validateID'),
+            array('tableDetail','validateDetail'),
             array('infoDetail','validateInfo'),
             array('status_type','validateStatus'),
             array('no_of_attm, docType, files, removeFileId, docMasterId','safe'),
         );
 	}
+
+	public function validateDetail($attribute, $params){
+
+    }
 
     public function validateStatus($attribute, $params) {//验证是否有审核人
 	    if($this->status_type!=2){
@@ -132,7 +140,7 @@ class ExpenseApplyForm extends CFormModel
         $updateList = array();
         $deleteList = array();
         $this->amt_money = 0;
-        $typeTwoList = self::getAmtTypeTwo();
+        $typeTwoList = ExpenseFun::getAmtTypeTwo();
         foreach ($this->infoDetail as $list){
             $temp = array();
             if($list["uflag"]=="D"){
@@ -191,7 +199,7 @@ class ExpenseApplyForm extends CFormModel
         $uid = Yii::app()->user->id;
         if($this->getScenario()!="new"){
             $row = Yii::app()->db->createCommand()->select("id,city")->from("acc_expense")
-                ->where("id=:id and lcu='{$uid}'",array(":id"=>$id))->queryRow();
+                ->where("id=:id and lcu='{$uid}' and table_type={$this->table_type}",array(":id"=>$id))->queryRow();
             if($row){
                 $this->city = $row["city"];
             }else{
@@ -201,132 +209,11 @@ class ExpenseApplyForm extends CFormModel
         }
     }
 
-    public static function setModelEmployee($model,$str="employee_id"){
-        $suffix = Yii::app()->params['envSuffix'];
-        $uid = Yii::app()->user->id;
-        $row = Yii::app()->db->createCommand()->select("employee_id")->from("hr{$suffix}.hr_binding a")
-            ->where("user_id=:user_id",array(":user_id"=>$uid))->queryRow();
-        if($row){
-            $model->$str = $row["employee_id"];
-        }else{
-            $model->$str = null;
-        }
-    }
-
-    public static function getEmployeeListForID($id) {
-        $suffix = Yii::app()->params['envSuffix'];
-        $row = Yii::app()->db->createCommand()->select("a.code,a.name,b.name as department_name")
-            ->from("hr{$suffix}.hr_employee a")
-            ->leftJoin("hr{$suffix}.hr_dept b","a.department=b.id")
-            ->where("a.id=:id",array(":id"=>$id))->queryRow();
-        if($row){
-            return array(
-                "code"=>$row["code"],
-                "name"=>$row["name"],
-                "employee"=>$row["name"]." ({$row["code"]})",
-                "department"=>$row["department_name"]
-            );
-        }else{
-            return array("code"=>"","name"=>"","employee"=>$id,"department"=>"");
-        }
-    }
-
-    public static function getAuditListForID($id) {
-        $rows = Yii::app()->db->createCommand()->select("*")
-            ->from("acc_expense_audit")
-            ->where("exp_id=:id",array(":id"=>$id))->queryAll();
-        return $rows?$rows:array();
-    }
-
-    public static function getExpenseHistoryForID($id) {
-        $rows = Yii::app()->db->createCommand()->select("*")
-            ->from("acc_expense_history")
-            ->where("exp_id=:id",array(":id"=>$id))->queryAll();
-        return $rows;
-    }
-
-    public static function getTransTypeList() {
-        $list = array();
-        $rows = Yii::app()->db->createCommand()->select("trans_type_code,trans_type_desc")
-            ->from("acc_trans_type")
-            ->where("trans_cat='OUT'")
-            ->queryAll();
-        if($rows){
-            foreach ($rows as $row){
-                $list[$row['trans_type_code']] = $row["trans_type_desc"];
-            }
-        }
-        return $list;
-    }
-
-    public static function getTransStrForCode($code) {
-        $row = Yii::app()->db->createCommand()->select("trans_type_code,trans_type_desc")
-            ->from("acc_trans_type")
-            ->where("trans_type_code=:code",array(":code"=>$code))
-            ->queryRow();
-        if($row){
-            return $row["trans_type_desc"];
-        }
-        return $code;
-    }
-
-    public static function getAccountListForCity($city) {
-        $list = array();
-        $rows = Yii::app()->db->createCommand()->select("a.*,b.acct_type_desc")
-            ->from("acc_account a")
-            ->leftJoin("acc_account_type b","a.acct_type_id=b.id")
-            ->where("a.city=:city and a.status='Y'",array(":city"=>$city))->queryAll();
-        if($rows){
-            foreach ($rows as $row){
-                $list[$row['id']] = "(".$row["acct_type_desc"].")".$row["acct_name"]." ".$row["acct_no"]."(".$row["bank_name"].")";
-            }
-        }
-        return $list;
-    }
-
-    public static function getAccountStrForID($id) {
-        $row = Yii::app()->db->createCommand()->select("a.*,b.acct_type_desc")
-            ->from("acc_account a")
-            ->leftJoin("acc_account_type b","a.acct_type_id=b.id")
-            ->where("a.id=:id",array(":id"=>$id))->queryRow();
-        if($row){
-            return "(".$row["acct_type_desc"].")".$row["acct_name"]." ".$row["acct_no"]."(".$row["bank_name"].")";
-        }
-        return $id;
-    }
-
-    public static function getAmtTypeOne(){
-        return array(
-            0=>"本地费用",
-            1=>"差旅费用",
-            2=>"办公费",
-            3=>"快递费",
-            4=>"通讯费",
-            5=>"其他",
-        );
-    }
-
-    public static function getAmtTypeTwo(){
-        return array(
-            "00001"=>array("name"=>"市内交通费",'one_type'=>0),
-            "00002"=>array("name"=>"餐费",'one_type'=>0),
-            "10001"=>array("name"=>"机票/火车票/汽车票",'one_type'=>1),
-            "10002"=>array("name"=>"酒店",'one_type'=>1),
-            "10003"=>array("name"=>"交通费",'one_type'=>1),
-            "10004"=>array("name"=>"餐费",'one_type'=>1),
-            "10005"=>array("name"=>"其他",'one_type'=>1),
-            "20001"=>array("name"=>"办公费",'one_type'=>2),
-            "30001"=>array("name"=>"快递费",'one_type'=>3),
-            "40001"=>array("name"=>"通讯费",'one_type'=>4),
-            "50001"=>array("name"=>"其他",'one_type'=>5),
-        );
-    }
-
 	public function retrieveData($index)
 	{
 		$suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
-		$sql = "select *,docman$suffix.countdoc('expen',id) as expendoc from acc_expense where id='".$index."' and lcu='{$uid}'";
+		$sql = "select *,docman$suffix.countdoc('expen',id) as expendoc from acc_expense where id='".$index."' and lcu='{$uid}' and table_type={$this->table_type}";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->id = $index;
@@ -357,11 +244,230 @@ class ExpenseApplyForm extends CFormModel
                     );
                 }
             }
+
+            if(!empty($this->fileList)){
+                $tableDetailList = ExpenseFun::getExpenseTableDetailForID($index);
+                foreach ($this->fileList as $detailRow){
+                    if(key_exists($detailRow["field_id"],$tableDetailList)){
+                        $this->tableDetail[$detailRow["field_id"]] = $tableDetailList[$detailRow["field_id"]]["field_value"];
+                    }
+                }
+            }
             return true;
 		}else{
 		    return false;
         }
 	}
+
+	public function retrievePrint($index)
+	{
+		$suffix = Yii::app()->params['envSuffix'];
+        $uid = Yii::app()->user->id;
+		$sql = "select * from acc_expense where id='".$index."' and lcu='{$uid}' and status_type in (4,6,7,9) and table_type={$this->table_type}";
+		$row = Yii::app()->db->createCommand($sql)->queryRow();
+		if ($row!==false) {
+			$this->id = $index;
+			$this->employee_id = $row['employee_id'];
+			$this->exp_code = $row['exp_code'];
+			$this->apply_date = General::toDate($row['apply_date']);
+            $this->city = $row['city'];
+            $this->status_type = $row['status_type'];
+            $this->amt_money = $row['amt_money'];
+            $this->remark = $row['remark'];
+            $this->reject_note = $row['reject_note'];
+            $sql = "select * from acc_expense_info where exp_id='".$index."'";
+            $infoRows = Yii::app()->db->createCommand($sql)->queryAll();
+            if($infoRows){
+                $this->infoDetail=array();
+                foreach ($infoRows as $infoRow){
+                    $this->infoDetail[]=array(
+                        "id"=>$infoRow["id"],
+                        "expId"=>$infoRow["exp_id"],
+                        "setId"=>$infoRow["set_id"],
+                        "infoDate"=>General::toDate($infoRow["info_date"]),
+                        "amtType"=>$infoRow["amt_type"],
+                        "infoRemark"=>$infoRow["info_remark"],
+                        "infoAmt"=>$infoRow["info_amt"],
+                        "infoJson"=>$infoRow["info_json"],
+                        "uflag"=>"N",
+                    );
+                }
+            }
+
+            if(!empty($this->fileList)){
+                $tableDetailList = ExpenseFun::getExpenseTableDetailForID($index);
+                foreach ($this->fileList as $detailRow){
+                    if(key_exists($detailRow["field_id"],$tableDetailList)){
+                        $this->tableDetail[$detailRow["field_id"]] = $tableDetailList[$detailRow["field_id"]]["field_value"];
+                    }
+                }
+            }
+            return true;
+		}else{
+		    return false;
+        }
+	}
+
+	public function printOne(){
+        $pdf = new MyPDF2('L', 'mm', 'A4', true, 'UTF-8', false);
+        $this->resetPDFConfig($pdf,$this);
+
+        $pdf->AddPage();
+        $this->setPDFTable($pdf,$this);
+        //$pdf->writeHTML($html, true, false, false, false, '');
+
+        ob_clean();
+        $address=str_replace('/','-',$this->exp_code);
+        $address.='.pdf';
+        $pdf->Output($address, 'I');
+        return $address;
+    }
+
+    protected function setPDFTable($pdf,$model){
+	    //申请信息
+        $amt_money_max = ExpenseFun::convertCurrency($model->amt_money);
+        $tdTwoList = ExpenseFun::getAmtTypeTwo();
+        $setNameList = ExpenseSetNameForm::getExpenseSetAllList();
+        $amtTypeList = ExpenseFun::getAmtTypeOne();
+        $tdCount = count($tdTwoList);
+        $tableOneWidth=270;
+        $tableTwoWidth=$tableOneWidth*2;
+        $tableBoxWidth=$tableOneWidth+$tableTwoWidth+8;
+        $employeeList = ExpenseFun::getEmployeeListForID($model->employee_id);
+        $html=<<<EOF
+<table border="0" width="{$tableOneWidth}px" cellspacing="0" cellpadding="0" style="line-height: 18px;">
+<tr>
+<th style="text-align: center;font-size:12px"><b>日常费用报销单</b></th>
+</tr>
+</table>
+EOF;
+        //申请人
+        $html.=<<<EOF
+<table border="0" width="{$tableOneWidth}px" cellspacing="0" cellpadding="0" style="line-height: 18px;border-bottom: 2px solid black;border-left: 2px solid black;">
+<tr>
+<th colspan="2" style="width:50%;background-color:#BFBFBF;border-left: 2px solid black;border-top: 2px solid black;border-right: 2px solid black;">&nbsp;<b>PART A:基本信息</b></th>
+<th colspan="2" style="width:50%;border-bottom:2px solid black;">&nbsp;</th>
+</tr>
+<tr>
+<td style="border-top:1px solid black;border-right:1px solid black;width:16%">&nbsp;申请人</td><td style="width:34%;border-top:1px solid black;border-right:1px solid black;">&nbsp;{$employeeList['employee']}</td>
+<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;申请日期</td><td style="width:30%;border-top:1px solid black;border-right:2px solid black;">&nbsp;{$model->apply_date}</td>
+</tr>
+<tr>
+<td style="border-top:1px solid black;border-right:1px solid black;width:16%">&nbsp;部门</td><td style="width:34%;border-top:1px solid black;border-right:1px solid black;">&nbsp;{$employeeList['department']}</td>
+<td colspan="2" style="border-top:1px solid black;border-right:2px solid black;">&nbsp;</td>
+</tr>
+</table>
+EOF;
+        $html.="<p>&nbsp;</p>";
+        $tableOneHeaderHtml="";
+        $tableTwoHeaderHtml="";
+        $tableInfoHtml="";
+        $tableFooterList=array();
+        $tableFooterHtml='<tr>';
+        $tableFooterHtml.='<td colspan="5" style="width: 27.5%;text-align: right;border-top:1px solid black;border-right:1px solid black;border-left:2px solid black;"><b>人民币合计(RMB)</b>&nbsp;</td>';
+        $tableFooterHtml.='<td style="width: 5.5%;text-align: right;border-top:1px solid black;"><b>'.$model->amt_money.'</b>&nbsp;</td>';
+        $tableFooterHtml.='<td style="width:1%;border-left:2px solid black;border-right:1px solid black;">&nbsp;</td>';
+
+        foreach (ExpenseFun::getAmtTypeOneEx() as $list){
+            $style="border-top:1px solid black;border-right:1px solid black;background-color:#BFBFBF;";
+            $style.="width:".$list["width"].";";
+            $tableOneHeaderHtml.='<th style="'.$style.'" colspan="'.$list["colspan"].'">&nbsp;<b>'.$list["name"].'</b></th>';
+        }
+        foreach ($tdTwoList as $list){
+            $list["name"] = $list["more"]?$list["name"]:"&nbsp;";
+            $style="text-align:center;border-top:1px solid black;border-right:1px solid black;";
+            $style.="width:".$list["width"].";";
+            $tableTwoHeaderHtml.='<th style="'.$style.'"><b>'.$list["name"].'</b></th>';
+        }
+        if(!empty($this->infoDetail)){
+            $style="border-top:1px solid black;border-right:1px solid black;";
+            foreach ($this->infoDetail as $infoRow){
+                $info_json = json_decode($infoRow["infoJson"],true);
+                $tableInfoHtml.="<tr>";
+                $tableInfoHtml.='<td style="border-left:2px solid black;'.$style.'text-align:center;">'.ExpenseFun::getKeyNameForList($setNameList,$infoRow["setId"])."</td>";
+                $tableInfoHtml.='<td style="'.$style.'text-align:center;">'.$infoRow["infoDate"]."</td>";
+                $tableInfoHtml.='<td style="'.$style.'text-align:center;">'.ExpenseFun::getKeyNameForList($amtTypeList,$infoRow["amtType"])."</td>";
+                $tableInfoHtml.='<td style="'.$style.'text-align:center;">'.$infoRow["infoRemark"]."</td>";
+                $tableInfoHtml.='<td style="'.$style.'text-align:right;">'.$infoRow["infoAmt"]."&nbsp;</td>";
+                $tableInfoHtml.='<td style="width:1%;border-left:2px solid black;border-right:1px solid black;">&nbsp;</td>';
+                foreach ($tdTwoList as $key=>$list){
+                    if(!isset($tableFooterList[$key])){
+                        $tableFooterList[$key]="-";
+                    }
+                    $value = key_exists($key,$info_json)?$info_json[$key]:"";
+                    if(!empty($value)){
+                        $tableFooterList[$key] = is_numeric($tableFooterList[$key])?($tableFooterList[$key]+$value):$value;
+                    }
+                    $width="width:".$list["width"].";";
+                    $tableInfoHtml.='<td style="'.$style.$width.'text-align:right;">'.$value.'&nbsp;</td>';
+                }
+                $tableInfoHtml.="</tr>";
+            }
+        }
+
+        foreach ($tdTwoList as $key=>$list){
+            $value = $tableFooterList[$key];
+            $style="border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black;";
+            $style.="width:".$list["width"].";";
+            $tableFooterHtml.='<td style="'.$style.'text-align:right;">'.$value.'&nbsp;</td>';
+        }
+        $tableFooterHtml.="</tr>";
+        //报销明细
+        $html.=<<<EOF
+<table border="0" width="{$tableBoxWidth}px" cellspacing="0" cellpadding="0" style="line-height: 18px;">
+<tr>
+<th colspan="5" style="width:33%;">&nbsp;</th>
+<th style="width:1%;border-right:1px solid black;">&nbsp;</th>
+<th colspan="{$tdCount}" style="width:66%;border-top:1px solid black;border-right:1px solid black;">&nbsp;<b>费用明细：</b></th>
+</tr>
+<tr>
+<th colspan="3" style="width:16.5%;background-color:#BFBFBF;border-left:2px solid black;border-top:2px solid black;border-right:2px solid black;">&nbsp;<b>PART B:报销明细</b></th>
+<th style="width:16.5%;border-bottom:2px solid black;">&nbsp;</th>
+<th style="width:1%;border-right:1px solid black;">&nbsp;</th>
+{$tableOneHeaderHtml}
+</tr>
+<tr>
+<th style="width:5.5%;text-align:center;border-left:2px solid black;border-top:1px solid black;border-right:1px solid black;"><b>费用归属</b></th>
+<th style="width:5.5%;text-align:center;border-top:1px solid black;border-right:1px solid black;"><b>日期</b></th>
+<th style="width:5.5%;text-align:center;border-top:1px solid black;border-right:1px solid black;"><b>费用类别</b></th>
+<th style="width:11%;text-align:center;border-right:1px solid black;"><b>摘要</b></th>
+<th style="width:5.5%;text-align:center;border-right:2px solid black;"><b>金额</b></th>
+<th style="width:1%;border-right:1px solid black;">&nbsp;</th>
+{$tableTwoHeaderHtml}
+</tr>
+{$tableInfoHtml}
+{$tableFooterHtml}
+<tr>
+<th style="width:5.5%;border-top:1px solid black;border-right:1px solid black;border-bottom:2px solid black;border-left:2px solid black;"><b style="line-height:35px;">人民币大写</b></th>
+<th colspan="4" style="font-size:15px;text-align:center;width:27.5%;border-top:1px solid black;border-right:2px solid black;border-bottom:2px solid black;"><b>{$amt_money_max}</b></th>
+</tr>
+</table>
+EOF;
+        $pdf->writeHTML($html, true, false, false, false, '');
+        //审核人
+        $html=<<<EOF
+<table border="0" width="{$tableOneWidth}px" cellspacing="0" cellpadding="0" style="border-bottom: 2px solid black;border-left: 2px solid black;">
+<tr style="line-height: 18px;">
+<th colspan="2" style="background-color:#BFBFBF;border-left: 2px solid black;border-top: 2px solid black;border-right: 2px solid black;">&nbsp;<b>PART C:审批签字</b></th>
+<th colspan="2" style="border-bottom:2px solid black;">&nbsp;</th>
+</tr>
+<tr style="line-height: 30px;">
+<td style="border-top:1px solid black;border-right:1px solid black;width:16%">&nbsp;申请人</td><td style="width:34%;border-top:1px solid black;border-right:1px solid black;">&nbsp;</td>
+<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;部门负责人</td><td style="width:30%;border-top:1px solid black;border-right:2px solid black;">&nbsp;</td>
+</tr>
+<tr style="line-height: 30px;">
+<td style="border-top:1px solid black;border-right:1px solid black;width:16%">&nbsp;财务部</td><td style="width:34%;border-top:1px solid black;border-right:1px solid black;">&nbsp;</td>
+<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;总经理</td><td style="width:30%;border-top:1px solid black;border-right:2px solid black;">&nbsp;</td>
+</tr>
+</table>
+EOF;
+        $y1=$pdf->GetY();
+        $x1=$pdf->GetX()-1;
+        $height = $y1<170?170:$y1;
+        $pdf->writeHTMLCell(200, 27,$x1,$height, $html,0);
+
+	    return $html;
+    }
 	
 	public function saveData()
 	{
@@ -369,6 +475,7 @@ class ExpenseApplyForm extends CFormModel
 		$transaction=$connection->beginTransaction();
 		try {
 			$this->saveDataForSql($connection);
+            $this->saveDataForDetail($connection);
 			$this->saveDataForInfo($connection);
             $this->updateDocman($connection,'EXPEN');
 			$transaction->commit();
@@ -387,6 +494,29 @@ class ExpenseApplyForm extends CFormModel
                 $docman = new DocMan($doctype,$this->id,get_class($this));
                 $docman->masterId = $this->docMasterId[$docidx];
                 $docman->updateDocId($connection, $this->docMasterId[$docidx]);
+            }
+        }
+    }
+
+	protected function saveDataForDetail(&$connection){
+        if(!empty($this->fileList)){
+            foreach ($this->fileList as $list){
+                $field_value = key_exists($list["field_id"],$this->tableDetail)?$this->tableDetail[$list["field_id"]]:null;
+                $rs = Yii::app()->db->createCommand()->select("id,field_id")->from("acc_expense_detail")
+                    ->where("exp_id=:exp_id and field_id=:field_id",array(
+                        ':field_id'=>$list["field_id"],':exp_id'=>$this->id,
+                    ))->queryRow();
+                if($rs){
+                    $connection->createCommand()->update('acc_expense_detail',array(
+                        "field_value"=>$field_value,
+                    ),"id=:id",array(':id'=>$rs["id"]));
+                }else{
+                    $connection->createCommand()->insert('acc_expense_detail',array(
+                        "exp_id"=>$this->id,
+                        "field_id"=>$list["field_id"],
+                        "field_value"=>$field_value,
+                    ));
+                }
             }
         }
     }
@@ -410,7 +540,7 @@ class ExpenseApplyForm extends CFormModel
                             "amt_type"=>$list["amtType"],
                             "info_remark"=>$list["infoRemark"],
                             "info_amt"=>$list["infoAmt"],
-                            "info_json"=>$list["infoJson"],
+                            "info_json"=>key_exists("infoJson",$list)?$list["infoJson"]:"[]",
                         ));
                     }
                 }
@@ -430,7 +560,7 @@ class ExpenseApplyForm extends CFormModel
                                     "amt_type"=>$list["amtType"],
                                     "info_remark"=>$list["infoRemark"],
                                     "info_amt"=>$list["infoAmt"],
-                                    "info_json"=>$list["infoJson"],
+                                    "info_json"=>key_exists("infoJson",$list)?$list["infoJson"]:"[]",
                                 ));
                             }else{
                                 $connection->createCommand()->update("acc_expense_info", array(
@@ -439,7 +569,7 @@ class ExpenseApplyForm extends CFormModel
                                     "amt_type"=>$list["amtType"],
                                     "info_remark"=>$list["infoRemark"],
                                     "info_amt"=>$list["infoAmt"],
-                                    "info_json"=>$list["infoJson"],
+                                    "info_json"=>key_exists("infoJson",$list)?$list["infoJson"]:"[]",
                                 ), "id=:id and exp_id={$this->id}", array(":id" =>$list["id"]));
                             }
                             break;
@@ -456,12 +586,12 @@ class ExpenseApplyForm extends CFormModel
 		$sql = '';
 		switch ($this->scenario) {
 			case 'delete':
-				$sql = "delete from acc_expense where id = :id AND lcu=:lcu";
+				$sql = "delete from acc_expense where id = :id AND lcu=:lcu and table_type=:table_type";
 				break;
 			case 'new':
 				$sql = "insert into acc_expense(
-						employee_id,apply_date, city, status_type, amt_money, remark, reject_note, lcu, lcd) values (
-						:employee_id,:apply_date, :city, :status_type, :amt_money, :remark, null, :lcu, :lcd)";
+						employee_id,table_type,apply_date, city, status_type, amt_money, remark, reject_note, lcu, lcd) values (
+						:employee_id,:table_type,:apply_date, :city, :status_type, :amt_money, :remark, null, :lcu, :lcd)";
 				break;
 			case 'edit':
 				$sql = "update acc_expense set 
@@ -470,7 +600,7 @@ class ExpenseApplyForm extends CFormModel
 					amt_money = :amt_money,
 					remark = :remark,
 					luu = :luu
-					where id = :id";
+					where id = :id and table_type=:table_type";
 				break;
 		}
 
@@ -481,6 +611,8 @@ class ExpenseApplyForm extends CFormModel
 			$command->bindParam(':id',$this->id,PDO::PARAM_INT);
 		if (strpos($sql,':employee_id')!==false)
 			$command->bindParam(':employee_id',$this->employee_id,PDO::PARAM_INT);
+		if (strpos($sql,':table_type')!==false)
+			$command->bindParam(':table_type',$this->table_type,PDO::PARAM_INT);
 		if (strpos($sql,':apply_date')!==false)
 			$command->bindParam(':apply_date',$this->apply_date,PDO::PARAM_STR);
 		if (strpos($sql,':remark')!==false)
@@ -504,16 +636,20 @@ class ExpenseApplyForm extends CFormModel
 		$command->execute();
 
         if ($this->scenario=='new'){
-            $this->id = Yii::app()->db->getLastInsertID();
-            $this->exp_code = "OUT".(100000+$this->id);
-            $connection->createCommand()->update("acc_expense", array(
-                "exp_code"=>$this->exp_code,
-            ), "id=:id", array(":id" =>$this->id));
+            $this->updateThisExpCode($connection);
         }
 
         $this->saveHistory($connection);
 		return true;
 	}
+
+	protected function updateThisExpCode($connection){
+        $this->id = Yii::app()->db->getLastInsertID();
+        $this->exp_code = "OUT".(100000+$this->id);
+        $connection->createCommand()->update("acc_expense", array(
+            "exp_code"=>$this->exp_code,
+        ), "id=:id", array(":id" =>$this->id));
+    }
 
 	protected function saveHistory($connection){
         if($this->status_type==2){
@@ -538,7 +674,7 @@ class ExpenseApplyForm extends CFormModel
     }
 
 	public function readonly(){
-        return $this->getScenario()=='view'||!in_array($this->status_type,array(0,7));
+        return $this->getScenario()=='view'||!in_array($this->status_type,array(0,3));
     }
 
 	public function getReadyForAcc(){
@@ -557,5 +693,26 @@ class ExpenseApplyForm extends CFormModel
             ";
             Yii::app()->db->createCommand($sql)->execute();
         }
+    }
+
+    //對pdf進行默認設置
+    private function resetPDFConfig(&$pdf,$model){
+        $pdf->SetTitle($model->exp_code);
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+        $pdf->SetFont('stsongstdlight', '', 8);
+        $t_margin= $pdf->getHeaderHeight()+2;
+        $r_margin=5;
+        $l_margin=5;
+        $pdf->SetMargins($l_margin, $t_margin, $r_margin);
+        $h_margin=15;
+        $pdf->SetHeaderMargin($h_margin);
+        $f_margin=2;
+        $pdf->SetFooterMargin($f_margin);
+        $b_margin=0;
+        $pdf->SetAutoPageBreak(TRUE, $b_margin);
+        $pdf->SetPrintHeader(false);
+        $pdf->SetPrintFooter(false);
     }
 }

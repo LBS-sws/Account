@@ -3,7 +3,7 @@
     <th  id="changeFootSumNum">&nbsp;</th>
     <th>&nbsp;</th>
     <?php
-    $tdTwoList = ExpenseApplyForm::getAmtTypeTwo();
+    $tdTwoList = ExpenseFun::getAmtTypeTwo();
     $html="";
     foreach ($tdTwoList as $key=>$itemList){
         $key="".$key;
@@ -19,7 +19,7 @@
     <th colspan="4" class="text-center" id="changeFootSumStr">&nbsp;</th>
     <th>&nbsp;</th>
     <?php
-    $tdTwoList = ExpenseApplyForm::getAmtTypeTwo();
+    $tdTwoList = ExpenseFun::getAmtTypeTwo();
     $tdCount = count($tdTwoList);
     echo "<th colspan='{$tdCount}'>&nbsp;</th>";
     ?>

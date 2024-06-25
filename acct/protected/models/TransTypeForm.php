@@ -9,6 +9,10 @@ class TransTypeForm extends CFormModel
 	public $trans_cat;
 	public $counter_type;
 
+    public $jd_set = array();
+    public static $jd_set_list=array(
+        array("field_id"=>"jd_trans_code","field_type"=>"text","field_name"=>"jd trans code"),
+    );
 	/**
 	 * Declares customized attribute labels.
 	 * If not declared here, an attribute would have a label that is
@@ -31,7 +35,7 @@ class TransTypeForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('trans_type_code, trans_type_desc, adj_type','required'),
+			array('jd_set,trans_type_code, trans_type_desc, adj_type','required'),
 			array('trans_type_code','validateCode'),
 			array('trans_cat, counter_type','safe'), 
 		);
@@ -63,6 +67,18 @@ class TransTypeForm extends CFormModel
 				$this->adj_type = $row['adj_type'];
 				$this->trans_cat = $row['trans_cat'];
 				$this->counter_type = $row['counter_type'];
+
+                $setRows = Yii::app()->db->createCommand()->select("field_id,field_value")
+                    ->from("acc_send_set_jd")->where("table_id=:table_id and set_type='transType'",array(":table_id"=>$index))->queryAll();
+                $setList = array();
+                foreach ($setRows as $setRow){
+                    $setList[$setRow["field_id"]] = $setRow["field_value"];
+                }
+                $this->jd_set=array();
+                foreach (self::$jd_set_list as $item){
+                    $fieldValue = key_exists($item["field_id"],$setList)?$setList[$item["field_id"]]:null;
+                    $this->jd_set[$item["field_id"]] = $fieldValue;
+                }
 				break;
 			}
 		}
@@ -75,6 +91,8 @@ class TransTypeForm extends CFormModel
 		$transaction=$connection->beginTransaction();
 		try {
 			$this->saveTransType($connection);
+            //保存金蝶要求的字段
+            $this->saveJDSetInfo($connection);
 			$transaction->commit();
 		}
 		catch(Exception $e) {
@@ -82,6 +100,29 @@ class TransTypeForm extends CFormModel
 			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
 		}
 	}
+
+    //保存金蝶要求的字段
+    protected function saveJDSetInfo(&$connection) {
+        foreach (self::$jd_set_list as $list){
+            $field_value = key_exists($list["field_id"],$this->jd_set)?$this->jd_set[$list["field_id"]]:null;
+            $rs = Yii::app()->db->createCommand()->select("id,field_id")->from("acc_send_set_jd")
+                ->where("set_type ='transType' and table_id=:table_id and field_id=:field_id",array(
+                    ':field_id'=>$list["field_id"],':table_id'=>$this->trans_type_code,
+                ))->queryRow();
+            if($rs){
+                $connection->createCommand()->update('acc_send_set_jd',array(
+                    "field_value"=>$field_value,
+                ),"id=:id",array(':id'=>$rs["id"]));
+            }else{
+                $connection->createCommand()->insert('acc_send_set_jd',array(
+                    "table_id"=>$this->trans_type_code,
+                    "set_type"=>'transType',
+                    "field_id"=>$list["field_id"],
+                    "field_value"=>$field_value,
+                ));
+            }
+        }
+    }
 
 	protected function saveTransType(&$connection)
 	{
@@ -110,7 +151,7 @@ class TransTypeForm extends CFormModel
 						trans_cat = :trans_cat,
 						counter_type = :counter_type,
 						luu = :luu
-						where trans_type_code = :trans_type_code and city = :city";
+						where trans_type_code = :trans_type_code and city = :city"
 					: "update acc_trans_type set 
 						trans_type_desc = :trans_type_desc, 
 						adj_type = :adj_type, 

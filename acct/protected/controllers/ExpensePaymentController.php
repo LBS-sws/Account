@@ -60,7 +60,7 @@ class ExpensePaymentController extends Controller
 			$model = new ExpensePaymentForm("audit");
 			$model->attributes = $_POST['ExpensePaymentForm'];
 			if ($model->validate()) {
-                $model->status_type=9;
+                $model->status_type=6;
 				$model->saveData();
 				$model->scenario = 'edit';
 				Dialog::message(Yii::t('dialog','Information'), Yii::t('give','Confirm Done'));
@@ -80,7 +80,7 @@ class ExpensePaymentController extends Controller
 			$model = new ExpensePaymentForm("reject");
 			$model->attributes = $_POST['ExpensePaymentForm'];
 			if ($model->validate()) {
-                $model->status_type=7;
+                $model->status_type=3;
 				$model->saveData();
 				$model->scenario = 'edit';
 				Dialog::message(Yii::t('dialog','Information'), Yii::t('give','Reject Done'));

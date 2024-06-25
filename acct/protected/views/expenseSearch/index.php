@@ -35,7 +35,7 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseSearch';
 							'city',
 							'apply_date',
 							'employee',
-							'position',
+							'department',
 						),
 		));
 	?>
@@ -45,6 +45,7 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseSearch';
 	echo $form->hiddenField($model,'totalRow');
 	echo $form->hiddenField($model,'orderField');
 	echo $form->hiddenField($model,'orderType');
+echo TbHtml::button("",array("submit"=>"#","class"=>"hide"));
 ?>
 <?php $this->endWidget(); ?>
 

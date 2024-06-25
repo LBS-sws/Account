@@ -76,6 +76,19 @@ class ExpenseSetNameForm extends CFormModel
         }
         return $list;
     }
+
+    public static function getExpenseSetAllList(){
+        $list = array();
+        $type_str = self::$type_str;
+        $rows = Yii::app()->db->createCommand()->select("*")->from("acc_set_name")
+            ->where("id>0 and type_str='{$type_str}'")->order("z_index asc")->queryAll();
+        if($rows){
+            foreach ($rows as $row){
+                $list[$row["id"]] = $row["name"];
+            }
+        }
+        return $list;
+    }
 	
 	public function saveData()
 	{

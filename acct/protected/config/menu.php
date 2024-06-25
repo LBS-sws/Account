@@ -49,6 +49,28 @@ return array(
             ),
         )
     ),
+	'Daily remit'=>array( //日常付款申请
+		'access'=>'RT',
+		'icon'=>'fa-money',
+		'items'=>array(
+            'Remit Apply'=>array(//日常付款申请
+                'access'=>'RT01',
+                'url'=>'/remitApply/index',
+            ),
+            'Remit Audit'=>array(//日常付款审核
+                'access'=>'RT02',
+                'url'=>'/remitAudit/index',
+            ),
+            'Remit Payment'=>array(//日常付款银行确认
+                'access'=>'RT03',
+                'url'=>'/remitPayment/index',
+            ),
+            'Remit Search'=>array(//日常付款查询
+                'access'=>'RT04',
+                'url'=>'/remitSearch/index',
+            ),
+        )
+    ),
 	'Daily expense'=>array( //日常费用报销
 		'access'=>'DE',
 		'icon'=>'fa-glass',
@@ -66,7 +88,7 @@ return array(
                 'access'=>'DE03',
                 'url'=>'/expenseAudit/index',
             ),
-            'Expense Payment'=>array(//报销扣款
+            'Expense Payment'=>array(//报销银行确认
                 'access'=>'DE07',
                 'url'=>'/expensePayment/index',
             ),

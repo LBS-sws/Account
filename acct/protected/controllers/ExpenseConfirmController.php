@@ -79,7 +79,7 @@ class ExpenseConfirmController extends Controller
 			$model = new ExpenseConfirmForm("reject");
 			$model->attributes = $_POST['ExpenseConfirmForm'];
 			if ($model->validate()) {
-			    $model->status_type=7;
+			    $model->status_type=3;
 				$model->saveData();
 				$model->scenario = 'edit';
 				Dialog::message(Yii::t('dialog','Information'), Yii::t('give','Reject Done'));

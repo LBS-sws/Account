@@ -30,14 +30,14 @@ class ExpenseAuditList extends CListPageModel
 				LEFT JOIN hr{$suffix}.hr_employee b ON a.employee_id=b.id
 				LEFT JOIN hr{$suffix}.hr_dept f ON b.department=f.id
 				LEFT JOIN security{$suffix}.sec_city g ON g.code=a.city
-				where a.status_type in (2,8) and FIND_IN_SET('{$uid}',a.audit_user)
+				where a.status_type in (2,4,6) and a.table_type=1 and FIND_IN_SET('{$uid}',a.audit_user)
 			";
 		$sql2 = "select count(a.id)
 				from acc_expense a 
 				LEFT JOIN hr{$suffix}.hr_employee b ON a.employee_id=b.id
 				LEFT JOIN hr{$suffix}.hr_dept f ON b.department=f.id
 				LEFT JOIN security{$suffix}.sec_city g ON g.code=a.city
-				where a.status_type in (2,8) and FIND_IN_SET('{$uid}',a.audit_user)
+				where a.status_type in (2,4,6) and a.table_type=1 and FIND_IN_SET('{$uid}',a.audit_user)
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -82,7 +82,7 @@ class ExpenseAuditList extends CListPageModel
 			    if($record['status_type']==2){
                     $color = $record['current_username']==$uid?"bg-yellow":"";
                 }else{
-                    $color = ExpenseApplyList::getColorForStatusType($record['status_type']);
+                    $color = ExpenseFun::getColorForStatusType($record['status_type']);
                 }
                 $this->attr[] = array(
                     'id'=>$record['id'],
@@ -94,7 +94,7 @@ class ExpenseAuditList extends CListPageModel
                     'amt_money'=>$record['amt_money'],
                     'status_type'=>$record['status_type'],
                     'color'=>$color,
-                    'status_str'=>ExpenseApplyList::getStatusStrForStatusType($record['status_type']),
+                    'status_str'=>ExpenseFun::getStatusStrForStatusType($record['status_type']),
                 );
 			}
 		}
@@ -108,7 +108,7 @@ class ExpenseAuditList extends CListPageModel
         $uid = Yii::app()->user->id;
         $sql = "select count(id)
 				from acc_expense 
-				where status_type=2 and current_username = '{$uid}'
+				where status_type=2 and table_type=1 and current_username = '{$uid}'
 			";
         $rtn = Yii::app()->db->createCommand($sql)->queryScalar();
         return $rtn;

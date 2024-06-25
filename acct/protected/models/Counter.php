@@ -132,6 +132,24 @@ class Counter {
         $rtn=$model->getCountConsult();
         return $rtn;
     }
+
+    public static function countRemitApply() {
+	    $model = new RemitApplyList();
+        $rtn=$model->getCountConsult();
+        return $rtn;
+    }
+
+    public static function countRemitAudit() {
+	    $model = new RemitAuditList();
+        $rtn=$model->getCountConsult();
+        return $rtn;
+    }
+
+    public static function countRemitPayment() {
+	    $model = new RemitPaymentList();
+        $rtn=$model->getCountConsult();
+        return $rtn;
+    }
 }
 
 ?>

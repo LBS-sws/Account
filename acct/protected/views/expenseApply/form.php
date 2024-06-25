@@ -50,6 +50,12 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseApply Form';
 	</div>
 
             <div class="btn-group pull-right" role="group">
+                <?php if (in_array($model->status_type,array(4,6,9))): ?>
+                    <?php echo TbHtml::link('<span class="fa fa-print"></span> '.Yii::t('invoice','print'),Yii::app()->createUrl('expenseApply/print',array("index"=>$model->id)), array(
+                            'class'=>'btn btn-default','target'=>'_blank')
+                    );
+                    ?>
+                <?php endif ?>
                 <?php if ($model->scenario!='new'): ?>
                     <?php echo TbHtml::button('<span class="fa fa-list"></span> '.Yii::t('give','Flow Info'), array(
                             'data-toggle'=>'modal','data-target'=>'#flowinfodialog',)
@@ -265,7 +271,7 @@ $('#btnAddRow').on('click',function() {
 			$(this).attr('id',id);
 			name = name.replace('['+oi.toString()+']', '['+ni.toString()+']');
 			$(this).attr('name',name);
-			if (id.indexOf('_info_date') != -1){
+			if (id.indexOf('_infoDate') != -1){
                 $(this).val('');
                 $(this).datepicker({autoclose: true,language: '$language', format: 'yyyy/mm/dd'});
 			}

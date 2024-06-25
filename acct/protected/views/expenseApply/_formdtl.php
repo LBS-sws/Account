@@ -10,7 +10,7 @@
         ); ?>
     </td>
     <td>
-        <?php echo TbHtml::dropDownList($this->getFieldName('amtType'),  $this->record['amtType'],ExpenseApplyForm::getAmtTypeOne(),
+        <?php echo TbHtml::dropDownList($this->getFieldName('amtType'),  $this->record['amtType'],ExpenseFun::getAmtTypeOne(),
             array('readonly'=>$this->model->readonly(),'empty'=>'','class'=>'changeAmtType')
         ); ?>
     </td>
@@ -42,7 +42,7 @@
     <?php
     $tdJson = isset($this->record['infoJson'])?json_decode($this->record['infoJson'],true):array();
     $tdJson = is_array($tdJson)?$tdJson:array();
-    $tdTwoList = ExpenseApplyForm::getAmtTypeTwo();
+    $tdTwoList = ExpenseFun::getAmtTypeTwo();
     $html = "";
     foreach ($tdTwoList as $key=>$itemList){
         $readonly=$this->model->readonly();

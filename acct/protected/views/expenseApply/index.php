@@ -45,7 +45,7 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseApply';
 							'city',
 							'apply_date',
 							'employee',
-							'position',
+							'department',
 						),
 		));
 	?>

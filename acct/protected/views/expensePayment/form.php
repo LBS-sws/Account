@@ -33,7 +33,7 @@ $this->pageTitle=Yii::app()->name . ' - ExpensePayment Form';
 		<?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
 				'submit'=>Yii::app()->createUrl('expensePayment/index')));
 		?>
-<?php if ($model->status_type==8): ?>
+<?php if ($model->status_type==4): ?>
             <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Approve'), array(
                 'submit'=>Yii::app()->createUrl('expensePayment/audit')));
             ?>
@@ -45,6 +45,12 @@ $this->pageTitle=Yii::app()->name . ' - ExpensePayment Form';
 	</div>
 
             <div class="btn-group pull-right" role="group">
+                <?php if ($model->status_type==4): ?>
+                    <?php echo TbHtml::button('<span class="fa fa-random"></span> '.Yii::t('give','Shift City'), array(
+                            'data-toggle'=>'modal','data-target'=>'#shiftDialog',)
+                    );
+                    ?>
+                <?php endif ?>
                 <?php echo TbHtml::button('<span class="fa fa-list"></span> '.Yii::t('give','Flow Info'), array(
                         'data-toggle'=>'modal','data-target'=>'#flowinfodialog',)
                 );

@@ -41,13 +41,42 @@ class ExpensePaymentForm extends ExpenseApplyForm
         $id = $this->$attribute;
         $city = Yii::app()->user->city();
         if($this->getScenario()!="new"){
-            $row = Yii::app()->db->createCommand()->select("id,city,employee_id,amt_money,lud")->from("acc_expense")
-                ->where("id=:id and status_type=8 and city='{$city}'",array(":id"=>$id))->queryRow();
+            $row = Yii::app()->db->createCommand()->select("*")->from("acc_expense")
+                ->where("id=:id and table_type={$this->table_type} and status_type=4 and city='{$city}'",array(":id"=>$id))->queryRow();
             if($row){
                 $this->city = $row["city"];
                 $this->lud = $row["lud"];
+                $this->exp_code = $row['exp_code'];
+                $this->apply_date = General::toMyDate($row['apply_date']);
                 $this->employee_id = $row["employee_id"];
                 $this->amt_money = floatval($row["amt_money"]);
+                $sql = "select * from acc_expense_info where exp_id='".$id."'";
+                $infoRows = Yii::app()->db->createCommand($sql)->queryAll();
+                if($infoRows){
+                    $this->infoDetail=array();
+                    foreach ($infoRows as $infoRow){
+                        $this->infoDetail[]=array(
+                            "id"=>$infoRow["id"],
+                            "expId"=>$infoRow["exp_id"],
+                            "setId"=>$infoRow["set_id"],
+                            "infoDate"=>General::toMyDate($infoRow["info_date"]),
+                            "amtType"=>$infoRow["amt_type"],
+                            "infoRemark"=>$infoRow["info_remark"],
+                            "infoAmt"=>$infoRow["info_amt"],
+                            "infoJson"=>$infoRow["info_json"],
+                            "uflag"=>"N",
+                        );
+                    }
+                }
+
+                if(!empty($this->fileList)){
+                    $tableDetailList = ExpenseFun::getExpenseTableDetailForID($id);
+                    foreach ($this->fileList as $detailRow){
+                        if(key_exists($detailRow["field_id"],$tableDetailList)){
+                            $this->tableDetail[$detailRow["field_id"]] = $tableDetailList[$detailRow["field_id"]]["field_value"];
+                        }
+                    }
+                }
             }else{
                 $this->addError($attribute, "报销单不存在，请刷新重试");
                 return false;
@@ -59,7 +88,7 @@ class ExpensePaymentForm extends ExpenseApplyForm
 	{
 		$suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city();
-		$sql = "select *,docman$suffix.countdoc('expen',id) as expendoc from acc_expense where id='".$index."' and city='{$city}' and status_type=8";
+		$sql = "select *,docman$suffix.countdoc('expen',id) as expendoc from acc_expense where id='".$index."' and table_type={$this->table_type} and city='{$city}' and status_type in (4,6)";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->id = $index;
@@ -94,6 +123,15 @@ class ExpensePaymentForm extends ExpenseApplyForm
                     );
                 }
             }
+
+            if(!empty($this->fileList)){
+                $tableDetailList = ExpenseFun::getExpenseTableDetailForID($index);
+                foreach ($this->fileList as $detailRow){
+                    if(key_exists($detailRow["field_id"],$tableDetailList)){
+                        $this->tableDetail[$detailRow["field_id"]] = $tableDetailList[$detailRow["field_id"]]["field_value"];
+                    }
+                }
+            }
             return true;
 		}else{
 		    return false;
@@ -106,6 +144,8 @@ class ExpensePaymentForm extends ExpenseApplyForm
 		$transaction=$connection->beginTransaction();
 		try {
 			$this->saveDataForSql($connection);
+
+            $data = $this->curlPaymentJD();//发送消息给金蝶系统
 			$transaction->commit();
 		}
 		catch(Exception $e) {
@@ -122,25 +162,25 @@ class ExpensePaymentForm extends ExpenseApplyForm
 		switch ($this->scenario) {
 			case 'audit':
 				$sql = "update acc_expense set 
-					status_type = 9,
+					status_type = 6,
 					payment_date = :payment_date,
 					payment_type = :payment_type,
 					acc_id = :acc_id,
 					luu = :luu
-					where id = :id";
+					where id = :id and table_type = :table_type";
 				break;
 			case 'reject':
 				$sql = "update acc_expense set 
 					status_type = :status_type,
 					reject_note = :reject_note,
 					luu = :luu
-					where id = :id";
+					where id = :id and table_type = :table_type";
 				break;
 			case 'shift':
 				$sql = "update acc_expense set 
 					city = :shift_city,
 					luu = :luu
-					where id = :id";
+					where id = :id and table_type = :table_type";
 				break;
 		}
 
@@ -149,6 +189,8 @@ class ExpensePaymentForm extends ExpenseApplyForm
 		$command=$connection->createCommand($sql);
 		if (strpos($sql,':id')!==false)
 			$command->bindParam(':id',$this->id,PDO::PARAM_INT);
+		if (strpos($sql,':table_type')!==false)
+			$command->bindParam(':table_type',$this->table_type,PDO::PARAM_INT);
 		if (strpos($sql,':reject_note')!==false)
 			$command->bindParam(':reject_note',$this->reject_note,PDO::PARAM_STR);
 		if (strpos($sql,':current_username')!==false)
@@ -182,9 +224,17 @@ class ExpensePaymentForm extends ExpenseApplyForm
 
         $this->saveHistory($connection);
 
-        $this->addTransOut($connection);//增加扣款申请
+        //$this->addTransOut($connection);//增加扣款申请(扣款需要等待金蝶系统回传消息)
 		return true;
 	}
+
+    //发送消息给金蝶系统
+	protected function curlPaymentJD(){
+        $curlModel = new CurlForPayment();
+        $arr = $curlModel->sendJDCurlForPayment($this);
+        $curlModel->saveTableForArr();
+        return $arr;
+    }
 
 	protected function addTransOut($connection){
         if($this->status_type==9){//已完成
@@ -262,7 +312,16 @@ class ExpensePaymentForm extends ExpenseApplyForm
                     "lcu"=>Yii::app()->user->id
                 ));
                 break;
-            case 7://已拒绝
+            case 6://等待金蝶系统扣款
+                $history_text=array();
+                $history_text[]="<span>等待金蝶系统扣款</span>";
+                $connection->createCommand()->insert("acc_expense_history", array(
+                    "exp_id"=>$this->id,
+                    "history_text"=>implode("<br/>",$history_text),
+                    "lcu"=>Yii::app()->user->id
+                ));
+                break;
+            case 3://已拒绝
                 $history_text=array();
                 $history_text[]="<span>已拒绝</span>";
                 $history_text[]="<span>拒绝原因：{$this->reject_note}</span>";

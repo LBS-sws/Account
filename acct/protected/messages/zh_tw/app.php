@@ -203,6 +203,12 @@ return array(
     'Expense Search'=>'日常費用查詢',
     'Expense Set Form'=>'費用歸屬設置',
     'Expense Set Audit'=>'指定審核人',
-    'Expense Payment'=>'日常費用扣款',
+    'Expense Payment'=>'日常費用銀行確認',
+
+    'Daily remit'=>'日常付款',
+    'Remit Apply'=>'日常付款申請',
+    'Remit Audit'=>'日常付款審核',
+    'Remit Payment'=>'日常付款銀行確認',
+    'Remit Search'=>'日常付款查詢',
 );
 ?>

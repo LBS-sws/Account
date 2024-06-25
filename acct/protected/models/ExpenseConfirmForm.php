@@ -57,7 +57,7 @@ class ExpenseConfirmForm extends ExpenseApplyForm
         $city_allow = Yii::app()->user->city_allow();
         if($this->getScenario()!="new"){
             $row = Yii::app()->db->createCommand()->select("id,city,employee_id,amt_money")->from("acc_expense")
-                ->where("id=:id and status_type=1 and city in ({$city_allow})",array(":id"=>$id))->queryRow();
+                ->where("id=:id and table_type={$this->table_type} and status_type=1 and city in ({$city_allow})",array(":id"=>$id))->queryRow();
             if($row){
                 $this->city = $row["city"];
                 $this->employee_id = $row["employee_id"];
@@ -73,7 +73,7 @@ class ExpenseConfirmForm extends ExpenseApplyForm
 	{
 		$suffix = Yii::app()->params['envSuffix'];
         $city_allow = Yii::app()->user->city_allow();
-		$sql = "select *,docman$suffix.countdoc('expen',id) as expendoc from acc_expense where id='".$index."' and city in ({$city_allow}) and status_type in (1,2)";
+		$sql = "select *,docman$suffix.countdoc('expen',id) as expendoc from acc_expense where id='".$index."' and table_type={$this->table_type} and city in ({$city_allow}) and status_type in (1,2,4,6)";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->id = $index;
@@ -142,14 +142,14 @@ class ExpenseConfirmForm extends ExpenseApplyForm
 					current_username = :current_username,
 					current_num = 0,
 					luu = :luu
-					where id = :id";
+					where id = :id and table_type=:table_type";
 				break;
 			case 'reject':
 				$sql = "update acc_expense set 
 					status_type = :status_type,
 					reject_note = :reject_note,
 					luu = :luu
-					where id = :id";
+					where id = :id and table_type=:table_type";
 				break;
 		}
 
@@ -158,6 +158,8 @@ class ExpenseConfirmForm extends ExpenseApplyForm
 		$command=$connection->createCommand($sql);
 		if (strpos($sql,':id')!==false)
 			$command->bindParam(':id',$this->id,PDO::PARAM_INT);
+		if (strpos($sql,':table_type')!==false)
+			$command->bindParam(':table_type',$this->table_type,PDO::PARAM_INT);
 		if (strpos($sql,':reject_note')!==false)
 			$command->bindParam(':reject_note',$this->reject_note,PDO::PARAM_STR);
 		if (strpos($sql,':current_username')!==false)
@@ -197,7 +199,7 @@ class ExpenseConfirmForm extends ExpenseApplyForm
                     "lcu"=>Yii::app()->user->id
                 ));
                 break;
-            case 7://已拒绝
+            case 3://已拒绝
                 $history_text=array();
                 $history_text[]="<span>已拒绝</span>";
                 $history_text[]="<span>拒绝原因：{$this->reject_note}</span>";

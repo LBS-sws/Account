@@ -208,6 +208,12 @@ return array(
 	'Expense Search'=>'日常费用查询',
 	'Expense Set Form'=>'费用归属设置',
 	'Expense Set Audit'=>'指定审核人',
-	'Expense Payment'=>'日常费用扣款',
+	'Expense Payment'=>'日常费用银行确认',
+
+	'Daily remit'=>'日常付款',
+	'Remit Apply'=>'日常付款申请',
+	'Remit Audit'=>'日常付款审核',
+	'Remit Payment'=>'日常付款银行确认',
+	'Remit Search'=>'日常付款查询',
 );
 ?>

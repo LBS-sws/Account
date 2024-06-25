@@ -85,7 +85,7 @@ CREATE TABLE `acc_expense_info` (
   `exp_id` int(11) NOT NULL,
   `set_id` int(11) NOT NULL COMMENT '费用归属',
   `info_date` date NOT NULL,
-  `amt_type` int(11) NOT NULL COMMENT '费用类别 0：本地费用 1：差旅费用 2：办公费 3：快递费 4：通讯费 5：其它',
+  `amt_type` varchar(255) NOT NULL COMMENT '费用类别 0：本地费用 1：差旅费用 2：办公费 3：快递费 4：通讯费 5：其它',
   `info_remark` text COMMENT '摘要',
   `info_amt` decimal(11,2) NOT NULL COMMENT '金额',
   `info_json` text COMMENT '金额详情的json',

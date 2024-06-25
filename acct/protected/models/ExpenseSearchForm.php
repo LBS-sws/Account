@@ -20,7 +20,7 @@ class ExpenseSearchForm extends ExpenseApplyForm
         $city_allow = Yii::app()->user->city_allow();
         if($this->getScenario()!="new"){
             $row = Yii::app()->db->createCommand()->select("id,city,employee_id,amt_money")->from("acc_expense")
-                ->where("id=:id and status_type=9 and city in ({$city_allow})",array(":id"=>$id))->queryRow();
+                ->where("id=:id and table_type={$this->table_type} and status_type!=0 and city in ({$city_allow})",array(":id"=>$id))->queryRow();
             if($row){
                 $this->city = $row["city"];
                 $this->employee_id = $row["employee_id"];
@@ -37,7 +37,7 @@ class ExpenseSearchForm extends ExpenseApplyForm
 		$suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
         $city_allow = Yii::app()->user->city_allow();
-		$sql = "select *,docman$suffix.countdoc('expen',id) as expendoc from acc_expense where id='".$index."' and (city in ({$city_allow}) or FIND_IN_SET('{$uid}',audit_user)) and status_type=9";
+		$sql = "select *,docman$suffix.countdoc('expen',id) as expendoc from acc_expense where id='".$index."' and table_type={$this->table_type} and (city in ({$city_allow}) or FIND_IN_SET('{$uid}',audit_user)) and status_type!=0";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->id = $index;
@@ -70,6 +70,15 @@ class ExpenseSearchForm extends ExpenseApplyForm
                         "infoJson"=>$infoRow["info_json"],
                         "uflag"=>"N",
                     );
+                }
+            }
+
+            if(!empty($this->fileList)){
+                $tableDetailList = ExpenseFun::getExpenseTableDetailForID($index);
+                foreach ($this->fileList as $detailRow){
+                    if(key_exists($detailRow["field_id"],$tableDetailList)){
+                        $this->tableDetail[$detailRow["field_id"]] = $tableDetailList[$detailRow["field_id"]]["field_value"];
+                    }
                 }
             }
             return true;
@@ -161,7 +170,7 @@ class ExpenseSearchForm extends ExpenseApplyForm
                     "lcu"=>Yii::app()->user->id
                 ));
                 break;
-            case 7://已拒绝
+            case 3://已拒绝
                 $history_text=array();
                 $history_text[]="<span>已拒绝</span>";
                 $history_text[]="<span>拒绝原因：{$this->reject_note}</span>";

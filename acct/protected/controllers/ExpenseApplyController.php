@@ -24,7 +24,7 @@ class ExpenseApplyController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','audit','fileupload','fileremove'),
+				'actions'=>array('new','edit','delete','save','audit','fileupload','fileremove','print'),
 				'expression'=>array('ExpenseApplyController','allowReadWrite'),
 			),
 			array('allow', 
@@ -36,6 +36,17 @@ class ExpenseApplyController extends Controller
 			),
 		);
 	}
+
+    public function actionPrint($index)
+    {
+        $model = new ExpenseApplyForm;
+        if (!$model->retrievePrint($index)) {
+            throw new CHttpException(404,'The requested page does not exist.');
+        } else {
+            $model->printOne();
+            Yii::app()->end();
+        }
+    }
 
 	public function actionIndex($pageNum=0) 
 	{
@@ -107,7 +118,7 @@ class ExpenseApplyController extends Controller
 	public function actionNew()
 	{
 		$model = new ExpenseApplyForm('new');
-		ExpenseApplyForm::setModelEmployee($model,"employee_id");
+		ExpenseFun::setModelEmployee($model,"employee_id");
 		$this->render('form',array('model'=>$model,));
 	}
 	

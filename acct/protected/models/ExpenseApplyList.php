@@ -29,14 +29,14 @@ class ExpenseApplyList extends CListPageModel
 				LEFT JOIN hr{$suffix}.hr_employee b ON a.employee_id=b.id
 				LEFT JOIN hr{$suffix}.hr_dept f ON b.department=f.id
 				LEFT JOIN security{$suffix}.sec_city g ON g.code=a.city
-				where a.lcu='{$uid}' 
+				where a.lcu='{$uid}' and a.table_type=1 
 			";
 		$sql2 = "select count(a.id)
 				from acc_expense a 
 				LEFT JOIN hr{$suffix}.hr_employee b ON a.employee_id=b.id
 				LEFT JOIN hr{$suffix}.hr_dept f ON b.department=f.id
 				LEFT JOIN security{$suffix}.sec_city g ON g.code=a.city
-				where a.lcu='{$uid}' 
+				where a.lcu='{$uid}' and a.table_type=1  
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -87,8 +87,8 @@ class ExpenseApplyList extends CListPageModel
                     'apply_date'=>General::toDate($record['apply_date']),
                     'amt_money'=>$record['amt_money'],
                     'status_type'=>$record['status_type'],
-                    'color'=>self::getColorForStatusType($record['status_type']),
-                    'status_str'=>self::getStatusStrForStatusType($record['status_type']),
+                    'color'=>ExpenseFun::getColorForStatusType($record['status_type']),
+                    'status_str'=>ExpenseFun::getStatusStrForStatusType($record['status_type']),
                 );
 			}
 		}
@@ -97,44 +97,12 @@ class ExpenseApplyList extends CListPageModel
 		return true;
 	}
 
-	public static function getColorForStatusType($status_type){
-	    $list = array(
-	        0=>" ",//草稿
-	        1=>" text-primary",//待确认
-	        2=>" text-primary",//待审核
-	        7=>" text-danger",//已拒绝
-	        8=>" text-info",//待扣款
-	        9=>" text-muted",//已完成
-        );
-	    if(key_exists($status_type,$list)){
-	        return $list[$status_type];
-        }else{
-            return "";
-        }
-    }
-
-	public static function getStatusStrForStatusType($status_type){
-	    $list = array(
-	        0=>Yii::t("give","draft"),//草稿
-	        1=>Yii::t("give","wait confirm"),//待确认
-	        2=>Yii::t("give","wait audit"),//待审核
-	        7=>Yii::t("give","rejected"),//已拒绝
-	        8=>Yii::t("give","wait payment"),//待扣款
-	        9=>Yii::t("give","finish"),//已完成
-        );
-        if(key_exists($status_type,$list)){
-            return $list[$status_type];
-        }else{
-            return $status_type;
-        }
-    }
-
     public function getCountConsult(){
         //$suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
         $sql = "select count(id)
 				from acc_expense 
-				where lcu='{$uid}' and status_type=7  
+				where lcu='{$uid}' and table_type=1 and status_type=7  
 			";
         $rtn = Yii::app()->db->createCommand($sql)->queryScalar();
         return $rtn;

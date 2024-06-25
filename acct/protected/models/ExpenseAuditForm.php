@@ -31,7 +31,7 @@ class ExpenseAuditForm extends ExpenseApplyForm
         $city_allow = Yii::app()->user->city_allow();
         if($this->getScenario()!="new"){
             $row = Yii::app()->db->createCommand()->select("id,city,employee_id,amt_money,audit_user,audit_json,current_num,current_username")->from("acc_expense")
-                ->where("id=:id and status_type=2 and FIND_IN_SET('{$uid}',audit_user)",array(":id"=>$id))->queryRow();
+                ->where("id=:id and table_type={$this->table_type} and status_type=2 and FIND_IN_SET('{$uid}',audit_user)",array(":id"=>$id))->queryRow();
             if($row){
                 $this->city = $row["city"];
                 $this->employee_id = $row["employee_id"];
@@ -52,7 +52,7 @@ class ExpenseAuditForm extends ExpenseApplyForm
 		$suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
         $city_allow = Yii::app()->user->city_allow();
-		$sql = "select *,docman$suffix.countdoc('expen',id) as expendoc from acc_expense where id='".$index."' and status_type in (2,8) and FIND_IN_SET('{$uid}',audit_user)";
+		$sql = "select *,docman$suffix.countdoc('expen',id) as expendoc from acc_expense where id='".$index."' and table_type={$this->table_type} and status_type in (2,4,6) and FIND_IN_SET('{$uid}',audit_user)";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->id = $index;
@@ -88,6 +88,15 @@ class ExpenseAuditForm extends ExpenseApplyForm
                     );
                 }
             }
+
+            if(!empty($this->fileList)){
+                $tableDetailList = ExpenseFun::getExpenseTableDetailForID($index);
+                foreach ($this->fileList as $detailRow){
+                    if(key_exists($detailRow["field_id"],$tableDetailList)){
+                        $this->tableDetail[$detailRow["field_id"]] = $tableDetailList[$detailRow["field_id"]]["field_value"];
+                    }
+                }
+            }
             return true;
 		}else{
 		    return false;
@@ -117,7 +126,7 @@ class ExpenseAuditForm extends ExpenseApplyForm
             $this->current_username = $auditUser[$this->current_num];
         }else{
             //审核完成
-            $this->status_type=8;
+            $this->status_type=4;
         }
     }
 
@@ -133,14 +142,14 @@ class ExpenseAuditForm extends ExpenseApplyForm
 					current_username = :current_username,
 					current_num = :current_num,
 					luu = :luu
-					where id = :id";
+					where id = :id and table_type=:table_type";
 				break;
 			case 'reject':
 				$sql = "update acc_expense set 
 					status_type = :status_type,
 					reject_note = :reject_note,
 					luu = :luu
-					where id = :id";
+					where id = :id and table_type=:table_type";
 				break;
 		}
 
@@ -149,6 +158,8 @@ class ExpenseAuditForm extends ExpenseApplyForm
 		$command=$connection->createCommand($sql);
 		if (strpos($sql,':id')!==false)
 			$command->bindParam(':id',$this->id,PDO::PARAM_INT);
+		if (strpos($sql,':table_type')!==false)
+			$command->bindParam(':table_type',$this->table_type,PDO::PARAM_INT);
 		if (strpos($sql,':reject_note')!==false)
 			$command->bindParam(':reject_note',$this->reject_note,PDO::PARAM_STR);
 		if (strpos($sql,':current_num')!==false)
@@ -199,7 +210,7 @@ class ExpenseAuditForm extends ExpenseApplyForm
                     "lcu"=>$uid
                 ));
                 break;
-            case 7://已拒绝
+            case 3://已拒绝
                 $history_text=array();
                 $history_text[]="<span>已拒绝</span>";
                 $history_text[]="<span>拒绝原因：{$this->reject_note}</span>";
@@ -209,9 +220,9 @@ class ExpenseAuditForm extends ExpenseApplyForm
                     "lcu"=>$uid
                 ));
                 break;
-            case 8://已审核
+            case 4://已审核
                 $history_text=array();
-                $history_text[]="<span>已审核，等待城市扣款</span>";
+                $history_text[]="<span>已审核，等待填写银行</span>";
                 $history_text[]="<span>扣款城市：".General::getCityName($this->city)."</span>";
                 $connection->createCommand()->insert("acc_expense_history", array(
                     "exp_id"=>$this->id,
