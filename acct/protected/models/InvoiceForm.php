@@ -553,7 +553,7 @@ class InvoiceForm extends CFormModel
         $newBool=false;
         if($model->head_type==1){//
             $logoImg = "images/lbs_pdf_new.jpg";
-            $logoCompany_tw="LBS (Macau) Limited";
+            $logoCompany_tw="史伟莎（澳门）一人有限公司/<br/>LBS (Macau) Limited";
             $logoCompany_en="LBS (Macau) Limited";
             $newBool=true;
         }
@@ -998,7 +998,7 @@ class InvoiceForm extends CFormModel
             if(empty($row['head_type'])){
                 $html.="<td>佳駿企業有限公司</td>";
             }else{
-                $html.="<td>LBS (Macau) Limited</td>";
+                $html.="<td>史伟莎（澳门）一人有限公司/LBS (Macau) Limited</td>";
             }
             $html.="<td>".$row["invoice_amt"]."</td>";
             $html.="</tr>";

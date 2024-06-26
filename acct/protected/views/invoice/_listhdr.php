@@ -39,7 +39,7 @@
 			;
 		?>
 	</th>
-	<th>
+	<th width="13%">
 		<?php echo TbHtml::link($this->getLabelName('head_type').$this->drawOrderArrow('a.head_type'),'#',$this->createOrderLink('Invoice-list','a.head_type'))
 			;
 		?>

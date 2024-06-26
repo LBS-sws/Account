@@ -84,7 +84,7 @@ $this->pageTitle=Yii::app()->name . ' - Invoice Form';
 				<?php echo $form->labelEx($model,'head_type',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-5">
                     <?php
-                    echo $form->dropDownList($model, 'head_type',array(0=>"佳駿企業有限公司",1=>"LBS (Macau) Limited"),
+                    echo $form->dropDownList($model, 'head_type',array(0=>"佳駿企業有限公司",1=>"史伟莎（澳门）一人有限公司/LBS (Macau) Limited"),
                         array('readonly'=>'')
                     ); ?>
                 </div>
