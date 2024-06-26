@@ -40,7 +40,7 @@ class CurlForPayment extends CurlForJD{
         $suffix = Yii::app()->params['envSuffix'];
         $list = Yii::app()->db->createCommand()->select("field_value")
             ->from("account{$suffix}.acc_send_set_jd")
-            ->where("table_id=:table_id and set_type='jd_org_code'",array(':table_id'=>$acc_id))
+            ->where("table_id=:table_id and field_id='jd_org_code'",array(':table_id'=>$acc_id))
             ->queryRow();
         if($list){
             return $list["field_value"];
@@ -79,7 +79,7 @@ class CurlForPayment extends CurlForJD{
         $suffix = Yii::app()->params['envSuffix'];
         $list = Yii::app()->db->createCommand()->select("field_value")
             ->from("account{$suffix}.acc_send_set_jd")
-            ->where("table_id=:table_id and set_type='jd_trans_code'",array(':table_id'=>$id))
+            ->where("table_id=:table_id and field_id='jd_trans_code'",array(':table_id'=>$id))
             ->queryRow();
         if($list){
             return $list["field_value"];
