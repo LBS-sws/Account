@@ -11,7 +11,7 @@
 					<div class="input-group">
 						<select class="form-control pull-right" name="InvoiceList[bulkHeadType]" id="InvoiceList_bulkHeadType">
 							<option value="0">佳駿企業有限公司</option>
-							<option value="1">LBS (Macau) Limited</option>
+							<option value="1">史伟莎（澳门）一人有限公司/LBS (Macau) Limited</option>
 						</select>
 					</div>
 			</div>
