@@ -549,11 +549,15 @@ class InvoiceForm extends CFormModel
         //$logoImg = "images/lbs_pdf.jpg";
         $logoImg = "images/lbs_pdf_new.jpg";
         $logoCompany_tw="佳駿企業有限公司";
+        $logoCompany_tw_one="佳駿企業有限公司”)";
+        $logoCompany_tw_two="";
         $logoCompany_en="Kai Jun Enterprises Ltd";
         $newBool=false;
         if($model->head_type==1){//
             $logoImg = "images/lbs_pdf_new.jpg";
-            $logoCompany_tw="史伟莎（澳门）一人有限公司/<br/>LBS (Macau) Limited";
+            $logoCompany_tw="LBS (Macau) Limited";
+            $logoCompany_tw_one="史伟莎（澳门）一人有限公司/";
+            $logoCompany_tw_two="LBS (Macau) Limited”)";
             $logoCompany_en="LBS (Macau) Limited";
             $newBool=true;
         }
@@ -584,19 +588,19 @@ class InvoiceForm extends CFormModel
 		<td><span >LBS Macau (O/B '.$logoCompany_en.'.)</span></td>
 	</tr>
 	<tr>
-		<td><span>澳門慕拉士大馬路一八五至一九一號</span></td>
+		<td><span>澳門工業中心十樓B座</span></td>
 		<td><span>Avenida Venceslau de Morais NO185 - 191,</span></td>
 	</tr>
 	<tr>
-		<td><span>澳門工業中心十樓B座</span></td>
+		<td><span>電話：(853) 2871 9588 傳真：2871 9727</span></td>
 		<td><span>10 Andar B Ed Centro Industrial Macau, Macau</span></td>
 	</tr>
 	<tr>
-		<td><span>電話：(853) 2871 9588 傳真：2871 9727</span></td>
+		<td><span style="color:red;">(支票抬頭 “'.$logoCompany_tw_one.'</span></td>
 		<td><span>Tel.: (853) 2871 9588 Fax: 2871 9727</span></td>
 	</tr>
 	<tr>
-		<td><span style="color:red;">(支票抬頭 “'.$logoCompany_tw.'”)</span></td>
+		<td><span style="color:red;">'.$logoCompany_tw_two.'</span></td>
 		<td><span style="color:red;">(Cheque payable to“'.$logoCompany_en.'.”)</span></td>
 	</tr>
 </table>
