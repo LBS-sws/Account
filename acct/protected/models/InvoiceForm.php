@@ -588,7 +588,7 @@ class InvoiceForm extends CFormModel
 		<td><span >LBS Macau (O/B '.$logoCompany_en.'.)</span></td>
 	</tr>
 	<tr>
-		<td><span>澳門工業中心十樓B座</span></td>
+		<td><span>澳門慕拉士大馬路澳門工業中心十樓B座</span></td>
 		<td><span>Avenida Venceslau de Morais NO185 - 191,</span></td>
 	</tr>
 	<tr>
