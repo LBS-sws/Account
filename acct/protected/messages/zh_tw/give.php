@@ -75,5 +75,13 @@ return array(
     'JD System Curl' => '金蝶同步相關數據',
     'jd trans code' => '金蝶結算方式編碼',
     'jd org code' => '金蝶組織編碼',
+
+    'trip bool' => '是否關聯出差申請',
+    'trip id' => '選擇出差申請',
+    'local bool' => '費用是否歸屬本地區',
+    'return city' => '對應城市編號',
+    'payment condition' => '付款條件',
+    'purchase bool' => '是否采購單',
+    'purchase code' => '采購單編號',
 );
 ?>

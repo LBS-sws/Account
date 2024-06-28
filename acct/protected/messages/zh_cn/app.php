@@ -215,5 +215,7 @@ return array(
 	'Remit Audit'=>'日常付款审核',
 	'Remit Payment'=>'日常付款银行确认',
 	'Remit Search'=>'日常付款查询',
+
+	'Expense Report'=>'日常费用报销报表',
 );
 ?>

@@ -1,7 +1,7 @@
 <tr class="changeTr">
     <td>
         <?php echo TbHtml::dropDownList($this->getFieldName('setId'),  $this->record['setId'],ExpenseSetNameForm::getExpenseSetNameList($this->record['setId']),
-            array('readonly'=>$this->model->readonly(),'empty'=>'')
+            array('readonly'=>($this->model->readonly()||$this->model->tableDetail['local_bool']==1),'empty'=>'','class'=>'setId')
         ); ?>
     </td>
     <td>
@@ -16,7 +16,7 @@
     </td>
     <td>
         <?php echo TbHtml::textArea($this->getFieldName('infoRemark'),  $this->record['infoRemark'],
-            array('readonly'=>$this->model->readonly(),'rows'=>1)
+            array('readonly'=>$this->model->readonly(),'rows'=>2,'class'=>'infoRemark')
         ); ?>
     </td>
     <td>

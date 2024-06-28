@@ -210,5 +210,7 @@ return array(
     'Remit Audit'=>'日常付款審核',
     'Remit Payment'=>'日常付款銀行確認',
     'Remit Search'=>'日常付款查詢',
+
+    'Expense Report'=>'日常費用報銷報表',
 );
 ?>

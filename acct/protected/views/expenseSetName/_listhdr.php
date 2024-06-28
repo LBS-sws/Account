@@ -6,6 +6,11 @@
 		?>
 	</th>
 	<th>
+		<?php echo TbHtml::link($this->getLabelName('return_value').$this->drawOrderArrow('return_value'),'#',$this->createOrderLink('expenseSetName-list','return_value'))
+			;
+		?>
+	</th>
+	<th>
 		<?php echo TbHtml::link($this->getLabelName('z_index').$this->drawOrderArrow('z_index'),'#',$this->createOrderLink('expenseSetName-list','z_index'))
 			;
 		?>

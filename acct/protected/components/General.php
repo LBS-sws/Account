@@ -704,6 +704,28 @@ class General {
             }
         }
     }
+
+    public static function getCityNameForList($code) {
+        if(empty($code)){
+            return "";
+        }
+        if (self::isJSON($code)){
+            $list = json_decode($code,true);
+            $cityList = array();
+            foreach ($list as $city){
+                $cityList[]=self::getCityName($city);
+            }
+            return implode("、",$cityList);
+        }elseif(strpos($code,",")!==false){
+            $suffix = Yii::app()->params['envSuffix'];
+            $sql = "select name from security$suffix.sec_city where code in ({$code})";
+            $rows = Yii::app()->db->createCommand($sql)->queryAll();
+            $cityList = array_column($rows,"name");
+            return implode("、",$cityList);
+        }else{
+            return self::getCityName($code);
+        }
+    }
 }
 
 ?>

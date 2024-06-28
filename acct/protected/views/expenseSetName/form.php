@@ -53,14 +53,23 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseSetName Form';
 			<?php echo $form->hiddenField($model, 'scenario'); ?>
 			<?php echo $form->hiddenField($model, 'id'); ?>
 
-			<div class="form-group">
-				<?php echo $form->labelEx($model,'name',array('class'=>"col-lg-2 control-label")); ?>
-				<div class="col-lg-5">
-				<?php echo $form->textField($model, 'name', 
-					array('size'=>50,'maxlength'=>100,'readonly'=>($model->scenario=='view'))
-				); ?>
-				</div>
-			</div>
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'name',array('class'=>"col-lg-2 control-label")); ?>
+                <div class="col-lg-5">
+                    <?php echo $form->textField($model, 'name',
+                        array('readonly'=>($model->scenario=='view'))
+                    ); ?>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'return_value',array('class'=>"col-lg-2 control-label")); ?>
+                <div class="col-lg-5">
+                    <?php echo $form->textField($model, 'return_value',
+                        array('readonly'=>($model->scenario=='view'))
+                    ); ?>
+                </div>
+            </div>
 
 			<div class="form-group">
 				<?php echo $form->labelEx($model,'z_index',array('class'=>"col-lg-2 control-label")); ?>

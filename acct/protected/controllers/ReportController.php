@@ -4,6 +4,7 @@ class ReportController extends Controller
 	protected static $actions = array(
 						'reimburse'=>'XB02',
 						'translist'=>'XB03',
+						'expense'=>'XB08',
 					);
 	
 	public function filters()
@@ -62,6 +63,26 @@ class ReportController extends Controller
 			}
 		}
 		$this->render('form_trans',array('model'=>$model));
+	}
+
+	public function actionExpense() {
+		$this->function_id = 'XB08';
+		Yii::app()->session['active_func'] = $this->function_id;
+		$model = new Report02Form;
+        $model->id = 'RptExpense';
+        $model->name = Yii::t("app","Expense Report");
+        $model->fields = 'city,start_dt,end_dt';
+		if (isset($_POST['Report02Form'])) {
+			$model->attributes = $_POST['Report02Form'];
+			if ($model->validate()) {
+				$model->addQueueItem();
+				Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Report submitted. Please go to Report Manager to retrieve the output.'));
+			} else {
+				$message = CHtml::errorSummary($model);
+				Dialog::message(Yii::t('dialog','Validation Message'), $message);
+			}
+		}
+		$this->render('form_citylist',array('model'=>$model,"action"=>"expense"));
 	}
 
 	public static function allowExecute() {

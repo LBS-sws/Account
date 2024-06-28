@@ -144,6 +144,10 @@ return array(
 		'access'=>'XB',
 		'icon'=>'fa-file-text-o',
 		'items'=>array(
+			'Expense Report'=>array( //日常费用报销申请
+				'access'=>'XB08',
+				'url'=>'/report/expense',
+			),
 			'Reimbursement Form'=>array(
 				'access'=>'XB02',
 				'url'=>'/report/reimburse',

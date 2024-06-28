@@ -1,5 +1,10 @@
 
 -- ----------------------------
+-- Table structure for acc_set_name
+-- ----------------------------
+ALTER TABLE acc_set_name ADD COLUMN return_value varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '对应的值' AFTER z_index;
+
+-- ----------------------------
 -- Table structure for acc_expense
 -- ----------------------------
 ALTER TABLE acc_expense ADD COLUMN apply_city varchar(50) NULL DEFAULT NULL COMMENT '申请时的城市' AFTER city;

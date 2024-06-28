@@ -76,6 +76,7 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseSearch Form';
 </section>
 
 <?php $this->renderPartial('//expenseApply/expenseHistory',array("model"=>$model)); ?>
+<?php $this->renderPartial('//expenseApply/tripForm',array("model"=>$model)); ?>
 
 <?php $this->renderPartial('//site/fileupload',array('model'=>$model,
     'form'=>$form,

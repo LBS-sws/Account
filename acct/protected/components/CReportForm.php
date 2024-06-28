@@ -136,25 +136,25 @@ class CReportForm extends CFormModel
 		$now = date("Y-m-d H:i:s");
 		if (empty($rpt_array)) $rpt_array = array($this->id=>$this->name);
 		$this->ccuser = (!empty($this->ccuser) && is_array($this->ccuser)) ? array_merge($this->ccuser, $bosses) : $bosses;
-		$data = array(
-					'RPT_ID'=>$this->id,
-					'RPT_NAME'=>$this->name,
-					'CITY'=>$this->city,
-					'PAPER_SZ'=>$this->paper_sz,
-					'FIELD_LST'=>$this->fields,
-					'START_DT'=>General::toMyDate($this->start_dt),
-					'END_DT'=>General::toMyDate($this->end_dt),
-					'TARGET_DT'=>General::toMyDate($this->target_dt),
-					'EMAIL'=>$this->email,
-					'EMAILCC'=>$this->emailcc,
-					'TOUSER'=>$this->touser,
-					'CCUSER'=>json_encode($this->ccuser),
-					'RPT_ARRAY'=>json_encode($rpt_array),
-					'LANGUAGE'=>Yii::app()->language,
-					'CITY_NAME'=>Yii::app()->user->city_name(),
-					'YEAR'=>$this->year,
-					'MONTH'=>$this->month,
-				);
+        $data = array(
+            'RPT_ID'=>$this->id,
+            'RPT_NAME'=>$this->name,
+            'CITY'=>(is_array($this->city) ? json_encode($this->city) : $this->city),
+            'PAPER_SZ'=>$this->paper_sz,
+            'FIELD_LST'=>$this->fields,
+            'START_DT'=>General::toMyDate($this->start_dt),
+            'END_DT'=>General::toMyDate($this->end_dt),
+            'TARGET_DT'=>General::toMyDate($this->target_dt),
+            'EMAIL'=>$this->email,
+            'EMAILCC'=>$this->emailcc,
+            'TOUSER'=>$this->touser,
+            'CCUSER'=>json_encode($this->ccuser),
+            'RPT_ARRAY'=>json_encode($rpt_array),
+            'LANGUAGE'=>Yii::app()->language,
+            'CITY_NAME'=>Yii::app()->user->city_name(),
+            'YEAR'=>$this->year,
+            'MONTH'=>$this->month,
+        );
 		$dataex = $this->queueItemEx();
 		if (!empty($dataex)) $data = array_merge($data, $dataex);
 		

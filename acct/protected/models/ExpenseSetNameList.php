@@ -14,6 +14,7 @@ class ExpenseSetNameList extends CListPageModel
 			'name'=>Yii::t('give','Name'),
 			'z_index'=>Yii::t('give','z_index'),
 			'display'=>Yii::t('give','display'),
+			'return_value'=>Yii::t('give','return city'),
 		);
 	}
 	
@@ -60,6 +61,7 @@ class ExpenseSetNameList extends CListPageModel
 					$this->attr[] = array(
 						'id'=>$record['id'],
 						'name'=>$record['name'],
+						'return_value'=>$record['return_value'],
 						'z_index'=>$record['z_index'],
                         'display'=>$record['z_display']==1?Yii::t('give',"show"):Yii::t('give',"none"),
 					);

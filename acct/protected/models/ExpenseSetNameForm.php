@@ -5,6 +5,7 @@ class ExpenseSetNameForm extends CFormModel
 	/* User Fields */
 	public $id;
 	public $name;
+	public $return_value;
 	public static $type_str="expense";
 	public $z_index=0;
 	public $z_display=1;
@@ -18,6 +19,7 @@ class ExpenseSetNameForm extends CFormModel
 	{
 		return array(
             'name'=>Yii::t('give','Name'),
+            'return_value'=>Yii::t('give','return city'),
             'z_display'=>Yii::t('give','display'),
             'z_index'=>Yii::t('give','z_index'),
 		);
@@ -29,8 +31,8 @@ class ExpenseSetNameForm extends CFormModel
 	public function rules()
 	{
 		return array(
-            array('id,name,z_index,z_display','safe'),
-			array('name','required'),
+            array('id,name,return_value,z_index,z_display','safe'),
+			array('name,return_value','required'),
             array('z_index,z_display','numerical','allowEmpty'=>false,'integerOnly'=>true),
             array('id','validateID','on'=>array("delete")),
 		);
@@ -55,6 +57,7 @@ class ExpenseSetNameForm extends CFormModel
 		if ($row!==false) {
 			$this->id = $row['id'];
 			$this->name = $row['name'];
+			$this->return_value = $row['return_value'];
 			$this->z_display = $row['z_display'];
 			$this->z_index = $row['z_index'];
             return true;
@@ -116,12 +119,13 @@ class ExpenseSetNameForm extends CFormModel
 				break;
 			case 'new':
 				$sql = "insert into acc_set_name(
-						name,type_str, z_index, z_display, lcu, lcd) values (
-						:name,'{$type_str}', :z_index, :z_display, :lcu, :lcd)";
+						name,type_str, return_value, z_index, z_display, lcu, lcd) values (
+						:name,'{$type_str}', :return_value, :z_index, :z_display, :lcu, :lcd)";
 				break;
 			case 'edit':
 				$sql = "update acc_set_name set 
 					name = :name, 
+					return_value = :return_value,
 					z_index = :z_index,
 					z_display = :z_display,
 					luu = :luu
@@ -140,6 +144,8 @@ class ExpenseSetNameForm extends CFormModel
 			$command->bindParam(':z_display',$this->z_display,PDO::PARAM_INT);
 		if (strpos($sql,':name')!==false)
 			$command->bindParam(':name',$this->name,PDO::PARAM_STR);
+		if (strpos($sql,':return_value')!==false)
+			$command->bindParam(':return_value',$this->return_value,PDO::PARAM_STR);
 
 		if (strpos($sql,':lcu')!==false)
 			$command->bindParam(':lcu',$uid,PDO::PARAM_STR);

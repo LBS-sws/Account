@@ -49,8 +49,18 @@ class ExpenseApplyForm extends CFormModel
     public $docMasterId = 0;
     public $files;
     public $removeFileId = 0;
-    public $tableDetail=array();
-    protected $fileList=array();
+    public $tableDetail=array(
+        'trip_bool'=>0,//是否关联出差申请 0:不关联 1：关联
+        'trip_id'=>null,//出差id
+        'local_bool'=>0,//费用是否归属本地区 0：否 1：是
+        'payment_condition'=>null,//付款条件
+    );
+    protected $fileList=array(
+        array("field_id"=>"trip_bool","field_type"=>"list","field_name"=>"trip bool","display"=>"none"),//是否关联出差申请
+        array("field_id"=>"trip_id","field_type"=>"list","field_name"=>"trip id","display"=>"none"),//出差id
+        array("field_id"=>"local_bool","field_type"=>"list","field_name"=>"local bool","display"=>"none"),//费用是否归属本地区
+        array("field_id"=>"payment_condition","field_type"=>"list","field_name"=>"payment condition","display"=>"none"),//付款条件
+    );
 
 	/**
 	 * Declares customized attribute labels.
@@ -95,7 +105,23 @@ class ExpenseApplyForm extends CFormModel
 	}
 
 	public function validateDetail($attribute, $params){
-
+        if(!empty($this->tableDetail["trip_bool"])){
+            if(empty($this->tableDetail["trip_id"])){
+                $this->addError($attribute, "关联的出差申请不能为空");
+                return false;
+            }
+            $suffix = Yii::app()->params['envSuffix'];
+            $row = Yii::app()->db->createCommand()->select("id,trip_cause,trip_cost,trip_code")->from("hr{$suffix}.hr_employee_trip")
+                ->where("id=:id and employee_id=:employee_id",array(
+                    ":id"=>$this->tableDetail["trip_id"],":employee_id"=>$this->employee_id
+                ))->queryRow();
+            if(!$row){
+                $this->addError($attribute, "出差申请id不存在，请刷新重试");
+                return false;
+            }
+        }else{
+            $this->tableDetail["trip_id"]=null;
+        }
     }
 
     public function validateStatus($attribute, $params) {//验证是否有审核人
@@ -142,7 +168,11 @@ class ExpenseApplyForm extends CFormModel
         $deleteList = array();
         $this->amt_money = 0;
         $typeTwoList = ExpenseFun::getAmtTypeTwo();
+        $localSetID = ExpenseFun::getLocalSetIdToCity($this->city);
         foreach ($this->infoDetail as $list){
+            if($this->tableDetail["local_bool"]==1){
+                $list["setId"] = $localSetID;//如果费用是归属本地区,强制转换
+            }
             $temp = array();
             if($list["uflag"]=="D"){
                 $deleteList[] = $list;
@@ -189,6 +219,7 @@ class ExpenseApplyForm extends CFormModel
         if($row){
             $this->employee_id = $id;
             $this->city = $row["city"];
+            return true;
         }else{
             $this->addError($attribute, "员工不存在，请刷新重试");
             return false;

@@ -40,6 +40,14 @@ class ExpenseFun
     }
 
     //获取外部列表
+    public static function getPaymentConditionList(){
+        return array(
+            "1001"=>"等待金蝶系统提供条件1",//
+            "1002"=>"等待金蝶系统提供条件2",
+        );
+    }
+
+    //获取外部列表
     public static function getOutsideList(){
         return array(
             "0"=>Yii::t("give","personal"),
@@ -48,6 +56,13 @@ class ExpenseFun
     }
     //获取是否加急列表
     public static function getUrgentList(){
+        return array(
+            "0"=>Yii::t("give","No"),
+            "1"=>Yii::t("give","Yes"),
+        );
+    }
+    //获取是否列表
+    public static function getNoOrYesList(){
         return array(
             "0"=>Yii::t("give","No"),
             "1"=>Yii::t("give","Yes"),
@@ -84,6 +99,58 @@ class ExpenseFun
         }else{
             $model->$str = null;
         }
+    }
+
+    public static function getTripListForEmployeeID($employee_id,$not_id=0) {
+        $notList =array();
+        $list = array();
+        $suffix = Yii::app()->params['envSuffix'];
+        $rows = Yii::app()->db->createCommand()->select("id,trip_cause,trip_cost,trip_code")
+            ->from("hr{$suffix}.hr_employee_trip")
+            ->where("employee_id=:employee_id and status=4",array(
+                ":employee_id"=>$employee_id
+            ))->queryAll();
+        $selectRows = Yii::app()->db->createCommand()->select("a.field_value")
+            ->from("acc_expense_detail a")
+            ->leftJoin("acc_expense b","a.exp_id=b.id")
+            ->where("a.field_id='trip_id' and a.field_value is not null and b.employee_id=:employee_id and a.field_value!=:id",array(
+                ":employee_id"=>$employee_id,":id"=>$not_id
+            ))->queryAll();
+        if($selectRows){
+            foreach ($selectRows as $selectRow){
+                $notList[$selectRow["field_value"]] =$selectRow["field_value"];
+            }
+        }
+        if($rows){
+            foreach ($rows as $row){
+                if(!in_array($row["id"],$notList)){
+                    $list[$row["id"]] = "(".$row["trip_code"].") ".$row["trip_cause"]."；预估总费用:".floatval($row["trip_cost"]);
+                }
+            }
+        }
+        return $list;
+    }
+
+    public static function getTripNameForTripID($trip_id) {
+        $suffix = Yii::app()->params['envSuffix'];
+        $row = Yii::app()->db->createCommand()->select("id,trip_cause,trip_cost,trip_code")
+            ->from("hr{$suffix}.hr_employee_trip")
+            ->where("id=:id",array(":id"=>$trip_id))->queryRow();
+        if($row){
+            return "(".$row["trip_code"].") ".$row["trip_cause"]."；预估总费用:".floatval($row["trip_cost"]);
+        }
+        return "";
+    }
+
+    public static function getLocalSetIdToCity($city) {
+        $row = Yii::app()->db->createCommand()->select("id")
+            ->from("acc_set_name")
+            ->where("return_value=:city and type_str='expense'",array(":city"=>$city))
+            ->order("z_index asc")->queryRow();
+        if($row){
+            return $row["id"];
+        }
+        return "";
     }
 
     public static function getEmployeeListForID($id) {
@@ -211,6 +278,15 @@ class ExpenseFun
         );
     }
 
+    public static function getAmtTypeStrToKeyTwo($key){
+        $list = self::getAmtTypeTwo();
+        if(key_exists($key,$list)){
+            return $list[$key]["name"];
+        }else{
+            return $key;
+        }
+    }
+
     public static function getKeyNameForList($list,$key){
         $key="".$key;
 	    if(key_exists($key,$list)){
@@ -318,5 +394,67 @@ class ExpenseFun
             $html = "<li><a>请输入客户名称</a></li>";
         }
         return $html;
+    }
+
+    public static function getAMPMList(){
+        return array(
+            "AM"=>"上午",
+            "PM"=>"下午",
+        );
+    }
+
+    public static function getAjaxTripDataForId($id){
+        $returnData = array('status'=>0,'data'=>array());
+        $suffix = Yii::app()->params['envSuffix'];
+        $tripRow = Yii::app()->db->createCommand()->select("*")
+            ->from("hr{$suffix}.hr_employee_trip")
+            ->where("id=:id",array(":id"=>$id))->queryRow();
+        if($tripRow){
+            $AMPMList = self::getAMPMList();
+            $moneySetList=array();
+            $moneySetRows = Yii::app()->db->createCommand()->select("*")
+                ->from("hr{$suffix}.hr_trip_money_set")
+                ->where("id>0")->queryAll();
+            if($moneySetRows){
+                foreach ($moneySetRows as $moneySetRow){
+                    $moneySetList[$moneySetRow["id"]]=$moneySetRow["pro_name"];
+                }
+            }
+            $dateRows = Yii::app()->db->createCommand()->select("*")
+                ->from("hr{$suffix}.hr_employee_trip_info")
+                ->where("trip_id=:id",array(":id"=>$id))->queryAll();
+            $infoRows = Yii::app()->db->createCommand()->select("*")
+                ->from("hr{$suffix}.hr_employee_trip_money")
+                ->where("trip_id=:id",array(":id"=>$id))->queryAll();
+            $returnData["status"]=1;
+            $returnData["data"]["trip_cost"]=floatval($tripRow["trip_cost"]);
+            $returnData["data"]["trip_cause"]=$tripRow["trip_cause"];
+            $returnData["data"]["trip_address"]=$tripRow["trip_address"];
+            $returnData["data"]["trip_company"]=$tripRow["company_name"];
+            $returnData["data"]["trip_result"]=$tripRow["result_text"];
+            $returnData["data"]["trip_date"]=array();
+            if($dateRows){
+                foreach ($dateRows as $dateRow){
+                    $temp ="<tr>";
+                    $temp.="<td>".$dateRow["start_time"]."(".self::getKeyNameForList($AMPMList,$dateRow["start_time_lg"]).")</td>";
+                    $temp.="<td>".$dateRow["end_time"]."(".self::getKeyNameForList($AMPMList,$dateRow["end_time_lg"]).")</td>";
+                    $temp.="</tr>";
+                    $returnData["data"]["trip_date"][]=$temp;
+                }
+            }
+            $returnData["data"]["trip_date"]=implode("",$returnData["data"]["trip_date"]);
+            $returnData["data"]["trip_money"]=array();
+            if($infoRows){
+                foreach ($infoRows as $infoRow){
+                    $temp ="<tr>";
+                    $temp.="<td>".self::getKeyNameForList($moneySetList,$infoRow["money_set_id"])."</td>";
+                    $temp.="<td>".floatval($infoRow["trip_money"])."</td>";
+                    $temp.="</tr>";
+                    $returnData["data"]["trip_money"][]=$temp;
+                }
+            }
+            $returnData["data"]["trip_money"]=implode("",$returnData["data"]["trip_money"]);
+        }
+        return $returnData;
     }
 }

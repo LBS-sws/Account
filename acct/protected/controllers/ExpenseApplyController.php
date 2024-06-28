@@ -31,11 +31,26 @@ class ExpenseApplyController extends Controller
 				'actions'=>array('index','view','filedownload'),
 				'expression'=>array('ExpenseApplyController','allowReadOnly'),
 			),
+			array('allow',
+				'actions'=>array('ajaxTrip'),
+				'expression'=>array('ExpenseApplyController','allowAjax'),
+			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
 			),
 		);
 	}
+
+    public function actionAjaxTrip()
+    {
+        if(Yii::app()->request->isAjaxRequest) {//是否ajax请求
+            $index = key_exists("trip_id",$_POST)?$_POST["trip_id"]:0;
+            $data =ExpenseFun::getAjaxTripDataForId($index);
+            echo CJSON::encode($data);//Yii 的方法将数组处理成json数据
+        }else{
+            $this->redirect(Yii::app()->createUrl('expenseApply/index'));
+        }
+    }
 
     public function actionPrint($index)
     {
@@ -119,7 +134,11 @@ class ExpenseApplyController extends Controller
 	{
 		$model = new ExpenseApplyForm('new');
 		ExpenseFun::setModelEmployee($model,"employee_id");
-		$this->render('form',array('model'=>$model,));
+		if($model->validateEmployee("employee_id",'')){
+            $this->render('form',array('model'=>$model,));
+        }else{
+            throw new CHttpException(404,'账号未绑定员工，请与管理员联系');
+        }
 	}
 	
 	public function actionEdit($index)
@@ -197,5 +216,9 @@ class ExpenseApplyController extends Controller
 	
 	public static function allowReadOnly() {
 		return Yii::app()->user->validFunction('DE01');
+	}
+
+	public static function allowAjax() {
+		return true;
 	}
 }

@@ -88,6 +88,7 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseApply Form';
 
 <?php $this->renderPartial('//site/removedialog'); ?>
 <?php $this->renderPartial('//expenseApply/expenseHistory',array("model"=>$model)); ?>
+<?php $this->renderPartial('//expenseApply/tripForm',array("model"=>$model)); ?>
 
 <?php $this->renderPartial('//site/fileupload',array('model'=>$model,
     'form'=>$form,
@@ -276,7 +277,13 @@ $('#btnAddRow').on('click',function() {
                 $(this).datepicker({autoclose: true,language: '$language', format: 'yyyy/mm/dd'});
 			}
 			if (id.indexOf('_id') != -1) $(this).val(0);
-			if (id.indexOf('_setId') != -1) $(this).val('');
+			if (id.indexOf('_setId') != -1){
+			    if($('input[name="ExpenseApplyForm[tableDetail][local_bool]"]:checked').val()==0){
+			        $(this).removeAttr('readonly').removeClass('readonly').val('');
+			    }else{
+                   $(this).attr('readonly','readonly').addClass('readonly').val($("#localSetID").val());
+			    }
+			};
 			if (id.indexOf('_infoRemark') != -1) $(this).val('');
 			if (id.indexOf('_amtType') != -1){
 			    $(this).val('').trigger('change');
