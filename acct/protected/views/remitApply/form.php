@@ -12,6 +12,7 @@ $this->pageTitle=Yii::app()->name . ' - RemitApply Form';
     *[readonly]{ pointer-events: none;}
     .table-fixed{ table-layout: fixed;}
     .table-fixed>tbody>tr>th{ vertical-align: bottom;}
+    .select2-container .select2-selection--single{ height: 34px;}
 </style>
 
 <section class="content-header">

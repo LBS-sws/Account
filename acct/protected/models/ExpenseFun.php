@@ -89,6 +89,19 @@ class ExpenseFun
         return $list;
     }
 
+    public static function getPaymentCompanyList(){
+        $list=array();
+        $suffix = Yii::app()->params['envSuffix'];
+        $rows = Yii::app()->db->createCommand()->select("id,name")->from("hr{$suffix}.hr_company")
+            ->where("id>0")->order("city asc,tacitly desc,id desc")->queryAll();
+        if($rows){
+            foreach ($rows as $row){
+                $list[$row["id"]] = $row["name"];
+            }
+        }
+        return $list;
+    }
+
     public static function setModelEmployee($model,$str="employee_id"){
         $suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;

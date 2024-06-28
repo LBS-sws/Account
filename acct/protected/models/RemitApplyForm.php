@@ -20,6 +20,9 @@ class RemitApplyForm extends ExpenseApplyForm
         "end_pay_date"=>"",//最晚付款日
         "invoice_bool"=>0,//发票情况
         "invoice_no"=>"",//发票号码
+        'purchase_bool'=>0,//是否采购单
+        'purchase_code'=>null,//采购单编号
+        'payment_condition'=>null,//付款条件
     );
     protected $fileList=array(
         array("field_id"=>"outside","field_type"=>"list","field_name"=>"outside","display"=>"none"),//外部
@@ -32,6 +35,11 @@ class RemitApplyForm extends ExpenseApplyForm
         array("field_id"=>"end_pay_date","field_type"=>"text","field_name"=>"end pay date","display"=>"none"),//最晚付款日
         array("field_id"=>"invoice_bool","field_type"=>"list","field_name"=>"invoice bool","display"=>"none"),//发票情况
         array("field_id"=>"invoice_no","field_type"=>"text","field_name"=>"invoice no","display"=>"none"),//发票号码
+
+        array("field_id"=>"purchase_bool","field_type"=>"list","field_name"=>"purchase bool","display"=>"none"),//是否采购单
+        array("field_id"=>"purchase_code","field_type"=>"list","field_name"=>"purchase code","display"=>"none"),//采购单编号
+        array("field_id"=>"payment_condition","field_type"=>"list","field_name"=>"payment condition","display"=>"none"),//付款条件
+        array("field_id"=>"payment_company","field_type"=>"list","field_name"=>"payment company","display"=>"none"),//支付公司
     );
 
     public function validateDetail($attribute, $params){
@@ -59,6 +67,15 @@ class RemitApplyForm extends ExpenseApplyForm
             if($this->tableDetail["invoice_bool"]==1){//有发票情况
                 if(empty($this->tableDetail["invoice_no"])){
                     $this->addError($attribute, "发票号码不能为空");
+                }
+            }
+        }
+        if (!key_exists("purchase_bool",$this->tableDetail)||$this->tableDetail["purchase_bool"]===""){
+            $this->addError($attribute, "物料采购不能为空");
+        }else{
+            if($this->tableDetail["purchase_bool"]==1){//是物料采购
+                if(empty($this->tableDetail["purchase_code"])){
+                    $this->addError($attribute, "采购订单/财务应付单不能为空");
                 }
             }
         }

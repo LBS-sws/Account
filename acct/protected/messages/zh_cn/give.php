@@ -81,8 +81,8 @@ return array(
 	'local bool' => '费用是否归属本地区',
 	'return city' => '对应城市编号',
 	'payment condition' => '付款条件',
-	'purchase bool' => '是否采购单',
-	'purchase code' => '采购单编号',
+	'purchase bool' => '物料采购',
+	'purchase code' => '采购订单/财务应付单',
 
 	'company and city' => '申请人所在公司/地区',
 	'rpt expense code' => '单据编码',
@@ -101,5 +101,6 @@ return array(
 	'account date' => '付款时间',
 	'link trip code' => '关联出差申请编号',
 	'link pay code' => '关联暂支申请编号',
+	'payment company' => '支付公司',
 );
 ?>

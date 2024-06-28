@@ -237,7 +237,7 @@ function convertCurrency(money) {
 　　return ChineseStr;  
 }
 
-$('.changeNumber').trigger('change');
+$('.changeSumNumber').trigger('change');
 ";
 Yii::app()->clientScript->registerScript('changeAmt',$js,CClientScript::POS_READY);
 
