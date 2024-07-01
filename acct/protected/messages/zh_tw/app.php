@@ -212,5 +212,11 @@ return array(
     'Remit Search'=>'日常付款查詢',
 
     'Expense Report'=>'日常費用報銷報表',
+
+    'Daily temporary'=>'暫支單',
+    'Temporary Apply'=>'暫支單申請',
+    'Temporary Audit'=>'暫支單審核',
+    'Temporary Payment'=>'暫支單銀行確認',
+    'Temporary Search'=>'暫支單查詢',
 );
 ?>

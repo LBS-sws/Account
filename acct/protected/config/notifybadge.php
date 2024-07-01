@@ -15,6 +15,9 @@ return array(
     array('code'=>'RT01','function'=>'Counter::countRemitApply','color'=>'bg-yellow'),
     array('code'=>'RT02','function'=>'Counter::countRemitAudit','color'=>'bg-blue'),
     array('code'=>'RT03','function'=>'Counter::countRemitPayment','color'=>'bg-orange'),
+    array('code'=>'TA01','function'=>'Counter::countTemporaryApply','color'=>'bg-yellow'),
+    array('code'=>'TA02','function'=>'Counter::countTemporaryAudit','color'=>'bg-blue'),
+    array('code'=>'TA03','function'=>'Counter::countTemporaryPayment','color'=>'bg-orange'),
 );
 
 ?>

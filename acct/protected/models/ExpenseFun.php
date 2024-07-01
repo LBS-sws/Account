@@ -184,6 +184,28 @@ class ExpenseFun
         }
     }
 
+    public static function getEmployeeAllListForID($id) {
+        $suffix = Yii::app()->params['envSuffix'];
+        $row = Yii::app()->db->createCommand()->select("a.code,a.name,a.city,b.name as department_name,f.name as position_name")
+            ->from("hr{$suffix}.hr_employee a")
+            ->leftJoin("hr{$suffix}.hr_dept b","a.department=b.id")
+            ->leftJoin("hr{$suffix}.hr_dept f","a.position=f.id")
+            ->where("a.id=:id",array(":id"=>$id))->queryRow();
+        if($row){
+            $cityName = General::getCityName($row["city"]);
+            return array(
+                "code"=>$row["code"],
+                "name"=>$row["name"],
+                "city_name"=>$cityName,
+                "employee"=>$row["name"]." ({$row["code"]})",
+                "department"=>$row["department_name"],
+                "position"=>$row["position_name"]
+            );
+        }else{
+            return array("code"=>"","name"=>"","city_name"=>"","employee"=>$id,"department"=>"","position"=>"");
+        }
+    }
+
     public static function getAuditListForID($id) {
         $rows = Yii::app()->db->createCommand()->select("*")
             ->from("acc_expense_audit")

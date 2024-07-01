@@ -217,5 +217,11 @@ return array(
 	'Remit Search'=>'日常付款查询',
 
 	'Expense Report'=>'日常费用报销报表',
+
+	'Daily temporary'=>'暂支单',
+	'Temporary Apply'=>'暂支单申请',
+	'Temporary Audit'=>'暂支单审核',
+	'Temporary Payment'=>'暂支单银行确认',
+	'Temporary Search'=>'暂支单查询',
 );
 ?>

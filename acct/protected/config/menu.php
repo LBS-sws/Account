@@ -49,6 +49,28 @@ return array(
             ),
         )
     ),
+	'Daily temporary'=>array( //暂支单
+		'access'=>'TA',
+		'icon'=>'fa-inbox',
+		'items'=>array(
+            'Temporary Apply'=>array(//日常付款申请
+                'access'=>'TA01',
+                'url'=>'/temporaryApply/index',
+            ),
+            'Temporary Audit'=>array(//日常付款审核
+                'access'=>'TA02',
+                'url'=>'/temporaryAudit/index',
+            ),
+            'Temporary Payment'=>array(//日常付款银行确认
+                'access'=>'TA03',
+                'url'=>'/temporaryPayment/index',
+            ),
+            'Temporary Search'=>array(//日常付款查询
+                'access'=>'TA04',
+                'url'=>'/temporarySearch/index',
+            ),
+        )
+    ),
 	'Daily remit'=>array( //日常付款申请
 		'access'=>'RT',
 		'icon'=>'fa-money',

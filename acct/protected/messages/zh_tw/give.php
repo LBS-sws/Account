@@ -102,5 +102,8 @@ return array(
     'link trip code' => '關聯出差申請編號',
     'link pay code' => '關聯暫支申請編號',
     'payment company' => '支付公司',
+    'purpose text' => '用途',
+    'loan start date' => '借款開始日期',
+    'loan end date' => '借款結束日期',
 );
 ?>

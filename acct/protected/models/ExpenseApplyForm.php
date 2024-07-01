@@ -76,6 +76,8 @@ class ExpenseApplyForm extends CFormModel
             'employee_id'=>Yii::t('give','apply user'),
             'employee'=>Yii::t('give','apply user'),
             'department'=>Yii::t('give','department'),
+            'position'=>Yii::t('give','position'),
+            'city_name'=>Yii::t('give','City'),
             'amt_money'=>Yii::t('give','sum money'),
             'status_type'=>Yii::t('give','status type'),
             'remark'=>Yii::t('give','remark'),

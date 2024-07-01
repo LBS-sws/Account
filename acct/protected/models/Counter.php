@@ -150,6 +150,24 @@ class Counter {
         $rtn=$model->getCountConsult();
         return $rtn;
     }
+
+    public static function countTemporaryApply() {
+	    $model = new TemporaryApplyList();
+        $rtn=$model->getCountConsult();
+        return $rtn;
+    }
+
+    public static function countTemporaryAudit() {
+	    $model = new TemporaryAuditList();
+        $rtn=$model->getCountConsult();
+        return $rtn;
+    }
+
+    public static function countTemporaryPayment() {
+	    $model = new TemporaryPaymentList();
+        $rtn=$model->getCountConsult();
+        return $rtn;
+    }
 }
 
 ?>
