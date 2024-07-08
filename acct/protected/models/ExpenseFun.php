@@ -126,9 +126,8 @@ class ExpenseFun
         $selectRows = Yii::app()->db->createCommand()->select("a.field_value")
             ->from("acc_expense_detail a")
             ->leftJoin("acc_expense b","a.exp_id=b.id")
-            ->where("a.field_id='trip_id' and a.field_value is not null and b.employee_id=:employee_id and a.field_value!=:id",array(
-                ":employee_id"=>$employee_id,":id"=>$not_id
-            ))->queryAll();
+            ->where("a.field_id='trip_id' and a.field_value is not null and b.employee_id='{$employee_id}' and a.field_value!='{$not_id}'")
+            ->queryAll();
         if($selectRows){
             foreach ($selectRows as $selectRow){
                 $notList[$selectRow["field_value"]] =$selectRow["field_value"];
@@ -414,7 +413,7 @@ class ExpenseFun
             $group = str_replace("'","\'",$group);
             $records = Yii::app()->db->createCommand()->select('*')
                 ->from("swoper{$suffix}.swo_supplier")
-                ->where("city=:city and (name like '%$group%' or code like '%$group%' or full_name like '%$group%')",array(
+                ->where("(city=:city or local_bool=0) and (name like '%$group%' or code like '%$group%' or full_name like '%$group%')",array(
                     ":city"=>$city
                 ))->queryAll();
             if($records){
