@@ -45,7 +45,7 @@ class LookupController extends Controller
         $searchx = str_replace("'","\'",$search);
         $records = Yii::app()->db->createCommand()->select("id,code,name")
             ->from("hr{$suffix}.hr_employee")
-            ->where("(name like '%$searchx%' or code like '%$searchx%') and staff_status=0 and city in ($city_allow)")->queryAll();
+            ->where("(name like '%$searchx%' or code like '%$searchx%') and ((staff_status=0 and table_type=1) or ((staff_status=1 and table_type!=1))) and city in ($city_allow)")->queryAll();
         $notArr = array();
         switch ($searchType){
             case "expense"://日常费用报销
