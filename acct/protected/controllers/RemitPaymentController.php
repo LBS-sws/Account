@@ -60,7 +60,7 @@ class RemitPaymentController extends Controller
 			$model = new RemitPaymentForm("audit");
 			$model->attributes = $_POST['RemitPaymentForm'];
 			if ($model->validate()) {
-                $model->status_type=6;
+                $model->status_type=9;
 				$model->saveData();
 				$model->scenario = 'edit';
 				Dialog::message(Yii::t('dialog','Information'), Yii::t('give','Confirm Done'));

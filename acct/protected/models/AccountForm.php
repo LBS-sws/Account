@@ -17,7 +17,7 @@ class AccountForm extends CFormModel
 
     public $jd_set = array();
     public static $jd_set_list=array(
-        array("field_id"=>"jd_org_code","field_type"=>"text","field_name"=>"jd org code"),
+        array("field_id"=>"jd_acct_code","field_type"=>"text","field_name"=>"jd acct code"),
     );
 
 	public function init() {

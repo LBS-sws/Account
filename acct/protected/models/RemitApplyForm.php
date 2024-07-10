@@ -20,7 +20,7 @@ class RemitApplyForm extends ExpenseApplyForm
         "end_pay_date"=>"",//最晚付款日
         "invoice_bool"=>0,//发票情况
         "invoice_no"=>"",//发票号码
-        'purchase_bool'=>0,//是否采购单
+        'purchase_type'=>0,//是否采购单
         'purchase_code'=>null,//采购单编号
         'payment_condition'=>null,//付款条件
     );
@@ -36,7 +36,8 @@ class RemitApplyForm extends ExpenseApplyForm
         array("field_id"=>"invoice_bool","field_type"=>"list","field_name"=>"invoice bool","display"=>"none"),//发票情况
         array("field_id"=>"invoice_no","field_type"=>"text","field_name"=>"invoice no","display"=>"none"),//发票号码
 
-        array("field_id"=>"purchase_bool","field_type"=>"list","field_name"=>"purchase bool","display"=>"none"),//是否采购单
+        array("field_id"=>"prepayment","field_type"=>"list","field_name"=>"prepayment","display"=>"none"),//预付款
+        array("field_id"=>"purchase_type","field_type"=>"list","field_name"=>"purchase bool","display"=>"none"),//是否采购单
         array("field_id"=>"purchase_code","field_type"=>"list","field_name"=>"purchase code","display"=>"none"),//采购单编号
         array("field_id"=>"payment_condition","field_type"=>"list","field_name"=>"payment condition","display"=>"none"),//付款条件
         array("field_id"=>"payment_company","field_type"=>"list","field_name"=>"payment company","display"=>"none"),//支付公司
@@ -70,10 +71,11 @@ class RemitApplyForm extends ExpenseApplyForm
                 }
             }
         }
-        if (!key_exists("purchase_bool",$this->tableDetail)||$this->tableDetail["purchase_bool"]===""){
-            $this->addError($attribute, "物料采购不能为空");
+        //in_array($model->tableDetail['purchase_type'],array("A0","A4","A5","A7")
+        if (!key_exists("purchase_type",$this->tableDetail)||$this->tableDetail["purchase_type"]===""){
+            $this->addError($attribute, "付款类别不能为空");
         }else{
-            if($this->tableDetail["purchase_bool"]==1){//是物料采购
+            if(in_array($this->tableDetail['purchase_type'],array("A0","A4","A5","A7"))){//是物料采购
                 if(empty($this->tableDetail["purchase_code"])){
                     $this->addError($attribute, "采购订单/财务应付单不能为空");
                 }
@@ -101,12 +103,10 @@ class RemitApplyForm extends ExpenseApplyForm
                         $this->addError($attribute, "日期不能为空");
                         break;
                     }
-                    /*
                     if($list["amtType"]===""){
                         $this->addError($attribute, "费用类别不能为空");
                         break;
                     }
-                    */
                 }
             }
         }

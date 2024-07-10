@@ -53,19 +53,22 @@ return array(
 		'access'=>'TA',
 		'icon'=>'fa-inbox',
 		'items'=>array(
-            'Temporary Apply'=>array(//日常付款申请
+            'Temporary Apply'=>array(//暂支单申请
                 'access'=>'TA01',
                 'url'=>'/temporaryApply/index',
             ),
-            'Temporary Audit'=>array(//日常付款审核
+            'Temporary Audit'=>array(//暂支单审核
                 'access'=>'TA02',
                 'url'=>'/temporaryAudit/index',
             ),
-            'Temporary Payment'=>array(//日常付款银行确认
+            /*
+            'Temporary Payment'=>array(//暂支单银行确认
                 'access'=>'TA03',
                 'url'=>'/temporaryPayment/index',
+                'hidden'=>true,
             ),
-            'Temporary Search'=>array(//日常付款查询
+            */
+            'Temporary Search'=>array(//暂支单查询
                 'access'=>'TA04',
                 'url'=>'/temporarySearch/index',
             ),
@@ -83,10 +86,12 @@ return array(
                 'access'=>'RT02',
                 'url'=>'/remitAudit/index',
             ),
+            /*
             'Remit Payment'=>array(//日常付款银行确认
                 'access'=>'RT03',
                 'url'=>'/remitPayment/index',
-            ),
+                'hidden'=>true,
+            ),*/
             'Remit Search'=>array(//日常付款查询
                 'access'=>'RT04',
                 'url'=>'/remitSearch/index',
@@ -110,10 +115,12 @@ return array(
                 'access'=>'DE03',
                 'url'=>'/expenseAudit/index',
             ),
+            /*
             'Expense Payment'=>array(//报销银行确认
                 'access'=>'DE07',
                 'url'=>'/expensePayment/index',
             ),
+            */
             'Expense Search'=>array(//报销查询
                 'access'=>'DE04',
                 'url'=>'/expenseSearch/index',

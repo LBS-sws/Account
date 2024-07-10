@@ -27,6 +27,8 @@ class ExpenseApplyForm extends CFormModel
 	public $lcd;
 	public $lud;
 
+	public $finance_bool=false;
+
 	public $infoDetail=array(
 	    array(
             "id"=>"",
@@ -54,12 +56,14 @@ class ExpenseApplyForm extends CFormModel
         'trip_id'=>null,//出差id
         'local_bool'=>0,//费用是否归属本地区 0：否 1：是
         'payment_condition'=>null,//付款条件
+        'payment_company'=>null,//支付公司
     );
     protected $fileList=array(
         array("field_id"=>"trip_bool","field_type"=>"list","field_name"=>"trip bool","display"=>"none"),//是否关联出差申请
         array("field_id"=>"trip_id","field_type"=>"list","field_name"=>"trip id","display"=>"none"),//出差id
         array("field_id"=>"local_bool","field_type"=>"list","field_name"=>"local bool","display"=>"none"),//费用是否归属本地区
         array("field_id"=>"payment_condition","field_type"=>"list","field_name"=>"payment condition","display"=>"none"),//付款条件
+        array("field_id"=>"payment_company","field_type"=>"list","field_name"=>"payment company","display"=>"none"),//支付公司
     );
 
 	/**
@@ -202,6 +206,8 @@ class ExpenseApplyForm extends CFormModel
                         $this->addError($attribute, "费用类别不能为空");
                         break;
                     }
+                }else{
+                    $this->addError($attribute, "费用金额不能为空");
                 }
             }
         }
@@ -285,6 +291,8 @@ class ExpenseApplyForm extends CFormModel
                 foreach ($this->fileList as $detailRow){
                     if(key_exists($detailRow["field_id"],$tableDetailList)){
                         $this->tableDetail[$detailRow["field_id"]] = $tableDetailList[$detailRow["field_id"]]["field_value"];
+                    }else{
+                        $this->tableDetail[$detailRow["field_id"]] = "";
                     }
                 }
             }

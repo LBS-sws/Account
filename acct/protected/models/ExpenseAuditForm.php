@@ -9,7 +9,7 @@ class ExpenseAuditForm extends ExpenseApplyForm
 	public function rules()
 	{
 		return array(
-            array('id,exp_code,employee_id,apply_date,city,status_type,amt_money,remark,reject_note','safe'),
+            array('tableDetail,id,exp_code,employee_id,apply_date,city,status_type,amt_money,remark,reject_note','safe'),
 			array('employee_id,apply_date','required'),
             array('id','validateID'),
             array('employee_id','validateEmployee'),
@@ -62,6 +62,7 @@ class ExpenseAuditForm extends ExpenseApplyForm
             $this->city = $row['city'];
             $this->status_type = $row['status_type'];
             $this->current_username = $row['current_username'];
+            $this->audit_json = json_decode($row["audit_json"],true);
             $this->amt_money = $row['amt_money'];
             $this->remark = $row['remark'];
             $this->reject_note = $row['reject_note'];
@@ -94,6 +95,8 @@ class ExpenseAuditForm extends ExpenseApplyForm
                 foreach ($this->fileList as $detailRow){
                     if(key_exists($detailRow["field_id"],$tableDetailList)){
                         $this->tableDetail[$detailRow["field_id"]] = $tableDetailList[$detailRow["field_id"]]["field_value"];
+                    }else{
+                        $this->tableDetail[$detailRow["field_id"]] = "";
                     }
                 }
             }
@@ -109,7 +112,15 @@ class ExpenseAuditForm extends ExpenseApplyForm
 		$transaction=$connection->beginTransaction();
 		try {
 			$this->saveDataForSql($connection);
-			$transaction->commit();
+            $data = $this->curlPaymentJD();//发送消息给金蝶系统
+            if($data["code"]==200){
+                $transaction->commit();
+                return true;
+            }else{
+                $this->addError("id", $data["message"]);
+                $transaction->rollback();
+                return false;
+            }
 		}
 		catch(Exception $e) {
 		    var_dump($e);
@@ -117,6 +128,17 @@ class ExpenseAuditForm extends ExpenseApplyForm
 			throw new CHttpException(404,'Cannot update.');
 		}
 	}
+
+    //发送消息给金蝶系统
+    protected function curlPaymentJD(){
+        $arr=array("code"=>200,"message"=>"");
+	    if($this->status_type==6){
+            $curlModel = new CurlForPayment();
+            $arr = $curlModel->sendJDCurlForPayment($this);
+            $curlModel->saveTableForArr();
+        }
+        return $arr;
+    }
 
 	protected function setAuditFinish(){
 	    $this->current_num++;
@@ -126,7 +148,7 @@ class ExpenseAuditForm extends ExpenseApplyForm
             $this->current_username = $auditUser[$this->current_num];
         }else{
             //审核完成
-            $this->status_type=4;
+            $this->status_type=6;
         }
     }
 
@@ -223,6 +245,24 @@ class ExpenseAuditForm extends ExpenseApplyForm
             case 4://已审核
                 $history_text=array();
                 $history_text[]="<span>已审核，等待填写银行</span>";
+                $history_text[]="<span>扣款城市：".General::getCityName($this->city)."</span>";
+                $connection->createCommand()->insert("acc_expense_history", array(
+                    "exp_id"=>$this->id,
+                    "history_type"=>2,
+                    "history_text"=>implode("<br/>",$history_text),
+                    "lcu"=>$uid
+                ));
+                $connection->createCommand()->insert("acc_expense_audit", array(
+                    "exp_id"=>$this->id,
+                    "audit_user"=>$uid,
+                    "audit_str"=>$audit_str,
+                    "audit_date"=>date_format(date_create(),"Y/m/d"),
+                    "lcu"=>$uid
+                ));
+                break;
+            case 6://等待金蝶系统扣款
+                $history_text=array();
+                $history_text[]="<span>已审核，等待金蝶系统扣款</span>";
                 $history_text[]="<span>扣款城市：".General::getCityName($this->city)."</span>";
                 $connection->createCommand()->insert("acc_expense_history", array(
                     "exp_id"=>$this->id,

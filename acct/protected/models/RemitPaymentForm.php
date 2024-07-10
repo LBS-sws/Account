@@ -15,7 +15,8 @@ class RemitPaymentForm extends ExpensePaymentForm
         array("field_id"=>"invoice_bool","field_type"=>"list","field_name"=>"invoice bool","display"=>"none"),//发票情况
         array("field_id"=>"invoice_no","field_type"=>"text","field_name"=>"invoice no","display"=>"none"),//发票号码
 
-        array("field_id"=>"purchase_bool","field_type"=>"list","field_name"=>"purchase bool","display"=>"none"),//是否采购单
+        array("field_id"=>"prepayment","field_type"=>"list","field_name"=>"prepayment","display"=>"none"),//预付款
+        array("field_id"=>"purchase_type","field_type"=>"list","field_name"=>"purchase bool","display"=>"none"),//是否采购单
         array("field_id"=>"purchase_code","field_type"=>"list","field_name"=>"purchase code","display"=>"none"),//采购单编号
         array("field_id"=>"payment_condition","field_type"=>"list","field_name"=>"payment condition","display"=>"none"),//付款条件
         array("field_id"=>"payment_company","field_type"=>"list","field_name"=>"payment company","display"=>"none"),//支付公司

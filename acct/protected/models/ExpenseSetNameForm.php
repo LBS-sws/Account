@@ -41,7 +41,7 @@ class ExpenseSetNameForm extends CFormModel
     public function validateID($attribute, $params) {
         $id = $this->$attribute;
         $row = Yii::app()->db->createCommand()->select("id")->from("acc_expense_info")
-            ->where("name_id=:id",array(":id"=>$id))->queryRow();
+            ->where("set_id=:id",array(":id"=>$id))->queryRow();
         if($row){
             $this->addError($attribute, "这条记录已被使用无法删除");
             return false;

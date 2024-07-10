@@ -129,6 +129,8 @@ class ExpensePaymentForm extends ExpenseApplyForm
                 foreach ($this->fileList as $detailRow){
                     if(key_exists($detailRow["field_id"],$tableDetailList)){
                         $this->tableDetail[$detailRow["field_id"]] = $tableDetailList[$detailRow["field_id"]]["field_value"];
+                    }else{
+                        $this->tableDetail[$detailRow["field_id"]] = "";
                     }
                 }
             }
@@ -162,7 +164,7 @@ class ExpensePaymentForm extends ExpenseApplyForm
 		switch ($this->scenario) {
 			case 'audit':
 				$sql = "update acc_expense set 
-					status_type = 6,
+					status_type = 9,
 					payment_date = :payment_date,
 					payment_type = :payment_type,
 					acc_id = :acc_id,

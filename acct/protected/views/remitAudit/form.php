@@ -33,7 +33,7 @@ $this->pageTitle=Yii::app()->name . ' - RemitAudit Form';
 		<?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
 				'submit'=>Yii::app()->createUrl('remitAudit/index')));
 		?>
-<?php if ($model->current_username==Yii::app()->user->id): ?>
+<?php if ($model->status_type==2&&$model->current_username==Yii::app()->user->id): ?>
             <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Approve'), array(
                 'submit'=>Yii::app()->createUrl('remitAudit/audit')));
             ?>

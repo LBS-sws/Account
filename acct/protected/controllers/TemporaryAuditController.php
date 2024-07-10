@@ -61,15 +61,21 @@ class TemporaryAuditController extends Controller
 			$model->attributes = $_POST['TemporaryAuditForm'];
 			if ($model->validate()) {
                 $model->status_type=2;
-				$model->saveData();
+				$bool = $model->saveData();
 				$model->scenario = 'edit';
-				Dialog::message(Yii::t('dialog','Information'), Yii::t('give','Audit Done'));
-                $this->redirect(Yii::app()->createUrl('temporaryAudit/index'));
+				if($bool){
+                    Dialog::message(Yii::t('dialog','Information'), Yii::t('give','Audit Done'));
+                    $this->redirect(Yii::app()->createUrl('temporaryAudit/index'));
+                }else{
+                    $message = CHtml::errorSummary($model);
+                    Dialog::message("金蝶系统异常", $message);
+                    $this->redirect(Yii::app()->createUrl('temporaryAudit/edit',array("index"=>$model->id)));
+                }
 			} else {
                 $model->scenario = 'edit';
 				$message = CHtml::errorSummary($model);
 				Dialog::message(Yii::t('dialog','Validation Message'), $message);
-				$this->render('form',array('model'=>$model,));
+                $this->redirect(Yii::app()->createUrl('temporaryAudit/edit',array("index"=>$model->id)));
 			}
 		}
 	}

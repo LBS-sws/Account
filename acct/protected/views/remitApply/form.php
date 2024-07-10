@@ -267,7 +267,7 @@ EOF;
 
     $js = <<<EOF
 $(document).ready(function(){
-	var ct = $('#tblDetail>tbody>tr').eq(-1).html();
+	var ct = $('#tblDetail>tbody>tr.changeTr').eq(0).html();
 	$('#dtltemplate').attr('value',ct);
 });
 
@@ -295,7 +295,8 @@ $('#btnAddRow').on('click',function() {
 			if (id.indexOf('_setId') != -1) $(this).val('');
 			if (id.indexOf('_infoRemark') != -1) $(this).val('');
 			if (id.indexOf('_amtType') != -1){
-			    $(this).val('').trigger('change');
+			    $(this).val('');
+			    $('#purchase_type').trigger('change');
 			}
 		});
 		if (nid != '') {

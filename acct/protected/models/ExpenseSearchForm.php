@@ -78,6 +78,8 @@ class ExpenseSearchForm extends ExpenseApplyForm
                 foreach ($this->fileList as $detailRow){
                     if(key_exists($detailRow["field_id"],$tableDetailList)){
                         $this->tableDetail[$detailRow["field_id"]] = $tableDetailList[$detailRow["field_id"]]["field_value"];
+                    }else{
+                        $this->tableDetail[$detailRow["field_id"]] = "";
                     }
                 }
             }

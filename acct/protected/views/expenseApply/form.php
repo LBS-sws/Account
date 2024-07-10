@@ -252,7 +252,7 @@ EOF;
 
     $js = <<<EOF
 $(document).ready(function(){
-	var ct = $('#tblDetail>tbody>tr').eq(-1).html();
+	var ct = $('#tblDetail>tbody>tr.changeTr').eq(0).html();
 	$('#dtltemplate').attr('value',ct);
 });
 

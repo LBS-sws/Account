@@ -258,6 +258,33 @@ class ExpenseFun
         return $list;
     }
 
+    //根据员工id获取公司id
+    public static function getCompanyIdToEmployeeID($employeeId) {
+        $suffix = Yii::app()->params['envSuffix'];
+        $row = Yii::app()->db->createCommand()->select("a.staff_id,a.company_id")
+            ->from("hr{$suffix}.hr_employee a")
+            ->where("a.id=:id",array(":id"=>$employeeId))->queryRow();
+        if($row){
+            return $row["staff_id"];//员工归属
+            //return $row["company_id"];//员工合同归属
+        }else{
+            return "";
+        }
+    }
+
+    //根据公司id获取公司名称
+    public static function getCompanyNameToID($companyID) {
+        $suffix = Yii::app()->params['envSuffix'];
+        $row = Yii::app()->db->createCommand()->select("name")
+            ->from("hr{$suffix}.hr_company")
+            ->where("id=:id",array(":id"=>$companyID))->queryRow();
+        if($row){
+            return $row["name"];
+        }else{
+            return "";
+        }
+    }
+
     public static function getAccountStrForID($id) {
         $row = Yii::app()->db->createCommand()->select("a.*,b.acct_type_desc")
             ->from("acc_account a")
@@ -277,6 +304,46 @@ class ExpenseFun
             3=>"快递费",
             4=>"通讯费",
             5=>"其他",
+        );
+    }
+
+    public static function getRemitTypeOne(){
+        return array(
+            "A0"=>"物料采购",
+            "A1"=>"日常付款",
+            "A2"=>"工资薪金社保个税",
+            "A3"=>"集团内交易",
+            "A4"=>"集团内资金往来",
+            "A5"=>"同名转账",
+            "A6"=>"客户退款",
+            "A7"=>"税金（包含增值税等，除个税）",
+        );
+    }
+
+    public static function getRemitTypeTwo(){
+        return array(
+            "A00001"=>"物料采购",
+            "A10001"=>"房租物业",
+            "A10002"=>"固定资产",
+            "A10003"=>"办公设备",
+            "A10004"=>"劳务外包（含预缴个税）",
+            "A10005"=>"其他",
+            "A20001"=>"工资",
+            "A20002"=>"社保",
+            "A20003"=>"公积金",
+            "A20004"=>"个税",
+            "A20005"=>"保险费用",
+            "A20006"=>"服务费",
+            "A20007"=>"增值税",
+            "A30001"=>"特许权经营费",
+            "A30002"=>"总分包",
+            "A30003"=>"咨询费",
+            "A30004"=>"其他",
+            "A40001"=>"借/还款",
+            "A40002"=>"上划下拨",
+            "A50001"=>"收款户转付款户",
+            "A60001"=>"客户退款",
+            "A70001"=>"税金",
         );
     }
 

@@ -9,7 +9,7 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseAudit Form';
 'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
 )); ?>
 <style>
-    *[readonly]{ pointer-events: none;}
+    *[readonly],.readonly{ pointer-events: none;}
     .table-fixed{ table-layout: fixed;}
     .table-fixed>tbody>tr>th{ vertical-align: bottom;}
 </style>
@@ -33,7 +33,7 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseAudit Form';
 		<?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
 				'submit'=>Yii::app()->createUrl('expenseAudit/index')));
 		?>
-<?php if ($model->current_username==Yii::app()->user->id): ?>
+<?php if ($model->status_type==2&&$model->current_username==Yii::app()->user->id): ?>
             <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Approve'), array(
                 'submit'=>Yii::app()->createUrl('expenseAudit/audit')));
             ?>

@@ -10,8 +10,8 @@
         ); ?>
     </td>
     <td>
-        <?php echo TbHtml::textField($this->getFieldName('amtType'),  $this->record['amtType'],
-            array('readonly'=>$this->model->readonly())
+        <?php echo TbHtml::dropDownList($this->getFieldName('amtType'),  $this->record['amtType'],ExpenseFun::getRemitTypeTwo(),
+            array('readonly'=>$this->model->readonly(),'empty'=>'','class'=>'amtType','data-val'=>$this->record['amtType'])
         ); ?>
     </td>
     <td>

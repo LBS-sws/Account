@@ -61,15 +61,21 @@ class RemitAuditController extends Controller
 			$model->attributes = $_POST['RemitAuditForm'];
 			if ($model->validate()) {
                 $model->status_type=2;
-				$model->saveData();
+                $bool = $model->saveData();
 				$model->scenario = 'edit';
-				Dialog::message(Yii::t('dialog','Information'), Yii::t('give','Audit Done'));
-                $this->redirect(Yii::app()->createUrl('remitAudit/index'));
+                if($bool){
+                    Dialog::message(Yii::t('dialog','Information'), Yii::t('give','Audit Done'));
+                    $this->redirect(Yii::app()->createUrl('remitAudit/index'));
+                }else{
+                    $message = CHtml::errorSummary($model);
+                    Dialog::message("金蝶系统异常", $message);
+                    $this->redirect(Yii::app()->createUrl('remitAudit/edit',array("index"=>$model->id)));
+                }
 			} else {
                 $model->scenario = 'edit';
 				$message = CHtml::errorSummary($model);
 				Dialog::message(Yii::t('dialog','Validation Message'), $message);
-				$this->render('form',array('model'=>$model,));
+                $this->redirect(Yii::app()->createUrl('remitAudit/edit',array("index"=>$model->id)));
 			}
 		}
 	}
