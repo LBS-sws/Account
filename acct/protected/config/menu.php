@@ -86,12 +86,11 @@ return array(
                 'access'=>'RT02',
                 'url'=>'/remitAudit/index',
             ),
-            /*
             'Remit Payment'=>array(//日常付款银行确认
                 'access'=>'RT03',
                 'url'=>'/remitPayment/index',
                 'hidden'=>true,
-            ),*/
+            ),
             'Remit Search'=>array(//日常付款查询
                 'access'=>'RT04',
                 'url'=>'/remitSearch/index',

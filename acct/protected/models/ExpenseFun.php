@@ -30,7 +30,7 @@ class ExpenseFun
             4=>Yii::t("give","wait bank"),//待确认银行
             6=>Yii::t("give","wait JD"),//等待金蝶系统扣款
             7=>Yii::t("give","rejected JD"),//金蝶系统已拒绝
-            9=>Yii::t("give","finish JD"),//金蝶系统已扣款
+            9=>Yii::t("give","finish"),//金蝶系统已扣款
         );
         if(key_exists("{$status_type}",$list)){
             return $list[$status_type];
@@ -87,6 +87,16 @@ class ExpenseFun
             }
         }
         return $list;
+    }
+
+    public static function getExpenseTableDetailForIDAndField($exp_id,$field_id) {
+        $row = Yii::app()->db->createCommand()->select("id,field_id,field_value")
+            ->from("acc_expense_detail")
+            ->where("exp_id=:id and field_id=:field_id",array(":id"=>$exp_id,":field_id"=>$field_id))->queryRow();
+        if($row){
+            return $row["field_value"];
+        }
+        return "";
     }
 
     public static function getPaymentCompanyList(){

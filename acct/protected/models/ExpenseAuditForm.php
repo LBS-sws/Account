@@ -40,6 +40,24 @@ class ExpenseAuditForm extends ExpenseApplyForm
                 $this->current_num = $row["current_num"];
                 $this->current_username = $row["current_username"];
                 $this->amt_money = floatval($row["amt_money"]);
+                $this->infoDetail=array();
+                $infoRows = Yii::app()->db->createCommand()->select("*")->from("acc_expense_info")
+                    ->where("exp_id=:exp_id",array(":exp_id"=>$id))->queryAll();
+                if($infoRows){
+                    foreach ($infoRows as $infoRow){
+                        $this->infoDetail[]=array(
+                            "id"=>$infoRow["id"],
+                            "expId"=>$infoRow["exp_id"],
+                            "setId"=>$infoRow["set_id"],
+                            "infoDate"=>General::toDate($infoRow["info_date"]),
+                            "amtType"=>$infoRow["amt_type"],
+                            "infoRemark"=>$infoRow["info_remark"],
+                            "infoAmt"=>$infoRow["info_amt"],
+                            "infoJson"=>$infoRow["info_json"],
+                            "uflag"=>"N",
+                        );
+                    }
+                }
             }else{
                 $this->addError($attribute, "报销单不存在，请刷新重试");
                 return false;
@@ -112,13 +130,11 @@ class ExpenseAuditForm extends ExpenseApplyForm
 		$transaction=$connection->beginTransaction();
 		try {
 			$this->saveDataForSql($connection);
-            $data = $this->curlPaymentJD();//发送消息给金蝶系统
+            $data = $this->curlPaymentJD($transaction);//发送消息给金蝶系统
             if($data["code"]==200){
-                $transaction->commit();
                 return true;
             }else{
                 $this->addError("id", $data["message"]);
-                $transaction->rollback();
                 return false;
             }
 		}
@@ -130,12 +146,19 @@ class ExpenseAuditForm extends ExpenseApplyForm
 	}
 
     //发送消息给金蝶系统
-    protected function curlPaymentJD(){
+    protected function curlPaymentJD(&$transaction){
         $arr=array("code"=>200,"message"=>"");
 	    if($this->status_type==6){
             $curlModel = new CurlForPayment();
             $arr = $curlModel->sendJDCurlForPayment($this);
+            if($arr["code"]==200){
+                $transaction->commit();
+            }else{
+                $transaction->rollback();
+            }
             $curlModel->saveTableForArr();
+        }else{
+            $transaction->commit();
         }
         return $arr;
     }

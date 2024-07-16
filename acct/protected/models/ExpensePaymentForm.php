@@ -147,7 +147,7 @@ class ExpensePaymentForm extends ExpenseApplyForm
 		try {
 			$this->saveDataForSql($connection);
 
-            $data = $this->curlPaymentJD();//发送消息给金蝶系统
+            //$data = $this->curlPaymentJD();//发送消息给金蝶系统
 			$transaction->commit();
 		}
 		catch(Exception $e) {
@@ -226,7 +226,7 @@ class ExpensePaymentForm extends ExpenseApplyForm
 
         $this->saveHistory($connection);
 
-        //$this->addTransOut($connection);//增加扣款申请(扣款需要等待金蝶系统回传消息)
+        $this->addTransOut($connection);//增加扣款申请(扣款需要等待金蝶系统回传消息)
 		return true;
 	}
 

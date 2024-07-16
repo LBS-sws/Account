@@ -9,7 +9,7 @@ $this->pageTitle=Yii::app()->name . ' - RemitSearch Form';
 'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
 )); ?>
 <style>
-    *[readonly]{ pointer-events: none;}
+    input[readonly],select[readonly],label[readonly]{ pointer-events: none;}
     .table-fixed{ table-layout: fixed;}
     .table-fixed>tbody>tr>th{ vertical-align: bottom;}
 </style>

@@ -44,6 +44,7 @@ $employeeList = ExpenseFun::getEmployeeAllListForID($model->employee_id);
     <div class="col-sm-3">
         <?php
         $payment_company = in_array($model->status_type,array(0,3))?ExpenseFun::getCompanyIdToEmployeeID($model->employee_id):$model->tableDetail["payment_company"];
+        $model->tableDetail["payment_company"] = $payment_company;
         echo $form->hiddenField($model, 'tableDetail[payment_company]');
         echo TbHtml::textField("payment_company", ExpenseFun::getCompanyNameToID($payment_company),
             array('readonly'=>true,'id'=>'payment_company'

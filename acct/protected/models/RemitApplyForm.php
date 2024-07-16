@@ -75,10 +75,14 @@ class RemitApplyForm extends ExpenseApplyForm
         if (!key_exists("purchase_type",$this->tableDetail)||$this->tableDetail["purchase_type"]===""){
             $this->addError($attribute, "付款类别不能为空");
         }else{
-            if(in_array($this->tableDetail['purchase_type'],array("A0","A4","A5","A7"))){//是物料采购
+            if(in_array($this->tableDetail['purchase_type'],array("A0"))){//是物料采购
                 if(empty($this->tableDetail["purchase_code"])){
                     $this->addError($attribute, "采购订单/财务应付单不能为空");
+                }elseif (strpos($this->tableDetail["purchase_code"],'CGDD')===false&&strpos($this->tableDetail["purchase_code"],'AP')===false){
+                    $this->addError($attribute, "采购订单/财务应付单 必须包含CGDD或AP");
                 }
+            }else{
+                $this->tableDetail["purchase_code"]=null;
             }
         }
     }
