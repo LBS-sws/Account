@@ -212,15 +212,7 @@ class InvoiceForm extends CFormModel
         //die();
         if(key_exists("message",$arr)&&$arr["message"]=="Success"&&isset($arr['data'])){
             $connection = Yii::app()->db;
-            $transaction=$connection->beginTransaction();
-            try {
-                $this->saveU($connection,$arr);
-                $transaction->commit();
-            }
-            catch(Exception $e) {
-                $transaction->rollback();
-                throw new CHttpException(404,'Cannot update.'.$e->getMessage());
-            }
+            $this->saveU($connection,$arr);
         }
 
     }
