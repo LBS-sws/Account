@@ -41,9 +41,13 @@ class RptAccountStatus extends CReport {
 				order by a.acct_type_id, a.acct_name
 			";
 		$this->result1 = Yii::app()->db->createCommand($sql)->queryAll();
-
+		/*
 		$sql = "select swoper$suffix.IncomeYTD('00002','$city','$start_dt') as income_ytd,
 					swoper$suffix.IncomeMTD('00002','$city',('$month_start_dt' - interval 1 Minute)) as income_mtd
+			";
+		*/
+		$sql = "select operation$suffix.IncomeYTD('10011','$city','$start_dt') as income_ytd,
+					operation$suffix.IncomeMTD('10011','$city',('$month_start_dt' - interval 1 Minute)) as income_mtd
 			";
 		$this->result1_1 = Yii::app()->db->createCommand($sql)->queryRow();
 		
