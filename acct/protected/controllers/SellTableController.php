@@ -33,7 +33,7 @@ SellTableController extends Controller
                 'expression'=>array('SellTableController','allowReadWrite'),
             ),
             array('allow',
-                'actions'=>array('index','view','down'),
+                'actions'=>array('index','view','down','downAll'),
 				'expression'=>array('SellTableController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -86,6 +86,19 @@ SellTableController extends Controller
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
             $model->downExcel();
+        }
+    }
+
+    public function actionDownAll()
+    {
+        $down_id = key_exists("down_id",$_POST)?$_POST["down_id"]:"";
+        $idList = explode(",",$down_id);
+        $model = new SellTableForm('edit');
+        if(!empty($idList)){
+            $model->downExcelAll($idList);
+        }else{
+            Dialog::message(Yii::t('dialog','Validation Message'), "列表为空，无法下载");
+            $this->redirect(Yii::app()->createUrl('sellTable/index'));
         }
     }
 

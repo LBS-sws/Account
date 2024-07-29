@@ -4,6 +4,7 @@ class SellTableList extends CListPageModel
 {
     public $year;
     public $month;
+    public $down_id=array();
 
     public $city;
 
@@ -46,6 +47,7 @@ class SellTableList extends CListPageModel
 	
 	public function retrieveDataByPage($pageNum=1)
 	{
+	    $this->down_id=array();
 		$suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city();
         $cityList = Yii::app()->user->city_allow();
@@ -107,6 +109,7 @@ class SellTableList extends CListPageModel
 		$this->attr = array();
 		if (count($records) > 0) {
 			foreach ($records as $k=>$record) {
+                $this->down_id[]=$record["id"];
 			    $this->attr[] = array(
                     'id'=>$record['id'],
                     'code'=>$record['code'],
@@ -122,6 +125,7 @@ class SellTableList extends CListPageModel
 		}
 		$session = Yii::app()->session;
 		$session["sellTable_c01"] = $this->getCriteria();
+        $this->down_id = implode(",",$this->down_id);
 		return true;
 	}
 

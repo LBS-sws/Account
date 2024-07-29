@@ -27,12 +27,19 @@ $this->pageTitle=Yii::app()->name . ' - SellTable';
 </section>
 
 <section class="content">
-    <div class="box"><div class="box-body">
+    <div class="box">
+        <div class="box-body">
             <div class="btn-group" role="group">
                 <?php echo TbHtml::link('<span class="fa fa-hdd-o"></span> '."旧版本入口", Yii::app()->createUrl('salestable/index'),array('class'=>'btn btn-default'));
                 ?>
             </div>
-        </div></div>
+            <div class="btn-group pull-right" role="group">
+                <?php echo TbHtml::button('<span class="fa fa-cloud-download"></span> ' . Yii::t('misc', 'Down'), array(
+                    'submit' => Yii::app()->createUrl('sellTable/downAll')));
+                ?>
+            </div>
+        </div>
+    </div>
 	<?php
     $modelClass=get_class($model);
     $search_add_html="";
@@ -66,6 +73,7 @@ $this->pageTitle=Yii::app()->name . ' - SellTable';
 	echo $form->hiddenField($model,'totalRow');
 	echo $form->hiddenField($model,'orderField');
 	echo $form->hiddenField($model,'orderType');
+	echo TbHtml::hiddenField("down_id",$model->down_id);
 ?>
 
 <?php $this->endWidget(); ?>

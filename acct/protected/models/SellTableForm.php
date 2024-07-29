@@ -949,12 +949,7 @@ class SellTableForm extends SellComputeForm{
         }
     }
 
-    //下载excel
-    public function downExcel(){
-        Yii::$enableIncludePath = false;
-        $phpExcelPath = Yii::getPathOfAlias('ext.phpexcel');
-        spl_autoload_unregister(array('YiiBase','autoload'));
-        include($phpExcelPath . DIRECTORY_SEPARATOR . 'PHPExcel.php');
+    protected function getPHPExcelForModel($model){
         $objReader  = PHPExcel_IOFactory::createReader('Excel2007');
         $path = Yii::app()->basePath.'/commands/template/sellTable.xlsx';
         $objPHPExcel = $objReader->load($path);
@@ -963,15 +958,15 @@ class SellTableForm extends SellComputeForm{
         $objPHPExcel->getActiveSheet()->mergeCells('A3:C3');//合并单元
         $objPHPExcel->getActiveSheet()->mergeCells('A4:C4');//合并单元
         $objPHPExcel->getActiveSheet()->mergeCells('A5:C5');//合并单元
-        $objPHPExcel->getActiveSheet()->setCellValue('A2', $this->year.'年'.$this->month.'月'.$this->employee_name.'销售提成报表') ;
-        $objPHPExcel->getActiveSheet()->setCellValue('A3', "新增提成比例：".($this->new_calc*100)."%") ;
-        $objPHPExcel->getActiveSheet()->setCellValue('A4', "销售提成激励点：".($this->point*100)."%") ;
-        $objPHPExcel->getActiveSheet()->setCellValue('A5', "创新业务提成点：".($this->service_reward*100)."%") ;
+        $objPHPExcel->getActiveSheet()->setCellValue('A2', $model->year.'年'.$model->month.'月'.$model->employee_name.'销售提成报表') ;
+        $objPHPExcel->getActiveSheet()->setCellValue('A3', "新增提成比例：".($model->new_calc*100)."%") ;
+        $objPHPExcel->getActiveSheet()->setCellValue('A4', "销售提成激励点：".($model->point*100)."%") ;
+        $objPHPExcel->getActiveSheet()->setCellValue('A5', "创新业务提成点：".($model->service_reward*100)."%") ;
         $rowKey=8;
         $objActSheet=$objPHPExcel->setActiveSheetIndex(0);
         $objWorksheet = $objActSheet;
         //填充服務內容
-        foreach ($this->serviceList as $service) {
+        foreach ($model->serviceList as $service) {
             $rowKey++;
             $objWorksheet->insertNewRowBefore($rowKey, 1);
             //設置默認文本顏色
@@ -983,7 +978,7 @@ class SellTableForm extends SellComputeForm{
                     $tdValue = key_exists($stringNum,$data)?$data[$stringNum]:"";
                     $objActSheet->setCellValue($string.$rowKey, $tdValue) ;
                 }
-                $this->setExcelTextColor($objPHPExcel,$service,$rowKey);//設置文字顏色
+                $model->setExcelTextColor($objPHPExcel,$service,$rowKey);//設置文字顏色
             }else{//文本說明
                 $title = key_exists("title",$service)?$service["title"]:"&nbsp;";
                 $objPHPExcel->getActiveSheet()->mergeCells("A{$rowKey}:AD{$rowKey}");//合并单元
@@ -993,7 +988,7 @@ class SellTableForm extends SellComputeForm{
             }
         }
         //服務匯總
-        $forList = array($this->turnoverList,$this->rateList,$this->rateMoneyList,$this->otherRateMoneyList);
+        $forList = array($model->turnoverList,$model->rateList,$model->rateMoneyList,$model->otherRateMoneyList);
         foreach ($forList as $row){
             $rowKey++;
             //設置默認文本顏色
@@ -1005,7 +1000,7 @@ class SellTableForm extends SellComputeForm{
             }
         }
         $rowKey+=8;
-        $objActSheet->setCellValue("C".$rowKey, $this->supplement_money) ;//補充金額合計
+        $objActSheet->setCellValue("C".$rowKey, $model->supplement_money) ;//補充金額合計
         //补充说明
         $exprTypeList=array(
             "ia"=>"IA",
@@ -1014,8 +1009,8 @@ class SellTableForm extends SellComputeForm{
             "other"=>"其它",
         );
         $rowKey+=7;
-        if(!empty($this->detail)){
-            foreach ($this->detail as $exprRow){
+        if(!empty($model->detail)){
+            foreach ($model->detail as $exprRow){
                 $exprRow["type"] = key_exists($exprRow["type"],$exprTypeList)?$exprTypeList[$exprRow["type"]]:$exprRow["type"];
                 $rowKey++;
                 $objWorksheet->insertNewRowBefore($rowKey, 1);
@@ -1028,6 +1023,54 @@ class SellTableForm extends SellComputeForm{
                 $objActSheet->setCellValue("V".$rowKey, $exprRow["commission"]) ;
             }
         }
+        return $objPHPExcel;
+    }
+
+    //下载excel
+    public function downExcelAll($idList){
+        $phpExcelPath = Yii::getPathOfAlias('ext.phpexcel');
+        include($phpExcelPath . DIRECTORY_SEPARATOR . 'PHPExcel.php');
+        if(!empty($idList)){
+            $newExcel = new PHPExcel();
+            $newExcel->removeSheetByIndex(0);
+            $i=0;
+            foreach ($idList as $id){
+                $this->retrieveData($id);
+                $objPHPExcel = $this->getPHPExcelForModel($this);
+                $sheet = $objPHPExcel->getSheet(0);
+                $sheet->setTitle($this->employee_name);
+                $newExcel->addExternalSheet($sheet);
+                $i++;
+            }
+            //輸出excel
+            $objWriter = PHPExcel_IOFactory::createWriter($newExcel, 'Excel2007');
+            ob_start();
+            $objWriter->save('php://output');
+            $output = ob_get_clean();
+            spl_autoload_register(array('YiiBase','autoload'));
+            $str="销售提成表-All";
+            $filename= iconv('utf-8','gbk//ignore',$str);
+            header("Pragma: public");
+            header("Expires: 0");
+            header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+            header("Content-Type:application/force-download");
+            header("Content-Type:application/vnd.ms-execl");
+            header("Content-Type:application/octet-stream");
+            header("Content-Type:application/download");;
+            header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
+            header("Content-Transfer-Encoding:binary");
+            echo $output;
+        }
+    }
+
+    //下载excel
+    public function downExcel(){
+        Yii::$enableIncludePath = false;
+        $phpExcelPath = Yii::getPathOfAlias('ext.phpexcel');
+        spl_autoload_unregister(array('YiiBase','autoload'));
+        include($phpExcelPath . DIRECTORY_SEPARATOR . 'PHPExcel.php');
+
+        $objPHPExcel = $this->getPHPExcelForModel($this);
 
         //輸出excel
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
