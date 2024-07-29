@@ -68,16 +68,29 @@ $employeeList = ExpenseFun::getEmployeeListForID($model->employee_id);
             array('readonly'=>$model->readonly(),"id"=>"outside"));
         ?>
     </div>
-    <?php if (!in_array($model->status_type,array(0,3))): ?>
+</div>
+<?php if (!in_array($model->status_type,array(0,3))): ?>
+    <div class="form-group">
+        <?php echo TbHtml::label(Yii::t('give',"payee code"),'payee_code',array('class'=>"col-sm-2 control-label",'required'=>$model->tableDetail["purchase_type"]!="A0")); ?>
+        <div class="col-sm-3">
+            <div class="btn-group" style="width:100%" id="payeeCodeGroup">
+                <?php
+                echo $form->textField($model, 'tableDetail[payee_code]',
+                    array('readonly'=>!$model->finance_bool,"id"=>"payee_code",'autocomplete'=>'off'));
+                ?>
+                <ul class="dropdown-menu" style="min-width: 100%;overflow: hidden;">
+                </ul>
+            </div>
+        </div>
         <?php echo TbHtml::label(Yii::t('give',"prepayment"),'prepayment',array('class'=>"col-sm-2 control-label",'required'=>true)); ?>
         <div class="col-sm-3">
             <?php
             echo $form->inlineRadioButtonList($model, 'tableDetail[prepayment]',ExpenseFun::getUrgentList(),
-                array('readonly'=>!$model->finance_bool,"id"=>"urgent",'labelOptions'=>array('readonly'=>!$model->finance_bool)));
+                array('readonly'=>!$model->finance_bool,"id"=>"prepayment",'labelOptions'=>array('readonly'=>!$model->finance_bool)));
             ?>
         </div>
-    <?php endif ?>
-</div>
+    </div>
+<?php endif ?>
 <div class="form-group">
     <?php echo TbHtml::label(Yii::t('give',"payee"),'payee',array('class'=>"col-sm-2 control-label")); ?>
     <div class="col-sm-3">
@@ -86,7 +99,7 @@ $employeeList = ExpenseFun::getEmployeeListForID($model->employee_id);
             echo $form->textField($model, 'tableDetail[payee]',
                 array('readonly'=>$model->readonly(),"id"=>"payee",'autocomplete'=>'off'));
             ?>
-            <ul class="dropdown-menu" style="width: 100%;overflow: hidden;">
+            <ul class="dropdown-menu" style="min-width: 100%;overflow: hidden;">
             </ul>
         </div>
     </div>

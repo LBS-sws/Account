@@ -480,7 +480,6 @@ class ExpenseFun
         return $ChineseStr;
     }
 
-
     //查询相似的供应商
     public static function AjaxPayee($group,$city){
         $suffix = Yii::app()->params['envSuffix'];
@@ -502,7 +501,33 @@ class ExpenseFun
                 $html = "<li><a>没有结果</a></li>";
             }
         }else{
-            $html = "<li><a>请输入客户名称</a></li>";
+            $html = "<li><a>请输入供应商名称</a></li>";
+        }
+        return $html;
+    }
+
+    //查询相似的供应商
+    public static function AjaxPayeeCode($group,$city){
+        $suffix = Yii::app()->params['envSuffix'];
+        $html = "";
+        $city = empty($city)?Yii::app()->user->city():$city;
+        if($group!==""){
+            $group = str_replace("'","\'",$group);
+            $records = Yii::app()->db->createCommand()->select('*')
+                ->from("swoper{$suffix}.swo_supplier")
+                ->where("(city=:city or local_bool=0) and (name like '%$group%' or code like '%$group%' or full_name like '%$group%')",array(
+                    ":city"=>$city
+                ))->queryAll();
+            if($records){
+                foreach ($records as $row){
+                    $text="{$row["name"]} ({$row["code"]})";
+                    $html.="<li><a class='clickThis' data-code='{$row["code"]}' data-name='{$row["name"]}' data-no='{$row["tax_reg_no"]}' data-bank='{$row["bank"]}' data-acct='{$row["acct_no"]}'>".$text."</a>";
+                }
+            }else{
+                $html = "<li><a>没有结果</a></li>";
+            }
+        }else{
+            $html = "<li><a>请输入供应商编号</a></li>";
         }
         return $html;
     }

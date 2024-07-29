@@ -24,7 +24,7 @@ class RemitAuditController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('edit','audit','reject'),
+				'actions'=>array('edit','audit','reject','ajaxPayeeCode'),
 				'expression'=>array('RemitAuditController','allowReadWrite'),
 			),
 			array('allow', 
@@ -36,6 +36,11 @@ class RemitAuditController extends Controller
 			),
 		);
 	}
+
+    public function actionAjaxPayeeCode($group='',$city='')
+    {
+        echo ExpenseFun::AjaxPayeeCode($group,$city);
+    }
 
 	public function actionIndex($pageNum=0) 
 	{

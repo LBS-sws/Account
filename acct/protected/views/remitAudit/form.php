@@ -107,6 +107,40 @@ $this->widget('bootstrap.widgets.TbModal', array(
 Script::genFileUpload($model,$form->id,'EXPEN');
 $language = Yii::app()->language;
 
+
+$link3=Yii::app()->createUrl('remitAudit/AjaxPayeeCode');
+$js ="
+function changeCustomerName(){
+    var that = $(this);
+    $(this).parent('div').addClass('open');
+    $(this).next('.dropdown-menu').html('<li><a>查询中...</span></li>');
+	var data = \"group=\"+$(this).val()+\"&city=\"+$('#city').val();
+	$.ajax({
+		type: 'GET',
+		url: '$link3',
+		data: data,
+		success: function(data) {
+			that.next('.dropdown-menu').html(data);
+		},
+		error: function(data) { // if error occured
+			var x = 1;
+		},
+		dataType:'html'
+	});
+}
+$('#payee_code').on('click',function(e){
+    e.stopPropagation();
+});
+$('#payee_code').on('focus',changeCustomerName);
+$('#payee_code').on('keyup',changeCustomerName);
+$('body').on('click',function(){
+    $('#payee_code').parent('div').removeClass('open');
+});
+$('#payeeCodeGroup').on('click','.clickThis',function(e){
+    $('#payee_code').val($(this).data('code'));
+});
+";
+Yii::app()->clientScript->registerScript('ajaxFunction',$js,CClientScript::POS_READY);
 $js = "
 $('#tblDetail').on('change','.changeAmtType',function() {
     var amt_type = $(this).val();

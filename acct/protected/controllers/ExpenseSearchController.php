@@ -28,7 +28,7 @@ class ExpenseSearchController extends Controller
 				'expression'=>array('ExpenseSearchController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view','filedownload'),
+				'actions'=>array('index','view','filedownload','print'),
 				'expression'=>array('ExpenseSearchController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -36,6 +36,17 @@ class ExpenseSearchController extends Controller
 			),
 		);
 	}
+
+    public function actionPrint($index)
+    {
+        $model = new ExpenseApplyForm();
+        if (!$model->retrievePrint($index)) {
+            throw new CHttpException(404,'The requested page does not exist.');
+        } else {
+            $model->printOne();
+            Yii::app()->end();
+        }
+    }
 
 	public function actionIndex($pageNum=0) 
 	{

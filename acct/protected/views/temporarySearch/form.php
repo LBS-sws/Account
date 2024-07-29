@@ -45,6 +45,12 @@ $this->pageTitle=Yii::app()->name . ' - TemporarySearch Form';
 	</div>
 
             <div class="btn-group pull-right" role="group">
+                <?php if (in_array($model->status_type,array(4,6,9))): ?>
+                    <?php echo TbHtml::link('<span class="fa fa-print"></span> '.Yii::t('invoice','print'),Yii::app()->createUrl('temporarySearch/print',array("index"=>$model->id)), array(
+                            'class'=>'btn btn-default','target'=>'_blank')
+                    );
+                    ?>
+                <?php endif ?>
                 <?php echo TbHtml::button('<span class="fa fa-list"></span> '.Yii::t('give','Flow Info'), array(
                         'data-toggle'=>'modal','data-target'=>'#flowinfodialog',)
                 );

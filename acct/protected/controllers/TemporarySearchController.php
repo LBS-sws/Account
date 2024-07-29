@@ -28,7 +28,7 @@ class TemporarySearchController extends Controller
 				'expression'=>array('TemporarySearchController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view','filedownload'),
+				'actions'=>array('index','view','filedownload','print'),
 				'expression'=>array('TemporarySearchController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -36,6 +36,17 @@ class TemporarySearchController extends Controller
 			),
 		);
 	}
+
+    public function actionPrint($index)
+    {
+        $model = new TemporaryApplyForm();
+        if (!$model->retrievePrint($index)) {
+            throw new CHttpException(404,'The requested page does not exist.');
+        } else {
+            $model->printOne();
+            Yii::app()->end();
+        }
+    }
 
 	public function actionIndex($pageNum=0) 
 	{

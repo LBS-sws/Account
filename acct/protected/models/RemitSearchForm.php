@@ -5,6 +5,7 @@ class RemitSearchForm extends ExpenseSearchForm
     protected $table_type=2;
     protected $fileList=array(
         array("field_id"=>"outside","field_type"=>"list","field_name"=>"outside","display"=>"none"),//外部
+        array("field_id"=>"payee_code","field_type"=>"text","field_name"=>"payee_code","display"=>"none"),//供应商编号
         array("field_id"=>"payee","field_type"=>"text","field_name"=>"payee","display"=>"none"),//收款单位
         array("field_id"=>"taxpayer_no","field_type"=>"text","field_name"=>"taxpayer no","display"=>"none"),//纳税人识别号
         array("field_id"=>"bank_name","field_type"=>"text","field_name"=>"bank name","display"=>"none"),//开户行名称

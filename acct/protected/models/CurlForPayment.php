@@ -39,12 +39,14 @@ class CurlForPayment extends CurlForJD{
                 $this->info_type = "temporaryAudit";
                 $this->resetModelTableDetailForT($model);
                 $curlData=$this->getDataForRemitModelTwo($model);
+                $data = array("data"=>$curlData);
                 $url = "/kapi/v2/lbs/ap/ap_payapply/save";
                 break;
             case "ExpenseAuditForm"://日常费用报销
                 $this->info_type = "expenseAudit";
                 $this->resetModelTableDetailForE($model);
                 $curlData=$this->getDataForRemitModelThree($model);
+                $data = array("data"=>$curlData);
                 $url = "/kapi/v2/lbs/ap/ap_finapbill/save";
                 break;
             case "RemitAuditForm"://日常付款
@@ -52,18 +54,22 @@ class CurlForPayment extends CurlForJD{
                 switch ($model->jd_curl_type){
                     case 2://付款申请-保存
                         $curlData=$this->getDataForRemitModelTwo($model);
+                        $data = array("data"=>$curlData);
                         $url = "/kapi/v2/lbs/ap/ap_payapply/save";
                         break;
                     case 3://财务应付-保存
                         $curlData=$this->getDataForRemitModelThree($model);
+                        $data = array("data"=>$curlData);
                         $url = "/kapi/v2/lbs/ap/ap_finapbill/save";
                         break;
                     case 6://预付：采购订单下推付款申请
                         $curlData=$this->getDataForRemitModelSix($model);
+                        $data = $curlData;
                         $url = "/kapi/v2/lbs/ap/push/v2";
                         break;
                     case 7://采购付款：财务应付下推付款申请
                         $curlData=$this->getDataForRemitModelSeven($model);
+                        $data = $curlData;
                         $url = "/kapi/v2/lbs/ap/push/v2";
                         break;
                     default:
@@ -74,7 +80,6 @@ class CurlForPayment extends CurlForJD{
                 return array('message'=>'数据异常', 'code'=>400,'outData'=>'');
         }
 
-        $data = array("data"=>$curlData);
         $rtn = $this->sendData($data,$url);
         //$rtn = array('message'=>'', 'code'=>200,'outData'=>'');//成功时code=200；
         return $rtn;
@@ -119,6 +124,19 @@ class CurlForPayment extends CurlForJD{
         }
     }
 
+    public static function getEmployeeListForID($id){
+        $suffix = Yii::app()->params['envSuffix'];
+        $list = Yii::app()->db->createCommand()->select("id,code,name,department,staff_id")
+            ->from("hr{$suffix}.hr_employee")
+            ->where("id=:id",array(':id'=>$id))
+            ->queryRow();
+        if($list){
+            return $list;
+        }else{
+            return array("code"=>"","department"=>"");
+        }
+    }
+
     public static function getSupplierCodeForName($name){
         if(empty($name)){
             return "";
@@ -140,6 +158,19 @@ class CurlForPayment extends CurlForJD{
         $list = Yii::app()->db->createCommand()->select("field_value")
             ->from("hr{$suffix}.hr_send_set_jd")
             ->where("table_id=:id and set_type='company' and field_id='jd_company_code'",array(':id'=>$id))
+            ->queryRow();
+        if($list){
+            return $list["field_value"];
+        }else{
+            return "";
+        }
+    }
+
+    public static function getHrFileCodeForID($id,$field_id="dept_code"){
+        $suffix = Yii::app()->params['envSuffix'];
+        $list = Yii::app()->db->createCommand()->select("field_value")
+            ->from("hr{$suffix}.hr_send_set_jd")
+            ->where("table_id=:id and field_id=:field_id",array(':id'=>$id,':field_id'=>$field_id))
             ->queryRow();
         if($list){
             return $list["field_value"];
@@ -179,7 +210,7 @@ class CurlForPayment extends CurlForJD{
             "lbs_id"=>$model->id,
             "billno"=>$model->exp_code,//单据编号
             "billtype_number"=>"ap_payapply_oth_BT_S",//单据类型.编码
-            "applydate"=>$model->apply_date,//申请日期
+            "applydate"=>General::toMyDate($model->apply_date),//申请日期
             "applyorg_number"=>self::getJDCityCodeForCity($model->city),//申请组织.编码
             "payorg_number"=>self::getJDCityCodeForAccount($model->acc_id),//付款组织.编码
             "purorg_number"=>"",//采购组织.编码
@@ -199,7 +230,7 @@ class CurlForPayment extends CurlForJD{
                 "e_bebank_number"=>empty($accountList)?"":$accountList["acct_no"],//往来银行.编码
                 "e_applyamount"=>$infoRow["infoAmt"],//申请金额
                 "e_expaydate"=>$model->payment_date,//期望付款日
-                "info_date"=>$infoRow["infoDate"],//LBS日期
+                "info_date"=>General::toMyDate($infoRow["infoDate"]),//LBS日期
                 "info_remark"=>$infoRow["infoRemark"],//LBS摘要
                 "e_settlementtype_number"=>$payment_code,//结算方式.编码
             );
@@ -213,8 +244,7 @@ class CurlForPayment extends CurlForJD{
         $tableDetail = ExpenseFun::getExpenseTableDetailForID($model->id);
         $companyID = key_exists("payment_company",$tableDetail)?$tableDetail["payment_company"]["field_value"]:0;
         $companyCode = self::getCompanyCodeForID($companyID);
-        $supplierName = key_exists("payee",$tableDetail)?$tableDetail["payee"]["field_value"]:0;
-        $supplierCode = self::getSupplierCodeForName($supplierName);
+        $supplierCode = key_exists("payee_code",$tableDetail)?$tableDetail["payee_code"]["field_value"]:0;
         $supplierList = array();
         if(!empty($supplierCode)){//有供应商
             $supplierList["e_asstacttype"]="bd_supplier";//往来类型
@@ -239,7 +269,7 @@ class CurlForPayment extends CurlForJD{
             "lbs_id"=>$model->id,
             "lbs_code"=>$model->exp_code,//单据编号
             "billtype_number"=>"ap_payapply_oth_BT_S",//单据类型.编码
-            "applydate"=>$model->apply_date,//申请日期
+            "applydate"=>General::toMyDate($model->apply_date),//申请日期
             "applyorg_number"=>$companyCode,//申请组织.编码
             "payorg_number"=>$companyCode,//付款组织.编码
             "purorg_number"=>$companyCode,//采购组织.编码
@@ -271,15 +301,16 @@ class CurlForPayment extends CurlForJD{
         $tableDetail = ExpenseFun::getExpenseTableDetailForID($model->id);
         $companyID = key_exists("payment_company",$tableDetail)?$tableDetail["payment_company"]["field_value"]:0;
         $companyCode = self::getCompanyCodeForID($companyID);
-        $supplierName = key_exists("payee",$tableDetail)?$tableDetail["payee"]["field_value"]:0;
-        $supplierCode = self::getSupplierCodeForName($supplierName);
+        $supplierCode = key_exists("payee_code",$tableDetail)?$tableDetail["payee_code"]["field_value"]:0;
+        $employeeList = self::getEmployeeListForID($model->employee_id);
+        $deptCode = self::getHrFileCodeForID($employeeList["department"],"jd_dept_code");//department_number
         $supplierList = array();
         if(!empty($supplierCode)){//有供应商
             $supplierList["asstacttype"]="bd_supplier";//往来类型
             $supplierList["asstact_number"]=$supplierCode;//往来户.编码
             $supplierList["payproperty_number"]="2010";//款项性质.编码,2008:员工报销,2010:其他费用采购
         }else{
-            $employeeCode = self::getEmployeeCodeForID($model->employee_id);
+            $employeeCode = $employeeList["code"];
             $supplierList["payproperty_number"]="2008";//款项性质.编码,2008:员工报销,2010:其他费用采购
             $supplierList["asstacttype"]="bos_user";//往来类型
             $supplierList["asstact_number"]=$employeeCode;//往来户.编码
@@ -310,6 +341,7 @@ class CurlForPayment extends CurlForJD{
             "paycond_number"=>key_exists("payment_condition",$tableDetail)?$tableDetail["payment_condition"]["field_value"]:null,//付款条件.编码-由业务人员提供
             //"settlementtype_number"=>"JSFS04",//结算方式.编码
             "isincludetax"=>true,//录入含税价
+            "department_number"=>$deptCode,//部门.编码
             "exratedate"=>$lud,//汇率日期
             "ispricetotal"=>true,//录入总价
             "purorg_number"=>$companyCode,//采购组织.编码
@@ -328,9 +360,10 @@ class CurlForPayment extends CurlForJD{
                 "e_remark"=>$infoRow["infoRemark"],//明细.含税单价
                 "e_pricetaxtotal"=>$infoRow["infoAmt"],//明细.应付金额
                 "e_amount"=>$infoRow["infoAmt"],//明细.金额
+                "lbs_costdept_number"=>$deptCode,//明细.费用承担部门
             );
             $temp =array_merge($temp,$supplierList);
-            $curlData["entry"][]=$temp;
+            $curlData["detailentry"][]=$temp;
         }
         return $curlData;
     }
@@ -338,21 +371,24 @@ class CurlForPayment extends CurlForJD{
     //预付：采购订单下推付款申请
     private function getDataForRemitModelSix($model){
         $tableDetail = ExpenseFun::getExpenseTableDetailForID($model->id);
+        $purchase_code = key_exists("purchase_code",$tableDetail)?$tableDetail["purchase_code"]["field_value"]:null;
         $curlData=array(
-            "lbs_id"=>$model->id,
-            "lbs_code"=>$model->exp_code,//单据编号
-            "applydate"=>$model->apply_date,//申请日期
-            "comment"=>$model->remark,//备注
-            //"applycause"=>$model->remark,//请款事由
-            "entry"=>array(
-                array(
-                    "e_payamount"=>$model->amt_money,//应付金额
-                    //LBS采购订单/财务应付单
-                    "_matchRowKey_"=>key_exists("purchase_code",$tableDetail)?$tableDetail["purchase_code"]["field_value"]:null,
-                    //{"billno": "采购订单号"}
-                    "_matchRowVal_"=>array("billno"=>"采购订单号"),
-                )
-            ),//
+            "data"=>array(
+                "lbs_id"=>$model->id,
+                "lbs_code"=>$model->exp_code,//单据编号
+                "applydate"=>General::toMyDate($model->apply_date),//申请日期
+                "comment"=>$model->remark,//备注
+                //"applycause"=>$model->remark,//请款事由
+                "entry"=>array(
+                    array(
+                        "e_payamount"=>$model->amt_money,//应付金额
+                        //LBS采购订单/财务应付单
+                        "_matchRowKey_"=>$purchase_code,
+                        //{"billno": "采购订单号"}
+                        "_matchRowVal_"=>array("billno"=>$purchase_code),
+                    )
+                ),//
+            ),
             "rule"=>array(
                 "id"=>"",//转换规则id 待业务提供
                 "sourceEntityNumber"=>"pur_orderbill",//源单编码
@@ -366,21 +402,24 @@ class CurlForPayment extends CurlForJD{
     //采购付款：财务应付下推付款申请
     private function getDataForRemitModelSeven($model){
         $tableDetail = ExpenseFun::getExpenseTableDetailForID($model->id);
+        $purchase_code = key_exists("purchase_code",$tableDetail)?$tableDetail["purchase_code"]["field_value"]:null;
         $curlData=array(
-            "lbs_id"=>$model->id,
-            "lbs_code"=>$model->exp_code,//单据编号
-            "applydate"=>$model->apply_date,//申请日期
-            "comment"=>$model->remark,//备注
-            //"applycause"=>$model->remark,//请款事由
-            "entry"=>array(
-                array(
-                    "e_payamount"=>$model->amt_money,//应付金额
-                    //LBS采购订单/财务应付单
-                    "_matchRowKey_"=>key_exists("purchase_code",$tableDetail)?$tableDetail["purchase_code"]["field_value"]:null,
-                    //{"billno": "采购订单号"}
-                    "_matchRowVal_"=>array("billno"=>"财务订单号"),
-                )
-            ),//
+            "data"=>array(
+                "lbs_id"=>$model->id,
+                "lbs_code"=>$model->exp_code,//单据编号
+                "applydate"=>General::toMyDate($model->apply_date),//申请日期
+                "comment"=>$model->remark,//备注
+                //"applycause"=>$model->remark,//请款事由
+                "entry"=>array(
+                    array(
+                        "e_payamount"=>$model->amt_money,//应付金额
+                        //LBS采购订单/财务应付单
+                        "_matchRowKey_"=>$purchase_code,
+                        //{"billno": "采购订单号"}
+                        "_matchRowVal_"=>array("billno"=>$purchase_code),
+                    )
+                ),//
+            ),
             "rule"=>array(
                 "id"=>"",//转换规则id 待业务提供
                 "sourceEntityNumber"=>"ap_finapbill",//源单编码

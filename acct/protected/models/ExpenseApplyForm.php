@@ -306,7 +306,7 @@ class ExpenseApplyForm extends CFormModel
 	{
 		$suffix = Yii::app()->params['envSuffix'];
         $uid = Yii::app()->user->id;
-		$sql = "select * from acc_expense where id='".$index."' and lcu='{$uid}' and status_type in (4,6,7,9) and table_type={$this->table_type}";
+		$sql = "select * from acc_expense where id='".$index."' and status_type in (4,6,7,9) and table_type={$this->table_type}";
 		$row = Yii::app()->db->createCommand($sql)->queryRow();
 		if ($row!==false) {
 			$this->id = $index;

@@ -109,5 +109,6 @@ return array(
 
 	'purchase type' => '付款类别',
 	'prepayment' => '预付款',
+	'payee code' => '供应商编码',
 );
 ?>

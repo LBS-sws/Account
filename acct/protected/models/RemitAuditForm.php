@@ -2,10 +2,11 @@
 
 class RemitAuditForm extends ExpenseAuditForm
 {
-    protected $jd_curl_type;//金蝶curl类型
+    public $jd_curl_type;//金蝶curl类型
     protected $table_type=2;
     protected $fileList=array(
         array("field_id"=>"outside","field_type"=>"list","field_name"=>"outside","display"=>"none"),//外部
+        array("field_id"=>"payee_code","field_type"=>"text","field_name"=>"payee_code","display"=>"none"),//供应商编号
         array("field_id"=>"payee","field_type"=>"text","field_name"=>"payee","display"=>"none"),//收款单位
         array("field_id"=>"taxpayer_no","field_type"=>"text","field_name"=>"taxpayer no","display"=>"none"),//纳税人识别号
         array("field_id"=>"bank_name","field_type"=>"text","field_name"=>"bank name","display"=>"none"),//开户行名称
@@ -36,6 +37,9 @@ class RemitAuditForm extends ExpenseAuditForm
             foreach ($this->audit_json as $row){
                 if($row["audit_tag"]=="财务部"&&$row["audit_user"]==$uid){
                     $this->finance_bool = true;
+                    if($this->tableDetail["purchase_type"]!="A0"&&empty($this->tableDetail["payee_code"])){
+                        $this->addError($attribute, "供应商编码不能为空");
+                    }
                     if(!isset($this->tableDetail["prepayment"])||$this->tableDetail["prepayment"]===""||$this->tableDetail["prepayment"]===null){
                         $this->addError($attribute, "请选择预付款");
                     }
@@ -61,21 +65,24 @@ class RemitAuditForm extends ExpenseAuditForm
     protected function saveDataForSql(&$connection)
     {
         if($this->finance_bool){//财务部允许修改预付款
-            $field_value = key_exists("prepayment",$this->tableDetail)?$this->tableDetail["prepayment"]:null;
-            $rs = Yii::app()->db->createCommand()->select("id,field_id")->from("acc_expense_detail")
-                ->where("exp_id=:exp_id and field_id=:field_id",array(
-                    ':field_id'=>"prepayment",':exp_id'=>$this->id,
-                ))->queryRow();
-            if($rs){
-                $connection->createCommand()->update('acc_expense_detail',array(
-                    "field_value"=>$field_value,
-                ),"id=:id",array(':id'=>$rs["id"]));
-            }else{
-                $connection->createCommand()->insert('acc_expense_detail',array(
-                    "exp_id"=>$this->id,
-                    "field_id"=>"prepayment",
-                    "field_value"=>$field_value,
-                ));
+            $saveList = array("payee_code","prepayment");
+            foreach ($saveList as $item){
+                $field_value = key_exists($item,$this->tableDetail)?$this->tableDetail[$item]:null;
+                $rs = Yii::app()->db->createCommand()->select("id,field_id")->from("acc_expense_detail")
+                    ->where("exp_id=:exp_id and field_id=:field_id",array(
+                        ':field_id'=>$item,':exp_id'=>$this->id,
+                    ))->queryRow();
+                if($rs){
+                    $connection->createCommand()->update('acc_expense_detail',array(
+                        "field_value"=>$field_value,
+                    ),"id=:id",array(':id'=>$rs["id"]));
+                }else{
+                    $connection->createCommand()->insert('acc_expense_detail',array(
+                        "exp_id"=>$this->id,
+                        "field_id"=>$item,
+                        "field_value"=>$field_value,
+                    ));
+                }
             }
         }
 
@@ -101,7 +108,7 @@ class RemitAuditForm extends ExpenseAuditForm
                 case "A0"://物料采购
                     $purchase_code = ExpenseFun::getExpenseTableDetailForIDAndField($this->id,"purchase_code");
                     $this->tableDetail["purchase_code"] = $purchase_code;
-                    if (strpos($purchase_code,'CGDD')===false){//采购订单
+                    if (strpos($purchase_code,'CGDD')!==false){//采购订单
                         $this->jd_curl_type = 6;
                     }else{//采购付款：财务应付
                         $this->jd_curl_type = 7;
