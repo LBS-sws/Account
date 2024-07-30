@@ -113,16 +113,6 @@ $employeeList = ExpenseFun::getEmployeeAllListForID($model->employee_id);
         ?>
     </div>
 </div>
-<div class="form-group">
-    <?php echo Tbhtml::label(Yii::t("give","payment condition"),'payment_condition',array('class'=>"col-sm-2 control-label")); ?>
-    <div class="col-sm-3">
-        <?php
-        echo $form->dropDownList($model, 'tableDetail[payment_condition]',ExpenseFun::getPaymentConditionList(),
-            array('readonly'=>$model->readonly(),'id'=>'payment_condition','empty'=>''
-            ));
-        ?>
-    </div>
-</div>
 
 <div class="form-group">
     <?php echo $form->labelEx($model,'remark',array('class'=>"col-sm-2 control-label")); ?>
