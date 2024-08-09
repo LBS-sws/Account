@@ -315,16 +315,6 @@ class CurlForPayment extends CurlForJD{
             $supplierList["asstacttype"]="bos_user";//往来类型
             $supplierList["asstact_number"]=$employeeCode;//往来户.编码
         }
-        //往来账户
-        if(key_exists("taxpayer_no",$tableDetail)){
-            $supplierList["payeebanknum"] = $tableDetail["taxpayer_no"]["field_value"];
-        }
-        //往来银行.编码
-        if(key_exists("bank_no",$tableDetail)){
-            $supplierList["bebank_number"] = $tableDetail["bank_no"]["field_value"];
-        }
-        //付款类型.编码201:采购付款,202:预付款,210	:个人借款
-        $supplierList["e_paymenttype_number"]=isset($model->tableDetail["prepayment"])&&$model->tableDetail["prepayment"]==1?"202":"210";
 
         $lud = date_format(date_create(),"Y-m-d");
         $curlData=array(
@@ -350,6 +340,10 @@ class CurlForPayment extends CurlForJD{
             "isfxpricetaxtotal"=>false,//微调应付金额
             "detailentry"=>array(),//微调应付金额
         );
+        //往来账户
+        if(key_exists("bank_no",$tableDetail)){
+            $curlData["payeebanknum"] = $tableDetail["bank_no"]["field_value"];
+        }
         $curlData =array_merge($curlData,$supplierList);
         foreach ($model->infoDetail as $infoRow){
             $temp=array(
@@ -378,7 +372,7 @@ class CurlForPayment extends CurlForJD{
                 "lbs_code"=>$model->exp_code,//单据编号
                 "applydate"=>General::toMyDate($model->apply_date),//申请日期
                 "comment"=>$model->remark,//备注
-                //"applycause"=>$model->remark,//请款事由
+                "applycause"=>$model->remark,//请款事由
                 "entry"=>array(
                     array(
                         "e_payamount"=>$model->amt_money,//应付金额
@@ -409,7 +403,7 @@ class CurlForPayment extends CurlForJD{
                 "lbs_code"=>$model->exp_code,//单据编号
                 "applydate"=>General::toMyDate($model->apply_date),//申请日期
                 "comment"=>$model->remark,//备注
-                //"applycause"=>$model->remark,//请款事由
+                "applycause"=>$model->remark,//请款事由
                 "entry"=>array(
                     array(
                         "e_payamount"=>$model->amt_money,//应付金额

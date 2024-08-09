@@ -42,8 +42,28 @@ class ExpenseFun
     //获取外部列表
     public static function getPaymentConditionList(){
         return array(
-            "1001"=>"等待金蝶系统提供条件1",//
-            "1002"=>"等待金蝶系统提供条件2",
+            "002"=>"每月15日",
+            "003"=>"每月20日",
+            "004"=>"每月25日",
+            "005"=>"票到付款",
+            "006"=>"票到30天",
+            "007"=>"票到45天",
+            "008"=>"票到60天",
+            "009"=>"票到70天",
+            "010"=>"票到80天",
+            "011"=>"票到90天",
+            "012"=>"票到120天",
+            "013"=>"5%预付款",
+            "014"=>"10%预付款",
+            "015"=>"15%预付款",
+            "016"=>"20%预付款",
+            "017"=>"30%预付款",
+            "018"=>"40%预付款",
+            "019"=>"50%预付款",
+            "020"=>"100%预付款",
+            "021"=>"货到付款",
+            "022"=>"半年预付",
+            "023"=>"季度预付",
         );
     }
 
@@ -489,7 +509,7 @@ class ExpenseFun
             $group = str_replace("'","\'",$group);
             $records = Yii::app()->db->createCommand()->select('*')
                 ->from("swoper{$suffix}.swo_supplier")
-                ->where("(city=:city or local_bool=0) and (name like '%$group%' or code like '%$group%' or full_name like '%$group%')",array(
+                ->where("(city=:city or local_bool=0) and display=1 and (name like '%$group%' or code like '%$group%' or full_name like '%$group%')",array(
                     ":city"=>$city
                 ))->queryAll();
             if($records){
@@ -515,7 +535,7 @@ class ExpenseFun
             $group = str_replace("'","\'",$group);
             $records = Yii::app()->db->createCommand()->select('*')
                 ->from("swoper{$suffix}.swo_supplier")
-                ->where("(city=:city or local_bool=0) and (name like '%$group%' or code like '%$group%' or full_name like '%$group%')",array(
+                ->where("(city=:city or local_bool=0) and display=1 and (name like '%$group%' or code like '%$group%' or full_name like '%$group%')",array(
                     ":city"=>$city
                 ))->queryAll();
             if($records){

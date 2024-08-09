@@ -240,6 +240,10 @@ $('#purchase_type').on('change',function() {
 });
 $('#purchase_type').trigger('change');
 
+$('#tblDetail').on('change','.amtType',function(){
+    $(this).data('val',$(this).val());
+});
+
 $('input[name="RemitApplyForm[tableDetail][invoice_bool]"]').on('click',function() {
     if($(this).val()==0){
         $('#invoice_no').val('').attr('readonly','readonly').addClass('readonly');

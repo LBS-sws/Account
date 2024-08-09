@@ -11,7 +11,7 @@ class TransTypeForm extends CFormModel
 
     public $jd_set = array();
     public static $jd_set_list=array(
-        array("field_id"=>"jd_trans_code","field_type"=>"text","field_name"=>"jd trans code"),
+        //array("field_id"=>"jd_trans_code","field_type"=>"text","field_name"=>"jd trans code"),
     );
 	/**
 	 * Declares customized attribute labels.

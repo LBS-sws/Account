@@ -63,6 +63,7 @@ $this->pageTitle=Yii::app()->name . ' - RemitAudit Form';
 			<?php echo $form->hiddenField($model, 'scenario'); ?>
 			<?php echo $form->hiddenField($model, 'id'); ?>
 			<?php echo $form->hiddenField($model, 'employee_id'); ?>
+            <?php echo $form->hiddenField($model, 'city',array("id"=>"city")); ?>
 			<?php echo $form->hiddenField($model, 'status_type'); ?>
             <?php echo CHtml::hiddenField('dtltemplate'); ?>
 
