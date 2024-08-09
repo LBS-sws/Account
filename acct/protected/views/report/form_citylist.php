@@ -39,21 +39,34 @@ $this->pageTitle=Yii::app()->name . ' - Report';
 			<?php echo $form->hiddenField($model, 'type'); ?>
 
 		<?php if ($model->showField('city') && !Yii::app()->user->isSingleCity()): ?>
-			<div class="form-group">
-				<?php echo $form->labelEx($model,'cityx',array('class'=>"col-sm-2 control-label")); ?>
-				<div class="col-sm-3">
+            <div class="form-group">
+                <?php
+                echo TbHtml::label("快捷操作","",array('class'=>"col-sm-2 control-label"));
+                ?>
+                <div class="col-sm-10">
+                    <?php
+                    echo TbHtml::checkBox("0",false,array('label'=>"全部","class"=>"fastChange",'data-city'=>"",'labelOptions'=>array("class"=>"checkbox-inline")));
+                    $fastCityList = General::getCityListForArea();
+                    foreach ($fastCityList as $row){
+                        echo TbHtml::checkBox($row["code"],false,array('label'=>$row["name"],"class"=>"fastChange",'data-city'=>$row["city"],'labelOptions'=>array("class"=>"checkbox-inline")));
+                    }
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'city',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-10" id="report_look_city">
                     <?php
                     $item = General::getCityListWithCityAllow(Yii::app()->user->city_allow());
                     if (empty($model->city)) {
                         $model->city = array();
                         foreach ($item as $key=>$value) {$model->city[] = $key;}
                     }
-                    echo $form->listbox($model, 'city', $item,
-                        array('size'=>6,'multiple'=>'multiple')
-                    );
+                    echo $form->inlineCheckBoxList($model,'city', $item,
+                        array('id'=>'look_city'));
                     ?>
-				</div>
-			</div>
+                </div>
+            </div>
 		<?php else: ?>
             <?php if ($model->showField('city')): ?>
                 <div class="form-group">
@@ -211,6 +224,22 @@ if (!empty($datefields)) {
 }
 ?>
 
+<?php
+$js="
+$('.fastChange').change(function(){
+    var cityStr = ','+$(this).data('city')+',';
+    console.log(cityStr);
+    var checkBool = $(this).is(':checked')?true:false;
+    $('#report_look_city').find('input[type=\"checkbox\"]').each(function(){
+        var city = ','+$(this).val()+',';
+        if(cityStr==',,'||cityStr.indexOf(city)>-1){
+            $(this).prop('checked',checkBool);
+        }
+    });
+});
+";
+Yii::app()->clientScript->registerScript('fastChange',$js,CClientScript::POS_READY);
+?>
 <?php $this->endWidget(); ?>
 
 </div><!-- form -->

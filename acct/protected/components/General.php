@@ -726,6 +726,38 @@ class General {
             return self::getCityName($code);
         }
     }
+
+    public static function getCityListForArea(){
+        $suffix = Yii::app()->params['envSuffix'];
+        //$sql = "select field_id, field_value from security$suffix.sec_template_info where temp_id=$id";
+        $rows = Yii::app()->db->createCommand()->select("code,name")->from("security{$suffix}.sec_city")
+            ->where("ka_bool=2")->queryAll();//0：城市 1：KA城市 2：区域
+        $list = array();
+        if($rows){
+            foreach ($rows as $row){
+                $city_allow = self::getMinCityForMaxCity($row["code"]);
+                $cityStr = implode(",",array_keys($city_allow));
+
+                $list[$row["code"]] = array("name"=>$row["name"],"city"=>$cityStr,"code"=>$row["code"]);
+            }
+        }
+        return $list;
+    }
+
+    public static function getMinCityForMaxCity($city,$city_allow=array()){
+        $suffix = Yii::app()->params['envSuffix'];
+        $rows = Yii::app()->db->createCommand()->select("code,name,ka_bool")->from("security{$suffix}.sec_city")
+            ->where("region=:region",array(":region"=>$city))->queryAll();//0：城市 1：KA城市 2：区域
+        if($rows){
+            foreach ($rows as $row){
+                if(!key_exists($row["code"],$city_allow)){
+                    $city_allow[$row["code"]]=$row;
+                    $city_allow = self::getMinCityForMaxCity($row["code"],$city_allow);
+                }
+            }
+        }
+        return $city_allow;
+    }
 }
 
 ?>
