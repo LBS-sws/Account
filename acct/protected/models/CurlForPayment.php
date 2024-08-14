@@ -38,7 +38,7 @@ class CurlForPayment extends CurlForJD{
             case "TemporaryAuditForm"://暂支单
                 $this->info_type = "temporaryAudit";
                 $this->resetModelTableDetailForT($model);
-                $curlData=$this->getDataForRemitModelTwo($model);
+                $curlData=$this->getDataForRemitModelTwo($model,true);
                 $data = array("data"=>$curlData);
                 $url = "/kapi/v2/lbs/ap/ap_payapply/save";
                 break;
@@ -240,7 +240,7 @@ class CurlForPayment extends CurlForJD{
     }
 
     //付款申请-保存
-    private function getDataForRemitModelTwo($model){
+    private function getDataForRemitModelTwo($model,$bool=false){
         $tableDetail = ExpenseFun::getExpenseTableDetailForID($model->id);
         $companyID = key_exists("payment_company",$tableDetail)?$tableDetail["payment_company"]["field_value"]:0;
         $companyCode = self::getCompanyCodeForID($companyID);
@@ -262,9 +262,12 @@ class CurlForPayment extends CurlForJD{
         if(key_exists("bank_no",$tableDetail)){
             $curlData["e_bebank_number"] = $tableDetail["bank_no"]["field_value"];
         }
-        //付款类型.编码201:采购付款,202:预付款,210	:个人借款
+        //付款类型.编码201:采购付款,202:预付款,210:个人借款,LBS02:暂支款
         $supplierList["e_paymenttype_number"]=isset($model->tableDetail["prepayment"])&&$model->tableDetail["prepayment"]==1?"202":"210";
 
+        if($bool){//暂支款
+            $supplierList["e_paymenttype_number"]="LBS02";
+        }
         $curlData=array(
             "lbs_id"=>$model->id,
             "lbs_code"=>$model->exp_code,//单据编号
