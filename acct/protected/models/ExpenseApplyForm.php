@@ -215,6 +215,9 @@ class ExpenseApplyForm extends CFormModel
         if(empty($updateList)){
             $this->addError($attribute, "报销明细不能为空");
             return false;
+        }elseif (count($updateList)>10){
+            $this->addError($attribute, "报销明细最多填写10条");
+            return false;
         }
         $this->infoDetail = array_merge($updateList,$deleteList);
     }
@@ -373,6 +376,8 @@ class ExpenseApplyForm extends CFormModel
         $tdTwoList = ExpenseFun::getAmtTypeTwo();
         $setNameList = ExpenseSetNameForm::getExpenseSetAllList();
         $amtTypeList = ExpenseFun::getAmtTypeOne();
+        $companyID = ExpenseFun::getExpenseTableDetailForIDAndField($model->id,"payment_company");
+        $companyName = ExpenseFun::getCompanyNameToID($companyID);
         $tdCount = count($tdTwoList);
         $tableOneWidth=270;
         $tableTwoWidth=$tableOneWidth*2;
@@ -398,7 +403,10 @@ EOF;
 </tr>
 <tr>
 <td style="border-top:1px solid black;border-right:1px solid black;width:16%">&nbsp;部门</td><td style="width:34%;border-top:1px solid black;border-right:1px solid black;">&nbsp;{$employeeList['department']}</td>
-<td colspan="2" style="border-top:1px solid black;border-right:2px solid black;">&nbsp;</td>
+<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;报销编号</td><td style="width:30%;border-top:1px solid black;border-right:2px solid black;">&nbsp;{$model->exp_code}</td>
+</tr>
+<tr>
+<td style="border-top:1px solid black;border-right:1px solid black;width:16%">&nbsp;支付公司</td><td colspan="3" style="border-top:1px solid black;border-right:2px solid black;">&nbsp;{$companyName}</td>
 </tr>
 </table>
 EOF;
@@ -488,6 +496,21 @@ EOF;
 </table>
 EOF;
         $pdf->writeHTML($html, true, false, false, false, '');
+
+        $auditHtml = "";
+        $auditList = ExpenseFun::getAuditListForID($model->id);
+        if(!empty($auditList)){
+            foreach ($auditList as $userList){
+                $userList['audit_user'] = ExpenseFun::getEmployeeNameForUsername($userList['audit_user']);
+                $auditHtml.='<tr style="line-height: 30px;">';
+                $auditHtml.='<td style="border-top:1px solid black;border-right:1px solid black;width:16%">&nbsp;审核人</td>';
+                $auditHtml.='<td style="width:34%;border-top:1px solid black;border-right:1px solid black;">&nbsp;'.$userList['audit_user'].'</td>';
+                $auditHtml.='<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;审核时间</td>';
+                $auditHtml.='<td style="width:30%;border-top:1px solid black;border-right:2px solid black;">&nbsp;'.$userList['lcd'].'</td> ';
+                $auditHtml.='</tr>';
+            }
+        }
+
         //审核人
         $html=<<<EOF
 <table border="0" width="{$tableOneWidth}px" cellspacing="0" cellpadding="0" style="border-bottom: 2px solid black;border-left: 2px solid black;">
@@ -495,19 +518,12 @@ EOF;
 <th colspan="2" style="background-color:#BFBFBF;border-left: 2px solid black;border-top: 2px solid black;border-right: 2px solid black;">&nbsp;<b>PART C:审批签字</b></th>
 <th colspan="2" style="border-bottom:2px solid black;">&nbsp;</th>
 </tr>
-<tr style="line-height: 30px;">
-<td style="border-top:1px solid black;border-right:1px solid black;width:16%">&nbsp;申请人</td><td style="width:34%;border-top:1px solid black;border-right:1px solid black;">&nbsp;</td>
-<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;部门负责人</td><td style="width:30%;border-top:1px solid black;border-right:2px solid black;">&nbsp;</td>
-</tr>
-<tr style="line-height: 30px;">
-<td style="border-top:1px solid black;border-right:1px solid black;width:16%">&nbsp;财务部</td><td style="width:34%;border-top:1px solid black;border-right:1px solid black;">&nbsp;</td>
-<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;总经理</td><td style="width:30%;border-top:1px solid black;border-right:2px solid black;">&nbsp;</td>
-</tr>
+{$auditHtml}
 </table>
 EOF;
         $y1=$pdf->GetY();
         $x1=$pdf->GetX()-1;
-        $height = $y1<170?170:$y1;
+        $height = $y1<160?160:$y1;
         $pdf->writeHTMLCell(200, 27,$x1,$height, $html,0);
 
 	    return $html;

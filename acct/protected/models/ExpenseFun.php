@@ -613,4 +613,16 @@ class ExpenseFun
         }
         return $returnData;
     }
+
+    public static function getEmployeeNameForUsername($username){
+        $suffix = Yii::app()->params['envSuffix'];
+        $row = Yii::app()->db->createCommand()->select("name")->from("hr{$suffix}.hr_binding a")
+            ->leftJoin("hr{$suffix}.hr_employee b","a.employee_id=b.id")
+            ->where("user_id=:user_id",array(":user_id"=>$username))->queryRow();
+        if($row){
+            return $row["name"];
+        }else{
+            return $username;
+        }
+    }
 }

@@ -238,6 +238,20 @@ EOF;
 </table>
 EOF;
         $pdf->writeHTML($html, true, false, false, false, '');
+
+        $auditHtml = "";
+        $auditList = ExpenseFun::getAuditListForID($model->id);
+        if(!empty($auditList)){
+            foreach ($auditList as $userList){
+                $userList['audit_user'] = ExpenseFun::getEmployeeNameForUsername($userList['audit_user']);
+                $auditHtml.='<tr style="line-height: 30px;">';
+                $auditHtml.='<td style="border-top:1px solid black;border-right:1px solid black;width:15%">&nbsp;审核人</td>';
+                $auditHtml.='<td style="width:30%;border-top:1px solid black;border-right:1px solid black;">&nbsp;'.$userList['audit_user'].'</td>';
+                $auditHtml.='<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;审核时间</td>';
+                $auditHtml.='<td style="width:35%;border-top:1px solid black;border-right:2px solid black;">&nbsp;'.$userList['lcd'].'</td> ';
+                $auditHtml.='</tr>';
+            }
+        }
         //审核人
         $html=<<<EOF
 <table border="0" width="{$tableBoxWidth}px" cellspacing="0" cellpadding="0" style="border-bottom: 2px solid black;border-left: 2px solid black;">
@@ -245,19 +259,12 @@ EOF;
 <th colspan="2" style="width:45%;background-color:#BFBFBF;border-left: 2px solid black;border-top: 2px solid black;border-right: 2px solid black;">&nbsp;<b>PART C:审批签字</b></th>
 <th colspan="2" style="width:55%;border-bottom:2px solid black;">&nbsp;</th>
 </tr>
-<tr style="line-height: 30px;">
-<td style="border-top:1px solid black;border-right:1px solid black;width:15%">&nbsp;申请人</td><td style="width:30%;border-top:1px solid black;border-right:1px solid black;">&nbsp;</td>
-<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;部门负责人</td><td style="width:35%;border-top:1px solid black;border-right:2px solid black;">&nbsp;</td>
-</tr>
-<tr style="line-height: 30px;">
-<td style="border-top:1px solid black;border-right:1px solid black;width:15%">&nbsp;财务部</td><td style="width:30%;border-top:1px solid black;border-right:1px solid black;">&nbsp;</td>
-<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;总经理</td><td style="width:35%;border-top:1px solid black;border-right:2px solid black;">&nbsp;</td>
-</tr>
+{$auditHtml}
 </table>
 EOF;
         $y1=$pdf->GetY();
         $x1=$pdf->GetX()-1;
-        $height = $y1<255?255:$y1;
+        $height = $y1<250?250:$y1;
         $pdf->writeHTMLCell(200, 27,$x1,$height, $html,0);
 
         $html = "√";
