@@ -46,6 +46,7 @@ $this->pageTitle=Yii::app()->name . ' - TemporaryApply';
 							'apply_date',
 							'employee',
 							'department',
+							'status_type',
 						),
 		));
 	?>

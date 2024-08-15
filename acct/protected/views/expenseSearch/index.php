@@ -36,6 +36,7 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseSearch';
 							'apply_date',
 							'employee',
 							'department',
+							'status_type',
 						),
 		));
 	?>

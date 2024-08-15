@@ -284,6 +284,10 @@ $('#btnAddRow').on('click',function() {
                    $(this).attr('readonly','readonly').addClass('readonly').val($("#localSetID").val());
 			    }
 			};
+			if (id.indexOf('_tripId') != -1){
+			    $(this).val('');
+			    $(this).next('button').data('id','').text('关联');
+			};
 			if (id.indexOf('_infoRemark') != -1) $(this).val('');
 			if (id.indexOf('_amtType') != -1){
 			    $(this).val('').trigger('change');
@@ -309,7 +313,32 @@ Yii::app()->clientScript->registerScript('deleteRecord',$js,CClientScript::POS_R
 $js = Script::genReadonlyField();
 Yii::app()->clientScript->registerScript('readonlyClass',$js,CClientScript::POS_READY);
 ?>
+<?php
+$ftrbtn = array();
+$ftrbtn[] = TbHtml::button(Yii::t('dialog','Close'), array('data-dismiss'=>'modal','color'=>TbHtml::BUTTON_COLOR_PRIMARY));
+$this->beginWidget('bootstrap.widgets.TbModal', array(
+    'id'=>'selectTripDialog',
+    'header'=>"关联出差",
+    'footer'=>$ftrbtn,
+    'show'=>false,
+));
+?>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">关联出差:</label>
+    <div class="col-sm-9">
+        <?php
+        echo Tbhtml::dropDownList('trip_name','',ExpenseFun::getTripListForEmployeeID($model->employee_id,$model->id),
+            array('readonly'=>false,'id'=>'trip_name','empty'=>''
+            ));
+        ?>
+    </div>
+</div>
+
+<?php
+$this->endWidget();
+?>
+
 
 <?php $this->endWidget(); ?>
-
 

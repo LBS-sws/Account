@@ -104,7 +104,7 @@ class RptExpense extends CReport {
                 $temp['order_state'] = ExpenseFun::getStatusStrForStatusType($row["status_type"]);
                 $temp['account_no'] = $this->getKeyNameForList($accountList,$row["acc_id"]);
                 $temp['account_date'] = General::toDate($row['payment_date']);
-                $temp['trip_code'] = key_exists("trip_id",$expenseDetail)?$this->getTripCodeForTripId($expenseDetail["trip_id"]):"";
+                $temp['trip_code'] = !empty($row["trip_id"])?$this->getTripCodeForTripId($row["trip_id"]):"";
                 $temp['pay_code'] = "";
                 $this->data[] = $temp;
             }

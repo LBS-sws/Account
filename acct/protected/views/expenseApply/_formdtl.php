@@ -1,4 +1,33 @@
 <tr class="changeTr">
+    <td class="text-center">
+        <?php
+        echo TbHtml::hiddenField($this->getFieldName('tripId'),$this->record['tripId']);
+        if($this->model->readonly()){
+            if(intval($this->record['amtType'])===1&&!empty($this->record['tripId'])){
+                echo TbHtml::button("已关联",array(
+                    "class"=>"btn btn-primary look-trip",
+                    "data-id"=>$this->record['tripId'],
+                    "style"=>"padding:6px 5px",
+                ));
+            }
+        }else{
+            $btnStr= "关联";
+            $btnClass= "btn btn-default btn-select-trip";
+            if(intval($this->record['amtType'])===1){
+                if(!empty($this->record['tripId'])){
+                    $btnStr = "已关联";
+                }
+            }else{
+                $btnClass.= " hide";
+            }
+            echo TbHtml::button($btnStr,array(
+                "class"=>$btnClass,
+                "data-id"=>$this->record['tripId'],
+                "style"=>"padding:6px 5px",
+            ));
+        }
+        ?>
+    </td>
     <td>
         <?php echo TbHtml::dropDownList($this->getFieldName('setId'),  $this->record['setId'],ExpenseSetNameForm::getExpenseSetNameList($this->record['setId']),
             array('readonly'=>($this->model->readonly()||$this->model->tableDetail['local_bool']==1),'empty'=>'','class'=>'setId')

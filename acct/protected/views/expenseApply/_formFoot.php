@@ -1,4 +1,5 @@
 <tr class="changeFootOne">
+    <th>&nbsp;</th>
     <th colspan="4" class="text-right">人民币合计(RMB)</th>
     <th  id="changeFootSumNum">&nbsp;</th>
     <th>&nbsp;</th>
@@ -15,6 +16,7 @@
     ?>
 </tr>
 <tr>
+    <th>&nbsp;</th>
     <th>人民币大写</th>
     <th colspan="4" class="text-center" id="changeFootSumStr">&nbsp;</th>
     <th>&nbsp;</th>

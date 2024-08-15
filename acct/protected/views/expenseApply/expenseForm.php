@@ -59,47 +59,6 @@ $employeeList = ExpenseFun::getEmployeeListForID($model->employee_id);
     <?php endif ?>
 </div>
 <div class="form-group">
-    <?php echo Tbhtml::label(Yii::t("give","trip bool"),'trip_bool',array('class'=>"col-sm-2 control-label")); ?>
-    <div class="col-sm-3">
-        <?php
-        echo $form->inlineRadioButtonList($model, 'tableDetail[trip_bool]',ExpenseFun::getNoOrYesList(),
-            array('readonly'=>$model->readonly(),'id'=>'trip_bool'
-            ));
-        ?>
-    </div>
-</div>
-<div class="form-group" id="trip_select_div" style="<?php echo empty($model->tableDetail["trip_bool"])?"display:none;":"";?>">
-    <?php echo Tbhtml::label(Yii::t("give","trip id"),'trip_id',array('class'=>"col-sm-2 control-label")); ?>
-    <?php
-        if($model->readonly()){//不允许修改
-            $html='<div class="col-sm-7">';
-            $html.=$form->hiddenField($model,"tableDetail[trip_id]");
-
-            $html.='<div class="input-group">';
-            $html.=Tbhtml::textField("trip_name",ExpenseFun::getTripNameForTripID($model->tableDetail["trip_id"]),array(
-                "readonly"=>true
-            ));
-            $html.='<span class="input-group-btn">';
-            $html.='<button class="btn btn-default" id="look_trip" type="button">&nbsp;<span class="fa fa-eye text-primary"></span>&nbsp;</button>';
-            $html.='</span>';
-            $html.='</div>';
-
-            $html.='</div>';
-            //input-group-btn
-        }else{
-            $html='<div class="col-sm-7">';
-            $html.=$form->dropDownList($model, 'tableDetail[trip_id]',ExpenseFun::getTripListForEmployeeID($model->employee_id,$model->tableDetail["trip_id"]),
-                array('readonly'=>$model->readonly(),'id'=>'trip_id','empty'=>''
-                ));
-            $html.='</div>';
-            $html.='<div class="col-sm-7 col-sm-offset-2">';
-            $html.='<p class="form-control-static text-danger">只能选择已完成的出差申请</p>';
-            $html.='</div>';
-        }
-        echo $html;
-    ?>
-</div>
-<div class="form-group">
     <?php echo Tbhtml::label(Yii::t("give","local bool"),'local_bool',array('class'=>"col-sm-2 control-label")); ?>
     <div class="col-sm-3">
         <?php
@@ -163,13 +122,32 @@ $('input[name="ExpenseApplyForm[tableDetail][local_bool]"]').on('click',function
         $('select.setId').attr('readonly','readonly').addClass('readonly').val($("#localSetID").val());
     }
 });
+$('#tblDetail').on('click','.btn-select-trip',function(){
+    var trip_id = $(this).data('id');
+    var index = $(this).parents('.changeTr').eq(0).index();
+    $('#trip_name').val(trip_id).data('index',index);
+    $('#selectTripDialog').modal('show');
+});
+$('#trip_name').on('change',function(){
+    var tripId = $(this).val();
+    var index = $(this).data('index');
+    var btnSelect = $('.changeTr').eq(index).find('.btn-select-trip');
+    if(tripId!==''){
+        btnSelect.text('已关联').data('id',tripId);
+    }else{
+        btnSelect.text('关联').data('id',tripId);
+    }
+    btnSelect.prev('input').val(tripId);
+});
 $('#tblDetail').on('change','.changeAmtType',function(){
+    $(this).parents('.changeTr').find('.btn-select-trip').addClass("hide");
     var amtType = ""+$(this).val();
     switch(amtType){
         case "0"://本地费用
             $(this).parents('tr').eq(0).find('.infoRemark').attr('placeholder','202406市内交通费“或”XX会议餐费');
             break;
         case "1"://差旅费用
+            $(this).parents('.changeTr').find('.btn-select-trip').removeClass("hide");
             $(this).parents('tr').eq(0).find('.infoRemark').attr('placeholder','202406XX项目上海-广州差旅费-酒店2晚/高铁往返');
             break;
         case "2"://办公费

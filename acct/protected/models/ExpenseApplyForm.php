@@ -34,6 +34,7 @@ class ExpenseApplyForm extends CFormModel
             "id"=>"",
             "expId"=>"",
             "setId"=>"",
+            "tripId"=>"",
             "infoDate"=>"",
             "amtType"=>"",
             "infoRemark"=>"",
@@ -52,15 +53,11 @@ class ExpenseApplyForm extends CFormModel
     public $files;
     public $removeFileId = 0;
     public $tableDetail=array(
-        'trip_bool'=>0,//是否关联出差申请 0:不关联 1：关联
-        'trip_id'=>null,//出差id
         'local_bool'=>0,//费用是否归属本地区 0：否 1：是
         'payment_condition'=>null,//付款条件
         'payment_company'=>null,//支付公司
     );
     protected $fileList=array(
-        array("field_id"=>"trip_bool","field_type"=>"list","field_name"=>"trip bool","display"=>"none"),//是否关联出差申请
-        array("field_id"=>"trip_id","field_type"=>"list","field_name"=>"trip id","display"=>"none"),//出差id
         array("field_id"=>"local_bool","field_type"=>"list","field_name"=>"local bool","display"=>"none"),//费用是否归属本地区
         array("field_id"=>"payment_condition","field_type"=>"list","field_name"=>"payment condition","display"=>"none"),//付款条件
         array("field_id"=>"payment_company","field_type"=>"list","field_name"=>"payment company","display"=>"none"),//支付公司
@@ -175,6 +172,7 @@ class ExpenseApplyForm extends CFormModel
         $this->amt_money = 0;
         $typeTwoList = ExpenseFun::getAmtTypeTwo();
         $localSetID = ExpenseFun::getLocalSetIdToCity($this->city);
+        $tripList =ExpenseFun::getTripListForEmployeeID($this->employee_id,$this->id);
         foreach ($this->infoDetail as $list){
             if($this->tableDetail["local_bool"]==1){
                 $list["setId"] = $localSetID;//如果费用是归属本地区,强制转换
@@ -205,6 +203,15 @@ class ExpenseApplyForm extends CFormModel
                     if($list["amtType"]===""){
                         $this->addError($attribute, "费用类别不能为空");
                         break;
+                    }
+                    if(intval($list["amtType"])===1){//差旅费用
+                        if(count($tripList)>0&&empty($list["tripId"])){
+                            $this->addError($attribute, "差旅费用必须关联出差");
+                            break;
+                        }
+                    }else{
+                        $key = count($updateList)-1;
+                        $updateList[$key]["tripId"]=null;
                     }
                 }else{
                     $this->addError($attribute, "费用金额不能为空");
@@ -279,6 +286,7 @@ class ExpenseApplyForm extends CFormModel
                         "id"=>$infoRow["id"],
                         "expId"=>$infoRow["exp_id"],
                         "setId"=>$infoRow["set_id"],
+                        "tripId"=>$infoRow["trip_id"],
                         "infoDate"=>General::toDate($infoRow["info_date"]),
                         "amtType"=>$infoRow["amt_type"],
                         "infoRemark"=>$infoRow["info_remark"],
@@ -331,6 +339,7 @@ class ExpenseApplyForm extends CFormModel
                         "id"=>$infoRow["id"],
                         "expId"=>$infoRow["exp_id"],
                         "setId"=>$infoRow["set_id"],
+                        "tripId"=>$infoRow["trip_id"],
                         "infoDate"=>General::toDate($infoRow["info_date"]),
                         "amtType"=>$infoRow["amt_type"],
                         "infoRemark"=>$infoRow["info_remark"],
@@ -600,6 +609,7 @@ EOF;
                             "amt_type"=>$list["amtType"],
                             "info_remark"=>$list["infoRemark"],
                             "info_amt"=>$list["infoAmt"],
+                            "trip_id"=>empty($list["tripId"])||!is_numeric($list["tripId"])?null:$list["tripId"],
                             "info_json"=>key_exists("infoJson",$list)?$list["infoJson"]:"[]",
                         ));
                     }
@@ -620,6 +630,7 @@ EOF;
                                     "amt_type"=>$list["amtType"],
                                     "info_remark"=>$list["infoRemark"],
                                     "info_amt"=>$list["infoAmt"],
+                                    "trip_id"=>empty($list["tripId"])||!is_numeric($list["tripId"])?null:$list["tripId"],
                                     "info_json"=>key_exists("infoJson",$list)?$list["infoJson"]:"[]",
                                 ));
                             }else{
@@ -629,6 +640,7 @@ EOF;
                                     "amt_type"=>$list["amtType"],
                                     "info_remark"=>$list["infoRemark"],
                                     "info_amt"=>$list["infoAmt"],
+                                    "trip_id"=>empty($list["tripId"])||!is_numeric($list["tripId"])?null:$list["tripId"],
                                     "info_json"=>key_exists("infoJson",$list)?$list["infoJson"]:"[]",
                                 ), "id=:id and exp_id={$this->id}", array(":id" =>$list["id"]));
                             }

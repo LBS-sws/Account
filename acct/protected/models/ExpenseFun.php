@@ -21,7 +21,7 @@ class ExpenseFun
         }
     }
 
-    public static function getStatusStrForStatusType($status_type){
+    public static function getStatusStrList(){
         $list = array(
             0=>Yii::t("give","draft"),//草稿
             1=>Yii::t("give","wait confirm"),//待确认
@@ -32,6 +32,25 @@ class ExpenseFun
             7=>Yii::t("give","rejected JD"),//金蝶系统已拒绝
             9=>Yii::t("give","finish"),//金蝶系统已扣款
         );
+        return $list;
+    }
+
+    public static function getSearchStatusForStr($str){
+        $list = self::getStatusStrList();
+        $sqlKey = array();
+        foreach ($list as $key=>$item){
+            if (strpos($item,$str)!==false){
+                $sqlKey[]=$key;
+            }
+        }
+        if(empty($sqlKey)){
+            $sqlKey[]=-1;
+        }
+        return implode(",",$sqlKey);
+    }
+
+    public static function getStatusStrForStatusType($status_type){
+        $list = self::getStatusStrList();
         if(key_exists("{$status_type}",$list)){
             return $list[$status_type];
         }else{
@@ -153,14 +172,14 @@ class ExpenseFun
             ->where("employee_id=:employee_id and status=4",array(
                 ":employee_id"=>$employee_id
             ))->queryAll();
-        $selectRows = Yii::app()->db->createCommand()->select("a.field_value")
-            ->from("acc_expense_detail a")
+        $selectRows = Yii::app()->db->createCommand()->select("a.trip_id")
+            ->from("acc_expense_info a")
             ->leftJoin("acc_expense b","a.exp_id=b.id")
-            ->where("a.field_id='trip_id' and a.field_value is not null and b.employee_id='{$employee_id}' and a.field_value!='{$not_id}'")
+            ->where("a.trip_id is not null and b.employee_id='{$employee_id}' and b.id!='{$not_id}'")
             ->queryAll();
         if($selectRows){
             foreach ($selectRows as $selectRow){
-                $notList[$selectRow["field_value"]] =$selectRow["field_value"];
+                $notList[$selectRow["trip_id"]] =$selectRow["trip_id"];
             }
         }
         if($rows){
@@ -584,6 +603,7 @@ class ExpenseFun
                 ->where("trip_id=:id",array(":id"=>$id))->queryAll();
             $returnData["status"]=1;
             $returnData["data"]["trip_cost"]=floatval($tripRow["trip_cost"]);
+            $returnData["data"]["trip_code"]=$tripRow["trip_code"];
             $returnData["data"]["trip_cause"]=$tripRow["trip_cause"];
             $returnData["data"]["trip_address"]=$tripRow["trip_address"];
             $returnData["data"]["trip_company"]=$tripRow["company_name"];

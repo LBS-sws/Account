@@ -63,6 +63,7 @@ class ExpenseSearchForm extends ExpenseApplyForm
                         "id"=>$infoRow["id"],
                         "expId"=>$infoRow["exp_id"],
                         "setId"=>$infoRow["set_id"],
+                        "tripId"=>$infoRow["trip_id"],
                         "infoDate"=>General::toDate($infoRow["info_date"]),
                         "amtType"=>$infoRow["amt_type"],
                         "infoRemark"=>$infoRow["info_remark"],

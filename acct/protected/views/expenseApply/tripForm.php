@@ -9,10 +9,13 @@ $this->beginWidget('bootstrap.widgets.TbModal', array(
 ));
 ?>
 
-<div class="box" id="trip-form">
     <div class="form-group">
-        <label class="col-sm-4 control-label">出差员工:</label>
-        <div class="col-sm-7">
+        <label class="col-sm-3 control-label">出差编号:</label>
+        <div class="col-sm-2" style="overflow: visible;white-space: nowrap;">
+            <p class="form-control-static" id="trip_code"></p>
+        </div>
+        <label class="col-sm-3 control-label">出差员工:</label>
+        <div class="col-sm-4">
             <p class="form-control-static" id="trip_employee"></p>
         </div>
     </div>
@@ -74,29 +77,28 @@ $this->beginWidget('bootstrap.widgets.TbModal', array(
             <p class="form-control-static" id="trip_result"></p>
         </div>
     </div>
-</div>
 
 <?php
 $this->endWidget();
 ?>
-
 //
 <?php
 $ajaxUrl = Yii::app()->createUrl('expenseApply/ajaxTrip');
 $js = <<<EOF
-$('#look_trip').on('click',function() {
-    
+$('.look-trip').on('click',function() {
+    var trip_id = $(this).data('id');
     $.ajax({
         type:'post',
         url:'{$ajaxUrl}',
         data:{
-            'trip_id':'{$model->tableDetail["trip_id"]}'
+            'trip_id':trip_id
         },
         dataType:'json',
         success:function(data){
             $("#trip_employee").text($("#employee").val());
             if(data.status==1){
                 var list = data.data;
+                $("#trip_code").text(list['trip_code']);
                 $("#trip_cost").text(list['trip_cost']);
                 $("#trip_cause").text(list['trip_cause']);
                 $("#trip_address").text(list['trip_address']);
