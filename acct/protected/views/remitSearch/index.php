@@ -24,7 +24,7 @@ $this->pageTitle=Yii::app()->name . ' - RemitSearch';
 
 <section class="content">
 	<?php $this->widget('ext.layout.ListPageWidget', array(
-			'title'=>Yii::t('app','Expense Apply'),
+			'title'=>Yii::t('app','Remit Apply'),
 			'model'=>$model,
 				'viewhdr'=>'//remitSearch/_listhdr',
 				'viewdtl'=>'//remitSearch/_listdtl',

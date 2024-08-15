@@ -16,7 +16,7 @@ $this->pageTitle=Yii::app()->name . ' - TemporaryPayment Form';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('app','Remit Payment'); ?></strong>
+		<strong><?php echo Yii::t('app','Temporary Payment'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">

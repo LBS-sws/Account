@@ -16,7 +16,7 @@ $this->pageTitle=Yii::app()->name . ' - TemporarySearch Form';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('app','Remit Search'); ?></strong>
+		<strong><?php echo Yii::t('app','Temporary Search'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
