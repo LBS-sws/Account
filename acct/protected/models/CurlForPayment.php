@@ -302,6 +302,7 @@ class CurlForPayment extends CurlForJD{
     //财务应付-保存
     private function getDataForRemitModelThree($model){
         $tableDetail = ExpenseFun::getExpenseTableDetailForID($model->id);
+        $invoiceNo = key_exists("invoice_no",$tableDetail)?$tableDetail["invoice_no"]["field_value"]:0;
         $companyID = key_exists("payment_company",$tableDetail)?$tableDetail["payment_company"]["field_value"]:0;
         $companyCode = self::getCompanyCodeForID($companyID);
         $supplierCode = key_exists("payee_code",$tableDetail)?$tableDetail["payee_code"]["field_value"]:0;
@@ -347,6 +348,10 @@ class CurlForPayment extends CurlForJD{
         if(key_exists("bank_no",$tableDetail)){
             $curlData["payeebanknum"] = $tableDetail["bank_no"]["field_value"];
         }
+        //发票号码
+        if(!empty($invoiceNo)){
+            $curlData["lbs_invoice"] = $invoiceNo;
+        }
         $curlData =array_merge($curlData,$supplierList);
         foreach ($model->infoDetail as $infoRow){
             $temp=array(
@@ -359,7 +364,7 @@ class CurlForPayment extends CurlForJD{
                 "e_amount"=>$infoRow["infoAmt"],//明细.金额
                 "lbs_costdept_number"=>$deptCode,//明细.费用承担部门
             );
-            $temp =array_merge($temp,$supplierList);
+            //$temp =array_merge($temp,$supplierList);
             $curlData["detailentry"][]=$temp;
         }
         return $curlData;
