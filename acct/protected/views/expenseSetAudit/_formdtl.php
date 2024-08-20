@@ -1,7 +1,7 @@
 <tr>
 	<td>
 		<?php echo TbHtml::dropDownList($this->getFieldName('audit_user'),  $this->record['audit_user'],ExpenseSetAuditForm::getAppointAuditUserList($this->record['audit_user']),
-								array('disabled'=>$this->model->scenario=='view','empty'=>'')
+								array('disabled'=>$this->model->scenario=='view','empty'=>'','class'=>'auditUser')
 		); ?>
 	</td>
 	<td>
