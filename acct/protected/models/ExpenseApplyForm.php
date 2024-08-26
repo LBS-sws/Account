@@ -669,6 +669,8 @@ EOF;
 				$sql = "update acc_expense set 
 					apply_date = :apply_date, 
 					status_type = :status_type,
+					current_num = 0,
+					current_username = NULL,
 					amt_money = :amt_money,
 					remark = :remark,
 					luu = :luu

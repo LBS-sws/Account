@@ -137,7 +137,7 @@ $('#trip_name').on('change',function(){
     }else{
         btnSelect.text('关联').data('id',tripId);
     }
-    btnSelect.prev('input').val(tripId);
+    btnSelect.prev('input').val(tripId).trigger('change');
 });
 $('#tblDetail').on('change','.changeAmtType',function(){
     $(this).parents('.changeTr').find('.btn-select-trip').addClass("hide");
