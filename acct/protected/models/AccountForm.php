@@ -42,9 +42,9 @@ class AccountForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('jd_set,acct_type_id, coa, open_bal, open_dt, status','required'),
+			array('acct_type_id, coa, open_bal, open_dt, status','required'),
 			array('coa','validateCoa'),
-			array('id, acct_no, acct_name, bank_name, remarks, city, trans_city','safe'), 
+			array('jd_set,id, acct_no, acct_name, bank_name, remarks, city, trans_city','safe'),
 		);
 	}
 

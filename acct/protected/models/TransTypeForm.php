@@ -35,9 +35,9 @@ class TransTypeForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('jd_set,trans_type_code, trans_type_desc, adj_type','required'),
+			array('trans_type_code, trans_type_desc, adj_type','required'),
 			array('trans_type_code','validateCode'),
-			array('trans_cat, counter_type','safe'), 
+			array('jd_set,trans_cat, counter_type','safe'),
 		);
 	}
 
