@@ -2,6 +2,16 @@
 
 class ExpenseFun
 {
+    public static function getTableStrToNum($table_type){
+        switch ($table_type){
+            case 2://
+                return "日常付款";
+            case 3://
+                return "﻿暂支单";
+            default://
+                return "日常费用报销";
+        }
+    }
 
     public static function getColorForStatusType($status_type){
         $list = array(

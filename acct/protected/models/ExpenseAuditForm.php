@@ -234,8 +234,34 @@ class ExpenseAuditForm extends ExpenseApplyForm
 		$command->execute();
 
         $this->saveHistory($connection);
+        $this->sendEmail($connection);
 		return true;
 	}
+
+    protected function sendEmail($connection){
+        if(in_array($this->status_type,array(2,3,4,6))){
+            $subject=ExpenseFun::getTableStrToNum($this->table_type);
+            if ($this->status_type==3){
+                $subject.=" - 已拒绝";
+            }else{
+                $subject.=" - 已审核";
+            }
+            $employeeList = ExpenseFun::getEmployeeListForID($this->employee_id);
+            $emailModel = new Email($subject,'',$subject);
+            $message = "<h3>{$subject}</h3>";
+            $message.= "<p>申请员工：".$employeeList["employee"]."</p>";
+            $message.= "<p>员工部门：".$employeeList["department"]."</p>";
+            $message.= "<p>申请时间：".$this->apply_date."</p>";
+            $message.= "<p>报销编号：".$this->exp_code."</p>";
+            $message.= "<p>申请总金额：".$this->amt_money."</p>";
+            if ($this->status_type==3){
+                $message.= "<p style='color:red;'>拒绝原因：".$this->reject_note."</p>";
+            }
+            $emailModel->setMessage($message);
+            $emailModel->addEmailToStaffId($this->employee_id);
+            $emailModel->sent();
+        }
+    }
 
     protected function saveHistory($connection){
         $uid = Yii::app()->user->id;

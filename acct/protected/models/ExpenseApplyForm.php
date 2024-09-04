@@ -758,8 +758,27 @@ EOF;
         }
 
         $this->saveHistory($connection);
+        $this->sendEmail($connection);
 		return true;
 	}
+
+    protected function sendEmail($connection){
+        if($this->status_type==2){
+            $subject=ExpenseFun::getTableStrToNum($this->table_type);
+            $subject.=" - 申请";
+            $employeeList = ExpenseFun::getEmployeeListForID($this->employee_id);
+            $emailModel = new Email($subject,'',$subject);
+            $message = "<h3>{$subject}</h3>";
+            $message.= "<p>申请员工：".$employeeList["employee"]."</p>";
+            $message.= "<p>员工部门：".$employeeList["department"]."</p>";
+            $message.= "<p>申请时间：".$this->apply_date."</p>";
+            $message.= "<p>报销编号：".$this->exp_code."</p>";
+            $message.= "<p>申请总金额：".$this->amt_money."</p>";
+            $emailModel->setMessage($message);
+            $emailModel->addEmailToLcu($this->audit_user);
+            $emailModel->sent();
+        }
+    }
 
 	protected function updateThisExpCode($connection){
         $this->id = Yii::app()->db->getLastInsertID();
