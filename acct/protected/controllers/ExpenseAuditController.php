@@ -28,7 +28,7 @@ class ExpenseAuditController extends Controller
 				'expression'=>array('ExpenseAuditController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view','filedownload'),
+				'actions'=>array('index','view','filedownload','listFile'),
 				'expression'=>array('ExpenseAuditController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -121,7 +121,11 @@ class ExpenseAuditController extends Controller
 	}
 
     public function actionFileDownload($mastId, $docId, $fileId, $doctype) {
-        $sql = "select id from acc_expense where id = $docId";
+        if($doctype==="EXINFO"){
+            $sql = "select id from acc_expense_info where id = $docId";
+        }else{
+            $sql = "select id from acc_expense where id = $docId";
+        }
         $row = Yii::app()->db->createCommand($sql)->queryRow();
         if ($row!==false) {
             $docman = new DocMan($doctype,$docId,'ExpenseAuditForm');
@@ -129,6 +133,19 @@ class ExpenseAuditController extends Controller
             $docman->fileDownload($fileId);
         } else {
             throw new CHttpException(404,'Record not found.');
+        }
+    }
+
+    public function actionListFile() {
+        $model = new ExpenseAuditForm();
+        if (isset($_POST['ExpenseAuditForm'])) {
+            $model->attributes = $_POST['ExpenseAuditForm'];
+            $docman = new DocMan($model->docType,$model->docId,'ExpenseAuditForm');
+            $docman->setDocMasterId($model->docType,$model->docId,$model->docMasterId);
+            $result = $docman->genTableFileListEx(true);
+            print json_encode($result);
+        } else {
+            echo "NIL";
         }
     }
 	

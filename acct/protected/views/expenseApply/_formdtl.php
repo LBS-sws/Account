@@ -53,14 +53,19 @@
             array('readonly'=>true,'class'=>'changeSumNumber')
         ); ?>
     </td>
-    <td>
+    <td style="vertical-align: middle">
         <?php
         if($this->model->readonly()){
-            echo "&nbsp;";
+            echo "";
         }else{
-            echo TbHtml::Button('删除',array('id'=>'btnDelRow','title'=>Yii::t('misc','Delete'),'class'=>'btn-warning'));
+            echo TbHtml::Button('删除',array('id'=>'btnDelRow','title'=>Yii::t('misc','Delete'),'class'=>'btn-warning','style'=>'margin-bottom:4px;'));
             //echo TbHtml::Button('删除',array('id'=>'btnDelRow','title'=>Yii::t('misc','Add'),'class'=>'btn-primary'));
         }
+        $recordptr = empty($this->record['id'])?$this->recordptr:$this->record['id'];
+        $docExinfoId = "EXINFO_".$recordptr;
+        $counter = (isset($this->model->no_of_attm[$docExinfoId])&&$this->model->no_of_attm[$docExinfoId] > 0) ? ' <span class="label label-info">'.$this->model->no_of_attm[$docExinfoId].'</span>' : ' <span class="label label-info"></span>';
+
+        echo TbHtml::Button('附件'.$counter,array('title'=>Yii::t('misc','Delete'),'data-id'=>$this->record['id'],'data-index'=>$this->recordptr,'data-type'=>"EXINFO",'class'=>'btn-default btn-file-open','style'=>'padding:6px 4px;'));
         ?>
         <?php echo CHtml::hiddenField($this->getFieldName('uflag'),$this->record['uflag']); ?>
         <?php echo CHtml::hiddenField($this->getFieldName('id'),$this->record['id']); ?>

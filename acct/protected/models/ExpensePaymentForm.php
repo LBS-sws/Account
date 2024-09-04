@@ -17,7 +17,7 @@ class ExpensePaymentForm extends ExpenseApplyForm
             array('status_type','validateFiles','on'=>array("audit")),//验证审核时有没有上传附件
             array('reject_note','required','on'=>array("reject")),
             array('shift_city','required','on'=>array("shift")),
-            array('no_of_attm, docType, files, removeFileId, docMasterId','safe'),
+            array('no_of_attm,new_of_id, docType,docId, files, removeFileId, docMasterId','safe'),
 		);
 	}
 
@@ -106,11 +106,13 @@ class ExpensePaymentForm extends ExpenseApplyForm
             $this->payment_id = $row['payment_id'];
             $this->acc_id = $row['acc_id'];
             $this->no_of_attm['expen'] = $row['expendoc'];
-            $sql = "select * from acc_expense_info where exp_id='".$index."'";
+            $this->no_of_attm['EXPEN_'.$index] = $row['expendoc'];
+            $sql = "select *,docman$suffix.countdoc('exinfo',id) as infodoc from acc_expense_info where exp_id='".$index."'";
             $infoRows = Yii::app()->db->createCommand($sql)->queryAll();
             if($infoRows){
                 $this->infoDetail=array();
                 foreach ($infoRows as $infoRow){
+                    $this->no_of_attm['EXINFO_'.$infoRow["id"]] = $infoRow['infodoc'];
                     $this->infoDetail[]=array(
                         "id"=>$infoRow["id"],
                         "expId"=>$infoRow["exp_id"],

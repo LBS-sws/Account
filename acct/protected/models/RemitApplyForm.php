@@ -92,7 +92,8 @@ class RemitApplyForm extends ExpenseApplyForm
         $updateList = array();
         $deleteList = array();
         $this->amt_money = 0;
-        foreach ($this->infoDetail as $list){
+        foreach ($this->infoDetail as $rowKey=>$list){
+            $list["rowKey"] = $rowKey;
             if($list["uflag"]=="D"){
                 $deleteList[] = $list;
             }else{
@@ -284,5 +285,16 @@ EOF;
             $pdf->writeHTMLCell(7, 7,149,46, $html, 0, 1, false, true, 'L', true);
         }
         return $html;
+    }
+
+    protected function updateDocman(&$connection, $doctype) {
+        if ($this->scenario=='new') {
+            $docidx = strtolower($doctype);
+            if ($this->docMasterId[$docidx] > 0) {
+                $docman = new DocMan($doctype,$this->id,get_class($this));
+                $docman->masterId = $this->docMasterId[$docidx];
+                $docman->updateDocId($connection, $this->docMasterId[$docidx]);
+            }
+        }
     }
 }

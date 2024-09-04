@@ -48,7 +48,9 @@ class ExpenseApplyForm extends CFormModel
     public $no_of_attm = array(
         'expen'=>0
     );
+    public $new_of_id = array();
     public $docType = 'EXPEN';
+    public $docId = 0;
     public $docMasterId = 0;
     public $files;
     public $removeFileId = 0;
@@ -103,7 +105,7 @@ class ExpenseApplyForm extends CFormModel
             array('tableDetail','validateDetail'),
             array('infoDetail','validateInfo'),
             array('status_type','validateStatus'),
-            array('no_of_attm, docType, files, removeFileId, docMasterId','safe'),
+            array('no_of_attm,new_of_id, docType,docId, files, removeFileId, docMasterId','safe'),
         );
 	}
 
@@ -173,7 +175,8 @@ class ExpenseApplyForm extends CFormModel
         $typeTwoList = ExpenseFun::getAmtTypeTwo();
         $localSetID = ExpenseFun::getLocalSetIdToCity($this->city);
         $tripList =ExpenseFun::getTripListForEmployeeID($this->employee_id,$this->id);
-        foreach ($this->infoDetail as $list){
+        foreach ($this->infoDetail as $rowKey=>$list){
+            $list["rowKey"] = $rowKey;
             if($this->tableDetail["local_bool"]==1){
                 $list["setId"] = $localSetID;//如果费用是归属本地区,强制转换
             }
@@ -222,11 +225,13 @@ class ExpenseApplyForm extends CFormModel
         if(empty($updateList)){
             $this->addError($attribute, "报销明细不能为空");
             return false;
-        }elseif (count($updateList)>10){
-            $this->addError($attribute, "报销明细最多填写10条");
+        }elseif (count($updateList)>30){
+            $this->addError($attribute, "报销明细最多填写30条");
             return false;
         }
-        $this->infoDetail = array_merge($updateList,$deleteList);
+        if(empty($this->getErrors())){
+            $this->infoDetail = array_merge($updateList,$deleteList);
+        }
     }
 
     public function validateEmployee($attribute, $params) {
@@ -277,11 +282,13 @@ class ExpenseApplyForm extends CFormModel
             $this->remark = $row['remark'];
             $this->reject_note = $row['reject_note'];
             $this->no_of_attm['expen'] = $row['expendoc'];
-            $sql = "select * from acc_expense_info where exp_id='".$index."'";
+            $this->no_of_attm['EXPEN_'.$index] = $row['expendoc'];
+            $sql = "select *,docman$suffix.countdoc('exinfo',id) as infodoc from acc_expense_info where exp_id='".$index."'";
             $infoRows = Yii::app()->db->createCommand($sql)->queryAll();
             if($infoRows){
                 $this->infoDetail=array();
                 foreach ($infoRows as $infoRow){
+                    $this->no_of_attm['EXINFO_'.$infoRow["id"]] = $infoRow['infodoc'];
                     $this->infoDetail[]=array(
                         "id"=>$infoRow["id"],
                         "expId"=>$infoRow["exp_id"],
@@ -557,12 +564,27 @@ EOF;
 	}
 
     protected function updateDocman(&$connection, $doctype) {
-        if ($this->scenario=='new') {
-            $docidx = strtolower($doctype);
-            if ($this->docMasterId[$docidx] > 0) {
-                $docman = new DocMan($doctype,$this->id,get_class($this));
-                $docman->masterId = $this->docMasterId[$docidx];
-                $docman->updateDocId($connection, $this->docMasterId[$docidx]);
+        $suffix = Yii::app()->params['envSuffix'];
+        $uid = Yii::app()->user->id;
+        if(!empty($this->new_of_id)){
+            foreach ($this->new_of_id as $mastId=>$old_str){
+                $old_list = explode("_",$old_str);
+                if(!empty($mastId)&&count($old_list)==2){//新增时含有附件
+                    $old_key = $old_list[0];
+                    $old_id = $old_key=="EXPEN"?$this->id:$old_list[1];
+                    $boolRow = Yii::app()->db->createCommand()->select('id')->from("docman{$suffix}.dm_master")
+                        ->where("doc_id=:doc_id and doc_type_code=:code",array(":doc_id"=>$old_id,":code"=>$old_key))
+                        ->queryRow();
+                    if(!$boolRow){
+                        $connection->createCommand()->update("docman{$suffix}.dm_master", array(
+                            "doc_id"=>$old_id,
+                        ), "id=:id and lcu=:lcu and doc_type_code=:code", array(
+                            ":id" =>$mastId,
+                            ":lcu" =>$uid,
+                            ":code" =>$old_key,
+                        ));
+                    }
+                }
             }
         }
     }
@@ -612,6 +634,18 @@ EOF;
                             "trip_id"=>empty($list["tripId"])||!is_numeric($list["tripId"])?null:$list["tripId"],
                             "info_json"=>key_exists("infoJson",$list)?$list["infoJson"]:"[]",
                         ));
+
+                        $rowKey = isset($list["rowKey"])?$list["rowKey"]:0;
+                        $info_id = Yii::app()->db->getLastInsertID();
+
+                        echo "<br/>";
+                        if(!empty($this->new_of_id)){
+                            foreach ($this->new_of_id as $mastId=>$old_str){
+                                if($old_str === "EXINFO_{$rowKey}"){
+                                    $this->new_of_id[$mastId] = "EXINFO_{$info_id}";
+                                }
+                            }
+                        }
                     }
                 }
                 break;
@@ -633,6 +667,16 @@ EOF;
                                     "trip_id"=>empty($list["tripId"])||!is_numeric($list["tripId"])?null:$list["tripId"],
                                     "info_json"=>key_exists("infoJson",$list)?$list["infoJson"]:"[]",
                                 ));
+
+                                $rowKey = isset($list["rowKey"])?$list["rowKey"]:0;
+                                $info_id = Yii::app()->db->getLastInsertID();
+                                if(!empty($this->new_of_id)){
+                                    foreach ($this->new_of_id as $mastId=>$old_str){
+                                        if($old_str === "EXINFO_{$rowKey}"){
+                                            $this->new_of_id[$mastId] = "EXINFO_{$info_id}";
+                                        }
+                                    }
+                                }
                             }else{
                                 $connection->createCommand()->update("acc_expense_info", array(
                                     "set_id"=>$list["setId"],

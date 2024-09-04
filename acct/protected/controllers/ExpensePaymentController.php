@@ -28,7 +28,7 @@ class ExpensePaymentController extends Controller
 				'expression'=>array('ExpensePaymentController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view','filedownload'),
+				'actions'=>array('index','view','filedownload','listFile'),
 				'expression'=>array('ExpensePaymentController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -139,19 +139,23 @@ class ExpensePaymentController extends Controller
         if (isset($_POST['ExpensePaymentForm'])) {
             $model->attributes = $_POST['ExpensePaymentForm'];
 
-            $id = ($_POST['ExpensePaymentForm']['scenario']=='new') ? 0 : $model->id;
-            $docman = new DocMan($model->docType,$id,get_class($model));
-            $docman->masterId = $model->docMasterId[strtolower($doctype)];
+            $docman = new DocMan($model->docType,$model->docId,get_class($model));
+            $docman->setDocMasterId($model->docType,$model->docId,$model->docMasterId);
             if (isset($_FILES[$docman->inputName])) $docman->files = $_FILES[$docman->inputName];
             $docman->fileUpload();
-            echo $docman->genTableFileList(false,true);
+            $result = $docman->genTableFileListEx(false,true);
+            print json_encode($result);
         } else {
             echo "NIL";
         }
     }
 
     public function actionFileDownload($mastId, $docId, $fileId, $doctype) {
-        $sql = "select id from acc_expense where id = $docId";
+        if($doctype==="EXINFO"){
+            $sql = "select id from acc_expense_info where id = $docId";
+        }else{
+            $sql = "select id from acc_expense where id = $docId";
+        }
         $row = Yii::app()->db->createCommand($sql)->queryRow();
         if ($row!==false) {
             $docman = new DocMan($doctype,$docId,'ExpensePaymentForm');
@@ -159,6 +163,20 @@ class ExpensePaymentController extends Controller
             $docman->fileDownload($fileId);
         } else {
             throw new CHttpException(404,'Record not found.');
+        }
+    }
+
+    public function actionListFile() {
+        $model = new ExpensePaymentForm();
+        if (isset($_POST['ExpensePaymentForm'])) {
+            $model->attributes = $_POST['ExpensePaymentForm'];
+
+            $docman = new DocMan($model->docType,$model->docId,'ExpensePaymentForm');
+            $docman->setDocMasterId($model->docType,$model->docId,$model->docMasterId);
+            $result = $docman->genTableFileListEx(false,true);
+            print json_encode($result);
+        } else {
+            echo "NIL";
         }
     }
 	

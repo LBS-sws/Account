@@ -28,7 +28,7 @@ class ExpenseApplyController extends Controller
 				'expression'=>array('ExpenseApplyController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view','filedownload'),
+				'actions'=>array('index','view','filedownload','listFile'),
 				'expression'=>array('ExpenseApplyController','allowReadOnly'),
 			),
 			array('allow',
@@ -168,38 +168,43 @@ class ExpenseApplyController extends Controller
 		}
 	}
 
-    public function actionFileupload($doctype) {
+    public function actionFileupload() {
         $model = new ExpenseApplyForm();
         if (isset($_POST['ExpenseApplyForm'])) {
             $model->attributes = $_POST['ExpenseApplyForm'];
 
-            $id = ($_POST['ExpenseApplyForm']['scenario']=='new') ? 0 : $model->id;
-            $docman = new DocMan($model->docType,$id,get_class($model));
-            $docman->masterId = $model->docMasterId[strtolower($doctype)];
-            if (isset($_FILES[$docman->inputName])) $docman->files = $_FILES[$docman->inputName];
+            $docman = new DocMan($model->docType,$model->docId,get_class($model));
+            $docman->setDocMasterId($model->docType,$model->docId,$model->docMasterId);
+            if (isset($_FILES["attachmentEx"])) $docman->files = $_FILES["attachmentEx"];
             $docman->fileUpload();
-            echo $docman->genTableFileList(false);
+            $result = $docman->genTableFileListEx($model->readonly());
+            print json_encode($result);
         } else {
             echo "NIL";
         }
     }
 
-    public function actionFileRemove($doctype) {
+    public function actionFileRemove() {
         $model = new ExpenseApplyForm();
         if (isset($_POST['ExpenseApplyForm'])) {
             $model->attributes = $_POST['ExpenseApplyForm'];
 
-            $docman = new DocMan($model->docType,$model->id,'ExpenseApplyForm');
-            $docman->masterId = $model->docMasterId[strtolower($doctype)];
-            $docman->fileRemove($model->removeFileId[strtolower($doctype)]);
-            echo $docman->genTableFileList(false);
+            $docman = new DocMan($model->docType,$model->docId,'ExpenseApplyForm');
+            $docman->setDocMasterId($model->docType,$model->docId,$model->docMasterId);
+            $docman->fileRemove($model->removeFileId);
+            $result = $docman->genTableFileListEx($model->readonly());
+            print json_encode($result);
         } else {
             echo "NIL";
         }
     }
 
     public function actionFileDownload($mastId, $docId, $fileId, $doctype) {
-        $sql = "select id from acc_expense where id = $docId";
+	    if($doctype==="EXINFO"){
+            $sql = "select id from acc_expense_info where id = $docId";
+        }else{
+            $sql = "select id from acc_expense where id = $docId";
+        }
         $row = Yii::app()->db->createCommand($sql)->queryRow();
         if ($row!==false) {
             $docman = new DocMan($doctype,$docId,'ExpenseApplyForm');
@@ -207,6 +212,20 @@ class ExpenseApplyController extends Controller
             $docman->fileDownload($fileId);
         } else {
             throw new CHttpException(404,'Record not found.');
+        }
+    }
+
+    public function actionListFile() {
+        $model = new ExpenseApplyForm();
+        if (isset($_POST['ExpenseApplyForm'])) {
+            $model->attributes = $_POST['ExpenseApplyForm'];
+
+            $docman = new DocMan($model->docType,$model->docId,'ExpenseApplyForm');
+            $docman->setDocMasterId($model->docType,$model->docId,$model->docMasterId);
+            $result = $docman->genTableFileListEx($model->readonly());
+            print json_encode($result);
+        } else {
+            echo "NIL";
         }
     }
 	

@@ -63,9 +63,10 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseApply Form';
                     ?>
                 <?php endif ?>
                 <?php
-                $counter = ($model->no_of_attm['expen'] > 0) ? ' <span id="docexpen" class="label label-info">'.$model->no_of_attm['expen'].'</span>' : ' <span id="docexpen"></span>';
+                $docExpenId = 'EXPEN_'.(empty($model->id)?0:$model->id);
+                $counter = (isset($model->no_of_attm[$docExpenId])&&$model->no_of_attm[$docExpenId] > 0) ? ' <span class="label label-info">'.$model->no_of_attm[$docExpenId].'</span>' : ' <span class="label label-info"></span>';
                 echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('misc','Attachment').$counter, array(
-                        'name'=>'btnFile','id'=>'btnFile','data-toggle'=>'modal','data-target'=>'#fileuploadexpen',)
+                        'class'=>'btn-file-open','data-id'=>(empty($model->id)?0:$model->id),'data-type'=>'EXPEN','data-index'=>0)
                 );
                 ?>
             </div>
@@ -90,21 +91,20 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseApply Form';
 <?php $this->renderPartial('//expenseApply/expenseHistory',array("model"=>$model)); ?>
 <?php $this->renderPartial('//expenseApply/tripForm',array("model"=>$model)); ?>
 
-<?php $this->renderPartial('//site/fileupload',array('model'=>$model,
+<?php $this->renderPartial('//site/fileuploadEX',array('model'=>$model,
     'form'=>$form,
-    'doctype'=>'EXPEN',
     'header'=>Yii::t('dialog','File Attachment'),
     'ronly'=>$model->readonly(),
 ));?>
 
 <?php
-Script::genFileUpload($model,$form->id,'EXPEN');
+Script::genFileUploadEX($model,$form->id);
 $language = Yii::app()->language;
 
 $js = "
 $('#tblDetail').on('change','.changeAmtType',function() {
     var amt_type = $(this).val();
-    $(this).parents('tr').find('.changeNumber').val('').prop('readonly',true).addClass('readonly').trigger('change');
+    $(this).parents('tr').find('.changeNumber').val('').attr('value','').prop('readonly',true).addClass('readonly').trigger('change');
     if(amt_type!==''){
         $(this).parents('tr').find('.changeNumber[data-type=\"'+amt_type+'\"]').prop('readonly',false).removeClass('readonly');
     }
@@ -262,6 +262,7 @@ $('#btnAddRow').on('click',function() {
 		var nid = '';
 		var ct = $('#dtltemplate').val();
 		$('#tblDetail>tbody:last').append('<tr class=\"changeTr\">'+ct+'</tr>');
+		$('#tblDetail>tbody>tr').eq(-1).find('.btn-file-open').attr('data-id',0).attr('data-index',r).find('.label').text('');
 		$('#tblDetail>tbody>tr').eq(-1).find('[id*=\"ExpenseApplyForm_\"]').each(function(index) {
 			var id = $(this).attr('id');
 			var name = $(this).attr('name');
@@ -283,12 +284,14 @@ $('#btnAddRow').on('click',function() {
 			    }else{
                    $(this).attr('readonly','readonly').addClass('readonly').val($("#localSetID").val());
 			    }
-			};
+			}
 			if (id.indexOf('_tripId') != -1){
 			    $(this).val('');
 			    $(this).next('button').data('id','').text('关联');
-			};
+			}
 			if (id.indexOf('_infoRemark') != -1) $(this).val('');
+			if (id.indexOf('_infoAmt') != -1) $(this).val('');
+			if (id.indexOf('_infoJson') != -1) $(this).val('');
 			if (id.indexOf('_amtType') != -1){
 			    $(this).val('').trigger('change');
 			}
