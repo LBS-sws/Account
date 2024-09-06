@@ -54,12 +54,12 @@ class ConsultAuditList extends CListPageModel
 				case 'consult_money':
 					$clause .= General::getSqlConditionClause('consult_money',$svalue);
 					break;
-				case 'apply_city':
-					$clause .= General::getSqlConditionClause('apply_city',$svalue);
-					break;
-				case 'audit_city':
-					$clause .= General::getSqlConditionClause('audit_city',$svalue);
-					break;
+                case 'apply_city':
+                    $clause .= " and apply_city in ".ConsultApplyList::getCitySQLLike($svalue);
+                    break;
+                case 'audit_city':
+                    $clause .= " and audit_city in ".ConsultApplyList::getCitySQLLike($svalue);
+                    break;
 				case 'status':
 					$clause .= General::getSqlConditionClause('status',$svalue);
 					break;

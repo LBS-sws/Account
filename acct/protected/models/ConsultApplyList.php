@@ -62,10 +62,10 @@ class ConsultApplyList extends CListPageModel
 					$clause .= General::getSqlConditionClause('consult_money',$svalue);
 					break;
 				case 'apply_city':
-					$clause .= General::getSqlConditionClause('apply_city',$svalue);
+					$clause .= " and apply_city in ".self::getCitySQLLike($svalue);
 					break;
 				case 'audit_city':
-					$clause .= General::getSqlConditionClause('audit_city',$svalue);
+                    $clause .= " and audit_city in ".self::getCitySQLLike($svalue);
 					break;
 				case 'status':
 					$clause .= General::getSqlConditionClause('status',$svalue);
@@ -110,6 +110,12 @@ class ConsultApplyList extends CListPageModel
 		$session['consultApply_c01'] = $this->getCriteria();
 		return true;
 	}
+
+	public static function getCitySQLLike($svalue){
+        $suffix = Yii::app()->params['envSuffix'];
+	    $sql = " (select city.code from security$suffix.sec_city city where city.name like'%{$svalue}%')";
+	    return $sql;
+    }
 
 	public static function getStatusArr($row){
 	    switch ($row["status"]){

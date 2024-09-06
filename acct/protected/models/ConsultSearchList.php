@@ -57,7 +57,16 @@ class ConsultSearchList extends CListPageModel
             } else {
                 $svalue = str_replace("'","\'",$this->searchValue);
                 $columns = $this->searchColumns();
-                $clause .= General::getSqlConditionClause($columns[$this->searchField],$svalue);
+                switch ($this->searchField) {
+                    case 'apply_city':
+                        $clause .= " and apply_city in ".ConsultApplyList::getCitySQLLike($svalue);
+                        break;
+                    case 'audit_city':
+                        $clause .= " and audit_city in ".ConsultApplyList::getCitySQLLike($svalue);
+                        break;
+                    default:
+                        $clause .= General::getSqlConditionClause($columns[$this->searchField],$svalue);
+                }
             }
 		}
         $clause .= $this->getDateRangeCondition('apply_date');
