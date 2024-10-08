@@ -49,11 +49,11 @@ class PayrollController extends Controller
 		if (isset($_POST['PayrollList'])) {
 			$model->attributes = $_POST['PayrollList'];
 		} else {
-			$session = Yii::app()->session;
-			if (isset($session['criteria_xs05']) && !empty($session['criteria_xs05'])) {
-				$criteria = $session['criteria_xs05'];
-				$model->setCriteria($criteria);
-			}
+            $session = Yii::app()->session;
+            if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+                $criteria = $session[$model->criteriaName()];
+                $model->setCriteria($criteria);
+            }
 		}
 		$model->determinePageNum($pageNum);
 		$model->retrieveDataByPage($model->pageNum);

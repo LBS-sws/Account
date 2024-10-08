@@ -28,19 +28,14 @@ $this->pageTitle=Yii::app()->name . ' - Payroll File';
         </div>
     </div>
 
-	<?php 
-		$search = array(
-							'year_no',
-							'month_no',
-					);
-		if (!Yii::app()->user->isSingleCity()) $search[] = 'city_name';
+	<?php
 		$this->widget('ext.layout.ListPageWidget', array(
 			'title'=>Yii::t('trans','Payroll File List'),
 			'model'=>$model,
 				'viewhdr'=>'//payroll/_listhdr',
 				'viewdtl'=>'//payroll/_listdtl',
-				'search'=>$search,
-				'hasDateButton'=>true,
+            'hasDateButton'=>true,
+            'advancedSearch'=>true,
 		));
 	?>
 </section>
@@ -55,6 +50,7 @@ echo TbHtml::button('dummyButton', array('style'=>'display:none','disabled'=>tru
 	echo $form->hiddenField($model,'totalRow');
 	echo $form->hiddenField($model,'orderField');
 	echo $form->hiddenField($model,'orderType');
+	echo $form->hiddenField($model,'filter');
 ?>
 <?php $this->endWidget(); ?>
 

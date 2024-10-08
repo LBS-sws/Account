@@ -15,6 +15,15 @@ class PayrollList extends CListPageModel
             'amt_total'=>Yii::t('trans','Total'),
 		);
 	}
+
+    public function searchColumns() {
+        $search = array(
+            'year_no'=>"a.year_no",
+            'month_no'=>'a.month_no',
+        );
+        if (!Yii::app()->user->isSingleCity()) $search['city_name'] = 'b.name';
+        return $search;
+    }
 	
 	public function retrieveDataByPage($pageNum=1) {
 		$suffix = Yii::app()->params['envSuffix'];
@@ -43,20 +52,16 @@ class PayrollList extends CListPageModel
 				where a.city in ($citylist)
 			";
 		$clause = "";
-		if (!empty($this->searchField) && !empty($this->searchValue)) {
-			$svalue = str_replace("'","\'",$this->searchValue);
-			switch ($this->searchField) {
-				case 'year_no':
-					$clause .= General::getSqlConditionClause('a.year_no', $svalue);
-					break;
-				case 'month_no':
-					$clause .= General::getSqlConditionClause('a.month_no', $svalue);
-					break;
-				case 'city_name':
-					$clause .= General::getSqlConditionClause('b.name', $svalue);
-					break;
-			}
-		}
+        if (!empty($this->searchField) && (!empty($this->searchValue) || $this->isAdvancedSearch())) {
+            if ($this->isAdvancedSearch()) {
+                $clause = $this->buildSQLCriteria();
+            } else {
+                $svalue = str_replace("'","\'",$this->searchValue);
+                $columns = $this->searchColumns();
+                $clause .= General::getSqlConditionClause($columns[$this->searchField],$svalue);
+            }
+        }
+
 //		$clause .= $this->getDateRangeCondition('a.lcd');
 		
 		$order = "";
@@ -91,7 +96,7 @@ class PayrollList extends CListPageModel
 			}
 		}
 		$session = Yii::app()->session;
-		$session['criteria_xs05'] = $this->getCriteria();
+        $session[$this->criteriaName()] = $this->getCriteria();
 		return true;
 	}
 
