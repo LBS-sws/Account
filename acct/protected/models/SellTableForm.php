@@ -913,6 +913,13 @@ class SellTableForm extends SellComputeForm{
         }
 
         $this->saveInfoDetail();
+        $this->saveSupplementMoney();
+    }
+
+    private function saveSupplementMoney(){
+        Yii::app()->db->createCommand()->update("acc_service_comm_dtl",array(
+            "supplement_money"=>$this->supplement_money
+        ),"hdr_id=:hdr_id",array(":hdr_id"=>$this->id));
     }
 
     private function saveInfoDetail(){

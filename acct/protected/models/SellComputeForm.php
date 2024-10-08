@@ -11,6 +11,7 @@ class SellComputeForm extends CFormModel
 	public $group_type;
 	public $performance;
 	public $all_amount;
+	public $final_money;//最终金额
 	public $staff;//查詢用的格式：員工名稱 (員工編號)
     public $year;
     public $month;
@@ -237,6 +238,7 @@ class SellComputeForm extends CFormModel
                 "lcu"=>Yii::app()->user->id
             ));
         }
+        $this->final_money = $this->all_amount+$this->dtl_list["supplement_money"];
     }
 
     public function getMenuHtml($linkType=''){

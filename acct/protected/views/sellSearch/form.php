@@ -130,6 +130,12 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute Form';
                                 <?php echo TbHtml::textField("span_other_rate",SellComputeList::showText($model->span_other_rate,$model->showNull,"rate"),array('readonly'=>true));?>
                             </div>
                         </div>
+                        <div class="form-group" >
+                            <label class="col-sm-5 control-label"><?php echo Yii::t('commission','final_money'); ?></label>
+                            <div class="col-sm-7">
+                                <?php echo TbHtml::textField("final_money",SellComputeList::showText($model->final_money,$model->showNull),array('readonly'=>true));?>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-lg-4">
                         <?php
@@ -176,6 +182,12 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute Form';
                             }
                         }
                         ?>
+                        <div class="form-group" >
+                            <label class="col-sm-5 control-label"><?php echo Yii::t('commission','supplement_money'); ?></label>
+                            <div class="col-sm-7">
+                                <?php echo TbHtml::textField("supplement_money",SellComputeList::showText($model->dtl_list['supplement_money'],$model->showNull),array('readonly'=>true));?>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="box-body">

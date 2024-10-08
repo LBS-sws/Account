@@ -30,6 +30,7 @@ class SellComputeList extends CListPageModel
         'renewal_money'=>array('value'=>'renewal_money','name'=>''),
         'renewalend_amount'=>array('value'=>'renewalend_amount','name'=>'','amount'=>true),
         'product_amount'=>array('value'=>'product_amount','name'=>'','amount'=>true),
+        'supplement_money'=>array('value'=>'supplement_money','name'=>''),
     );
 
     public function init(){
