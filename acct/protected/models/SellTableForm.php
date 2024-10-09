@@ -917,6 +917,7 @@ class SellTableForm extends SellComputeForm{
     }
 
     private function saveSupplementMoney(){
+        $this->supplement_money = empty($this->supplement_money)?0:round($this->supplement_money,2);
         Yii::app()->db->createCommand()->update("acc_service_comm_dtl",array(
             "supplement_money"=>$this->supplement_money
         ),"hdr_id=:hdr_id",array(":hdr_id"=>$this->id));
