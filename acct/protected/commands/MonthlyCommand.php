@@ -26,6 +26,7 @@ class MonthlyCommand extends CConsoleCommand {
 			";
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
 		if (count($rows) > 0) {
+            $rows[]=array("code"=>"RN");
 			foreach ($rows as $row) {
 				$city = $row['code'];
 				echo "CITY: $city\n";
@@ -87,6 +88,7 @@ class MonthlyCommand extends CConsoleCommand {
 			";
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
 		if (count($rows) > 0) {
+            $rows[]=array("code"=>"RN");
 			foreach ($rows as $row) {
 				$city = $row['code'];
 				echo "CITY: $city\n";
