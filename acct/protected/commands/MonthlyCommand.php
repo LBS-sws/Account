@@ -11,10 +11,18 @@ class MonthlyCommand extends CConsoleCommand {
 		echo "YEAR: ".$this->year."\tMONTH: ".$this->month."\n";
 
 		$suffix = Yii::app()->params['envSuffix'];
+		/*
 		$sql = "select a.code
 				from security$suffix.sec_city a left outer join security$suffix.sec_city b on a.code=b.region 
 				where b.code is null 
 				order by a.code
+			";
+		*/
+		//修改成拥有“营业报告”权限的城市
+        $sql = "select code
+				from security$suffix.sec_city_info
+				where field_id='OPERA' and field_value='1' 
+				GROUP by code
 			";
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
 		if (count($rows) > 0) {
@@ -64,10 +72,18 @@ class MonthlyCommand extends CConsoleCommand {
 		echo "YEAR: ".$this->year."\tMONTH: ".$this->month."\n";
 
 		$suffix = Yii::app()->params['envSuffix'];
-		$sql = "select a.code
-				from security$suffix.sec_city a left outer join security$suffix.sec_city b on a.code=b.region 
-				where b.code is null 
-				order by a.code
+        /*
+        $sql = "select a.code
+                from security$suffix.sec_city a left outer join security$suffix.sec_city b on a.code=b.region
+                where b.code is null
+                order by a.code
+            ";
+        */
+        //修改成拥有“营业报告”权限的城市
+		$sql = "select code
+				from security$suffix.sec_city_info
+				where field_id='OPERA' and field_value='1' 
+				GROUP by code
 			";
 		$rows = Yii::app()->db->createCommand($sql)->queryAll();
 		if (count($rows) > 0) {
