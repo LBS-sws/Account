@@ -85,5 +85,8 @@ return array(
     'install amount'=>'裝機提成',
     'office_name'=>'辦事處',
     'local office'=>'本部',
+
+    'supplement_money'=>'補充金額合計',
+    'final_money'=>'最終金額合計',
 );
 ?>

@@ -31,7 +31,7 @@ SellComputeController extends Controller
                 'expression'=>array('SellComputeController','allowReadWrite'),
             ),
             array('allow',
-                'actions'=>array('index','view','list'),
+                'actions'=>array('index','view','list','downAll'),
 				'expression'=>array('SellComputeController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -98,6 +98,19 @@ SellComputeController extends Controller
             $model->listSave('clear');
             Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
             $this->redirect(Yii::app()->createUrl('sellCompute/list',array('index'=>$index,'type'=>$type)));
+        }
+    }
+
+    public function actionDownAll()
+    {
+        $down_id = key_exists("down_id",$_POST)?$_POST["down_id"]:"";
+        $idList = explode(",",$down_id);
+        $model = new SellComputeForm('edit');
+        if(!empty($idList)){
+            $model->downExcelAll($idList);
+        }else{
+            Dialog::message(Yii::t('dialog','Validation Message'), "列表为空，无法下载");
+            $this->redirect(Yii::app()->createUrl('sellTable/index'));
         }
     }
 	

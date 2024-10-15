@@ -8,6 +8,7 @@ class SellComputeList extends CListPageModel
     public $city;
 
     public $onlySql="";//只允許查看自己的提成
+    public $down_id=array();
 
     public static $sellComputeAttr=array(
         'service_reward'=>array('value'=>'service_reward','name'=>''),
@@ -66,11 +67,13 @@ class SellComputeList extends CListPageModel
             'time'=>Yii::t('app','Time'),
             'dept_name'=>Yii::t('app','user_name'),
             'moneys'=>Yii::t('app','comm_total_amount'),
+            'examine'=>Yii::t('misc','Status'),
 		);
 	}
 	
 	public function retrieveDataByPage($pageNum=1,$bool=true)
 	{
+        $this->down_id=array();
 		$suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city();
         $cityList = Yii::app()->user->city_allow();
@@ -81,12 +84,13 @@ class SellComputeList extends CListPageModel
         }
         $moneysSql = $this->getCountMoneySql();
         $leaveTime = date("Y/m/01",strtotime("{$this->year}/{$this->month}/01"));
-		$sql1 = "select b.name,b.code,c.name as dept_name,a.id,e.name as city_name {$moneysSql}
+		$sql1 = "select b.name,b.code,c.name as dept_name,a.id,g.examine,e.name as city_name {$moneysSql}
 				from acc_service_comm_hdr a 
 				LEFT JOIN hr$suffix.hr_employee b  on b.code=a.employee_code
                 LEFT JOIN hr$suffix.hr_dept c on b.position=c.id  
                 LEFT JOIN security$suffix.sec_city e on a.city=e.code 
                 LEFT JOIN acc_service_comm_dtl f on f.hdr_id=a.id 
+                LEFT JOIN acc_product g on a.id=g.service_hdr_id 
 				where {$citySql} {$this->onlySql} and a.year_no= {$this->year} and a.month_no={$this->month} and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
 			";
 		$sql2 = "select count(a.id)
@@ -112,6 +116,10 @@ class SellComputeList extends CListPageModel
 				case 'dept_name':
 					$clause .= General::getSqlConditionClause('c.name',$svalue);
 					break;
+                case 'examine':
+                    $examine=SellTableList::examineSql($svalue);
+                    $clause .= General::getSqlConditionClause("g.examine",$examine);
+                    break;
 			}
 		}
 		
@@ -133,6 +141,7 @@ class SellComputeList extends CListPageModel
 		$this->attr = array();
 		if (count($records) > 0) {
 			foreach ($records as $k=>$record) {
+                $this->down_id[]=$record["id"];
 			    $this->attr[] = array(
                     'id'=>$record['id'],
                     'code'=>$record['code'],
@@ -140,6 +149,8 @@ class SellComputeList extends CListPageModel
                     'time'=>"{$this->year}/{$this->month}",
                     'city_name'=>$record['city_name'],
                     'dept_name'=>$record['dept_name'],
+                    'style'=>SellTableList::examineStyle($record['examine']),
+                    'examine'=>SellTableList::examine($record['examine']),
                     'moneys'=>key_exists("moneys",$record)?floatval($record['moneys']):0,
                 );
 			}
@@ -147,6 +158,7 @@ class SellComputeList extends CListPageModel
 		$session = Yii::app()->session;
 		$sessionNum = $bool?2:1;
 		$session["sellCompute_c0{$sessionNum}"] = $this->getCriteria();
+        $this->down_id = implode(",",$this->down_id);
 		return true;
 	}
 

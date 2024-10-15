@@ -174,7 +174,7 @@ class SellTableList extends CListPageModel
         }
     }
 
-    private function examineSql($examine){
+    public static function examineSql($examine){
         $a="";
         if($examine=='N')$a=Yii::t('salestable','Not reviewed');//未审核
         if($examine=='A')$a=Yii::t('salestable','Adopt');//审核通过

@@ -350,6 +350,46 @@ class SellComputeForm extends CFormModel
         return $html;
     }
 
+    //新增
+    private function newExcel($rows,$tempArr,$newExcel,&$detailRow,$installRate){
+        if(!empty($rows)){
+            $num = 3;
+            foreach ($rows as $row){
+                $detailRow++;
+                $row["first_dt"] = General::toMyDate($row["first_dt"]);
+                $row["status_dt"] = General::toMyDate($row["status_dt"]);
+                $str = self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid'];
+                $row["amt_money"] = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
+                $row['royalty'] = is_numeric($row['royalty'])?floatval($row['royalty']):0;
+                $row['commission'] = is_numeric($row['commission'])?floatval($row['commission']):"未计算";
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
+
+                $row["old_royalty"]="";
+                $amt_install = $row['amt_install'];
+                $amt_install = is_numeric($amt_install)?floatval($amt_install)*$installRate:"";
+                $newExcel->getSheet(1)->getCellByColumnAndRow(0,$detailRow)->setValue($tempArr["yearMonth"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(1,$detailRow)->setValue($tempArr["city_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(2,$detailRow)->setValue($tempArr["employee_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num,$detailRow)->setValue("新增生意额");
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+1,$detailRow)->setValue($row["first_dt"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+2,$detailRow)->setValue($row["company_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+3,$detailRow)->setValue($row["type_desc"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+4,$detailRow)->setValue($row["othersalesman"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+5,$detailRow)->setValue($row["ctrt_period"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+6,$detailRow)->setValue($str);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+7,$detailRow)->setValue($row['amt_money']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+8,$detailRow)->setValue($tempArr["new_calc"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+9,$detailRow)->setValue($tempArr["point"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+10,$detailRow)->setValue($tempArr["service_reward"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+11,$detailRow)->setValue($row["royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+12,$detailRow)->setValue($row["commission"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+13,$detailRow)->setValue($row["amt_install"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+14,$detailRow)->setValue($amt_install);
+                //83
+            }
+        }
+    }
+
     //跨区新增
     public function performanceList($checkBool=false){
         $checkSql = $checkBool?"a.other_commission is not null and ":"";//筛选已经选中的数据
@@ -414,6 +454,40 @@ class SellComputeForm extends CFormModel
             }
         }
         return $html;
+    }
+
+    //跨区新增
+    private function performanceExcel($rows,$tempArr,$newExcel,&$detailRow){
+        if(!empty($rows)){
+            $num = 47;
+            foreach ($rows as $row){
+                $detailRow++;
+                $row["first_dt"] = General::toMyDate($row["first_dt"]);
+                $row["status_dt"] = General::toMyDate($row["status_dt"]);
+                $str = self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid'];
+                $row["amt_money"] = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
+                $row['royalty'] = is_numeric($row['royaltys'])?floatval($row['royaltys']):0;
+                $row['commission'] = is_numeric($row['other_commission'])?floatval($row['other_commission']):"未计算";
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
+                //獎金庫擴充
+                $row['commission'] = $row['target']==1?"奖金库":$row['commission'];
+                $row["old_royalty"]="";
+                $newExcel->getSheet(1)->getCellByColumnAndRow(0,$detailRow)->setValue($tempArr["yearMonth"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(1,$detailRow)->setValue($tempArr["city_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(2,$detailRow)->setValue($tempArr["employee_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num,$detailRow)->setValue("跨区新增生意额");
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+1,$detailRow)->setValue($row["first_dt"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+2,$detailRow)->setValue($row["company_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+3,$detailRow)->setValue($row["type_desc"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+4,$detailRow)->setValue($row["salesman"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+5,$detailRow)->setValue($row["ctrt_period"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+6,$detailRow)->setValue($str);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+7,$detailRow)->setValue($row['amt_money']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+8,$detailRow)->setValue($row["royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+9,$detailRow)->setValue($row["commission"]);
+                //83
+            }
+        }
     }
 
     //续约
@@ -487,6 +561,38 @@ class SellComputeForm extends CFormModel
             }
         }
         return $html;
+    }
+
+    //续约
+    private function renewalExcel($rows,$tempArr,$newExcel,&$detailRow){
+        if($rows){
+            $num = 84;
+            foreach ($rows as $row){
+                $detailRow++;
+                $row["first_dt"] = General::toMyDate($row["first_dt"]);
+                $row["status_dt"] = General::toMyDate($row["status_dt"]);
+                $str = self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid'];
+                $row["amt_money"] = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
+                $row['royalty'] = is_numeric($row['royalty'])?floatval($row['royalty']):0;
+                $row['commission'] = is_numeric($row['commission'])?floatval($row['commission']):"未计算";
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
+                $row["old_royalty"]="";
+                $newExcel->getSheet(1)->getCellByColumnAndRow(0,$detailRow)->setValue($tempArr["yearMonth"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(1,$detailRow)->setValue($tempArr["city_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(2,$detailRow)->setValue($tempArr["employee_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num,$detailRow)->setValue("续约生意额");
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+1,$detailRow)->setValue($row["status_dt"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+2,$detailRow)->setValue($row["company_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+3,$detailRow)->setValue($row["type_desc"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+4,$detailRow)->setValue($row["nature_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+5,$detailRow)->setValue($row["ctrt_period"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+6,$detailRow)->setValue($str);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+7,$detailRow)->setValue($row['amt_money']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+8,$detailRow)->setValue($row["royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+9,$detailRow)->setValue($row["commission"]);
+                //93
+            }
+        }
     }
 
     //变更
@@ -595,6 +701,54 @@ class SellComputeForm extends CFormModel
         return $html;
     }
 
+    //变更
+    private function editExcel($rows,$tempArr,$newExcel,&$detailRow,$installRate){
+        if(!empty($rows)){
+            $num = 18;
+            foreach ($rows as $row){
+                $detailRow++;
+                $row["first_dt"] = General::toMyDate($row["first_dt"]);
+                $row["status_dt"] = General::toMyDate($row["status_dt"]);
+                $b4_str = self::getPaidTypeName($row['b4_paid_type'])."：".$row['b4_amt_paid'];
+                $str = self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid'];
+                $row['royalty'] = is_numeric($row['royalty'])?floatval($row['royalty']):0;
+                $row['commission'] = is_numeric($row['commission'])?floatval($row['commission']):"未计算";
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
+                $amt_install = $row['amt_install'];
+                $amt_install = is_numeric($amt_install)?floatval($amt_install)*$installRate:"";
+                $row["old_royalty"]="";
+                if(key_exists("history",$row)){ //金额变少了（需要历史提成）
+                    if(!empty($row["history"])){//有历史提成
+                        $row["old_royalty"] = floatval($row["history"]["royalty"]);
+                    }else{//没有历史提成
+                        $royalty=empty($row['royalty'])?0.01:$row['royalty'];
+                        $row["old_royalty"] = $royalty;
+                    }
+                }
+                $newExcel->getSheet(1)->getCellByColumnAndRow(0,$detailRow)->setValue($tempArr["yearMonth"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(1,$detailRow)->setValue($tempArr["city_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(2,$detailRow)->setValue($tempArr["employee_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num,$detailRow)->setValue("更改生意额");
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+1,$detailRow)->setValue($row["status_dt"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+2,$detailRow)->setValue($row["company_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+3,$detailRow)->setValue($row["type_desc"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+4,$detailRow)->setValue($row["othersalesman"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+5,$detailRow)->setValue($row["ctrt_period"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+6,$detailRow)->setValue($b4_str);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+7,$detailRow)->setValue($str);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+8,$detailRow)->setValue($row['all_number']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+9,$detailRow)->setValue($row['surplus']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+10,$detailRow)->setValue($row['amt_money']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+11,$detailRow)->setValue($row["old_royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+12,$detailRow)->setValue($row["royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+13,$detailRow)->setValue($row["commission"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+14,$detailRow)->setValue($row["amt_install"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+15,$detailRow)->setValue($amt_install);
+                //83
+            }
+        }
+    }
+
     //跨区变更
     public function performanceeditList($checkBool=false){
         $checkSql = $checkBool?"a.other_commission is not null and ":"";//筛选已经选中的数据
@@ -690,6 +844,52 @@ class SellComputeForm extends CFormModel
             }
         }
         return $html;
+    }
+
+    //跨区变更
+    private function performanceeditExcel($rows,$tempArr,$newExcel,&$detailRow){
+        if(!empty($rows)){
+            $num = 57;
+            foreach ($rows as $row){
+                $detailRow++;
+                $row["first_dt"] = General::toMyDate($row["first_dt"]);
+                $row["status_dt"] = General::toMyDate($row["status_dt"]);
+                $b4_str = self::getPaidTypeName($row['b4_paid_type'])."：".$row['b4_amt_paid'];
+                $str = self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid'];
+                $row['royalty'] = is_numeric($row['royaltys'])?floatval($row['royaltys']):0;
+                $row['commission'] = is_numeric($row['other_commission'])?floatval($row['other_commission']):"未计算";
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
+                //獎金庫擴充
+                $row['commission'] = $row['target']==1?"奖金库":$row['commission'];
+                $row["old_royalty"]="";
+                if(key_exists("history",$row)){ //金额变少了（需要历史提成）
+                    if(!empty($row["history"])){//有历史提成
+                        $row["old_royalty"] = floatval($row["history"]["royalty"]);
+                    }else{//没有历史提成
+                        $royalty=empty($row['royalty'])?0.01:$row['royalty'];
+                        $row["old_royalty"] = $royalty;
+                    }
+                }
+                $newExcel->getSheet(1)->getCellByColumnAndRow(0,$detailRow)->setValue($tempArr["yearMonth"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(1,$detailRow)->setValue($tempArr["city_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(2,$detailRow)->setValue($tempArr["employee_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num,$detailRow)->setValue("跨区更改生意额");
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+1,$detailRow)->setValue($row["status_dt"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+2,$detailRow)->setValue($row["company_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+3,$detailRow)->setValue($row["type_desc"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+4,$detailRow)->setValue($row["salesman"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+5,$detailRow)->setValue($row["ctrt_period"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+6,$detailRow)->setValue($b4_str);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+7,$detailRow)->setValue($str);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+8,$detailRow)->setValue($row['all_number']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+9,$detailRow)->setValue($row['surplus']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+10,$detailRow)->setValue($row['amt_money']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+11,$detailRow)->setValue($row["old_royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+12,$detailRow)->setValue($row["royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+13,$detailRow)->setValue($row["commission"]);
+                //83
+            }
+        }
     }
 
     //终止
@@ -789,6 +989,46 @@ class SellComputeForm extends CFormModel
         return $html;
     }
 
+    //终止
+    private function endExcel($rows,$tempArr,$newExcel,&$detailRow){
+        if($rows["stop"]){
+            $num = 34;
+            foreach ($rows["stop"] as $row){
+                $detailRow++;
+                $row["first_dt"] = General::toMyDate($row["first_dt"]);
+                $row["status_dt"] = General::toMyDate($row["status_dt"]);
+                $str = self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid'];
+                $row['royalty'] = is_numeric($row['royalty'])?floatval($row['royalty']):0;
+                $row['commission'] = is_numeric($row['commission'])?floatval($row['commission']):"未计算";
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
+                $row["old_royalty"]="";
+                if(key_exists("history",$row)&&!empty($row["history"])){ //有历史提成
+                    $row["old_royalty"] = $row["history"]["royalty"];
+                }else{
+                    $royalty=empty($row['royalty'])?0.01:$row['royalty'];
+                    $row["old_royalty"] = $royalty;
+                }
+                $newExcel->getSheet(1)->getCellByColumnAndRow(0,$detailRow)->setValue($tempArr["yearMonth"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(1,$detailRow)->setValue($tempArr["city_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(2,$detailRow)->setValue($tempArr["employee_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num,$detailRow)->setValue("终止生意额");
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+1,$detailRow)->setValue($row["status_dt"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+2,$detailRow)->setValue($row["company_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+3,$detailRow)->setValue($row["type_desc"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+4,$detailRow)->setValue($row["othersalesman"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+5,$detailRow)->setValue($row["ctrt_period"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+6,$detailRow)->setValue($str);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+7,$detailRow)->setValue($row['all_number']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+8,$detailRow)->setValue($row['surplus']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+9,$detailRow)->setValue($row['amt_money']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+10,$detailRow)->setValue($row["old_royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+11,$detailRow)->setValue($row["royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+12,$detailRow)->setValue($row["commission"]);
+                //83
+            }
+        }
+    }
+
     //续约终止
     private function renewalendTable(){
         $type = $this->getScenario();
@@ -849,6 +1089,47 @@ class SellComputeForm extends CFormModel
             }
         }
         return $html;
+    }
+
+    //续约终止
+    private function renewalendExcel($rows,$tempArr,$newExcel,&$detailRow){
+        if($rows["renewal"]){
+            $num = 94;
+            foreach ($rows["renewal"] as $row){
+                $detailRow++;
+                $row["first_dt"] = General::toMyDate($row["first_dt"]);
+                $row["status_dt"] = General::toMyDate($row["status_dt"]);
+                $str = self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid'];
+                $row['royalty'] = is_numeric($row['royalty'])?floatval($row['royalty']):0;
+                $row['commission'] = is_numeric($row['commission'])?floatval($row['commission']):"未计算";
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
+                $row["old_royalty"]="";
+                if(key_exists("history",$row)&&!empty($row["history"])){ //有历史提成
+                    $row["old_royalty"] = $row["history"]["royalty"];
+                }else{
+                    $royalty=empty($row['royalty'])?0.01:$row['royalty'];
+                    $row["old_royalty"] = $royalty;
+                }
+                $newExcel->getSheet(1)->getCellByColumnAndRow(0,$detailRow)->setValue($tempArr["yearMonth"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(1,$detailRow)->setValue($tempArr["city_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(2,$detailRow)->setValue($tempArr["employee_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num,$detailRow)->setValue("续约终止生意额");
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+1,$detailRow)->setValue($row["status_dt"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+2,$detailRow)->setValue($row["company_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+3,$detailRow)->setValue($row["type_desc"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+4,$detailRow)->setValue($row["othersalesman"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+5,$detailRow)->setValue($row["ctrt_period"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+6,$detailRow)->setValue($str);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+7,$detailRow)->setValue($row['all_number']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+8,$detailRow)->setValue($row['surplus']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+9,$detailRow)->setValue($row['amt_money']);
+                //$newExcel->getSheet(1)->getCellByColumnAndRow(14,$detailRow)->setValue($tempArr["new_point_reward"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+10,$detailRow)->setValue($row["old_royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+11,$detailRow)->setValue($row["royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+12,$detailRow)->setValue($row["commission"]);
+                //106
+            }
+        }
     }
 
     //跨区终止
@@ -939,6 +1220,47 @@ class SellComputeForm extends CFormModel
         return $html;
     }
 
+    //跨区终止
+    private function performanceendExcel($rows,$tempArr,$newExcel,&$detailRow){
+        if(!empty($rows)){
+            $num = 71;
+            foreach ($rows as $row){
+                $detailRow++;
+                $row["first_dt"] = General::toMyDate($row["first_dt"]);
+                $row["status_dt"] = General::toMyDate($row["status_dt"]);
+                $str = self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid'];
+                $row['royalty'] = is_numeric($row['royaltys'])?floatval($row['royaltys']):0;
+                $row['commission'] = is_numeric($row['other_commission'])?floatval($row['other_commission']):"未计算";
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
+                $row["old_royalty"]="";
+                if(key_exists("history",$row)&&!empty($row["history"])){ //有历史提成
+                    $row["old_royalty"] = $row["history"]["royalty"];
+                }else{
+                    $royalty=empty($row['royalty'])?0.01:$row['royalty'];
+                    $row["old_royalty"] = $royalty;
+                }
+                $newExcel->getSheet(1)->getCellByColumnAndRow(0,$detailRow)->setValue($tempArr["yearMonth"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(1,$detailRow)->setValue($tempArr["city_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(2,$detailRow)->setValue($tempArr["employee_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num,$detailRow)->setValue("跨区终止生意额");
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+1,$detailRow)->setValue($row["status_dt"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+2,$detailRow)->setValue($row["company_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+3,$detailRow)->setValue($row["type_desc"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+4,$detailRow)->setValue($row["othersalesman"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+5,$detailRow)->setValue($row["ctrt_period"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+6,$detailRow)->setValue($str);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+7,$detailRow)->setValue($row['all_number']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+8,$detailRow)->setValue($row['surplus']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+9,$detailRow)->setValue($row['amt_money']);
+                //$newExcel->getSheet(1)->getCellByColumnAndRow(14,$detailRow)->setValue($tempArr["new_point_reward"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+10,$detailRow)->setValue($row["old_royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+11,$detailRow)->setValue($row["royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+12,$detailRow)->setValue($row["commission"]);
+                //83
+            }
+        }
+    }
+
     //产品生意额
     public function productList($checkBool=false){
         $checkSql = $checkBool?"a.commission=1 and ":"";//筛选已经选中的数据
@@ -1024,6 +1346,52 @@ class SellComputeForm extends CFormModel
             }
         }
         return $html;
+    }
+
+    //跨区终止
+    private function productExcel($rows,$tempArr,$newExcel,&$detailRow){
+        if(!empty($rows)){
+            //销售提成激励点
+            $point=key_exists("point",$this->dtl_list)?$this->dtl_list["point"]:0;
+            //更改新增业绩
+            $edit_money=key_exists("edit_money",$this->dtl_list)?$this->dtl_list["edit_money"]:0;
+            //更改新增业绩+新增业绩
+            $edit_money+=key_exists("new_money",$this->dtl_list)?$this->dtl_list["new_money"]:0;
+
+            $computeRate=array();//保存已计算的产品提成比例
+            $num = 107;
+            foreach ($rows as $row){
+                $detailRow++;
+                $row["log_dt"] = General::toMyDate($row["log_dt"]);
+                $proType = $row['sales_products'];
+                $str = self::getTaskType($proType);
+                $row['qty'] = is_numeric($row['qty'])?floatval($row['qty']):0;
+                $row['money'] = is_numeric($row['money'])?floatval($row['money']):0;
+                $row['royalty'] = "";
+                $amt_sum = $row['qty']*$row['money'];
+                if(!key_exists($proType,$computeRate)){
+                    $computeRate[$proType] = SellComputeList::getProductRate($edit_money,$this->startDate,$this->city,$proType);
+                }
+                $row['royalty'] = $computeRate[$proType]+$point;
+                $commission=$amt_sum*$row['royalty'];
+                $commission=round($commission,2);
+
+                $newExcel->getSheet(1)->getCellByColumnAndRow(0,$detailRow)->setValue($tempArr["yearMonth"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(1,$detailRow)->setValue($tempArr["city_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(2,$detailRow)->setValue($tempArr["employee_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num,$detailRow)->setValue("产品生意额");
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+1,$detailRow)->setValue($row["log_dt"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+2,$detailRow)->setValue($row["company_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+3,$detailRow)->setValue($row["description"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+4,$detailRow)->setValue($str);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+5,$detailRow)->setValue($row['qty']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+6,$detailRow)->setValue($row['money']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+7,$detailRow)->setValue($amt_sum);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+8,$detailRow)->setValue($row["royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+9,$detailRow)->setValue($commission);
+                //83
+            }
+        }
     }
 
 	public function setUpdateBool(){
@@ -1853,5 +2221,324 @@ class SellComputeForm extends CFormModel
     //显示总数
     public function getTextSpanHtml(){
         return "总记录:{$this->textSum}条,已计算:{$this->textNum}条";
+    }
+
+    //下载excel
+    public function downExcelAll($idList){
+        $phpExcelPath = Yii::getPathOfAlias('ext.phpexcel');
+        include($phpExcelPath . DIRECTORY_SEPARATOR . 'PHPExcel.php');
+        if(!empty($idList)){
+            $newExcel = new PHPExcel();
+            $newExcel->getDefaultStyle()->getFont()
+                ->setSize(10);
+            $newExcel->getDefaultStyle()->getAlignment()
+                ->setWrapText(true);
+            $newExcel->getActiveSheet()->getDefaultRowDimension()
+                ->setRowHeight(-1);
+            $this->printExcelAll($idList,$newExcel);
+            //輸出excel
+            $objWriter = PHPExcel_IOFactory::createWriter($newExcel, 'Excel2007');
+            ob_start();
+            $objWriter->save('php://output');
+            $output = ob_get_clean();
+            spl_autoload_register(array('YiiBase','autoload'));
+            $str="销售提成汇总-All";
+            $filename= iconv('utf-8','gbk//ignore',$str);
+            header("Pragma: public");
+            header("Expires: 0");
+            header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+            header("Content-Type:application/force-download");
+            header("Content-Type:application/vnd.ms-execl");
+            header("Content-Type:application/octet-stream");
+            header("Content-Type:application/download");;
+            header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
+            header("Content-Transfer-Encoding:binary");
+            echo $output;
+        }
+    }
+
+    private function printExcelAll($idList,&$newExcel){
+        //$newExcel = new PHPExcel();
+        $newExcel->getSheet(0)->setTitle("总页");
+        $newExcel->createSheet(1)->setTitle("明细");
+        $summaryRow=1;
+        $detailRow=1;
+        $summaryTitleArr = $this->getSummaryTitleArr();
+        $this->setExcelTitle($newExcel,$summaryTitleArr,$summaryRow,0);
+
+        $summaryDetailArr=$this->getSummaryDetailArr();
+        $this->setExcelTitle($newExcel,$summaryDetailArr,$detailRow,1);
+
+        foreach ($idList as $id){
+            if($this->retrieveData($id)){
+                $summaryRow++;
+                $tempArr = $this->getSummaryPrintData();
+                $this->setSummaryBody($newExcel,$summaryRow,$summaryTitleArr,$tempArr);
+                $this->setDetailBody($newExcel,$detailRow,$tempArr);
+            }
+        }
+    }
+
+    private function setDetailBody($newExcel,$detailRow,$tempArr){
+        $installRate = $this->getPaperRateAndPoint();//装机提成
+        //新生意额
+        $newRows = $this->newList(true);
+        $this->newExcel($newRows,$tempArr,$newExcel,$detailRow,$installRate);
+
+        //更改生意额
+        $editLists = $this->editList(true);
+        $this->editExcel($editLists,$tempArr,$newExcel,$detailRow,$installRate);
+
+        //终止生意额
+        $endLists = $this->endList(true);
+        $this->endExcel($endLists,$tempArr,$newExcel,$detailRow);
+
+        //跨区新增生意额
+        $performanceLists = $this->performanceList(true);
+        $this->performanceExcel($performanceLists,$tempArr,$newExcel,$detailRow);
+
+        //跨区更改生意额
+        $performanceeditLists = $this->performanceeditList(true);
+        $this->performanceeditExcel($performanceeditLists,$tempArr,$newExcel,$detailRow);
+
+        //跨区终止生意额
+        $performanceendLists = $this->performanceendList(true);
+        $this->performanceendExcel($performanceendLists,$tempArr,$newExcel,$detailRow);
+
+        //续约生意额
+        $renewalLists = $this->renewalList(true);
+        $this->renewalExcel($renewalLists,$tempArr,$newExcel,$detailRow);
+
+        //续约终止生意额
+        $this->renewalendExcel($endLists,$tempArr,$newExcel,$detailRow);
+
+        //产品生意额
+        $productLists = $this->productList(true);
+        $this->productExcel($productLists,$tempArr,$newExcel,$detailRow);
+    }
+
+    private function setSummaryBody($newExcel,$summaryRow,$summaryTitleArr,$tempArr){
+        foreach ($summaryTitleArr as $num=>$row){
+            $key = $row["key"];
+            if(key_exists($key,$tempArr)){
+                $newExcel->getSheet(0)->getCellByColumnAndRow($num,$summaryRow)->setValue($tempArr[$key]);
+            }
+        }
+    }
+
+    private function getSummaryPrintData(){
+        $tempArr = array(
+            "yearMonth"=>date_format(date_create($this->startDate),"Y年m月"),
+        );
+        $tempArr["group_type"] = SellComputeForm::getGroupName($this->group_type);
+        $modelKey=array("city_name","employee_name","performance");
+        foreach ($modelKey as $item){
+            $tempArr[$item] = $this->$item;
+        }
+        $tempArr["new_point_reward"]=0;//提成点数
+        $dtlKey = array("new_calc","point","service_reward","new_money","edit_money","out_money","performanceedit_money",
+            "renewal_money","install_money","supplement_money","new_amount","edit_amount","end_amount","performance_amount","performanceedit_amount","performanceend_amount","renewal_amount",
+            "renewalend_amount","product_amount","install_amount");
+        foreach ($dtlKey as $item){
+            if(in_array($item,array("new_calc","point","service_reward"))){
+                $tempArr["new_point_reward"]+=$this->dtl_list[$item];
+            }
+            $tempArr[$item] = SellComputeList::showText($this->dtl_list[$item],$this->showNull);
+        }
+        $tempArr["new_point_reward"] = SellComputeList::showText($tempArr["new_point_reward"],$this->showNull);
+        $onlyKey = array("span_rate","span_other_rate","final_money","all_amount");
+        foreach ($onlyKey as $item){
+            $tempArr[$item] = SellComputeList::showText($this->$item,$this->showNull);
+        }
+        return $tempArr;
+    }
+
+    private function setExcelTitle(&$newExcel,$arr,$currentRow=1,$sheetNum=0){
+        //$newExcel = new PHPExcel();
+        // 创建边框样式
+        $borderStyle = array(
+            'borders' => array(
+                'left' => array('style' => PHPExcel_Style_Border::BORDER_THIN),
+                'right' => array('style' => PHPExcel_Style_Border::BORDER_THIN),
+                'top' => array('style' => PHPExcel_Style_Border::BORDER_THIN),
+                'bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN)
+            )
+        );
+        foreach ($arr as $num=>$row){
+            $newExcel->getSheet($sheetNum)->getCellByColumnAndRow($num,$currentRow)->setValue($row["title"]);
+            $newExcel->getSheet($sheetNum)->getStyleByColumnAndRow($num,$currentRow)->applyFromArray($borderStyle);
+            $newExcel->getSheet($sheetNum)->getStyleByColumnAndRow($num,$currentRow)->getAlignment()->setHorizontal("center")->setVertical("center");
+            $newExcel->getSheet($sheetNum)->getStyleByColumnAndRow($num,$currentRow)->getFont()->setBold(true);
+            if(key_exists("width",$row)&&!empty($row["width"])){
+                $newExcel->getSheet($sheetNum)->getColumnDimensionByColumn($num)->setWidth($row["width"]);
+            }
+            if(key_exists("height",$row)&&!empty($row["height"])){
+                $newExcel->getSheet($sheetNum)->getRowDimension($currentRow)->setRowHeight($row["height"]);
+            }
+            if(key_exists("background",$row)&&!empty($row["background"])){
+                $newExcel->getSheet($sheetNum)->getStyleByColumnAndRow($num,$currentRow)->getFill()->setFillType('solid')->getStartColor()->setRGB($row["background"]);
+            }
+            if(key_exists("color",$row)&&!empty($row["color"])){
+                $newExcel->getSheet($sheetNum)->getStyleByColumnAndRow($num,$currentRow)->getFont()->getColor()->setRGB($row["color"]);
+            }
+        }
+    }
+
+    private function getSummaryTitleArr(){
+        return array(
+            array("key"=>"yearMonth","title"=>"年月","width"=>"14pt","height"=>"27pt","background"=>"D6DCE4","color"=>""),
+            array("key"=>"city_name","title"=>"地区","width"=>"10pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("key"=>"employee_name","title"=>"姓名","width"=>"14pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("key"=>"new_money","title"=>"新增业绩","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("key"=>"edit_money","title"=>"更改新增业绩","width"=>"14pt","height"=>"","background"=>"D9E1F4","color"=>""),
+            //array("key"=>"end_money","title"=>"终止生意额","width"=>"14pt","height"=>"","background"=>"D9E1F4","color"=>""),
+            array("key"=>"out_money","title"=>"跨区新增业绩","width"=>"14pt","height"=>"","background"=>"D9E1F4","color"=>""),
+            array("key"=>"performanceedit_money","title"=>"跨区更改新增业绩","width"=>"18pt","height"=>"","background"=>"D9E1F4","color"=>""),
+            //array("key"=>"performanceend_money","title"=>"跨区终止业绩","width"=>"14pt","height"=>"","background"=>"","color"=>""),
+            array("key"=>"renewal_money","title"=>"续约业绩","width"=>"10pt","height"=>"","background"=>"D9E1F4","color"=>""),
+            //array("key"=>"product_money","title"=>"产品生意额","width"=>"16pt","height"=>"","background"=>"D9E1F4","color"=>""),
+            array("key"=>"install_money","title"=>"装机业绩","width"=>"10pt","height"=>"","background"=>"D9E1F4","color"=>""),
+            array("key"=>"new_calc","title"=>"新增提成比例","width"=>"14pt","height"=>"","background"=>"D2F4F2","color"=>"C00000"),
+            array("key"=>"point","title"=>"销售提成激励点","width"=>"16pt","height"=>"","background"=>"D2F4F2","color"=>"C00000"),
+            array("key"=>"service_reward","title"=>"创新业务提成点","width"=>"16pt","height"=>"","background"=>"D2F4F2","color"=>"C00000"),
+            array("key"=>"new_point_reward","title"=>"提成点数","width"=>"10pt","height"=>"","background"=>"D2F4F2","color"=>""),
+            array("key"=>"span_rate","title"=>"跨区提成比例","width"=>"14pt","height"=>"","background"=>"D2F4F2","color"=>""),
+            array("key"=>"span_other_rate","title"=>"被跨区提成比例","width"=>"16pt","height"=>"","background"=>"D2F4F2","color"=>""),
+            array("key"=>"new_amount","title"=>"新增生意提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
+            array("key"=>"edit_amount","title"=>"更改生意提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
+            array("key"=>"end_amount","title"=>"终止生意提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
+            array("key"=>"performance_amount","title"=>"跨区新增提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
+            array("key"=>"performanceedit_amount","title"=>"跨区更改提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
+            array("key"=>"performanceend_amount","title"=>"跨区终止提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
+            array("key"=>"renewal_amount","title"=>"续约生意提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
+            array("key"=>"renewalend_amount","title"=>"续约终止提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
+            array("key"=>"product_amount","title"=>"产品提成","width"=>"10pt","height"=>"","background"=>"FADADE","color"=>""),
+            array("key"=>"install_amount","title"=>"装机提成","width"=>"10pt","height"=>"","background"=>"FADADE","color"=>""),
+            array("key"=>"all_amount","title"=>"总额","width"=>"8pt","height"=>"","background"=>"","color"=>""),
+            array("key"=>"supplement_money","title"=>"补充金额","width"=>"10pt","height"=>"","background"=>"","color"=>""),
+            array("key"=>"final_money","title"=>"最终合计金额","width"=>"14pt","height"=>"","background"=>"","color"=>""),
+        );
+    }
+
+    private function getSummaryDetailArr(){
+        return array(
+                array("title"=>"年月","width"=>"9pt","height"=>"27pt","background"=>"D6DCE4","color"=>""),
+                array("title"=>"地区","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"姓名","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类型","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"首次日期","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"客户名称","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类别","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"被跨区业务员","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"合同年限(月)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务总金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"新增提成比例","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>"C00000"),
+                array("title"=>"销售提成激励点","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>"C00000"),
+                array("title"=>"创新业务提成点","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>"C00000"),
+                array("title"=>"提成点数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"装机金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"装机提成","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类型","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"更改日期","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"客户名称","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类别","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"被跨区业务员","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"合同年限(月)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务金额(更改前)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务金额(更改后)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务总次数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"剩余次数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"变动金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"历史提成比例(例1%：0.01)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成点数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"装机金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"装机提成","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类型","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"更改日期","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"客户名称","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类别","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"被跨区业务员","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"合同年限(月)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务总次数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"剩余次数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"变动金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"历史提成比例(例1%：0.01)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成点数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类型","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"首次日期","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"客户名称","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类别","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"业务员","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"合同年限(月)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务总金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成点数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类型","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"更改日期","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"客户名称","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类别","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"业务员","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"合同年限(月)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务金额(更改前)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务金额(更改后)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务总次数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"剩余次数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"变动金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"历史提成比例(例1%：0.01)	","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成点数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类型","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"更改日期","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"客户名称","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类别","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"业务员","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"合同年限(月)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务总次数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"剩余次数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"变动金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"历史提成比例(例1%：0.01)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成点数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类型","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"续约日期","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"客户名称","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类别","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"性质","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"合同年限(月)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"续约总金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成点数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类型","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"更改日期","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"客户名称","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类别","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"被跨区业务员","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"合同年限(月)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"服务总次数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"剩余次数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"变动金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"历史提成比例(例1%：0.01)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成点数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"类型","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"出单日期","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"客户名称","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"产品名称","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"产品分类","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"数量","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"单价","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"产品总金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成点数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+                array("title"=>"提成金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            );
     }
 }

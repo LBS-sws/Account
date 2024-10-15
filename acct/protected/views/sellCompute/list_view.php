@@ -11,6 +11,7 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute Form';
 <style>
     .table-responsive>table{ table-layout: fixed;}
     input[type="checkbox"].readonly{ opacity: 0.6;pointer-events: none;}
+    .control-label.noneLabel{ padding-left: 0px;padding-right: 0px;white-space: nowrap;overflow: visible}
 </style>
 
 <section class="content-header">
@@ -62,6 +63,20 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute Form';
                             <?php echo $form->textField($model, 'employee_name',
                                 array('readonly'=>(true))
                             ); ?>
+                        </div>
+                    </div>
+                    <div class="form-group" >
+                        <label class="col-sm-2 control-label"><?php echo Yii::t('commission','new_calc'); ?></label>
+                        <div class="col-sm-2" >
+                            <?php echo TbHtml::textField("new_calc",SellComputeList::showText($model->dtl_list['new_calc'],$model->showNull,"rate"),array('readonly'=>true));?>
+                        </div>
+                        <label class="col-sm-1 control-label noneLabel"><?php echo Yii::t('commission','point'); ?></label>
+                        <div class="col-sm-2">
+                            <?php echo TbHtml::textField("point",SellComputeList::showText($model->dtl_list['point'],$model->showNull,"rate"),array('readonly'=>true));?>
+                        </div>
+                        <label class="col-sm-1 control-label noneLabel"><?php echo Yii::t('commission','bring reward'); ?></label>
+                        <div class="col-sm-2" >
+                            <?php echo TbHtml::textField("service_reward",SellComputeList::showText($model->dtl_list['service_reward'],$model->showNull,"rate"),array('readonly'=>true));?>
                         </div>
                     </div>
                 </div>

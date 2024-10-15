@@ -32,6 +32,11 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute';
                 <?php echo TbHtml::link('<span class="fa fa-hdd-o"></span> '."旧版本入口", Yii::app()->createUrl('commission/index'),array('class'=>'btn btn-default'));
                 ?>
             </div>
+            <div class="btn-group pull-right" role="group">
+                <?php echo TbHtml::button('<span class="fa fa-cloud-download"></span> ' . Yii::t('misc', 'Down'), array(
+                    'submit' => Yii::app()->createUrl('sellCompute/downAll')));
+                ?>
+            </div>
         </div></div>
 	<?php
     $modelClass=get_class($model);
@@ -65,6 +70,7 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute';
 	echo $form->hiddenField($model,'totalRow');
 	echo $form->hiddenField($model,'orderField');
 	echo $form->hiddenField($model,'orderType');
+echo TbHtml::hiddenField("down_id",$model->down_id);
 ?>
 
 <?php $this->endWidget(); ?>
