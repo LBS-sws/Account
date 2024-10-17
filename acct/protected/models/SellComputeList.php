@@ -66,7 +66,7 @@ class SellComputeList extends CListPageModel
             'city_name'=>Yii::t('app','city'),
             'time'=>Yii::t('app','Time'),
             'dept_name'=>Yii::t('app','user_name'),
-            'moneys'=>Yii::t('app','comm_total_amount'),
+            'moneys'=>Yii::t('commission','final_money'),
             'examine'=>Yii::t('misc','Status'),
 		);
 	}
