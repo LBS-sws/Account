@@ -47,8 +47,8 @@ SellComputeController extends Controller
 			$model->attributes = $_POST['SellComputeList'];
 		} else {
 			$session = Yii::app()->session;
-			if (isset($session['sellCompute_c01']) && !empty($session['sellCompute_c01'])) {
-				$criteria = $session['sellCompute_c01'];
+			if (isset($session[$model->criteriaName()."01"]) && !empty($session[$model->criteriaName()."01"])) {
+				$criteria = $session[$model->criteriaName()."01"];
 				$model->setCriteria($criteria);
 			}
 		}
@@ -110,7 +110,7 @@ SellComputeController extends Controller
             $model->downExcelAll($idList);
         }else{
             Dialog::message(Yii::t('dialog','Validation Message'), "列表为空，无法下载");
-            $this->redirect(Yii::app()->createUrl('sellTable/index'));
+            $this->redirect(Yii::app()->createUrl('sellCompute/index'));
         }
     }
 	

@@ -27,7 +27,7 @@ SellSearchController extends Controller
 	{
 		return array(
             array('allow',
-                'actions'=>array('index','view','list'),
+                'actions'=>array('index','view','list','downAll'),
 				'expression'=>array('SellSearchController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -44,8 +44,8 @@ SellSearchController extends Controller
 			$model->attributes = $_POST['SellComputeList'];
 		} else {
 			$session = Yii::app()->session;
-			if (isset($session['sellCompute_c02']) && !empty($session['sellCompute_c02'])) {
-				$criteria = $session['sellCompute_c02'];
+			if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+				$criteria = $session[$model->criteriaName()];
 				$model->setCriteria($criteria);
 			}
 		}
@@ -73,6 +73,19 @@ SellSearchController extends Controller
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
             $this->render('list_view',array('model'=>$model,'type'=>$type));
+        }
+    }
+
+    public function actionDownAll()
+    {
+        $down_id = key_exists("down_id",$_POST)?$_POST["down_id"]:"";
+        $idList = explode(",",$down_id);
+        $model = new SellComputeForm('edit');
+        if(!empty($idList)){
+            $model->downExcelAll($idList);
+        }else{
+            Dialog::message(Yii::t('dialog','Validation Message'), "列表为空，无法下载");
+            $this->redirect(Yii::app()->createUrl('sellSearch/index'));
         }
     }
 	

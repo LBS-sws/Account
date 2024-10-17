@@ -70,6 +70,17 @@ class SellComputeList extends CListPageModel
             'examine'=>Yii::t('misc','Status'),
 		);
 	}
+
+    public function searchColumns() {
+        $search = array(
+            'code'=>"b.code",
+            'name'=>"b.name",
+            'city_name'=>'e.name',
+            'dept_name'=>'c.name',
+            //'examine'=>'g.examine',
+        );
+        return $search;
+    }
 	
 	public function retrieveDataByPage($pageNum=1,$bool=true)
 	{
@@ -101,27 +112,15 @@ class SellComputeList extends CListPageModel
 				where {$citySql} {$this->onlySql} and a.year_no= {$this->year} and a.month_no={$this->month} and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
 			";
 		$clause = "";
-		if (!empty($this->searchField) && !empty($this->searchValue)) {
-			$svalue = str_replace("'","\'",$this->searchValue);
-			switch ($this->searchField) {
-				case 'code':
-					$clause .= General::getSqlConditionClause('b.code',$svalue);
-					break;
-				case 'name':
-					$clause .= General::getSqlConditionClause('b.name',$svalue);
-					break;
-				case 'city_name':
-					$clause .= General::getSqlConditionClause('e.name',$svalue);
-					break;
-				case 'dept_name':
-					$clause .= General::getSqlConditionClause('c.name',$svalue);
-					break;
-                case 'examine':
-                    $examine=SellTableList::examineSql($svalue);
-                    $clause .= General::getSqlConditionClause("g.examine",$examine);
-                    break;
-			}
-		}
+        if (!empty($this->searchField) && (!empty($this->searchValue) || $this->isAdvancedSearch())) {
+            if ($this->isAdvancedSearch()) {
+                $clause = $this->buildSQLCriteria();
+            } else {
+                $svalue = str_replace("'","\'",$this->searchValue);
+                $columns = $this->searchColumns();
+                $clause .= General::getSqlConditionClause($columns[$this->searchField],$svalue);
+            }
+        }
 		
 		$order = "";
 		if (!empty($this->orderField)) {
@@ -156,8 +155,8 @@ class SellComputeList extends CListPageModel
 			}
 		}
 		$session = Yii::app()->session;
-		$sessionNum = $bool?2:1;
-		$session["sellCompute_c0{$sessionNum}"] = $this->getCriteria();
+		$sessionNum = $bool?"":"01";
+		$session[$this->criteriaName().$sessionNum] = $this->getCriteria();
         $this->down_id = implode(",",$this->down_id);
 		return true;
 	}
@@ -180,7 +179,7 @@ class SellComputeList extends CListPageModel
 
     private function getCountMoneySql(){
 	    $sql = "";
-	    $addList = array();
+	    $addList = array("IFNULL(f.supplement_money,0)");
         foreach (self::$sellComputeAttr as $item){
             if(key_exists("amount",$item)&&$item["amount"]){
                 $addList[]="IFNULL(f.{$item['value']},0)";

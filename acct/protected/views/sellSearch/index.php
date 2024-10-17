@@ -32,6 +32,11 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute';
                 <?php echo TbHtml::link('<span class="fa fa-hdd-o"></span> '."旧版本入口", Yii::app()->createUrl('query/index'),array('class'=>'btn btn-default'));
                 ?>
             </div>
+            <div class="btn-group pull-right" role="group">
+                <?php echo TbHtml::button('<span class="fa fa-cloud-download"></span> ' . Yii::t('misc', 'Down'), array(
+                    'submit' => Yii::app()->createUrl('sellSearch/downAll')));
+                ?>
+            </div>
         </div></div>
 	<?php
     $modelClass=get_class($model);
@@ -50,12 +55,8 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute';
         'gridsize'=>'24',
         'height'=>'600',
         'search_add_html'=>$search_add_html,
-        'search'=>array(
-            'code',
-            'name',
-            'dept_name',
-            'city_name'
-        ),
+        'advancedSearch'=>true,
+        'hasDateButton'=>true,
     ));
     echo TbHtml::button("test",array("submit"=>"#","class"=>"hide"));
 	?>
@@ -65,6 +66,8 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute';
 	echo $form->hiddenField($model,'totalRow');
 	echo $form->hiddenField($model,'orderField');
 	echo $form->hiddenField($model,'orderType');
+    echo $form->hiddenField($model,'filter');
+echo TbHtml::hiddenField("down_id",$model->down_id);
 ?>
 
 <?php $this->endWidget(); ?>

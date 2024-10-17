@@ -2279,7 +2279,7 @@ class SellComputeForm extends CFormModel
         }
     }
 
-    private function setDetailBody($newExcel,$detailRow,$tempArr){
+    private function setDetailBody($newExcel,&$detailRow,$tempArr){
         $installRate = $this->getPaperRateAndPoint();//装机提成
         //新生意额
         $newRows = $this->newList(true);
