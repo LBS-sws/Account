@@ -56,7 +56,6 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute';
         'height'=>'600',
         'search_add_html'=>$search_add_html,
         'advancedSearch'=>true,
-        'hasDateButton'=>true,
     ));
     echo TbHtml::button("test",array("submit"=>"#","class"=>"hide"));
 	?>
