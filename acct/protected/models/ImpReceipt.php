@@ -101,7 +101,17 @@ class ImpReceipt {
 		$command=$connection->createCommand($sql);
 		$command->bindParam(':t3_doc_no',$data['t3_doc_no'],PDO::PARAM_STR);
 		$row = $command->queryRow();
-		$exist = ($row!==false);
+        $exist = ($row!==false);
+		//2024年12月2日12:52:10 增加日期判断
+        if($exist){
+            // 需要查询日期
+            $dateRow = $connection->createCommand()->select("id")->from("acc_trans")
+                ->where("id=:id and DATE_FORMAT(trans_dt,'%Y-%m-%d')='{$trans_dt}'",array(":id"=>$row['trans_id']))
+                ->queryRow();
+            if(!$dateRow){//如果时间不一致，强制新增
+                $exist=false;
+            }
+        }
 		$id = (!$exist) ? 0 : $row['trans_id'];
 		
 		$action = (!$exist) ? Yii::t('import','INSERT') : Yii::t('import','UPDATE');
@@ -207,6 +217,7 @@ class ImpReceipt {
 			.' /'.Yii::t('import','Amount').': '.$amount
 			.' /'.Yii::t('import','City').': '.$data['city']
 			.' /'.Yii::t('import','User').': '.$data['uid']
+			.' /id: '.$id
 			;
 	}
 	
@@ -244,5 +255,6 @@ class ImpReceipt {
 	protected function convertExcelDate($value) {
 		$uxdate = ($value - 25569) * 86400;
 		return gmdate('Y-m-d', $uxdate);
-	}}
+	}
+}
 ?>
