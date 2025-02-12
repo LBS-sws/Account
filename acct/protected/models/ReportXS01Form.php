@@ -269,6 +269,9 @@ class ReportXS01Form extends CReportForm
         $suffix = Yii::app()->params['envSuffix'];
         $startDate = date("Y/m/d",strtotime($saleyear."/01"));
         $endDate = date("Y/m/31",strtotime($saleyear."/01"));
+        if($startDate>='2025/02/01'){
+            return 0;//2025年2月开始，取消创新提成点
+        }
         $dateSql = " and date_format(b.log_dt,'%Y/%m/%d')>='$startDate' and date_format(b.log_dt,'%Y/%m/%d')<='$endDate'";
         if(empty($salesman)){
             $salesman = $employee_name." ($employee_code)";
