@@ -44,7 +44,7 @@ class ImpReceipt {
 		$rtn = !empty($dt)? '' : $name['trans_dt'].' '.Yii::t('import','cannot be blank').' /';
 		$rtn .= $this->validateDate($dt,'Y-m-d') ? '' : $name['trans_dt'].' '.Yii::t('import','is not valid').' /';
 		$rtn .= !empty($data['t3_doc_no']) 
-				? (strlen($data['t3_doc_no'])>50 ? $name['t3_doc_no'].' '.Yii::t('import','is too long').' /' : '') 
+				? (strlen($data['t3_doc_no'])>100 ? $name['t3_doc_no'].' '.Yii::t('import','is too long').' /' : '')
 				: $name['t3_doc_no'].' '.Yii::t('import','cannot be blank').' /';
 		$rtn .= !empty($data['amount']) ? '' : $name['amount'].' '.Yii::t('import','cannot be blank').' /';
 		$rtn .= is_numeric($data['amount']) ? '' : $name['amount'].' '.Yii::t('import','is not valid').' /';
