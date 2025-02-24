@@ -116,10 +116,10 @@ class Email {
     }
 
     //添加收信人(根據權限）
-    public function addEmailToPrefix($str){
+    public function addEmailToPrefix($str,$city=''){
         $suffix = Yii::app()->params['envSuffix'];
         $systemId = Yii::app()->params['systemId'];
-        $city = Yii::app()->user->city();
+        $city = empty($city)?Yii::app()->user->city():$city;
         $cityList = $this->getAllCityToMinCity($city);
         if(count($cityList)>1){
             $cityList = "'".implode("','",$cityList)."'";
