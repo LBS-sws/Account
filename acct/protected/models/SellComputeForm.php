@@ -2097,6 +2097,9 @@ class SellComputeForm extends CFormModel
     private function getServiceReward(){
         $suffix = Yii::app()->params['envSuffix'];
         //检测是否有配送过三瓶以上的洗地易
+        if($this->startDate>="2025-02-01"){
+            return 0;//2025年2月开始，取消创新提成点
+        }
         $logisticSum = Yii::app()->db->createCommand()->select("sum(a.qty)")
             ->from("swoper$suffix.swo_logistic_dtl a")
             ->leftJoin("swoper$suffix.swo_logistic b","a.log_id = b.id")

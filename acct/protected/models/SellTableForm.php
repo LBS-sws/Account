@@ -914,6 +914,47 @@ class SellTableForm extends SellComputeForm{
 
         $this->saveInfoDetail();
         $this->saveSupplementMoney();
+
+        $this->sendEmail();
+    }
+
+    private function sendEmail(){
+        $emailModel = new Email();
+        $subject = "";
+        $message = "<p>销售提成表</p>";
+        $message.= "<p>提成时间：{$this->year}年{$this->month}月</p>";
+        $message.= "<p>销售员：{$this->employee_name} ({$this->employee_code})</p>";
+        $message.= "<p>补充金额合计：{$this->supplement_money}</p>";
+        $message.= "<p>最终金额合计：{$this->final_money}</p>";
+        switch ($this->getScenario()){
+            case "examine"://要求审核
+                $emailModel->setSubject("{$this->employee_name}销售提成表({$this->year}年{$this->month}月) - 待审核");
+                $emailModel->addEmailToPrefixAndCity("CN12",$this->city,array(),3);
+                $emailModel->setMessage($message);
+                $emailModel->sent();
+                break;
+            case "audit"://审核通过
+                $emailModel->setSubject("{$this->employee_name}销售提成表({$this->year}年{$this->month}月) - 审核通过");
+                $emailModel->addEmailToPrefixAndOnlyCity("XS07",$this->city);
+                $emailModel->setMessage($message);
+                $emailModel->sent();
+                break;
+            case "ject"://拒绝
+                $emailModel->setSubject("{$this->employee_name}销售提成表({$this->year}年{$this->month}月) - 已拒绝");
+                $emailModel->addEmailToPrefixAndOnlyCity("XS07",$this->city);
+                $message.= "<p>拒绝原因：{$this->ject_remark}</p>";
+                $emailModel->setMessage($message);
+                $emailModel->sent();
+                break;
+            case "break"://退回
+                $emailModel->setSubject("{$this->employee_name}销售提成表({$this->year}年{$this->month}月) - 已退回");
+                $emailModel->addEmailToPrefixAndOnlyCity("XS07",$this->city);
+                $emailModel->setMessage($message);
+                $emailModel->sent();
+                break;
+            default:
+                return false;
+        }
     }
 
     private function saveSupplementMoney(){

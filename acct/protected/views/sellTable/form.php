@@ -102,12 +102,14 @@ $this->pageTitle=Yii::app()->name . ' - SellTable Form';
                                 <?php echo TbHtml::textField("point",SellComputeList::showText($model->dtl_list['point'],false,"rate"),array('readonly'=>true));?>
                             </div>
                         </div>
-                        <div class="form-group" >
-                            <label class="col-sm-5 control-label"><?php echo Yii::t('commission','bring reward'); ?></label>
-                            <div class="col-sm-7">
-                                <?php echo TbHtml::textField("service_reward",SellComputeList::showText($model->dtl_list['service_reward'],false,"rate"),array('readonly'=>true));?>
+                        <?php if ($model->startDate<='2025-01-01'): ?>
+                            <div class="form-group" >
+                                <label class="col-sm-5 control-label"><?php echo Yii::t('commission','bring reward'); ?></label>
+                                <div class="col-sm-7">
+                                    <?php echo TbHtml::textField("service_reward",SellComputeList::showText($model->dtl_list['service_reward'],false,"rate"),array('readonly'=>true));?>
+                                </div>
                             </div>
-                        </div>
+                        <?php endif ?>
 
                         <div class="form-group">
                             <?php echo $form->labelEx($model,'examine',array('class'=>"col-sm-5 control-label")); ?>
@@ -130,7 +132,9 @@ $this->pageTitle=Yii::app()->name . ' - SellTable Form';
                                 <p><span style="color: yellow;">黄色</span>标记的为提成点是零的续约服务</p>
                                 -->
                                 <p>甲醛、飘盈香客户归为IC类</p>
-                                <p>创新业务提成点：满足月销3桶洗地易+月新签蔚诺及隔油池金额大于2500</p>
+                                <?php if ($model->startDate<='2025-01-01'): ?>
+                                    <p>创新业务提成点：满足月销3桶洗地易+月新签蔚诺及隔油池金额大于2500</p>
+                                <?php endif ?>
                             </div>
                         </div>
                     </div>

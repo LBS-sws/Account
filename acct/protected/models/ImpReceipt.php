@@ -44,7 +44,7 @@ class ImpReceipt {
 		$rtn = !empty($dt)? '' : $name['trans_dt'].' '.Yii::t('import','cannot be blank').' /';
 		$rtn .= $this->validateDate($dt,'Y-m-d') ? '' : $name['trans_dt'].' '.Yii::t('import','is not valid').' /';
 		$rtn .= !empty($data['t3_doc_no']) 
-				? (strlen($data['t3_doc_no'])>50 ? $name['t3_doc_no'].' '.Yii::t('import','is too long').' /' : '') 
+				? (strlen($data['t3_doc_no'])>100 ? $name['t3_doc_no'].' '.Yii::t('import','is too long').' /' : '')
 				: $name['t3_doc_no'].' '.Yii::t('import','cannot be blank').' /';
 		$rtn .= !empty($data['amount']) ? '' : $name['amount'].' '.Yii::t('import','cannot be blank').' /';
 		$rtn .= is_numeric($data['amount']) ? '' : $name['amount'].' '.Yii::t('import','is not valid').' /';
@@ -157,16 +157,21 @@ class ImpReceipt {
 		
 		if (!$exist) {
 			$id = Yii::app()->db->getLastInsertID();
-			
-			$sql = "insert into acc_trans_t3 (t3_doc_no, trans_id)
+
+            $t3Row = $connection->createCommand()->select("t3_doc_no")->from("acc_trans_t3")
+                ->where("t3_doc_no=:t3_doc_no",array(":t3_doc_no"=>$t3_doc_no))
+                ->queryRow();
+            if(!$t3Row){
+                $sql = "insert into acc_trans_t3 (t3_doc_no, trans_id)
 					values (:t3_doc_no, :trans_id)
 				";
-			$command=$connection->createCommand($sql);
-			if (strpos($sql,':trans_id')!==false)
-				$command->bindParam(':trans_id',$id,PDO::PARAM_INT);
-			if (strpos($sql,':t3_doc_no')!==false)
-				$command->bindParam(':t3_doc_no',$t3_doc_no,PDO::PARAM_STR);
-			$command->execute();
+                $command=$connection->createCommand($sql);
+                if (strpos($sql,':trans_id')!==false)
+                    $command->bindParam(':trans_id',$id,PDO::PARAM_INT);
+                if (strpos($sql,':t3_doc_no')!==false)
+                    $command->bindParam(':t3_doc_no',$t3_doc_no,PDO::PARAM_STR);
+                $command->execute();
+            }
 		}
 		
 		$dynfields = array(

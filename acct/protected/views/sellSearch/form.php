@@ -111,12 +111,14 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute Form';
                                 <?php echo TbHtml::textField("point",SellComputeList::showText($model->dtl_list['point'],$model->showNull,"rate"),array('readonly'=>true));?>
                             </div>
                         </div>
-                        <div class="form-group" >
-                            <label class="col-sm-5 control-label"><?php echo Yii::t('commission','bring reward'); ?></label>
-                            <div class="col-sm-7">
-                                <?php echo TbHtml::textField("service_reward",SellComputeList::showText($model->dtl_list['service_reward'],$model->showNull,"rate"),array('readonly'=>true));?>
+                        <?php if ($model->startDate<='2025-01-01'): ?>
+                            <div class="form-group" >
+                                <label class="col-sm-5 control-label"><?php echo Yii::t('commission','bring reward'); ?></label>
+                                <div class="col-sm-7">
+                                    <?php echo TbHtml::textField("service_reward",SellComputeList::showText($model->dtl_list['service_reward'],$model->showNull,"rate"),array('readonly'=>true));?>
+                                </div>
                             </div>
-                        </div>
+                        <?php endif ?>
                         <div class="form-group" >
                             <label class="col-sm-5 control-label"><?php echo Yii::t('commission','span rate'); ?></label>
                             <div class="col-sm-7">
