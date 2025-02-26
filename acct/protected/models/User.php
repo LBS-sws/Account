@@ -167,4 +167,15 @@ class User extends CActiveRecord
 		if ($row!==false) $rtn = $row['field_value'];
 		return $rtn;
 	}
+
+    public function resetPassword($username,$password)
+    {
+        $result = self::model()->find('LOWER(username)=?',array($username));
+        if($result==null) return ['status'=>false,'msg'=>'未找到当前账号！'];
+        $result->password = $this->hashPassword($password,$this->salt);
+        $result->is_replace_password = 1;
+        $res = $result->save();
+        if(!$res) return ['status'=>false,'msg'=>'密码重置失败！'];
+        return ['status'=>true,'msg'=>''];
+    }
 }

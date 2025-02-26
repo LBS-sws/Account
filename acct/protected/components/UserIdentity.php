@@ -9,6 +9,8 @@ class UserIdentity extends CUserIdentity
 {
 	const ERROR_FAIL_EXCESS=10;
 
+    const ERROR_RESET_PASSWORD=1001;
+
 	public $displayname;
 
 	/**
@@ -31,6 +33,8 @@ class UserIdentity extends CUserIdentity
 			$this->errorCode=self::ERROR_UNKNOWN_IDENTITY;
 		else if(Yii::app()->params['noOfLoginRetry']!=-1 && $user->fail_count >= Yii::app()->params['noOfLoginRetry'])
 			$this->errorCode=self::ERROR_FAIL_EXCESS;
+        else if(!$user->is_replace_password) //检查是否重新设置过密码
+            $this->errorCode=self::ERROR_RESET_PASSWORD;
 		else {
 			$this->username=$user->username;
 			$this->displayname=$user->disp_name;

@@ -8,7 +8,7 @@ class SiteController extends Controller
 			'enforceRegisteredStation - error', //apply station checking, except error page
 			'enforceSessionExpiration - error,login,logout', 
 			'enforceNoConcurrentLogin - error,login,logout',
-			'accessControl - error,login,index,home', // perform access control for CRUD operations
+			'accessControl - error,login,index,home,resetloginpassword', // perform access control for CRUD operations
 		);
 	}
 
@@ -125,8 +125,10 @@ class SiteController extends Controller
 			}
 			else
 			{
-				$message=CHtml::errorSummary($model);
-				Dialog::message('Validation Message', $message);
+                $errorCode = $model->errorCode;
+                $message=CHtml::errorSummary($model);
+                $Validation_Message = $errorCode == UserIdentity::ERROR_RESET_PASSWORD ? $_POST['LoginForm']['username'] : 'Validation Message';
+                Dialog::message($Validation_Message, $message,$errorCode);
 			}
 		}
 		// display the login form
@@ -214,4 +216,33 @@ class SiteController extends Controller
 		$model->retrieveData();
 		$this->render('notifyopt',array('model'=>$model));
 	}
+
+    public function actionResetLoginPassword()
+    {
+        $model=new ResetPasswordForm;
+        if(isset($_POST['ajax']) && $_POST['ajax']==='reset-login-form')
+        {
+            echo CActiveForm::validate($model);
+            Yii::app()->end();
+        }
+        // collect user input data
+        if(isset($_POST['ResetPasswordForm']))
+        {
+            $model->attributes=$_POST['ResetPasswordForm'];
+            if($model->validate())
+            {
+                $result = (new User())->resetPassword($_POST['ResetPasswordForm']['username'],$_POST['ResetPasswordForm']['new_password']);
+                if($result['status']) $this->redirect(Yii::app()->user->loginUrl);
+                Dialog::message('Validation Message', $result['msg']);
+            }
+            else
+            {
+                $message=CHtml::errorSummary($model);
+                Dialog::message('Validation Message', $message);
+            }
+        }
+//        print_r($_POST);exit;
+        $this->layout = "main_reset_login";
+        $this->render('resetloginpassword',array('model'=>$model));
+    }
 }
