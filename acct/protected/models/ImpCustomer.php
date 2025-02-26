@@ -71,6 +71,7 @@ class ImpCustomer {
 				";
 		}
 		$command=$connection->createCommand($sql);
+        $data['code'] = str_replace(' ','',$data['code']);
 		if (strpos($sql,':code')!==false)
 			$command->bindParam(':code',$data['code'],PDO::PARAM_STR);
 		if (strpos($sql,':name')!==false)
@@ -90,6 +91,7 @@ class ImpCustomer {
 		if (strpos($sql,':city')!==false)
 			$command->bindParam(':city',$data['city'],PDO::PARAM_LOB);
 		$command->execute();
+		$this->sendCurlForJD($connection,$data);
 		$id = Yii::app()->db->getLastInsertID();
 		return $action.'- /'.Yii::t('import','Row No.').': '.$data['excel_row']
 			.' /'.Yii::t('import','Code').': '.$data['code']
@@ -97,5 +99,63 @@ class ImpCustomer {
 			.' /'.Yii::t('import','City').': '.$data['city']
 			.' /'.Yii::t('import','User').': '.$data['uid']
 			;
-	}}
+	}
+
+	protected function sendCurlForJD($connection,$data){
+	    if(isset($data['code'])&&isset($data['city'])){
+            $suffix = Yii::app()->params['envSuffix'];
+            $row = Yii::app()->db->createCommand()->select("*")->from("swoper$suffix.swo_company")
+                ->where('code=:code and city=:city',array(':code'=>$data['code'],':city'=>$data['city']))
+                ->queryRow();
+            if($row){
+                $curlData=self::getDataForCustomerRow($row);
+                $curlData = array("data"=>$curlData);
+                $data = array(
+                    "status_type"=>"P",
+                    "info_type"=>"customer",
+                    "info_url"=>"/kapi/v2/lbs/basedata/bd_customer/save",
+                    "min_url"=>"/kapi/v2/lbs/basedata/bd_customer/save",
+                    "data_content"=>json_encode($curlData),
+                    "out_content"=>"",
+                    "message"=>"等待执行",
+                    "lcu"=>"admin_acct",
+                    "lcd"=>date_format(date_create(),"Y-m-d H:i:s"),
+                );
+                $connection->createCommand()->insert("operation{$suffix}.opr_api_curl",$data);
+            }
+        }
+    }
+
+    //去除客户编号的尾缀
+    private static function getDataForCustomerRow($row){
+        $curlData=array(
+            "lbs_apikey"=>$row["id"],
+            "number"=>$row["code"]."-".$row["city"],//编码
+            "name"=>$row["name"],//名称
+            "status"=>"C",//数据状态 [A:暂存, B:已提交, C:已审核]
+            "enable"=>$row["status"]==2?0:1,//使用状态 [0:禁用, 1:可用]
+            "simplename"=>$row["full_name"],//简称
+
+            "bizfunction"=>"1,2,3,4",//业务职能 [1:销售, 2:结算, 3:付款, 4:收货]
+            "type"=>"1",//伙伴类型 [1:法人企业, 2:非法人企业, 3:非企业单位, 4:个人, 5:个体户]
+
+            "createorg_number"=>"LBSGL",//创建组织.编码
+            //"internal_company_number"=>"",//内部业务单元.编码
+            //"societycreditcode"=>"",//统一社会信用代码
+            //"tx_register_no"=>$row["tax_reg_no"],//纳税人识别号 (2024年9月23日删除)
+            //"linkman"=>$row["cont_name"],//联系人 (2024年9月23日删除)
+            //"bizpartner_phone"=>$row["cont_phone"],//联系电话 (2024年9月23日删除)
+            //"postal_code"=>$row["email"],//电子邮箱 (2024年9月23日删除)
+            "address"=>$row["address"],//电子邮箱(金蝶接口未有)
+            "group_code"=>$row["group_id"],//集团编号(金蝶接口未有)
+            "group_name"=>$row["group_name"],//集团名称(金蝶接口未有)
+
+            "entry_groupstandard"=>array(//分类标准
+                "groupid_number"=>"E",//分类.编码
+                "standardid_number"=>"JBFLBZ",//分类标准.编码
+            ),//分类标准
+        );
+        return $curlData;
+    }
+}
 ?>

@@ -223,5 +223,7 @@ return array(
 	'Temporary Audit'=>'暂支单审核',
 	'Temporary Payment'=>'暂支单银行确认',
 	'Temporary Search'=>'暂支单查询',
+	'Quarterly performance bonus'=>'季度绩效奖金',
+	'performance bonus setting'=>'绩效奖金配置',
 );
 ?>

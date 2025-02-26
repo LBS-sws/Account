@@ -282,6 +282,14 @@ return array(
                 'access'=>'XS07',
                 'url'=>'/sellTable/index',
             ),
+            'Quarterly performance bonus'=>array(//季度绩效奖金
+                'access'=>'XS12',
+                'url'=>'/performanceBonus/index',
+            ),
+            'performance bonus setting'=>array(//绩效奖金配置
+                'access'=>'XS13',
+                'url'=>'/performanceSet/index',
+            ),
         ),
     ),
 	'Plane System'=>array( //技术部直升机机制

@@ -218,5 +218,8 @@ return array(
     'Temporary Audit'=>'暫支單審核',
     'Temporary Payment'=>'暫支單銀行確認',
     'Temporary Search'=>'暫支單查詢',
+
+    'Quarterly performance bonus'=>'季度績效獎金',
+    'performance bonus setting'=>'績效獎金配置',
 );
 ?>

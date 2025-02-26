@@ -23,5 +23,14 @@ return array(
     'new_money_back'=>'实际新增提成金额',
     'edit_money_back'=>'实际更改提成金额',
     'renewal_money_back'=>'实际续约提成金额',
+
+    'Setting Name'=>'配置名称',
+    'new amount'=>'季度金额',
+    'bonus amount'=>'季度奖金',
+    'quarter no'=>'季度',
+    'employee code'=>'员工编号',
+    'employee name'=>'员工姓名',
+    'status type'=>'状态',
+    'static now'=>'固定',
 );
 ?>
