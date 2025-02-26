@@ -10,6 +10,7 @@ class LoginForm extends CFormModel
 	public $username;
 	public $password;
 	public $rememberMe;
+    public $errorCode;
 
 	private $_identity;
 
@@ -59,6 +60,11 @@ class LoginForm extends CFormModel
 					case UserIdentity::ERROR_FAIL_EXCESS:
 						$errmsg = Yii::t('dialog','Account is locked.');
 						break;
+                    case UserIdentity::ERROR_RESET_PASSWORD:
+                        $this->errorCode = UserIdentity::ERROR_RESET_PASSWORD;
+                        $errmsg = Yii::t('dialog','Please reset password');
+
+                        break;
 					default:
 						$errmsg = Yii::t('dialog','Unable to login.');
 				}

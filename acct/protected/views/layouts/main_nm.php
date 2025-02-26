@@ -5,7 +5,8 @@
 	<?php 
 		Yii::app()->bootstrap->bootstrapPath = Yii::app()->basePath.'/../../AdminLTE/plugins/bootstrap';
 		Yii::app()->bootstrap->adminLtePath = Yii::app()->basePath.'/../../AdminLTE';
-		Yii::app()->bootstrap->register(); 
+		Yii::app()->bootstrap->register();
+        Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl . '/css/login.css');
 	?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
