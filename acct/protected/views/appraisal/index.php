@@ -1,9 +1,9 @@
 <?php
-$this->pageTitle=Yii::app()->name . ' - PerformanceBonus';
+$this->pageTitle=Yii::app()->name . ' - Appraisal';
 ?>
 
 <?php $form=$this->beginWidget('TbActiveForm', array(
-'id'=>'PerformanceBonus-list',
+'id'=>'Appraisal-list',
 'enableClientValidation'=>true,
 'clientOptions'=>array('validateOnSubmit'=>true,),
 'layout'=>TbHtml::FORM_LAYOUT_INLINE,
@@ -11,7 +11,7 @@ $this->pageTitle=Yii::app()->name . ' - PerformanceBonus';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('app','performance bonus setting'); ?></strong>
+		<strong><?php echo Yii::t('app','Performance appraisal'); ?></strong>
 	</h1>
 </section>
 
@@ -27,10 +27,10 @@ $this->pageTitle=Yii::app()->name . ' - PerformanceBonus';
     ));
     $modelClass=get_class($model);
     $search_add_html="";
-    $search_add_html .= TbHtml::dropDownList("{$modelClass}[year_no]",$model->year_no,PerformanceBonusList::getYearList(),
+    $search_add_html .= TbHtml::dropDownList("{$modelClass}[year_no]",$model->year_no,AppraisalList::getYearList(),
         array("class"=>"form-control submitBtn","id"=>"selectYear"));
     $search_add_html.="<span>&nbsp;&nbsp;-&nbsp;&nbsp;</span>";
-    $search_add_html .= TbHtml::dropDownList("{$modelClass}[quarter_no]",$model->quarter_no,PerformanceBonusList::getQuarterList(),
+    $search_add_html .= TbHtml::dropDownList("{$modelClass}[month_no]",$model->month_no,AppraisalList::getMonthList(),
         array("class"=>"form-control submitBtn","id"=>"selectMonth"));
 
     $search = array(
@@ -40,10 +40,10 @@ $this->pageTitle=Yii::app()->name . ' - PerformanceBonus';
         'dept_name',
     );
     $this->widget('ext.layout.ListPageWidget', array(
-        'title'=>Yii::t('app','performance bonus setting'),
+        'title'=>Yii::t('app','Performance appraisal'),
         'model'=>$model,
-        'viewhdr'=>'//performanceBonus/_listhdr',
-        'viewdtl'=>'//performanceBonus/_listdtl',
+        'viewhdr'=>'//appraisal/_listhdr',
+        'viewdtl'=>'//appraisal/_listdtl',
         'search'=>$search,
         'search_add_html'=>$search_add_html,
     ));

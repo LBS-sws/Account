@@ -31,5 +31,8 @@ return array(
     'employee name'=>'員工姓名',
     'status type'=>'狀態',
     'static now'=>'固定',
+    'entry time'=>'入職日期',
+    'Appraisal date'=>'考核日期',
+    'appraisal amount'=>'實際績效獎金',
 );
 ?>

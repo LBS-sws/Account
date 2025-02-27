@@ -225,5 +225,6 @@ return array(
 	'Temporary Search'=>'暂支单查询',
 	'Quarterly performance bonus'=>'季度绩效奖金',
 	'performance bonus setting'=>'绩效奖金配置',
+	'Performance appraisal'=>'销售顾问绩效考核表',
 );
 ?>

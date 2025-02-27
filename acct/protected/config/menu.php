@@ -282,6 +282,10 @@ return array(
                 'access'=>'XS07',
                 'url'=>'/sellTable/index',
             ),
+            'Performance appraisal'=>array(//销售顾问绩效考核表
+                'access'=>'XS14',
+                'url'=>'/appraisal/index',
+            ),
             'Quarterly performance bonus'=>array(//季度绩效奖金
                 'access'=>'XS12',
                 'url'=>'/performanceBonus/index',

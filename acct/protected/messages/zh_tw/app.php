@@ -221,5 +221,6 @@ return array(
 
     'Quarterly performance bonus'=>'季度績效獎金',
     'performance bonus setting'=>'績效獎金配置',
+    'Performance appraisal'=>'銷售顧問績效考核表',
 );
 ?>
