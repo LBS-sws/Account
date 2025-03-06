@@ -383,6 +383,7 @@ class AppraisalForm extends CFormModel
                 $rate = $money/$row["maxNum"];
                 $rate = $rate>$row["maxRate"]?$row["maxRate"]:round($rate,4);
                 $money_ok = $rate*$row["rate"]*100;
+                $money_ok = round($money_ok,2);
                 $sum+=$money_ok;
                 $html.="<td>".$num."</td>";
                 $html.="<td>".$title."</td>";
@@ -391,7 +392,7 @@ class AppraisalForm extends CFormModel
                 $html.="<td>".$body."</td>";
                 $html.="<td>".TbHtml::numberField($keyStr,$money,$htmlOptions)."</td>";
                 $html.="<td id='{$keyStr}_rate'>".($rate*100)."%</td>";
-                $html.="<td id='{$keyStr}_ok'>".$money_ok."</td>";
+                $html.="<td id='{$keyStr}_ok'>".sprintf("%.2f",$money_ok)."</td>";
                 $html.="</tr>";
             }
             $this->appraisal_amount = $sum;
@@ -401,7 +402,7 @@ class AppraisalForm extends CFormModel
             $html.="<td>合计</td>";
             $html.="<td>100%</td>";
             $html.="<td colspan='4' class='text-right'>总分</td>";
-            $html.="<td id='appraisal_amount'>".$this->appraisal_amount."</td>";
+            $html.="<td id='appraisal_amount'>".sprintf("%.2f",$this->appraisal_amount)."</td>";
             $html.="</tr>";
         }
         $html.="</tbody>";

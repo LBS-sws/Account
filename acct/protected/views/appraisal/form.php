@@ -95,7 +95,7 @@ $this->pageTitle=Yii::app()->name . ' - Appraisal Form';
                 <?php echo $form->labelEx($model,'appraisal_amount',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-3">
                     <?php
-                    echo TbHtml::textField("appraisal_money",$model->appraisal_amount*20,
+                    echo TbHtml::textField("appraisal_money",sprintf("%.2f",$model->appraisal_amount*20),
                         array('class'=>'form-control','readonly'=>true,)
                     );
                     ?>
