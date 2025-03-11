@@ -134,7 +134,8 @@ class PerformanceBonusList extends CListPageModel
                     'ready'=>$bool&&$record['status_type']!=1,
                     'status_type'=>PerformanceBonusForm::getStatusStr($record['status_type']),
                     'new_amount'=>$record['status_type']!=1?"-":floatval($record['new_amount']),
-                    'bonus_amount'=>$record['status_type']!=1?"-":floatval($record['bonus_amount'])
+                    'bonus_amount'=>$record['status_type']!=1?"-":floatval($record['bonus_amount']),
+                    'style'=>$record['status_type']!=1?"text-danger":""
 				);
 			}
 		}

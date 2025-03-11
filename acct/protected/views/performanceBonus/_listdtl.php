@@ -1,5 +1,5 @@
 
-<tr class='clickable-row' data-href='<?php echo $this->getLink('XS12', 'performanceBonus/edit', 'performanceBonus/view', array('index'=>$this->record['id']));?>'>
+<tr class='clickable-row <?php echo $this->record['style'];?>' data-href='<?php echo $this->getLink('XS12', 'performanceBonus/edit', 'performanceBonus/view', array('index'=>$this->record['id']));?>'>
     <td class="che">
         <?php if ($this->record['ready']): ?>
             <input value="<?php echo $this->record['id']; ?>"  type="checkbox">

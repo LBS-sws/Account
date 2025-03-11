@@ -27,7 +27,7 @@
         ?>
     </th>
     <th>
-        <?php echo TbHtml::link($this->getLabelName('status_type'),'#')
+        <?php echo TbHtml::link($this->getLabelName('status_type').$this->drawOrderArrow('f.status_type'),'#',$this->createOrderLink('PerformanceBonus-list','f.status_type'))
         ;
         ?>
     </th>

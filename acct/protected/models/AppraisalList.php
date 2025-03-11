@@ -128,7 +128,8 @@ class AppraisalList extends CListPageModel
                     'ready'=>$record['status_type']!=1&&in_array($record["id"],$userIDList),
                     'entry_time'=>General::toDate($record['entry_time']),
                     'status_type'=>AppraisalForm::getStatusStr($record['status_type']),
-                    'appraisal_amount'=>$record['status_type']!=1?"-":floatval($record['appraisal_amount'])
+                    'appraisal_amount'=>$record['status_type']!=1?"-":floatval($record['appraisal_amount']),
+                    'style'=>$record['status_type']!=1?"text-danger":""
 				);
 			}
 		}
