@@ -24,11 +24,11 @@ class AppraisalController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('edit','back','save'),
+				'actions'=>array('edit','back','save','batchSave'),
 				'expression'=>array('AppraisalController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view'),
+				'actions'=>array('index','view','downFixed'),
 				'expression'=>array('AppraisalController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -53,6 +53,27 @@ class AppraisalController extends Controller
 		$model->retrieveDataByPage($model->pageNum);
 		$this->render('index',array('model'=>$model));
 	}
+
+    public function actionDownFixed()
+    {
+        $model = new AppraisalForm("edit");
+        $model->downFixed();
+    }
+
+    public function actionBatchSave()
+    {
+        $model = new AppraisalForm("edit");
+        if(!empty($_POST['checkList'])){
+            //ini_set('memory_limit','500M');
+            $checkList = $_POST['checkList'];
+            $checkList = explode(",",$checkList);
+            $model->batchSave($checkList);
+            Dialog::message(Yii::t('dialog','Information'), "已批量固定");
+        }else{
+            Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','No Record Found'));
+        }
+        $this->redirect(Yii::app()->createUrl('appraisal/index'));
+    }
 
 
 	public function actionSave()

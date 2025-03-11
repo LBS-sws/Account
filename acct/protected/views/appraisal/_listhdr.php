@@ -1,4 +1,5 @@
 <tr>
+    <th width="1%"><input name="Fruit"  type="checkbox"  id="all"></th>
     <th width="1%"></th>
     <th>
         <?php echo TbHtml::link($this->getLabelName('code').$this->drawOrderArrow('b.code'),'#',$this->createOrderLink('Appraisal-list','b.code'))
@@ -31,7 +32,7 @@
         ?>
     </th>
     <th>
-        <?php echo TbHtml::link($this->getLabelName('status_type'),'#')
+        <?php echo TbHtml::link($this->getLabelName('status_type').$this->drawOrderArrow('f.status_type'),'#',$this->createOrderLink('Appraisal-list','f.status_type'))
         ;
         ?>
     </th>

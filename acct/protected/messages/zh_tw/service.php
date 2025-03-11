@@ -34,5 +34,7 @@ return array(
     'entry time'=>'入職日期',
     'Appraisal date'=>'考核日期',
     'appraisal amount'=>'實際績效獎金',
+    'batch fixed'=>'批量固定',
+    'down fixed'=>'已固定報表',
 );
 ?>

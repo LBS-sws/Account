@@ -68,8 +68,10 @@ class DownPay{
                 }
                 if(isset($list["colspan"])){
                     foreach ($list["colspan"] as $item){
+                        $colStartStr = $this->getColumn($colTwo);
                         $this->objPHPExcel->getActiveSheet()
                             ->setCellValueByColumnAndRow($colTwo, $this->current_row+1, $item["name"]);
+                        $this->setHeaderStyleTwo($colStartStr."".($this->current_row+1),$background,$color);
                         $colTwo++;
                         $this->th_num++;
                     }
@@ -435,7 +437,8 @@ class DownPay{
             foreach ($data as $cityList){
                 $col = 0;
                 foreach ($cityList as $keyStr=>$text){
-                    $this->setCellValueForSummary($col, $this->current_row, $text,$keyStr);
+                    $this->objPHPExcel->getActiveSheet()
+                        ->setCellValueByColumnAndRow($col, $this->current_row, $text);
                     $col++;
                 }
                 $this->current_row++;

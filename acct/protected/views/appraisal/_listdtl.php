@@ -1,5 +1,10 @@
 
 <tr class='clickable-row' data-href='<?php echo $this->getLink('XS14', 'appraisal/edit', 'appraisal/view', array('index'=>$this->record['id']));?>'>
+    <td class="che">
+        <?php if ($this->record['ready']): ?>
+            <input value="<?php echo $this->record['id']; ?>"  type="checkbox">
+        <?php endif ?>
+    </td>
     <td><?php echo $this->drawEditButton('XS14', 'appraisal/edit', 'appraisal/view', array('index'=>$this->record['id'])); ?></td>
 
     <td><?php echo $this->record['code']; ?></td>

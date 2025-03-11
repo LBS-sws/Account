@@ -93,6 +93,36 @@ class AppraisalForm extends CFormModel
         }
     }
 
+	public static function getSalesAccessForMe(){
+        $suffix = Yii::app()->params['envSuffix'];
+        $lcu = Yii::app()->user->id;
+        $bindingRow = Yii::app()->db->createCommand()->select("employee_id")
+            ->from("hr{$suffix}.hr_binding")
+            ->where("user_id='{$lcu}'")
+            ->queryRow();
+        $userList = array();
+        if($bindingRow){
+            $employee_id = $bindingRow["employee_id"];
+            $groupRow = Yii::app()->db->createCommand()->select("a.id")
+                ->from("hr{$suffix}.hr_group_staff a")
+                ->leftJoin("hr{$suffix}.hr_group b","a.group_id=b.id")
+                ->where("b.group_code='SALESNEW' and a.employee_id=".$employee_id)
+                ->queryRow();
+            if($groupRow){
+                $rows = Yii::app()->db->createCommand()->select("employee_id")
+                    ->from("hr{$suffix}.hr_group_branch")
+                    ->where("group_staff_id=".$groupRow["id"])
+                    ->queryAll();
+                if($rows){
+                    foreach ($rows as $row){
+                        $userList[] = $row["employee_id"];
+                    }
+                }
+            }
+        }
+        return $userList;
+    }
+
 	private function getAppraisalForEmployeeID($employee_id){
         $suffix = Yii::app()->params['envSuffix'];
         $session = Yii::app()->session;
@@ -240,6 +270,22 @@ class AppraisalForm extends CFormModel
 		}
 		
 	}
+
+	public function batchSave($list){
+        if(!empty($list)){
+            $userIDList = AppraisalForm::getSalesAccessForMe();
+            foreach ($list as $employee_id){
+                if(in_array($employee_id,$userIDList)){
+                    $this->retrieveData($employee_id);
+                    if($this->status_type!=1){
+                        $this->new_json_html();//计算总金额
+                        $this->status_type=1;
+                        $this->saveData();
+                    }
+                }
+            }
+        }
+    }
 	
 	public function saveData()
 	{
@@ -409,5 +455,152 @@ class AppraisalForm extends CFormModel
 	    $html.="</table>";
 
 	    return $html;
+    }
+
+    public function downFixed(){
+        $suffix = Yii::app()->params['envSuffix'];
+        $session = Yii::app()->session;
+        if (isset($session['appraisal_xs08']) && !empty($session['appraisal_xs08'])) {
+            $criteria = $session['appraisal_xs08'];
+            $this->year_no = $criteria["year_no"];
+            $this->month_no = $criteria["month_no"];
+        }
+        if(empty($this->year_no)||!is_numeric($this->year_no)){
+            $this->year_no = date("Y",strtotime("-1 months"));
+        }
+        if(empty($this->month_no)||!is_numeric($this->month_no)){
+            $this->month_no = date("n",strtotime("-1 months"));
+        }
+        $excelData = array();
+        $rows = Yii::app()->db->createCommand()
+            ->select("a.*,b.city as s_city,b.code,b.name,e.name as city_name,f.name as dept_name")
+            ->from("acc_appraisal a")
+            ->leftJoin("hr{$suffix}.hr_employee b","a.employee_id=b.id")
+            ->leftJoin("hr{$suffix}.hr_dept f","b.position=f.id")
+            ->leftJoin("security$suffix.sec_city e","b.city=e.code")
+            ->where("a.status_type=1 and a.year_no={$this->year_no} AND a.month_no={$this->month_no}")
+            ->queryAll();
+        if($rows){
+            $yearMonth = $this->year_no."/".$this->month_no;
+            $cityAreaList = self::getAllCityToArea();
+            foreach ($rows as $row){
+                $temp = $this->getDownTempForRow($row);
+                $temp["yearMonth"]=$yearMonth;
+                if(key_exists($row["s_city"],$cityAreaList)){
+                    $temp["areaName"] = $cityAreaList[$row["s_city"]];
+                }
+                $excelData[]=$temp;
+            }
+        }
+        $excel = new DownPay();
+        $headList = $this->getTopArr();
+        $excel->colTwo=6;
+        $str="销售顾问绩效考核表\n";
+        $str.="查询时间：{$this->year_no}年{$this->month_no}月";
+        $excel->SetHeaderString($str);
+        $excel->init();
+        $excel->setSummaryHeader($headList);
+        $excel->setListData($excelData);
+        $excel->outExcel("销售顾问绩效考核表");
+    }
+
+    public static function getAllCityToArea(){
+        $suffix = Yii::app()->params['envSuffix'];
+        $data = array();
+        $rows = Yii::app()->db->createCommand()
+            ->select("a.code,b.name as region_name")
+            ->from("swoper{$suffix}.swo_city_set a")
+            ->leftJoin("security{$suffix}.sec_city b","a.region_code=b.code")
+            ->queryAll();
+        if($rows){
+            foreach ($rows as $row){
+                $data[$row["code"]] = $row["region_name"];
+            }
+        }
+        return $data;
+    }
+
+    protected function getDownTempForRow($row){
+        $list = array(
+            "yearMonth"=>"",
+            "areaName"=>"",
+            "cityName"=>$row["city_name"],
+            "employeeCode"=>$row["code"],
+            "employeeName"=>$row["name"],
+            "deptName"=>$row["dept_name"],
+        );
+        $nameKeyList = array(
+            "new_amount"=>array("rate_text","text","nowNum","okText","moneyNum"),
+            "visit_sum"=>array("rate_text","text","nowNum","okText","moneyNum"),
+            "new_sum"=>array("rate_text","text","nowNum","okText","moneyNum"),
+            "num_score"=>array("rate_text","nowNum")
+        );
+        $setJson = json_decode($row["appraisal_json"],true);
+        foreach ($setJson as $keyStr=>$setRow){
+            $money = floatval($row[$keyStr]);
+            $rate = $money/$setRow["maxNum"];
+            $rate = $rate>$setRow["maxRate"]?$setRow["maxRate"]:round($rate,4);
+            $money_num = $rate*$setRow["rate"]*100;
+            $money_num = round($money_num,2);
+            $setRow["rate_text"] = floatval($setRow["rate"]*100)."%";
+            $setRow["nowNum"] = $money;
+            $setRow["okText"] = floatval($rate*100)."%";
+            $setRow["moneyNum"] = $money_num;
+            if(key_exists($keyStr,$nameKeyList)){
+                foreach ($nameKeyList[$keyStr] as $item){
+                    $list[$keyStr.$item] = $setRow[$item];
+                }
+            }
+        }
+        $list["appraisal_amount"]=floatval($row["appraisal_amount"]);
+        return $list;
+    }
+
+    private function getTopArr(){
+        $topList=array(
+            array("name"=>"年月","rowspan"=>2,"background"=>"#D6DCE4","color"=>"#000000"),//年月
+            array("name"=>"区域","rowspan"=>2,"background"=>"#D6DCE4","color"=>"#000000"),//区域
+            array("name"=>"城市","rowspan"=>2,"background"=>"#D6DCE4","color"=>"#000000"),//城市
+            array("name"=>"工号","rowspan"=>2,"background"=>"#D6DCE4","color"=>"#000000"),//工号
+            array("name"=>"姓名","rowspan"=>2,"background"=>"#D6DCE4","color"=>"#000000"),//姓名
+            array("name"=>"岗位","rowspan"=>2,"background"=>"#D6DCE4","color"=>"#000000"),//岗位
+            array("name"=>"考核-新签合同金额","background"=>"#D6DCE4","color"=>"#000000",
+                "colspan"=>array(
+                    array("name"=>"考核占比"),//考核占比
+                    array("name"=>"新签合同金额目标值"),//新签合同金额目标值
+                    array("name"=>"新签合同金额完成值"),//新签合同金额完成值
+                    array("name"=>"达成率"),//达成率
+                    array("name"=>"考核得分"),//考核得分
+                )
+            ),//考核-新签合同金额
+            array("name"=>Yii::t("trans","核-客户拜访数量"),"background"=>"#D6DCE4","color"=>"#000000",
+                "colspan"=>array(
+                    array("name"=>"考核占比"),//考核占比
+                    array("name"=>"客户拜访数量目标值"),//客户拜访数量目标值
+                    array("name"=>"客户拜访数量完成值"),//客户拜访数量完成值
+                    array("name"=>"达成率"),//达成率
+                    array("name"=>"考核得分"),//考核得分
+                )
+            ),//考核-客户拜访数量
+            array("name"=>Yii::t("trans","考核-月度签单数量"),"background"=>"#D6DCE4","color"=>"#000000",
+                "colspan"=>array(
+                    array("name"=>"考核占比"),//考核占比
+                    array("name"=>"月度签单数量目标值"),//月度签单数量目标值
+                    array("name"=>"月度签单数量完成值"),//月度签单数量完成值
+                    array("name"=>"达成率"),//达成率
+                    array("name"=>"考核得分"),//考核得分
+                )
+            ),//考核-月度签单数量
+            array("name"=>Yii::t("trans","考核-月度工作完成率"),"background"=>"#D6DCE4","color"=>"#000000",
+                "colspan"=>array(
+                    array("name"=>"考核占比"),//考核占比
+                    array("name"=>"上级打分"),//上级打分
+                )
+            ),//考核-月度工作完成率
+            array("name"=>" ","background"=>"#D6DCE4","color"=>"#000000","colspan"=>array(
+                array("name"=>"合计总分"),//合计总分
+            )),//合计总分
+        );
+        return $topList;
     }
 }

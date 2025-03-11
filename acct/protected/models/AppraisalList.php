@@ -48,6 +48,9 @@ class AppraisalList extends CListPageModel
         if(empty($this->month_no)||!is_numeric($this->month_no)){
             $this->month_no = date("n",strtotime("-1 months"));
         }
+        if($this->year_no==2025&&$this->month_no==1){
+            $this->month_no=2;
+        }
     }
 	
 	public function retrieveDataByPage($pageNum=1)
@@ -100,7 +103,7 @@ class AppraisalList extends CListPageModel
             $order .= " order by {$this->orderField} ";
             if ($this->orderType=='D') $order .= "desc ";
         }else{
-            $order .= " order by b.city desc,f.status_type desc ";
+            $order .= " order by b.city desc,b.id desc ";
         }
 
 		$sql = $sql2.$clause;
@@ -112,6 +115,7 @@ class AppraisalList extends CListPageModel
 		$list = array();
 		$this->attr = array();
 		if (count($records) > 0) {
+		    $userIDList = AppraisalForm::getSalesAccessForMe();
 		    $quaStr = $this->year_no."年".$this->month_no."月";
 			foreach ($records as $k=>$record) {
 				$this->attr[] = array(
@@ -121,6 +125,7 @@ class AppraisalList extends CListPageModel
                     'time'=>$quaStr,
                     'city_name'=>$record['city_name'],
                     'dept_name'=>$record['dept_name'],
+                    'ready'=>$record['status_type']!=1&&in_array($record["id"],$userIDList),
                     'entry_time'=>General::toDate($record['entry_time']),
                     'status_type'=>AppraisalForm::getStatusStr($record['status_type']),
                     'appraisal_amount'=>$record['status_type']!=1?"-":floatval($record['appraisal_amount'])
@@ -133,7 +138,7 @@ class AppraisalList extends CListPageModel
 	}
 
 	public static function getYearList(){
-        $minYear=2024;
+        $minYear=2025;
         $maxYear = date("Y");
         $maxYear = date("n")<2?$maxYear-1:$maxYear;
         $arr = array();
