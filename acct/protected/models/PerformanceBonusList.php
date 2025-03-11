@@ -48,6 +48,10 @@ class PerformanceBonusList extends CListPageModel
             $month = date("n",strtotime("-3 months"));
             $this->quarter_no = ceil($month/3);
         }
+        if($this->year_no==2024){
+            $this->year_no = 2025;
+            $this->quarter_no=1;
+        }
     }
 	
 	public function retrieveDataByPage($pageNum=1)
@@ -105,7 +109,7 @@ class PerformanceBonusList extends CListPageModel
             $order .= " order by {$this->orderField} ";
             if ($this->orderType=='D') $order .= "desc ";
         }else{
-            $order .= " order by b.city desc,f.status_type desc ";
+            $order .= " order by b.city desc,b.id desc ";
         }
 
 		$sql = $sql2.$clause;
@@ -117,6 +121,7 @@ class PerformanceBonusList extends CListPageModel
 		$list = array();
 		$this->attr = array();
 		if (count($records) > 0) {
+		    $bool = Yii::app()->user->validRWFunction('XS12');
 		    $quaStr = PerformanceBonusForm::getQuarterStr($this->year_no,$this->quarter_no);
 			foreach ($records as $k=>$record) {
 				$this->attr[] = array(
@@ -126,6 +131,7 @@ class PerformanceBonusList extends CListPageModel
                     'time'=>$quaStr,
                     'city_name'=>$record['city_name'],
                     'dept_name'=>$record['dept_name'],
+                    'ready'=>$bool&&$record['status_type']!=1,
                     'status_type'=>PerformanceBonusForm::getStatusStr($record['status_type']),
                     'new_amount'=>$record['status_type']!=1?"-":floatval($record['new_amount']),
                     'bonus_amount'=>$record['status_type']!=1?"-":floatval($record['bonus_amount'])
@@ -138,9 +144,8 @@ class PerformanceBonusList extends CListPageModel
 	}
 
 	public static function getYearList(){
-        $minYear=2024;
+        $minYear=2025;
         $maxYear = date("Y");
-        $maxYear = date("n")<4?$maxYear-1:$maxYear;
         $arr = array();
         for ($i=$minYear;$i<=$maxYear;$i++){
             $arr[$i] = $i."年";

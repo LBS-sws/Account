@@ -112,6 +112,10 @@ class PerformanceBonusForm extends CFormModel
             ))->order("b.month_no asc")->queryAll();
             if($rows){
                 foreach ($rows as $row){
+                    if($row["year_no"]==2025&&$row["month_no"]==1){
+                        $row["new_money"]=0;
+                        $row["edit_money"]=0;
+                    }
                     $row["new_money"]= empty($row["new_money"])?0:floatval($row["new_money"]);
                     $row["edit_money"]= empty($row["edit_money"])?0:floatval($row["edit_money"]);
                     $this->new_amount+= $row["new_money"];
@@ -153,6 +157,18 @@ class PerformanceBonusForm extends CFormModel
 		}
 		
 	}
+
+    public function batchSave($list){
+        if(!empty($list)){
+            foreach ($list as $employee_id){
+                $this->retrieveData($employee_id);
+                if($this->status_type!=1){
+                    $this->status_type=1;
+                    $this->saveData();
+                }
+            }
+        }
+    }
 	
 	public function saveData()
 	{
@@ -318,5 +334,111 @@ class PerformanceBonusForm extends CFormModel
         $html.="</table>";
 
         return $html;
+    }
+
+    public function downFixed(){
+        $suffix = Yii::app()->params['envSuffix'];
+        $session = Yii::app()->session;
+        if (isset($session['performanceBonus_xs08']) && !empty($session['performanceBonus_xs08'])) {
+            $criteria = $session['performanceBonus_xs08'];
+            $this->year_no = $criteria["year_no"];
+            $this->quarter_no = $criteria["quarter_no"];
+        }
+        if(empty($this->year_no)||!is_numeric($this->year_no)){
+            $this->year_no = date("Y",strtotime("-3 months"));
+        }
+        if(empty($this->quarter_no)||!is_numeric($this->quarter_no)){
+            $month = date("n",strtotime("-3 months"));
+            $this->quarter_no = ceil($month/3);
+        }
+        $excelData = array();
+        $timerStr = $this->getQuarterStr($this->year_no,$this->quarter_no);
+        $rows = Yii::app()->db->createCommand()
+            ->select("a.*,b.city as s_city,b.code,b.name,e.name as city_name,f.name as dept_name")
+            ->from("acc_performance_bonus a")
+            ->leftJoin("hr{$suffix}.hr_employee b","a.employee_id=b.id")
+            ->leftJoin("hr{$suffix}.hr_dept f","b.position=f.id")
+            ->leftJoin("security$suffix.sec_city e","b.city=e.code")
+            ->where("a.status_type=1 and a.year_no={$this->year_no} AND a.quarter_no={$this->quarter_no}")
+            ->queryAll();
+        if($rows){
+            $cityAreaList = AppraisalForm::getAllCityToArea();
+            foreach ($rows as $row){
+                $temp = $this->getDownTempForRow($row);
+                $temp["yearMonth"]=$timerStr;
+                if(key_exists($row["s_city"],$cityAreaList)){
+                    $temp["areaName"] = $cityAreaList[$row["s_city"]];
+                }
+                $excelData[]=$temp;
+            }
+        }
+        $excel = new DownPay();
+        $headList = $this->getTopArr();
+        $excel->colTwo=6;
+        $str="季度绩效奖金\n";
+        $str.="查询时间：".$timerStr;
+        $excel->SetHeaderString($str);
+        $excel->init();
+        $excel->setSummaryHeader($headList);
+        $excel->setListData($excelData);
+        $excel->outExcel("季度绩效奖金");
+    }
+
+    protected function getDownTempForRow($row){
+        $list = array(
+            "yearMonth"=>"",
+            "areaName"=>"",
+            "cityName"=>$row["city_name"],
+            "employeeCode"=>$row["code"],
+            "employeeName"=>$row["name"],
+            "deptName"=>$row["dept_name"],
+        );
+        $setJson = empty($row["new_json"])?array():json_decode($row["new_json"],true);
+        $dataList = array();
+        foreach ($setJson as $setRow){
+            $keyStr = $setRow["year_no"]."_".$setRow["month_no"];
+            $dataList[$keyStr] = $setRow;
+        }
+        $minMonth = ($this->quarter_no-1)*3 + 1;
+        for ($i=$minMonth;$i<$minMonth+3;$i++){
+            $keyStr = $this->year_no."_".$i;
+            if(key_exists($keyStr,$dataList)){
+                $list[$keyStr."new_money"]=floatval($dataList[$keyStr]["new_money"]);
+                $list[$keyStr."edit_money"]=floatval($dataList[$keyStr]["edit_money"]);
+            }else{
+                $list[$keyStr."new_money"]="";
+                $list[$keyStr."edit_money"]="";
+            }
+        }
+        $list["new_amount"]=floatval($row["new_amount"]);
+        $list["bonus_amount"]=floatval($row["bonus_amount"]);
+        return $list;
+    }
+
+    private function getTopArr(){
+        $topList=array(
+            array("name"=>"年月","rowspan"=>2,"background"=>"#D6DCE4","color"=>"#000000"),//年月
+            array("name"=>"区域","rowspan"=>2,"background"=>"#D6DCE4","color"=>"#000000"),//区域
+            array("name"=>"城市","rowspan"=>2,"background"=>"#D6DCE4","color"=>"#000000"),//城市
+            array("name"=>"工号","rowspan"=>2,"background"=>"#D6DCE4","color"=>"#000000"),//工号
+            array("name"=>"姓名","rowspan"=>2,"background"=>"#D6DCE4","color"=>"#000000"),//姓名
+            array("name"=>"岗位","rowspan"=>2,"background"=>"#D6DCE4","color"=>"#000000"),//岗位
+        );
+        $minMonth = ($this->quarter_no-1)*3 + 1;
+        for ($i=$minMonth;$i<$minMonth+3;$i++){
+            $topList[]=array("name"=>"{$i}月份","background"=>"#D6DCE4","color"=>"#000000",
+                "colspan"=>array(
+                    array("name"=>"新增业绩"),//新增业绩
+                    array("name"=>"更改新增业绩"),//更改新增业绩
+                )
+            );
+        }
+        $topList[]=array("name"=>" ","background"=>"#D6DCE4","color"=>"#000000","colspan"=>array(
+            array("name"=>"累计业绩"),//累计业绩
+        ));
+        $topList[]=array("name"=>" ","background"=>"#D6DCE4","color"=>"#000000","colspan"=>array(
+            array("name"=>"季度奖金"),//季度奖金
+        ));
+        return $topList;
     }
 }

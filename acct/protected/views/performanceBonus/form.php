@@ -10,7 +10,7 @@ $this->pageTitle=Yii::app()->name . ' - PerformanceBonus Form';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('app','performance bonus setting'); ?></strong>
+		<strong><?php echo Yii::t('app','Quarterly performance bonus'); ?></strong>
 	</h1>
 </section>
 
@@ -99,6 +99,9 @@ $this->pageTitle=Yii::app()->name . ' - PerformanceBonus Form';
                     <?php
                     echo $model->new_json_html();
                     ?>
+                    <?php if ($model->year_no==2025&&$model->quarter_no==1): ?>
+                        <p class="text-danger">2025年1月份的销售提成不参与计算，业绩强制为0</p>
+                    <?php endif ?>
 				</div>
                 <div class="col-lg-offset-1 col-lg-5">
                     <?php

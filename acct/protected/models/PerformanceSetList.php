@@ -18,12 +18,12 @@ class PerformanceSetList extends CListPageModel
 		$sql1 = "select a.id, a.city, a.start_dt, a.name as set_name 
 				from acc_performance_set a
 				left outer join security$suffix.sec_city b on a.city=b.code				
-				where a.city in ($citylist)
+				where 1=1 
 			";
 		$sql2 = "select count(a.id)
 				from acc_performance_set a
-				left outer join security$suffix.sec_city b on a.city=b.code		  
-				where a.city in ($citylist)
+				left outer join security$suffix.sec_city b on a.city=b.code				
+				where 1=1 
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {

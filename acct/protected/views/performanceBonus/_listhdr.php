@@ -1,4 +1,5 @@
 <tr>
+    <th width="1%"><input name="Fruit"  type="checkbox"  id="all"></th>
     <th width="1%"></th>
     <th>
         <?php echo TbHtml::link($this->getLabelName('code').$this->drawOrderArrow('b.code'),'#',$this->createOrderLink('PerformanceBonus-list','b.code'))

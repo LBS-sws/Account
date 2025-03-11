@@ -11,15 +11,23 @@ $this->pageTitle=Yii::app()->name . ' - PerformanceBonus';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('app','performance bonus setting'); ?></strong>
+		<strong><?php echo Yii::t('app','Quarterly performance bonus'); ?></strong>
 	</h1>
 </section>
 
 <section class="content">
-	<div class="box"><div class="box-body">
-	<div class="btn-group" role="group">
-	</div>
-	</div></div>
+    <div class="box"><div class="box-body">
+            <div class="btn-group" role="group">
+                <?php echo TbHtml::button('<span class="fa fa-save"></span> '.Yii::t('service','batch fixed'), array(
+                    'submit'=>Yii::app()->createUrl('performanceBonus/batchSave')));
+                ?>
+            </div>
+            <div class="btn-group pull-right" role="group">
+                <?php echo TbHtml::button('<span class="fa fa-download"></span> '.Yii::t('service','down fixed'), array(
+                    'submit'=>Yii::app()->createUrl('performanceBonus/downFixed')));
+                ?>
+            </div>
+        </div></div>
 	<?php
     echo TbHtml::button("test", array(
         'submit'=>Yii::app()->createUrl('test/new'),
@@ -40,7 +48,7 @@ $this->pageTitle=Yii::app()->name . ' - PerformanceBonus';
         'dept_name',
     );
     $this->widget('ext.layout.ListPageWidget', array(
-        'title'=>Yii::t('app','performance bonus setting'),
+        'title'=>Yii::t('app','Quarterly performance bonus'),
         'model'=>$model,
         'viewhdr'=>'//performanceBonus/_listhdr',
         'viewdtl'=>'//performanceBonus/_listdtl',
@@ -54,6 +62,7 @@ $this->pageTitle=Yii::app()->name . ' - PerformanceBonus';
 	echo $form->hiddenField($model,'totalRow');
 	echo $form->hiddenField($model,'orderField');
 	echo $form->hiddenField($model,'orderType');
+    echo TbHtml::hiddenField('checkList','',array("id"=>"attrStr"));
 ?>
 <?php $this->endWidget(); ?>
 
@@ -61,6 +70,27 @@ $this->pageTitle=Yii::app()->name . ' - PerformanceBonus';
 $js = "
 $('.submitBtn').change(function(){
     $('form:first').submit();
+});
+
+$('.che').on('click', function(e){
+    e.stopPropagation();
+});
+
+$('body').on('click','#all',function() {
+	var val = $(this).prop('checked');
+	$('.che').children('input[type=checkbox]').prop('checked',val);
+});
+
+$('#PerformanceBonus-list').submit(function(){
+    var list = [];
+    $('input[type=checkbox]:checked').each(function(){
+        var id = $(this).val();
+        if(id!=''&&list.indexOf(id)==-1&&$(this).parent('td.che').length==1){
+            list.push(id);
+        }
+    });
+    list = list.join(',');
+    $('#attrStr').val(list);
 });
 ";
 Yii::app()->clientScript->registerScript('calcFunction',$js,CClientScript::POS_READY);
