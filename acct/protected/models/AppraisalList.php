@@ -60,6 +60,7 @@ class AppraisalList extends CListPageModel
         $thisDate = date("Y-m-d",strtotime("{$this->year_no}-{$this->month_no}-01"));
         $minEntry = date("Y-m-d",strtotime("{$thisDate} - 5 months"));
         $maxEntry = date("Y-m-d",strtotime("{$thisDate} + 1 months - 1 days"));
+        $leaveTime = date("Y/m/01",strtotime("{$this->year_no}/{$this->month_no}/01"));
 		//acc_performance_bonus
 		$sql1 = "select b.id,b.code,b.name,b.entry_time,c.name as dept_name, e.name as city_name,f.status_type ,f.appraisal_amount 
 				from acc_service_comm_hdr a
@@ -69,6 +70,7 @@ class AppraisalList extends CListPageModel
                 LEFT JOIN account$suffix.acc_appraisal f on f.employee_id=b.id AND f.year_no={$this->year_no} AND f.month_no={$this->month_no}		
 				where a.city in ({$citylist}) and a.year_no={$this->year_no} and a.month_no={$this->month_no}
 				AND DATE_FORMAT(b.entry_time, '%Y-%m-%d') BETWEEN '{$minEntry}' and '{$maxEntry}'
+				AND (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
 			";
 		$sql2 = "select count(b.id)
 				from acc_service_comm_hdr a
@@ -78,6 +80,7 @@ class AppraisalList extends CListPageModel
                 LEFT JOIN account$suffix.acc_appraisal f on f.employee_id=b.id AND f.year_no={$this->year_no} AND f.month_no={$this->month_no}		
 				where a.city in ({$citylist}) and a.year_no={$this->year_no} and a.month_no={$this->month_no}
 				AND DATE_FORMAT(b.entry_time, '%Y-%m-%d') BETWEEN '{$minEntry}' and '{$maxEntry}'
+				AND (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {

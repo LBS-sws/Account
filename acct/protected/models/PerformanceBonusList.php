@@ -68,6 +68,7 @@ class PerformanceBonusList extends CListPageModel
 		 city in ({$citylist}) and year_no={$this->year_no} and month_no in ({$monthList})
 		 GROUP BY employee_code,city
 		";
+        $leaveTime = date("Y/m/01",strtotime("{$this->year_no}/{$minMonth}/01"));
 		//acc_performance_bonus
 		$sql1 = "select b.id,b.code,b.name,c.name as dept_name, e.name as city_name,f.status_type ,f.new_amount ,f.bonus_amount 
 				from ($hdrSql) a
@@ -75,7 +76,7 @@ class PerformanceBonusList extends CListPageModel
                 LEFT JOIN hr$suffix.hr_dept c on b.position=c.id  	
                 LEFT JOIN security$suffix.sec_city e on a.city=e.code 		
                 LEFT JOIN account$suffix.acc_performance_bonus f on f.employee_id=b.id AND f.year_no={$this->year_no} AND f.quarter_no={$this->quarter_no}		
-				where 1=1 
+				where 1=1 and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime')) 
 			";
 		$sql2 = "select count(b.id)
 				from ($hdrSql) a
@@ -83,7 +84,7 @@ class PerformanceBonusList extends CListPageModel
                 LEFT JOIN hr$suffix.hr_dept c on b.position=c.id  	
                 LEFT JOIN security$suffix.sec_city e on a.city=e.code 		
                 LEFT JOIN account$suffix.acc_performance_bonus f on f.employee_id=b.id AND f.year_no={$this->year_no} AND f.quarter_no={$this->quarter_no}		
-				where 1=1 
+				where 1=1 and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime')) 
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
