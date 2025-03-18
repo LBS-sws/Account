@@ -159,15 +159,36 @@ class PerformanceBonusForm extends CFormModel
 	}
 
     public function batchSave($list){
+        $saveArr= array("bool"=>true,"message"=>"");
         if(!empty($list)){
+            $connection = Yii::app()->db;
+            $transaction=$connection->beginTransaction();
+            $curlData=array(
+                "presetSalarySubsetCode"=>"PresetSalarySubset1",
+                "models"=>array()
+            );
             foreach ($list as $employee_id){
                 $this->retrieveData($employee_id);
                 if($this->status_type!=1){
                     $this->status_type=1;
-                    $this->saveData();
+                    $temp = $this->getCurlDataModels();
+                    $this->saveHeader($connection);
+                    $curlData["models"] = array_merge($curlData["models"],$temp);
                 }
             }
+            $bsCurlModel = new BsCurlModel();
+            $bsCurlModel->sendData = $curlData;
+            $curlData = $bsCurlModel->sendBsCurl();
+            if($curlData["code"]!=200){//curl异常，不继续执行
+                $bsCurlModel->logError($curlData);
+                $saveArr["bool"]=false;
+                $saveArr["message"]=$curlData["message"];
+                $transaction->rollback();
+            }else{
+                $transaction->commit();
+            }
         }
+        return $saveArr;
     }
 	
 	public function saveData()
@@ -177,13 +198,60 @@ class PerformanceBonusForm extends CFormModel
 		$transaction=$connection->beginTransaction();
 		try {
 			$this->saveHeader($connection);
-			$transaction->commit();
+            $arr = $this->sendBsData();
+            if($arr["bool"]){
+                $transaction->commit();
+            }else{
+                $transaction->rollback();
+            }
+            return $arr;
 		}
 		catch(Exception $e) {
 			$transaction->rollback();
 			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
 		}
 	}
+
+    protected function sendBsData(){
+        $saveArr= array("bool"=>true,"message"=>"");
+        if($this->getScenario()=="edit"){
+            $bsCurlModel = new BsCurlModel();
+            $bsCurlModel->sendData = array(
+                "presetSalarySubsetCode"=>"PresetSalarySubset1",
+                "models"=>$this->getCurlDataModels()
+            );
+            $curlData = $bsCurlModel->sendBsCurl();
+            if($curlData["code"]!=200){//curl异常，不继续执行
+                $bsCurlModel->logError($curlData);
+                $saveArr["bool"]=false;
+                $saveArr["message"]=$curlData["message"];
+            }
+        }
+        return $saveArr;
+    }
+
+    protected function getCurlDataModels(){
+        $suffix = Yii::app()->params['envSuffix'];
+        $models = array();
+        $bsStaffID = 0;
+        $maxMonth = ($this->quarter_no-1)*3 + 3;
+        $startDate = date("Y/m/01",strtotime("{$this->year_no}-{$maxMonth}-01"));
+        $startDate = date("Y/m/01",strtotime("{$startDate} + 1 months"));//季度奖金推送到北森需要延迟一个月
+        $stopDate = date("Y/m/t",strtotime($startDate));
+        $staffRow = Yii::app()->db->createCommand()->select("bs_staff_id")->from("hr{$suffix}.hr_employee")
+            ->where("id=:id",array(":id"=>$this->employee_id))->queryRow();
+        if($staffRow){
+            $bsStaffID = $staffRow["bs_staff_id"];
+        }
+        $models[]=array(
+            "staffId"=>$bsStaffID,
+            "itemName"=>"季度绩效奖金",
+            "startDate"=>$startDate,
+            "stopDate"=>$stopDate,
+            "numericVal"=>empty($this->bonus_amount)?0:round($this->bonus_amount,2),
+        );
+        return $models;
+    }
 
 	protected function saveHeader(&$connection)
 	{

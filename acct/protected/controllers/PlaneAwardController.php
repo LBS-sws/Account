@@ -92,9 +92,12 @@ PlaneAwardController extends Controller
             $model = new PlaneAwardForm($_POST['PlaneAwardForm']['scenario']);
             $model->attributes = $_POST['PlaneAwardForm'];
             if ($model->validate()) {
-                $model->saveData();
-                $model->scenario = 'edit';
-                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                $arr = $model->saveData();
+                if($arr["bool"]){
+                    Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                }else{
+                    Dialog::message("北森验证异常", $arr["message"]);
+                }
             } else {
                 $message = CHtml::errorSummary($model);
                 Dialog::message(Yii::t('dialog','Validation Message'), $message);

@@ -108,9 +108,12 @@ SellTableController extends Controller
             $model = new SellTableForm("save");
             $model->attributes = $_POST['SellTableForm'];
             if ($model->validate()) {
-                $model->saveData();
-                $model->scenario = 'edit';
-                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                $arr = $model->saveData();
+                if($arr["bool"]){
+                    Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                }else{
+                    Dialog::message(Yii::t('dialog','Validation Message'), $arr["message"]);
+                }
             } else {
                 $message = CHtml::errorSummary($model);
                 Dialog::message(Yii::t('dialog','Validation Message'), $message);
@@ -125,9 +128,12 @@ SellTableController extends Controller
             $model = new SellTableForm("examine");
             $model->attributes = $_POST['SellTableForm'];
             if ($model->validate()) {
-                $model->saveData();
-                $model->scenario = 'edit';
-                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                $arr = $model->saveData();
+                if($arr["bool"]){
+                    Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                }else{
+                    Dialog::message(Yii::t('dialog','Validation Message'), $arr["message"]);
+                }
             } else {
                 $message = CHtml::errorSummary($model);
                 Dialog::message(Yii::t('dialog','Validation Message'), $message);
@@ -140,11 +146,15 @@ SellTableController extends Controller
     {
         if (isset($_POST['SellTableForm'])) {
             $model = new SellTableForm("audit");
+            //$model->setAttributes($_POST['SellTableForm']);
             $model->attributes = $_POST['SellTableForm'];
             if ($model->validate()) {
-                $model->saveData();
-                $model->scenario = 'edit';
-                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                $arr = $model->saveData();
+                if($arr["bool"]){
+                    Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                }else{
+                    Dialog::message("北森验证异常", $arr["message"]);
+                }
             } else {
                 $message = CHtml::errorSummary($model);
                 Dialog::message(Yii::t('dialog','Validation Message'), $message);

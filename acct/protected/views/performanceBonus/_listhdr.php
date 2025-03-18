@@ -31,4 +31,9 @@
         ;
         ?>
     </th>
+    <th>
+        <?php echo TbHtml::link($this->getLabelName('bonus_amount').$this->drawOrderArrow('f.bonus_amount'),'#',$this->createOrderLink('PerformanceBonus-list','f.bonus_amount'))
+        ;
+        ?>
+    </th>
 </tr>

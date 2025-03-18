@@ -67,8 +67,12 @@ class PerformanceBonusController extends Controller
             //ini_set('memory_limit','500M');
             $checkList = $_POST['checkList'];
             $checkList = explode(",",$checkList);
-            $model->batchSave($checkList);
-            Dialog::message(Yii::t('dialog','Information'), "已批量固定");
+            $arr = $model->batchSave($checkList);
+            if($arr["bool"]){
+                Dialog::message(Yii::t('dialog','Information'), "已批量固定");
+            }else{
+                Dialog::message("北森验证异常", $arr["message"]);
+            }
         }else{
             Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','No Record Found'));
         }
@@ -82,8 +86,12 @@ class PerformanceBonusController extends Controller
 			$model->attributes = $_POST['PerformanceBonusForm'];
 			if ($model->validate()) {
 			    $model->status_type=1;
-				$model->saveData();
-				Dialog::message(Yii::t('dialog','Information'), "季度奖金已固定");
+                $arr = $model->saveData();
+                if($arr["bool"]){
+                    Dialog::message(Yii::t('dialog','Information'), "季度奖金已固定");
+                }else{
+                    Dialog::message("北森验证异常", $arr["message"]);
+                }
 				$this->redirect(Yii::app()->createUrl('performanceBonus/edit',array('index'=>$model->employee_id)));
 			} else {
 				$message = CHtml::errorSummary($model);

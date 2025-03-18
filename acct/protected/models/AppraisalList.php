@@ -16,6 +16,7 @@ class AppraisalList extends CListPageModel
             'moneys'=>Yii::t('app','comm_total_amount'),
             'status_type'=>Yii::t('service','status type'),
             'entry_time'=>Yii::t('service','entry time'),
+            'appraisal_money'=>Yii::t('service','appraisal amount'),
 		);
 	}
 
@@ -131,7 +132,7 @@ class AppraisalList extends CListPageModel
                     'ready'=>$record['status_type']!=1&&in_array($record["id"],$userIDList),
                     'entry_time'=>General::toDate($record['entry_time']),
                     'status_type'=>AppraisalForm::getStatusStr($record['status_type']),
-                    'appraisal_amount'=>$record['status_type']!=1?"-":floatval($record['appraisal_amount']),
+                    'appraisal_money'=>$record['status_type']!=1?"-":floatval($record['appraisal_amount'])*20,
                     'style'=>$record['status_type']!=1?"text-danger":""
 				);
 			}

@@ -857,6 +857,7 @@ class SellTableForm extends SellComputeForm{
     }
 
     public function saveData(){
+        $saveArr= array("bool"=>true,"message"=>"");
         switch ($this->getScenario()){
             case "save"://保存
                 if(empty($this->examine_row)){
@@ -895,6 +896,15 @@ class SellTableForm extends SellComputeForm{
                 }
                 break;
             case "audit"://审核通过
+                $bsCurlModel = new BsCurlModel();
+                $bsCurlModel->sendData = $this->getCurlData();
+                $curlData = $bsCurlModel->sendBsCurl();
+                if($curlData["code"]!=200){//curl异常，不继续执行
+                    $bsCurlModel->logError($curlData);
+                    $saveArr["bool"]=false;
+                    $saveArr["message"]=$curlData["message"];
+                    return $saveArr;
+                }
                 Yii::app()->db->createCommand()->update("acc_product",array(
                     "examine"=>"A",
                 ),"id=:id",array(":id"=>$this->examine_row["id"]));
@@ -912,10 +922,51 @@ class SellTableForm extends SellComputeForm{
                 break;
         }
 
-        $this->saveInfoDetail();
-        $this->saveSupplementMoney();
+        if($saveArr["bool"]){
+            $this->saveInfoDetail();
+            $this->saveSupplementMoney();
 
-        $this->sendEmail();
+            $this->sendEmail();
+        }
+        return $saveArr;
+    }
+
+    private function getCurlData(){
+        $suffix = Yii::app()->params['envSuffix'];
+        $models = array();
+        $bsStaffID = 0;
+        $newMoney = 0;
+        $startDate = date("Y/m/01",strtotime("{$this->year}-{$this->month}-01"));
+        $stopDate = date("Y/m/t",strtotime($startDate));
+        $staffRow = Yii::app()->db->createCommand()->select("bs_staff_id")->from("hr{$suffix}.hr_employee")
+            ->where("id=:id",array(":id"=>$this->employee_id))->queryRow();
+        if($staffRow){
+            $bsStaffID = $staffRow["bs_staff_id"];
+        }
+        $hdrRow = Yii::app()->db->createCommand()->select("new_money,edit_money")->from("acc_service_comm_dtl")
+            ->where("hdr_id=:hdr",array(":hdr"=>$this->id))->queryRow();
+        if($hdrRow){
+            $newMoney+=empty($hdrRow["new_money"])?0:floatval($hdrRow["new_money"]);
+            $newMoney+=empty($hdrRow["edit_money"])?0:floatval($hdrRow["edit_money"]);
+        }
+        $models[]=array(
+            "staffId"=>$bsStaffID,
+            "itemName"=>"销售人员提成",
+            "startDate"=>$startDate,
+            "stopDate"=>$stopDate,
+            "numericVal"=>empty($this->final_money)?0:floatval($this->final_money),
+        );
+        $models[]=array(
+            "staffId"=>$bsStaffID,
+            "itemName"=>"销售人员新生意额",
+            "startDate"=>$startDate,
+            "stopDate"=>$stopDate,
+            "numericVal"=>$newMoney,
+        );
+        return array(
+            "presetSalarySubsetCode"=>"PresetSalarySubset1",
+            "models"=>$models
+        );
     }
 
     private function sendEmail(){

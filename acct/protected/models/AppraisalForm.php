@@ -272,19 +272,40 @@ class AppraisalForm extends CFormModel
 	}
 
 	public function batchSave($list){
+        $saveArr= array("bool"=>true,"message"=>"");
         if(!empty($list)){
+            $connection = Yii::app()->db;
+            $transaction=$connection->beginTransaction();
             $userIDList = AppraisalForm::getSalesAccessForMe();
+            $curlData=array(
+                "presetSalarySubsetCode"=>"PresetSalarySubset1",
+                "models"=>array()
+            );
             foreach ($list as $employee_id){
                 if(in_array($employee_id,$userIDList)){
                     $this->retrieveData($employee_id);
                     if($this->status_type!=1){
                         $this->new_json_html();//计算总金额
                         $this->status_type=1;
-                        $this->saveData();
+                        $temp = $this->getCurlDataModels();
+                        $this->saveHeader($connection);
+                        $curlData["models"] = array_merge($curlData["models"],$temp);
                     }
                 }
             }
+            $bsCurlModel = new BsCurlModel();
+            $bsCurlModel->sendData = $curlData;
+            $curlData = $bsCurlModel->sendBsCurl();
+            if($curlData["code"]!=200){//curl异常，不继续执行
+                $bsCurlModel->logError($curlData);
+                $saveArr["bool"]=false;
+                $saveArr["message"]=$curlData["message"];
+                $transaction->rollback();
+            }else{
+                $transaction->commit();
+            }
         }
+        return $saveArr;
     }
 	
 	public function saveData()
@@ -294,13 +315,58 @@ class AppraisalForm extends CFormModel
 		$transaction=$connection->beginTransaction();
 		try {
 			$this->saveHeader($connection);
-			$transaction->commit();
+            $arr = $this->sendBsData();
+            if($arr["bool"]){
+                $transaction->commit();
+            }else{
+                $transaction->rollback();
+            }
+            return $arr;
 		}
 		catch(Exception $e) {
 			$transaction->rollback();
 			throw new CHttpException(404,'Cannot update.'.$e->getMessage());
 		}
 	}
+
+    protected function sendBsData(){
+        $saveArr= array("bool"=>true,"message"=>"");
+        if($this->getScenario()=="edit"){
+            $bsCurlModel = new BsCurlModel();
+            $bsCurlModel->sendData = array(
+                "presetSalarySubsetCode"=>"PresetSalarySubset1",
+                "models"=>$this->getCurlDataModels()
+            );
+            $curlData = $bsCurlModel->sendBsCurl();
+            if($curlData["code"]!=200){//curl异常，不继续执行
+                $bsCurlModel->logError($curlData);
+                $saveArr["bool"]=false;
+                $saveArr["message"]=$curlData["message"];
+            }
+        }
+        return $saveArr;
+    }
+
+    protected function getCurlDataModels(){
+        $suffix = Yii::app()->params['envSuffix'];
+        $models = array();
+        $bsStaffID = 0;
+        $startDate = date("Y/m/01",strtotime("{$this->year_no}-{$this->month_no}-01"));
+        $stopDate = date("Y/m/t",strtotime($startDate));
+        $staffRow = Yii::app()->db->createCommand()->select("bs_staff_id")->from("hr{$suffix}.hr_employee")
+            ->where("id=:id",array(":id"=>$this->employee_id))->queryRow();
+        if($staffRow){
+            $bsStaffID = $staffRow["bs_staff_id"];
+        }
+        $models[]=array(
+            "staffId"=>$bsStaffID,
+            "itemName"=>"新销售绩效奖金",
+            "startDate"=>$startDate,
+            "stopDate"=>$stopDate,
+            "numericVal"=>$this->appraisal_amount*20,
+        );
+        return $models;
+    }
 
 	protected function saveHeader(&$connection)
 	{
@@ -553,6 +619,7 @@ class AppraisalForm extends CFormModel
             }
         }
         $list["appraisal_amount"]=floatval($row["appraisal_amount"]);
+        $list["appraisal_money"]=$list["appraisal_amount"]*20;
         return $list;
     }
 
@@ -573,7 +640,7 @@ class AppraisalForm extends CFormModel
                     array("name"=>"考核得分"),//考核得分
                 )
             ),//考核-新签合同金额
-            array("name"=>Yii::t("trans","核-客户拜访数量"),"background"=>"#D6DCE4","color"=>"#000000",
+            array("name"=>Yii::t("trans","考核-客户拜访数量"),"background"=>"#D6DCE4","color"=>"#000000",
                 "colspan"=>array(
                     array("name"=>"考核占比"),//考核占比
                     array("name"=>"客户拜访数量目标值"),//客户拜访数量目标值
@@ -600,6 +667,9 @@ class AppraisalForm extends CFormModel
             array("name"=>" ","background"=>"#D6DCE4","color"=>"#000000","colspan"=>array(
                 array("name"=>"合计总分"),//合计总分
             )),//合计总分
+            array("name"=>" ","background"=>"#ffff00","color"=>"#000000","colspan"=>array(
+                array("name"=>"实际绩效奖金"),//实际绩效奖金
+            )),//实际绩效奖金
         );
         return $topList;
     }

@@ -15,6 +15,7 @@ class PerformanceBonusList extends CListPageModel
             'dept_name'=>Yii::t('app','user_name'),
             'moneys'=>Yii::t('app','comm_total_amount'),
             'status_type'=>Yii::t('service','status type'),
+            'bonus_amount'=>Yii::t('service','bonus amount'),
 		);
 	}
 

@@ -36,4 +36,9 @@
         ;
         ?>
     </th>
+    <th>
+        <?php echo TbHtml::link($this->getLabelName('appraisal_money').$this->drawOrderArrow('f.appraisal_amount'),'#',$this->createOrderLink('Appraisal-list','f.appraisal_amount'))
+        ;
+        ?>
+    </th>
 </tr>

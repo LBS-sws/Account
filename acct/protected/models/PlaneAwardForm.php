@@ -103,15 +103,27 @@ class PlaneAwardForm extends CFormModel
     }
 
     public function validateID($attribute, $params){
+        $suffix = Yii::app()->params['envSuffix'];
         $cityList = Yii::app()->user->city_allow();
-        $row = Yii::app()->db->createCommand()->select("id,plane_date")->from("acc_plane")
-            ->where("id=:id and city in ({$cityList})",array(":id"=>$this->id))->queryRow();
+        $row = Yii::app()->db->createCommand()
+            ->select("a.*,b.entry_time")
+            ->from("acc_plane a")
+            ->leftJoin("hr{$suffix}.hr_employee b","b.id=a.employee_id")
+            ->where("a.id=:id and a.city in ({$cityList})",array(":id"=>$this->id))->queryRow();
         if($row){
             $this->plane_date = $row["plane_date"];
+            $this->employee_id = $row["employee_id"];
+            $this->plane_year = $row["plane_year"];
+            $this->plane_month = $row["plane_month"];
+            $this->entry_time = $row['entry_time'];
+            $this->job_num = $row['job_num'];
             $this->setUpdateBool();
             if(!$this->updateBool){
                 $this->addError($attribute, "已超过两个月，无法修改");
                 return false;
+            }else{
+                $this->getPlaneMoney();
+                $this->getPlaneYear();
             }
             if($this->getScenario()=="delete"){
                 $row = Yii::app()->db->createCommand()->select("id")->from("acc_plane_info")
@@ -272,14 +284,71 @@ class PlaneAwardForm extends CFormModel
 		try {
             $this->saveDataForSql($connection);
             $this->saveInfo($connection);
-			$transaction->commit();
+            $arr = $this->sendBsData();
+            if($arr["bool"]){
+                $transaction->commit();
+            }else{
+                $transaction->rollback();
+            }
+			return $arr;
 		}
 		catch(Exception $e) {
-		    var_dump($e);
 			$transaction->rollback();
 			throw new CHttpException(404,'Cannot update.');
 		}
 	}
+
+	protected function sendBsData(){
+        $saveArr= array("bool"=>true,"message"=>"");
+        if($this->getScenario()=="edit"){
+            $bsCurlModel = new BsCurlModel();
+            $bsCurlModel->sendData = $this->getCurlData();
+            $curlData = $bsCurlModel->sendBsCurl();
+            if($curlData["code"]!=200){//curl异常，不继续执行
+                $bsCurlModel->logError($curlData);
+                $saveArr["bool"]=false;
+                $saveArr["message"]=$curlData["message"];
+            }
+        }
+        return $saveArr;
+    }
+
+	protected function getCurlData(){
+        $suffix = Yii::app()->params['envSuffix'];
+        $models = array();
+        $bsStaffID = 0;
+        $plane_sum = 0;
+        $plane_sum+= empty($this->job_num)?0:floatval($this->job_num);
+        $plane_sum+= empty($this->year_num)?0:floatval($this->year_num);
+        $plane_sum+= empty($this->money_num)?0:floatval($this->money_num);
+        $plane_sum+= empty($this->other_sum)?0:floatval($this->other_sum);
+        $startDate = date("Y/m/01",strtotime("{$this->plane_year}-{$this->plane_month}-01"));
+        $stopDate = date("Y/m/t",strtotime($startDate));
+        $staffRow = Yii::app()->db->createCommand()->select("bs_staff_id")->from("hr{$suffix}.hr_employee")
+            ->where("id=:id",array(":id"=>$this->employee_id))->queryRow();
+        if($staffRow){
+            $bsStaffID = $staffRow["bs_staff_id"];
+        }
+        $models[]=array(
+            "staffId"=>$bsStaffID,
+            "itemName"=>"直升机金额",
+            "startDate"=>$startDate,
+            "stopDate"=>$stopDate,
+            "numericVal"=>$plane_sum,
+        );
+        $models[]=array(
+            "staffId"=>$bsStaffID,
+            "itemName"=>"直升机做单金额",
+            "startDate"=>$startDate,
+            "stopDate"=>$stopDate,
+            "numericVal"=>empty($this->money_value)?0:floatval($this->money_value),
+        );
+        return array(
+            "presetSalarySubsetCode"=>"PresetSalarySubset1",
+            "models"=>$models
+        );
+    }
+
     protected function saveInfo(&$connection){
 
         $uid = Yii::app()->user->id;
