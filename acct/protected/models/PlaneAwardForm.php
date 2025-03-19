@@ -331,14 +331,14 @@ class PlaneAwardForm extends CFormModel
         }
         $models[]=array(
             "staffId"=>$bsStaffID,
-            "itemName"=>"直升机金额",
+            "itemName"=>3,//直升机金额
             "startDate"=>$startDate,
             "stopDate"=>$stopDate,
             "numericVal"=>$plane_sum,
         );
         $models[]=array(
             "staffId"=>$bsStaffID,
-            "itemName"=>"直升机做单金额",
+            "itemName"=>4,//直升机做单金额
             "startDate"=>$startDate,
             "stopDate"=>$stopDate,
             "numericVal"=>empty($this->money_value)?0:floatval($this->money_value),

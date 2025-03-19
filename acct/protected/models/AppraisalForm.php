@@ -360,7 +360,7 @@ class AppraisalForm extends CFormModel
         }
         $models[]=array(
             "staffId"=>$bsStaffID,
-            "itemName"=>"新销售绩效奖金",
+            "itemName"=>7,//新销售绩效奖金
             "startDate"=>$startDate,
             "stopDate"=>$stopDate,
             "numericVal"=>$this->appraisal_amount*20,

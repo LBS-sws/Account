@@ -245,7 +245,7 @@ class PerformanceBonusForm extends CFormModel
         }
         $models[]=array(
             "staffId"=>$bsStaffID,
-            "itemName"=>"季度绩效奖金",
+            "itemName"=>8,//季度绩效奖金
             "startDate"=>$startDate,
             "stopDate"=>$stopDate,
             "numericVal"=>empty($this->bonus_amount)?0:round($this->bonus_amount,2),

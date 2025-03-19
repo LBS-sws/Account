@@ -75,19 +75,16 @@ class BsCurlModel
             "presetSalarySubsetCode"=>"PresetSalarySubset1",
             "models"=>array()
         );
-        $str = get_class($model);
-        switch ($str){
-            case "sellTableForm"://销售提成计算
-                array(
-                    "staffId"=>660006277,
-                    "startDate"=>"2020/01/01",
-                    "isInvalid"=>false,
-                    "status"=>true,
-                    "stopDate"=>"2020/01/02",
-                    "numericVal"=>1000.0,
-                );
-                break;
-        }
+        //itemName
+        //销售人员提成	    1
+        //销售人员新生意额	2
+        //直升机金额	        3
+        //直升机做单金额	    4
+        //技术人员提成	    5
+        //城市总&副总监提成	6
+        //新销售绩效奖金	    7
+        //季度绩效奖金	    8
+
         $this->sendData = $data;
     }
 }

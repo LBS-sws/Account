@@ -951,14 +951,14 @@ class SellTableForm extends SellComputeForm{
         }
         $models[]=array(
             "staffId"=>$bsStaffID,
-            "itemName"=>"销售人员提成",
+            "itemName"=>1,//销售人员提成
             "startDate"=>$startDate,
             "stopDate"=>$stopDate,
             "numericVal"=>empty($this->final_money)?0:floatval($this->final_money),
         );
         $models[]=array(
             "staffId"=>$bsStaffID,
-            "itemName"=>"销售人员新生意额",
+            "itemName"=>2,//销售人员新生意额
             "startDate"=>$startDate,
             "stopDate"=>$stopDate,
             "numericVal"=>$newMoney,
