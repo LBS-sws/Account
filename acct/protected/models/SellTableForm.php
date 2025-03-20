@@ -931,6 +931,39 @@ class SellTableForm extends SellComputeForm{
         return $saveArr;
     }
 
+    public function sendAllBS($year,$month){
+        $bsCurlModel = new BsCurlModel();
+        $this->year=empty($year)||!is_numeric($year)?2025:intval($year);
+        $this->month=empty($month)||!is_numeric($month)?2:intval($month);
+        echo "year:{$this->year}；month:{$this->month}；<br/>";
+        echo "start:<br/>";
+        $this->employee_id=null;
+        $rows = Yii::app()->db->createCommand()
+            ->select("b.id,a.final_money,b.employee_code")
+            ->from("acc_product a")
+            ->leftJoin("acc_service_comm_hdr b","a.service_hdr_id=b.id")
+            ->where("a.examine='A' and b.year_no={$this->year} and b.month_no={$this->month}")->queryAll();
+        if($rows){
+            foreach ($rows as $row){
+                $this->final_money = $row["final_money"];
+                $this->employee_code = $row["employee_code"];
+                $this->id = $row["id"];
+                echo "staff_code:{$this->employee_code}；final_money:{$this->final_money}；";
+                $bsCurlModel->sendData = $this->getCurlData();
+                $curlData = $bsCurlModel->sendBsCurl();
+                if($curlData["code"]!=200){//curl异常，不继续执行
+                    $bsCurlModel->logError($curlData);
+                    echo "Error!".$curlData["message"];
+                }else{
+                    echo "Success!";
+                }
+                echo "<br/>";
+                echo "<br/>";
+            }
+        }
+        echo "end!<br/>";
+    }
+
     private function getCurlData(){
         $suffix = Yii::app()->params['envSuffix'];
         $models = array();
@@ -938,8 +971,13 @@ class SellTableForm extends SellComputeForm{
         $newMoney = 0;
         $startDate = date("Y/m/01",strtotime("{$this->year}-{$this->month}-01"));
         $stopDate = date("Y/m/t",strtotime($startDate));
-        $staffRow = Yii::app()->db->createCommand()->select("bs_staff_id")->from("hr{$suffix}.hr_employee")
-            ->where("id=:id",array(":id"=>$this->employee_id))->queryRow();
+        if(empty($this->employee_id)){
+            $staffRow = Yii::app()->db->createCommand()->select("bs_staff_id")->from("hr{$suffix}.hr_employee")
+                ->where("code=:code",array(":code"=>$this->employee_code))->queryRow();
+        }else{
+            $staffRow = Yii::app()->db->createCommand()->select("bs_staff_id")->from("hr{$suffix}.hr_employee")
+                ->where("id=:id",array(":id"=>$this->employee_id))->queryRow();
+        }
         if($staffRow){
             $bsStaffID = $staffRow["bs_staff_id"];
         }

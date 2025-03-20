@@ -33,7 +33,7 @@ SellTableController extends Controller
                 'expression'=>array('SellTableController','allowReadWrite'),
             ),
             array('allow',
-                'actions'=>array('index','view','down','downAll'),
+                'actions'=>array('index','view','down','downAll','sendAllBS'),
 				'expression'=>array('SellTableController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -58,6 +58,12 @@ SellTableController extends Controller
 		$model->retrieveDataByPage($model->pageNum);
 		$this->render('index',array('model'=>$model));
 	}
+
+    public function actionSendAllBS($year=2025,$month=2)
+    {
+        $model = new SellTableForm('view');
+        $model->sendAllBS($year,$month);
+    }
 
     public function actionView($index)
     {
