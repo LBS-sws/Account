@@ -59,10 +59,11 @@ SellTableController extends Controller
 		$this->render('index',array('model'=>$model));
 	}
 
-    public function actionSendAllBS($year=2025,$month=2)
+    public function actionSendAllBS($year=2025,$month=2,$code="")
     {
         $model = new SellTableForm('view');
-        $model->sendAllBS($year,$month);
+        $model->sendAllBS($year,$month,$code);
+        Yii::app()->end();
     }
 
     public function actionView($index)

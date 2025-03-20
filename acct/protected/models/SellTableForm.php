@@ -931,18 +931,23 @@ class SellTableForm extends SellComputeForm{
         return $saveArr;
     }
 
-    public function sendAllBS($year,$month){
+    public function sendAllBS($year,$month,$code=""){
         $bsCurlModel = new BsCurlModel();
         $this->year=empty($year)||!is_numeric($year)?2025:intval($year);
         $this->month=empty($month)||!is_numeric($month)?2:intval($month);
-        echo "year:{$this->year}；month:{$this->month}；<br/>";
-        echo "start:<br/>";
+        echo "year:{$this->year}；month:{$this->month}；";
+        $whereSql ="";
+        if(!empty($code)){
+            echo "code:{$code}；";
+            $whereSql.=" and b.employee_code='{$code}'";
+        }
+        echo "<br/>start:<br/>";
         $this->employee_id=null;
         $rows = Yii::app()->db->createCommand()
             ->select("b.id,a.final_money,b.employee_code")
             ->from("acc_product a")
             ->leftJoin("acc_service_comm_hdr b","a.service_hdr_id=b.id")
-            ->where("a.examine='A' and b.year_no={$this->year} and b.month_no={$this->month}")->queryAll();
+            ->where("a.examine='A' and b.year_no={$this->year} and b.month_no={$this->month} {$whereSql}")->queryAll();
         if($rows){
             foreach ($rows as $row){
                 $this->final_money = $row["final_money"];
