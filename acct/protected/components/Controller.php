@@ -52,6 +52,30 @@ class Controller extends CController
             $obj = new SysBlock();
             $url = $obj->blockNRoute($this->id, $this->function_id);
             if ($url!==false) $this->redirect($url);
+        }else{
+            if(isset($_GET['ticket'])){
+                $lbsUrl = Yii::app()->getBaseUrl(true);
+                //$lbsUrl = urlencode($lbsUrl);
+                $url = Yii::app()->params['MHCurlRootURL']."/cas/p3/serviceValidate?";
+                $queryArr = array(
+                    "ticket"=>$_GET['ticket'],
+                    "service"=>$lbsUrl,
+                    "format"=>"json",
+                );
+                $url.= http_build_query($queryArr);
+                $result = file_get_contents($url);
+                $result = json_decode($result,true);
+                if(is_array($result)&&isset($result["serviceResponse"]["authenticationSuccess"]["user"])){
+                    $userCode = $result["serviceResponse"]["authenticationSuccess"]["user"];
+                    $model=new LoginForm;
+                    $bool = $model->MHLogin($userCode);
+                    if($bool){
+                        Yii::app()->user->setUrlAfterLogin();
+                    }else{
+                        $this->redirect(Yii::app()->createUrl('site/loginOld'));//账号异常跳转本页登录（防止死循环）
+                    }
+                }
+            }
         }
         return true;
     }

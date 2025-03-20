@@ -8,7 +8,7 @@ class SiteController extends Controller
 			'enforceRegisteredStation - error', //apply station checking, except error page
 			'enforceSessionExpiration - error,login,logout', 
 			'enforceNoConcurrentLogin - error,login,logout',
-			'accessControl - error,login,index,home,resetloginpassword', // perform access control for CRUD operations
+			'accessControl - error,login,loginOld,index,home,resetloginpassword', // perform access control for CRUD operations
 		);
 	}
 
@@ -99,10 +99,24 @@ class SiteController extends Controller
 		}
 	}
 
+
+    /**
+     * Displays the login page
+     */
+    public function actionLogin()
+    {
+        //$lbsUrl = str_replace(Yii::app()->getBaseUrl(false),'',Yii::app()->getBaseUrl(true));
+        //$lbsUrl.= Yii::app()->request->url;
+        $lbsUrl = Yii::app()->getBaseUrl(true);
+        $lbsUrl = urlencode($lbsUrl);
+        $muUrl = Yii::app()->params['MHCurlRootURL']."/cas/login?service=".$lbsUrl;
+        $this->redirect($muUrl);
+    }
+
 	/**
 	 * Displays the login page
 	 */
-	public function actionLogin()
+	public function actionLoginOld()
 	{
 		$model=new LoginForm;
 
@@ -142,7 +156,9 @@ class SiteController extends Controller
 	public function actionLogout()
 	{
 		Yii::app()->user->logout();
-		$this->redirect(Yii::app()->homeUrl);
+        $url = Yii::app()->params['MHCurlRootURL']."/cas/logout";
+        //$result = file_get_contents($url);//单点登出门户网站
+		$this->redirect($url);
 	}
 
 	public function actionRemotelogout()

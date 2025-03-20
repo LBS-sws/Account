@@ -90,4 +90,28 @@ class LoginForm extends CFormModel
 			return false;
 		}
 	}
+
+    /**
+     * 门户网站单点登录
+     * @return boolean whether login is successful
+     */
+    public function MHLogin($staffCode)	{
+        if($this->_identity===null) {
+            $suffix = Yii::app()->params['envSuffix'];
+            $staffRow = Yii::app()->db->createCommand()->select("a.user_id")
+                ->from("hr{$suffix}.hr_binding a")
+                ->leftJoin("hr{$suffix}.hr_employee b","a.employee_id=b.id")
+                ->where("b.code=:code",array(":code"=>$staffCode))->queryRow();
+            $this->username = $staffRow?$staffRow["user_id"]:"";
+            $this->_identity=new UserIdentity($this->username,$this->password);
+            $this->_identity->MHAuthenticate();
+        }
+        if($this->_identity->errorCode===UserIdentity::ERROR_NONE) {
+            $duration=$this->rememberMe ? 3600*24*30 : 0; // 30 days
+            Yii::app()->user->login($this->_identity,$duration);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
