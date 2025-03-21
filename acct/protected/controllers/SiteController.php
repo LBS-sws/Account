@@ -27,8 +27,7 @@ class SiteController extends Controller
 	/**
 	 * Declares class-based actions.
 	 */
-
-	 public function actions()
+	public function actions()
 	{
 		return array(
 			// captcha action renders the CAPTCHA image displayed on the contact page
@@ -43,7 +42,6 @@ class SiteController extends Controller
 			),
 		);
 	}
-
 
 	/**
 	 * This is the default 'index' action that is invoked
@@ -60,9 +58,9 @@ class SiteController extends Controller
 			Yii::app()->session['system'] = Yii::app()->params['systemId'];
 			Yii::app()->user->saveUserOption($uname, 'system', Yii::app()->params['systemId']);
             General::includeDrsSysBlock();
-            $obj = new SysBlock();
-            $blkmsg = $obj->getBlockMessage(Yii::app()->params['systemId']);
-            if ($blkmsg!==false) Dialog::message(Yii::t('dialog','Advice'), $blkmsg);
+			$obj = new SysBlock();
+			$blkmsg = $obj->getBlockMessage(Yii::app()->params['systemId']);
+			if ($blkmsg!==false) Dialog::message(Yii::t('dialog','Advice'), $blkmsg);
 			$this->render('index');
 		}
 	}
@@ -105,10 +103,10 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        //$lbsUrl = str_replace(Yii::app()->getBaseUrl(false),'',Yii::app()->getBaseUrl(true));
-        //$lbsUrl.= Yii::app()->request->url;
         $lbsUrl = Yii::app()->getBaseUrl(true);
-        $lbsUrl = urlencode($lbsUrl);
+        if(!empty(Yii::app()->user->returnUrl)){
+            $lbsUrl = str_replace(Yii::app()->getBaseUrl(false),'',$lbsUrl).Yii::app()->user->returnUrl;
+        }
         $muUrl = Yii::app()->params['MHCurlRootURL']."/cas/login?service=".$lbsUrl;
         $this->redirect($muUrl);
     }
@@ -139,10 +137,8 @@ class SiteController extends Controller
 			}
 			else
 			{
-                $errorCode = $model->errorCode;
-                $message=CHtml::errorSummary($model);
-                $Validation_Message = $errorCode == UserIdentity::ERROR_RESET_PASSWORD ? $_POST['LoginForm']['username'] : 'Validation Message';
-                Dialog::message($Validation_Message, $message,$errorCode);
+				$message=CHtml::errorSummary($model);
+				Dialog::message('Validation Message', $message);
 			}
 		}
 		// display the login form
@@ -155,15 +151,11 @@ class SiteController extends Controller
 	 */
 	public function actionLogout()
 	{
-		Yii::app()->user->logout();
+        Yii::app()->user->logout();
         $url = Yii::app()->params['MHCurlRootURL']."/cas/logout";
         //$result = file_get_contents($url);//单点登出门户网站
-		$this->redirect($url);
-	}
-
-	public function actionRemotelogout()
-	{
-		Yii::app()->user->logout();
+        $this->redirect($url);
+        //$this->redirect(Yii::app()->homeUrl);
 	}
 
 	public function actionPassword()
@@ -220,7 +212,7 @@ class SiteController extends Controller
 		$model->language = Yii::app()->language;
 		$this->render('language',array('model'=>$model));
 	}
-
+	
 	public function actionNotifyopt() {
 		$model=new NotifyoptForm;
 

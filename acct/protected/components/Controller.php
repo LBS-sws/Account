@@ -39,6 +39,35 @@ class Controller extends CController
                 $session['system'] = Yii::app()->params['systemId'];
                 Yii::app()->user->saveUserOption($uname, 'system', Yii::app()->params['systemId']);
             }
+        }else{//由于找不到框架的过滤器在哪，所以写在了这里
+            if(isset($_GET['ticket'])){
+                $lbsUrl = Yii::app()->getBaseUrl(true);
+                if(!empty(Yii::app()->user->returnUrl)){
+                    $lbsUrl = str_replace(Yii::app()->getBaseUrl(false),'',$lbsUrl).Yii::app()->user->returnUrl;
+                }
+                //$lbsUrl = urlencode($lbsUrl);
+                $url = Yii::app()->params['MHCurlRootURL']."/cas/p3/serviceValidate?";
+                $queryArr = array(
+                    "ticket"=>$_GET['ticket'],
+                    "service"=>$lbsUrl,
+                    "format"=>"json",
+                );
+                $url.= http_build_query($queryArr);
+                $result = file_get_contents($url);
+                $resultJson = json_decode($result,true);
+                if(is_array($resultJson)){
+                    if(isset($resultJson["serviceResponse"]["authenticationSuccess"]["user"])){
+                        $userCode = $resultJson["serviceResponse"]["authenticationSuccess"]["user"];
+                        $model=new LoginForm;
+                        $bool = $model->MHLogin($userCode);
+                        if($bool){
+                            $this->redirect($lbsUrl);
+                        }
+                    }
+                }
+                Dialog::message("ticket异常", $result);
+                $this->redirect(Yii::app()->createUrl('site/loginOld'));//账号异常跳转本页登录（防止死循环）
+            }
         }
 	}
 
@@ -52,30 +81,6 @@ class Controller extends CController
             $obj = new SysBlock();
             $url = $obj->blockNRoute($this->id, $this->function_id);
             if ($url!==false) $this->redirect($url);
-        }else{
-            if(isset($_GET['ticket'])){
-                $lbsUrl = Yii::app()->getBaseUrl(true);
-                //$lbsUrl = urlencode($lbsUrl);
-                $url = Yii::app()->params['MHCurlRootURL']."/cas/p3/serviceValidate?";
-                $queryArr = array(
-                    "ticket"=>$_GET['ticket'],
-                    "service"=>$lbsUrl,
-                    "format"=>"json",
-                );
-                $url.= http_build_query($queryArr);
-                $result = file_get_contents($url);
-                $result = json_decode($result,true);
-                if(is_array($result)&&isset($result["serviceResponse"]["authenticationSuccess"]["user"])){
-                    $userCode = $result["serviceResponse"]["authenticationSuccess"]["user"];
-                    $model=new LoginForm;
-                    $bool = $model->MHLogin($userCode);
-                    if($bool){
-                        Yii::app()->user->setUrlAfterLogin();
-                    }else{
-                        $this->redirect(Yii::app()->createUrl('site/loginOld'));//账号异常跳转本页登录（防止死循环）
-                    }
-                }
-            }
         }
         return true;
     }
