@@ -104,9 +104,6 @@ class SiteController extends Controller
     public function actionLogin()
     {
         $lbsUrl = Yii::app()->getBaseUrl(true);
-        if(!empty(Yii::app()->user->returnUrl)){
-            $lbsUrl = str_replace(Yii::app()->getBaseUrl(false),'',$lbsUrl).Yii::app()->user->returnUrl;
-        }
         $muUrl = Yii::app()->params['MHCurlRootURL']."/cas/login?service=".$lbsUrl;
         $this->redirect($muUrl);
     }

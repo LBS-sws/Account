@@ -42,9 +42,6 @@ class Controller extends CController
         }else{//由于找不到框架的过滤器在哪，所以写在了这里
             if(isset($_GET['ticket'])){
                 $lbsUrl = Yii::app()->getBaseUrl(true);
-                if(!empty(Yii::app()->user->returnUrl)){
-                    $lbsUrl = str_replace(Yii::app()->getBaseUrl(false),'',$lbsUrl).Yii::app()->user->returnUrl;
-                }
                 //$lbsUrl = urlencode($lbsUrl);
                 $url = Yii::app()->params['MHCurlRootURL']."/cas/p3/serviceValidate?";
                 $queryArr = array(
@@ -61,11 +58,14 @@ class Controller extends CController
                         $model=new LoginForm;
                         $bool = $model->MHLogin($userCode);
                         if($bool){
-                            $this->redirect($lbsUrl);
+                            $this->redirect(Yii::app()->user->returnUrl);
                         }
+                    }else{
+                        Dialog::message("ticket异常", $result);
                     }
+                }else{
+                    Dialog::message("ticket异常", $result);
                 }
-                Dialog::message("ticket异常", $result);
                 $this->redirect(Yii::app()->createUrl('site/loginOld'));//账号异常跳转本页登录（防止死循环）
             }
         }
