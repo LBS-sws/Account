@@ -48,11 +48,20 @@ return array(
     'other num'=>'杂项奖金',
     'other sum'=>'杂项总奖金',
     'plane sum'=>'直升机总奖金',
-    'money value'=>'做单金额',
+    'money value'=>'调整后做单金额',
     'year month'=>'年资',
     'job value'=>'职务级别',
     'old shall pay wages'=>'原机制应发工资',
     'difference'=>'差额',
     'plane paste'=>'应发工资快捷操作',
+
+    'reject remark'=>'拒绝原因',
+    'plane status'=>'状态',
+    'take amt'=>'调整后提成金额',
+    'old take amt'=>'做单提成金额',
+    'old money value'=>'做单金额',
+    'take txt'=>'提成调整补充说明',
+    'take money'=>'提成金额',
+    'revoke'=>'退回草稿',
 );
 ?>

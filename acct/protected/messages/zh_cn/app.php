@@ -226,5 +226,6 @@ return array(
 	'Quarterly performance bonus'=>'季度绩效奖金',
 	'performance bonus setting'=>'绩效奖金配置',
 	'Performance appraisal'=>'销售顾问绩效考核表',
+	'Audit for plane'=>'审核直升机奖金',
 );
 ?>

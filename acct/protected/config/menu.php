@@ -300,6 +300,10 @@ return array(
 		'access'=>'PS',
 		'icon'=>'fa-plane',
 		'items'=>array(
+            'Audit for plane'=>array(//审核技术部直升机
+                'access'=>'PS07',
+                'url'=>'/planeAudit/index'
+            ),
             'Plane Award'=>array(//技术部直升机奖励制度
                 'access'=>'PS01',
                 'url'=>'/planeAward/index'

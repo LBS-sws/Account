@@ -18,6 +18,7 @@ return array(
     array('code'=>'TA01','function'=>'Counter::countTemporaryApply','color'=>'bg-yellow'),
     array('code'=>'TA02','function'=>'Counter::countTemporaryAudit','color'=>'bg-blue'),
     array('code'=>'TA03','function'=>'Counter::countTemporaryPayment','color'=>'bg-orange'),
+    array('code'=>'PS07','function'=>'Counter::countPlaneAudit','color'=>'bg-orange'),
 );
 
 ?>

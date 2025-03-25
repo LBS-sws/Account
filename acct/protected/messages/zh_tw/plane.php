@@ -54,5 +54,14 @@ return array(
     'old shall pay wages'=>'原機製應發工資',
     'difference'=>'差額',
     'plane paste'=>'应发工资快捷操作',
+
+    'reject remark'=>'拒絕原因',
+    'plane status'=>'狀態',
+    'take amt'=>'調整後提成金額',
+    'old take amt'=>'做單提成金額',
+    'old money value'=>'做單金額',
+    'take txt'=>'提成調整補充說明',
+    'take money'=>'提成金額',
+    'revoke'=>'退回草稿',
 );
 ?>

@@ -49,6 +49,7 @@ class PlaneAwardList extends CListPageModel
 			'plane'=>Yii::t('plane','Plane Reward'),//直升机奖励
             'old_pay_wage'=>Yii::t('plane','old shall pay wages'),//原机制应发工资
             'difference'=>Yii::t('plane','difference'),//差額
+            'plane_status'=>Yii::t('plane','plane status'),
 		);
 	}
 
@@ -64,7 +65,7 @@ class PlaneAwardList extends CListPageModel
 		$suffix = Yii::app()->params['envSuffix'];
         $city = Yii::app()->user->city();
         $cityList = Yii::app()->user->city_allow();
-		$sql1 = "select f.id,f.job_id,f.job_num,f.money_num,f.year_num,f.other_sum,f.old_pay_wage,f.plane_sum,a.code,a.name,b.name as city_name,(IFNULL(f.plane_sum,0)-IFNULL(f.old_pay_wage,0)) as difference
+		$sql1 = "select f.id,f.plane_status,f.job_id,f.job_num,f.money_num,f.year_num,f.other_sum,f.old_pay_wage,f.plane_sum,a.code,a.name,b.name as city_name,(IFNULL(f.plane_sum,0)-IFNULL(f.old_pay_wage,0)) as difference
 				from acc_plane f 
 				LEFT JOIN hr{$suffix}.hr_employee a ON a.id=f.employee_id
 				LEFT JOIN security$suffix.sec_city b ON b.code=f.city  
@@ -110,6 +111,7 @@ class PlaneAwardList extends CListPageModel
 		$this->attr = array();
 		if (count($records) > 0) {
 			foreach ($records as $k=>$record) {
+			    $colorArr = self::getPlaneStatusList($record["plane_status"]);
 			    $str = key_exists($record['job_id'],$this->jobList)?$this->jobList[$record['job_id']]["name"]:PlaneSetJobForm::getPlaneName($record['job_id']);
 
 			    $this->attr[] = array(
@@ -125,6 +127,8 @@ class PlaneAwardList extends CListPageModel
                     'plane_sum'=>floatval($record['plane_sum']),
                     'old_pay_wage'=>floatval($record['old_pay_wage']),
                     'difference'=>floatval($record['difference']),
+                    'style'=>$colorArr['color'],
+                    'plane_status'=>$colorArr['str'],
                 );
 			}
 		}
@@ -148,6 +152,36 @@ class PlaneAwardList extends CListPageModel
         );
     }
 
+    public static function getPlaneStatusList($planeStatus){
+	    switch ($planeStatus){
+            case 0://草稿
+                return array(
+                    "color"=>"",
+                    "str"=>"草稿"
+                );
+            case 1://待审核
+                return array(
+                    "color"=>"info",
+                    "str"=>"待审核"
+                );
+            case 2://已审核
+                return array(
+                    "color"=>"success",
+                    "str"=>"已审核"
+                );
+            case 3://已拒绝
+                return array(
+                    "color"=>"danger",
+                    "str"=>"已拒绝"
+                );
+            default://未参加
+                return array(
+                    "color"=>"",
+                    "str"=>"未参加"
+                );
+        }
+    }
+
     //获取excel下载的数据
     private function getExcelData(){
         $suffix = Yii::app()->params['envSuffix'];
@@ -159,11 +193,14 @@ class PlaneAwardList extends CListPageModel
             "K02"=>array("text"=>"入职日期","width"=>"14","num"=>1),
             "K03"=>array("text"=>"级别职务","width"=>"10","num"=>2),
             "K04"=>array("text"=>"做单金额","width"=>"14","num"=>3),
-            "K05"=>array("text"=>"员工年资","width"=>"14","num"=>4),
-            "K06"=>array("text"=>"直升机奖励（做单金额）","width"=>"26","num"=>5),
-            "K07"=>array("text"=>"直升机奖励（级别职务）","width"=>"26","num"=>6),
-            "K08"=>array("text"=>"直升机奖励（年资）","width"=>"26","num"=>7),
-            "K09"=>array("text"=>"直升机总奖励","width"=>"26","num"=>8),
+            "K10"=>array("text"=>"做单金额(调整后)","width"=>"26","num"=>4),
+            "K11"=>array("text"=>"做单提成","width"=>"14","num"=>5),
+            "K12"=>array("text"=>"做单提成(调整后)","width"=>"26","num"=>6),
+            "K05"=>array("text"=>"员工年资","width"=>"14","num"=>7),
+            "K06"=>array("text"=>"直升机奖励（做单金额）","width"=>"26","num"=>8),
+            "K07"=>array("text"=>"直升机奖励（级别职务）","width"=>"26","num"=>9),
+            "K08"=>array("text"=>"直升机奖励（年资）","width"=>"26","num"=>10),
+            "K09"=>array("text"=>"直升机总奖励","width"=>"26","num"=>11),
         );
         $serviceList = array();
         $headExpr=array();
@@ -174,6 +211,7 @@ class PlaneAwardList extends CListPageModel
             ->leftJoin("acc_plane f","a.id=f.employee_id and f.plane_year={$this->year} and f.plane_month={$this->month}")
             ->where("a.staff_status=0 and replace(a.entry_time,'/', '-')<='{$entryDate}' and d.dept_class='Technician' and a.city='{$city}'")
             ->order("f.id desc")->queryAll();
+
         if($rows){
             foreach ($rows as $row){
                 $arr = array(
@@ -182,21 +220,25 @@ class PlaneAwardList extends CListPageModel
                     "K03"=>PlaneSetJobForm::getPlaneName($row["job_id"])
                 );
                 if(!empty($row["id"])){
-                    $arr["K04"]=floatval($row["money_value"]);
+                    $arr["K04"]=floatval($row["old_money_value"]);
                     $arr["K05"]=floatval($row["year_month"]);
                     $arr["K06"]=floatval($row["money_num"]);
+                    $arr["K10"]=floatval($row["money_value"]);
+                    $arr["K11"]=floatval($row["old_take_amt"]);
+                    $arr["K12"]=floatval($row["take_amt"]);
                     $arr["K07"]=floatval($row["job_num"]);
                     $arr["K08"]=floatval($row["year_num"]);
                     $arr["K09"]=$arr["K06"]+$arr["K07"]+$arr["K08"];
                     $arr["N01"]=floatval($row["plane_sum"]);
                     $arr["N02"]=floatval($row["old_pay_wage"]);
                     $arr["N03"]=$arr["N01"]-$arr["N02"];
+                    $arr["N04"]=self::getPlaneStatusList($row["plane_status"])['str'];
                     $this->resetOtherList($row,$headExpr,$arr);
                 }
                 $serviceList[]=$arr;
             }
         }
-        $num=8;
+        $num=end($headList)["num"];
         if(!empty($headExpr)){
             foreach ($headExpr as $key=>$item){
                 $num++;
@@ -206,6 +248,7 @@ class PlaneAwardList extends CListPageModel
         $headList["N01"]=array("text"=>"汇总","width"=>"10","num"=>$num+1);
         $headList["N02"]=array("text"=>"原机制应发工资","width"=>"26","num"=>$num+2);
         $headList["N03"]=array("text"=>"差额","width"=>"14","num"=>$num+3);
+        $headList["N04"]=array("text"=>"状态","width"=>"14","num"=>$num+4);
         return array("headList"=>$headList,"serviceList"=>$serviceList);
     }
 
@@ -263,7 +306,7 @@ class PlaneAwardList extends CListPageModel
         $objActSheet->getDefaultStyle()->getFont()->setSize(12);//字体大小
         $objActSheet->getRowDimension("A2")->setRowHeight(22);//行高
 
-        $objActSheet->freezePane("E6");
+        $objActSheet->freezePane("D6");
         $rowKey=5;
         foreach ($excelList["headList"] as $key=>$head){
             $string = PHPExcel_Cell::stringFromColumnIndex($head["num"]);

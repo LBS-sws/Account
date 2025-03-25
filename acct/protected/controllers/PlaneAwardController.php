@@ -25,12 +25,16 @@ PlaneAwardController extends Controller
 	{
 		return array(
             array('allow',
-                'actions'=>array('new','edit','delete','save','paste','ajaxPaste','pasteSave'),
+                'actions'=>array('new','edit','delete','save','paste','ajaxPaste','pasteSave','audit'),
                 'expression'=>array('PlaneAwardController','allowReadWrite'),
             ),
             array('allow',
                 'actions'=>array('index','view','down'),
 				'expression'=>array('PlaneAwardController','allowReadOnly'),
+			),
+            array('allow',
+                'actions'=>array('revoke'),
+				'expression'=>array('PlaneAwardController','allowAudit'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -85,13 +89,54 @@ PlaneAwardController extends Controller
 		$this->render('index',array('model'=>$model));
 	}
 
-
     public function actionSave()
     {
         if (isset($_POST['PlaneAwardForm'])) {
             $model = new PlaneAwardForm($_POST['PlaneAwardForm']['scenario']);
             $model->attributes = $_POST['PlaneAwardForm'];
             if ($model->validate()) {
+                $arr = $model->saveData();
+                if($arr["bool"]){
+                    Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                }else{
+                    Dialog::message("北森验证异常", $arr["message"]);
+                }
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+            }
+            $this->redirect(Yii::app()->createUrl('planeAward/edit',array("index"=>$model->id)));
+        }
+    }
+
+    public function actionAudit()
+    {
+        if (isset($_POST['PlaneAwardForm'])) {
+            $model = new PlaneAwardForm($_POST['PlaneAwardForm']['scenario']);
+            $model->attributes = $_POST['PlaneAwardForm'];
+            if ($model->validate()) {
+                $model->plane_status=1;
+                $arr = $model->saveData();
+                if($arr["bool"]){
+                    Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                }else{
+                    Dialog::message("北森验证异常", $arr["message"]);
+                }
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+            }
+            $this->redirect(Yii::app()->createUrl('planeAward/edit',array("index"=>$model->id)));
+        }
+    }
+
+    public function actionRevoke()
+    {
+        if (isset($_POST['PlaneAwardForm'])) {
+            $model = new PlaneAwardForm('revoke');
+            $model->attributes = $_POST['PlaneAwardForm'];
+            if ($model->validate()) {
+                $model->plane_status=0;
                 $arr = $model->saveData();
                 if($arr["bool"]){
                     Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
@@ -164,5 +209,9 @@ PlaneAwardController extends Controller
 	
 	public static function allowReadOnly() {
 		return Yii::app()->user->validFunction('PS01');
+	}
+
+	public static function allowAudit() {
+        return Yii::app()->user->validRWFunction('PS07');
 	}
 }

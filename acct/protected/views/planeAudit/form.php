@@ -1,9 +1,9 @@
 <?php
-$this->pageTitle=Yii::app()->name . ' - PlaneAward Form';
+$this->pageTitle=Yii::app()->name . ' - PlaneAudit Form';
 ?>
 
 <?php $form=$this->beginWidget('TbActiveForm', array(
-'id'=>'PlaneAward-form',
+'id'=>'PlaneAudit-form',
 'enableClientValidation'=>true,
 'clientOptions'=>array('validateOnSubmit'=>true,),
 'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
@@ -11,7 +11,7 @@ $this->pageTitle=Yii::app()->name . ' - PlaneAward Form';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('plane','Plane Award Form'); ?></strong>
+		<strong><?php echo Yii::t('app','Audit for plane'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
@@ -26,25 +26,21 @@ $this->pageTitle=Yii::app()->name . ' - PlaneAward Form';
 	<div class="box"><div class="box-body">
 	<div class="btn-group" role="group">
 		<?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
-				'submit'=>Yii::app()->createUrl('planeAward/index')));
+				'submit'=>Yii::app()->createUrl('planeAudit/index')));
 		?>
-<?php if (!$model->isReadOnly()&&in_array($model->plane_status,array(0,3))): ?>
-            <?php echo TbHtml::button('<span class="fa fa-save"></span> '.Yii::t('misc','Save'), array(
-                'submit'=>Yii::app()->createUrl('planeAward/save')));
+        <?php if ($model->plane_status==1): ?>
+            <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Audit'), array(
+                'submit'=>Yii::app()->createUrl('planeAudit/finish')));
             ?>
-            <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Approval'), array(
-                'submit'=>Yii::app()->createUrl('planeAward/audit')));
+            <?php echo TbHtml::button('<span class="fa fa-remove"></span> '.Yii::t('misc','Deny'), array(
+                'id'=>'btnDeny', 'name'=>'btnDeny'));
             ?>
-            <?php echo TbHtml::button('<span class="fa fa-remove"></span> '.Yii::t('misc','Delete'), array(
-                    'name'=>'btnDelete','id'=>'btnDelete','data-toggle'=>'modal','data-target'=>'#removedialog',)
-            );
-            ?>
-<?php endif ?>
+        <?php endif ?>
 	</div>
             <?php if (Yii::app()->user->validRWFunction('PS07')&&$model->plane_status==2): ?>
                 <div class="btn-group pull-right" role="group">
                     <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('plane','revoke'), array(
-                        'submit'=>Yii::app()->createUrl('planeAward/revoke')));
+                        'submit'=>Yii::app()->createUrl('planeAudit/revoke')));
                     ?>
                 </div>
             <?php endif ?>
@@ -243,161 +239,22 @@ $this->pageTitle=Yii::app()->name . ' - PlaneAward Form';
 		</div>
 	</div>
 </section>
-<?php $this->renderPartial('//site/removedialog'); ?>
-<div class="modal fade" id="quickModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">快捷操作(<small id="titleSmall"></small>)</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <p>格式：名称 金额<br/>
-                            例如：<br/>
-                            生日礼金 10.2<br/>
-                            夜班 100<br/>
-                        </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <?php
-                        echo TbHtml::textArea("quickTxt",'',array('rows'=>4,'id'=>'quickTxt'));
-                        ?>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" id="quickOk">一键增加</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+<?php $this->renderPartial('//planeAudit/reject',array('model'=>$model,'form'=>$form)); ?>
+
 <?php
 $js = "
-$('table').on('change','[id^=\"PlaneAwardForm\"]',function() {
-	var n=$(this).attr('id').split('_');
-	$('#PlaneAwardForm_'+n[1]+'_'+n[2]+'_uflag').val('Y');
-});
 ";
 Yii::app()->clientScript->registerScript('setFlag',$js,CClientScript::POS_READY);
 
 
-if (!$model->isReadOnly()) {
-    $js = <<<EOF
-$('table').on('click','.btnDelRow', function() {
-    $(this).closest('tr').find('[id*=\"_uflag\"]').val('D');
-    $(this).closest('tr').removeClass('tr_show').addClass('tr_hide').hide();
-});
-
-$('.btnQuickRow').on('click',function(){
-    var id = $(this).data('id');
-    var title = $(this).data('title');
-    $('#titleSmall').text(title);
-    $('#quickTxt').val('').data('id',id);
-    $('#quickModal').modal('show');
-});
-
-$('#quickOk').on('click',function(){
-    var id = $('#quickTxt').data('id');
-    var text = $('#quickTxt').val();
-    var arr = text.split('\\n');
-    $.each(arr,function(key,rowTxt){
-        rowTxt = rowTxt.split("\\t").join(" ");
-        rowTxt = rowTxt.split(' ');
-        if(rowTxt.length>=2){
-            var val_key='';
-            var val_amt=0;
-            $.each(rowTxt,function(num,val){
-                if(num!=rowTxt.length-1){
-                    val_key+=val_key==''?'':' ';
-                    val_key+=val;
-                }else{
-                    val_amt = parseFloat(val);
-                }
-            });
-            if($('#tblDetail'+id+' tr').eq(-1).find('.nullInput').val()!=''){
-                $('#tblDetail'+id).find('.btnAddRow').eq(0).trigger('click');
-            }
-            if(id==1){
-                $('#tblDetail'+id+' tr').eq(-1).find('.other_id').eq(0).find('option').each(function(){
-                    if($(this).text()==val_key){
-                        $('#tblDetail'+id+' tr').eq(-1).find('.other_id').val($(this).attr('value'));
-                    }
-                });
-                $('#tblDetail'+id+' tr').eq(-1).find('.nullInput').val(val_amt);
-            }else{
-                $('#tblDetail'+id+' tr').eq(-1).find('.takeTxt').val(val_key);
-                $('#tblDetail'+id+' tr').eq(-1).find('.nullInput').val(val_amt).trigger('change');
-            }
-        }
-    });
-    $('#quickModal').modal('hide');
-});
-EOF;
-    Yii::app()->clientScript->registerScript('removeRow',$js,CClientScript::POS_READY);
-
-    $js = <<<EOF
-$(document).ready(function(){
-	var ct = $('#tblDetail1 tr').eq(1).html();
-	$('#dtltemplate1').attr('value',ct);
-	ct = $('#tblDetail2 tr').eq(1).html();
-	$('#dtltemplate2').attr('value',ct);
-});
-
-$('.btnAddRow').on('click',function() {
-    var tblId = $(this).data('id');
-	var r = $('#tblDetail'+tblId+' tr').length;
-	if (r>0) {
-		var nid = '';
-		var ct = $('#dtltemplate'+tblId+'').val();
-		$('#tblDetail'+tblId+' tbody:last').append('<tr class="tr_show">'+ct+'</tr>');
-		$('#tblDetail'+tblId+' tr').eq(-1).find('[id*=\"PlaneAwardForm_\"]').each(function(index) {
-			var id = $(this).attr('id');
-			var name = $(this).attr('name');
-
-			var oi = 0;
-			var ni = r;
-			id = id.replace('_'+oi.toString()+'_', '_'+ni.toString()+'_');
-			$(this).attr('id',id);
-			name = name.replace('['+oi.toString()+']', '['+ni.toString()+']');
-			$(this).attr('name',name);
-
-			if (id.indexOf('_other_num') != -1) $(this).val('');
-			if (id.indexOf('_other_id') != -1) $(this).val('');
-			if (id.indexOf('_takeTxt') != -1) $(this).val('');
-			if (id.indexOf('_takeAmt') != -1) $(this).val('');
-			if (id.indexOf('_uflag') != -1) $(this).attr('value','Y');
-			if (id.indexOf('_id') != -1) $(this).attr('value',0);
-		});
-		if (nid != '') {
-			var topos = $('#'+nid).position().top;
-			$('#tbl_detail').scrollTop(topos);
-		}
-	}
-});
-
-$('#tblDetail2').on('change','.takeAmt',function(){
-    var oldTakeAmt = $('#PlaneAwardForm_old_take_amt').val();
-    oldTakeAmt = oldTakeAmt==''?0:parseFloat(oldTakeAmt);
-    $('.takeAmt').each(function(){
-        var numAmt = $(this).val();
-        numAmt = numAmt==''?0:parseFloat(numAmt);
-        oldTakeAmt+=numAmt;
-    });
-    $('#PlaneAwardForm_take_amt').val(oldTakeAmt);
-});
-EOF;
-    Yii::app()->clientScript->registerScript('addRow',$js,CClientScript::POS_READY);
-}
-$js = Script::genDeleteData(Yii::app()->createUrl('planeAward/delete'));
-Yii::app()->clientScript->registerScript('deleteRecord',$js,CClientScript::POS_READY);
-
 $js = Script::genReadonlyField();
 Yii::app()->clientScript->registerScript('readonlyClass',$js,CClientScript::POS_READY);
+$js=<<<EOF
+$('#btnDeny').on('click',function(){
+	$('#rmkdialog').modal('show');
+});
+EOF;
+Yii::app()->clientScript->registerScript('denyPopup',$js,CClientScript::POS_READY);
 ?>
 
 <?php $this->endWidget(); ?>

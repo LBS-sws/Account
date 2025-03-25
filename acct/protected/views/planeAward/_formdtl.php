@@ -6,13 +6,13 @@
     </td>
     <td>
         <?php echo TbHtml::numberField($this->getFieldName('other_num'),  $this->record['other_num'],
-            array('disabled'=>$this->model->isReadOnly(),'class'=>'other_num')
+            array('disabled'=>$this->model->isReadOnly(),'class'=>'other_num nullInput')
         ); ?>
     </td>
 	<td>
 		<?php 
 			echo !$this->model->isReadOnly()
-				? TbHtml::Button('-',array('id'=>'btnDelRow','title'=>Yii::t('misc','Delete'),'size'=>TbHtml::BUTTON_SIZE_SMALL))
+				? TbHtml::Button('-',array('class'=>'btnDelRow','title'=>Yii::t('misc','Delete'),'size'=>TbHtml::BUTTON_SIZE_SMALL))
 				: '&nbsp;';
 		?>
 		<?php echo CHtml::hiddenField($this->getFieldName('uflag'),$this->record['uflag']); ?>

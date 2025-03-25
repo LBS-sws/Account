@@ -50,4 +50,9 @@
         ;
         ?>
     </th>
+    <th>
+        <?php echo TbHtml::link($this->getLabelName('plane_status').$this->drawOrderArrow('plane_status'),'#',$this->createOrderLink('planeAward-list','plane_status'))
+        ;
+        ?>
+    </th>
 </tr>
