@@ -145,19 +145,24 @@ class PlaneAwardForm extends CFormModel
         }
         $this->other_str = empty($this->other_str)?"":implode(",",$this->other_str);
         $this->info_list = $list;
+        $this->companyPlaneSum();
     }
 
     public function validateID($attribute, $params){
         $suffix = Yii::app()->params['envSuffix'];
         $cityList = Yii::app()->user->city_allow();
         $row = Yii::app()->db->createCommand()
-            ->select("a.*,b.entry_time")
+            ->select("a.*,b.code,b.name,b.entry_time")
             ->from("acc_plane a")
             ->leftJoin("hr{$suffix}.hr_employee b","b.id=a.employee_id")
             ->where("a.id=:id and a.city in ({$cityList})",array(":id"=>$this->id))->queryRow();
         if($row){
             $this->plane_date = $row["plane_date"];
             $this->employee_id = $row["employee_id"];
+            $this->employee_code = $row['code'];
+            $this->employee_name = $row['name'];
+            $this->city = $row['city'];
+            $this->city_name = General::getCityName($row['city']);
             $this->plane_year = $row["plane_year"];
             $this->plane_month = $row["plane_month"];
             $this->entry_time = $row['entry_time'];
@@ -237,6 +242,7 @@ class PlaneAwardForm extends CFormModel
                 $this->getPlaneMoney();
                 $this->getPlaneYear();
                 $this->getOldTakeAmt();
+                $this->companyPlaneSum();
                 $this->savePlaneForm();
             }else{
                 $this->money_num=$row["money_num"];
@@ -259,6 +265,15 @@ class PlaneAwardForm extends CFormModel
         }
 	}
 
+	protected function companyPlaneSum(){
+        $plane_sum = 0;
+        $plane_sum+= empty($this->job_num)?0:floatval($this->job_num);
+        $plane_sum+= empty($this->year_num)?0:floatval($this->year_num);
+        $plane_sum+= empty($this->money_num)?0:floatval($this->money_num);
+        $plane_sum+= empty($this->other_sum)?0:floatval($this->other_sum);
+        $this->plane_sum = $plane_sum;
+    }
+
 	private function setUpdateBool(){
         $planeTime = strtotime($this->plane_date);
         $ageTime = date("Y-m-01");
@@ -276,7 +291,6 @@ class PlaneAwardForm extends CFormModel
 
 	//保存表单内容(方便列表显示及查询)
 	private function savePlaneForm(){
-        $this->plane_sum = floatval($this->job_num)+floatval($this->year_num)+floatval($this->money_num)+floatval($this->other_sum);
         Yii::app()->db->createCommand()->update("acc_plane",array(
             "money_id"=>$this->money_id,
             "old_money_value"=>empty($this->old_money_value)?0:$this->old_money_value,
@@ -291,7 +305,7 @@ class PlaneAwardForm extends CFormModel
 
 	//获取派单系统的做单提成
 	private function getOldTakeAmt(){
-        $this->old_take_amt = 10;
+        $this->old_take_amt = 0;
         $start = date("Y-m-d",strtotime("{$this->plane_year}-{$this->plane_month}-01"));
         $end = date("Y-m-t",strtotime($start));
         $staffList=array($this->employee_code);
@@ -397,6 +411,7 @@ class PlaneAwardForm extends CFormModel
             $this->saveDataForSql($connection);
             $this->saveInfo($connection);
             $this->saveDetail($connection);
+            $this->sendEmail();
             //$arr = array("bool"=>true,"message"=>"");
             $arr = $this->sendBsData();
             if($arr["bool"]){
@@ -412,9 +427,53 @@ class PlaneAwardForm extends CFormModel
 		}
 	}
 
+	protected function sendEmail(){
+        $emailModel = new Email();
+        $money_value = $this->money_value===""?$this->old_money_value:$this->money_value;
+        $message = "<p>技术部直升机奖励 - {$this->employee_name}</p>";
+        $message.= "<p>奖金日期：{$this->plane_year}年{$this->plane_month}月</p>";
+        $message.= "<p>员工：{$this->employee_name} ({$this->employee_code})</p>";
+        $message.= "<p>城市：{$this->city_name}</p>";
+        $message.= "<p>调整后做单金额：{$money_value}</p>";
+        $message.= "<p>调整后提成金额：{$this->take_amt}</p>";
+        $message.= "<p>原机制应发工资：{$this->old_pay_wage}</p>";
+        $message.= "<p>直升机总奖金：{$this->plane_sum}</p>";
+        switch ($this->getScenario()){
+            case "edit"://要求审核
+                if($this->plane_status==1){
+                    $emailModel->setSubject("{$this->employee_name}技术部直升机奖励({$this->plane_year}年{$this->plane_month}月) - 待审核");
+                    $emailModel->addEmailToPrefixAndCity("PS07",$this->city);
+                    $emailModel->setMessage($message);
+                    $emailModel->sent();
+                }
+                break;
+            case "finish"://审核通过
+                $emailModel->setSubject("{$this->employee_name}技术部直升机奖励({$this->plane_year}年{$this->plane_month}月) - 审核通过");
+                $emailModel->addEmailToPrefixAndOnlyCity("PS01",$this->city);
+                $emailModel->setMessage($message);
+                $emailModel->sent();
+                break;
+            case "reject"://拒绝
+                $emailModel->setSubject("{$this->employee_name}技术部直升机奖励({$this->plane_year}年{$this->plane_month}月) - 已拒绝");
+                $emailModel->addEmailToPrefixAndOnlyCity("PS01",$this->city);
+                $message.= "<p>拒绝原因：{$this->reject_txt}</p>";
+                $emailModel->setMessage($message);
+                $emailModel->sent();
+                break;
+            case "revoke"://退回
+                $emailModel->setSubject("{$this->employee_name}技术部直升机奖励({$this->plane_year}年{$this->plane_month}月) - 已退回");
+                $emailModel->addEmailToPrefixAndOnlyCity("PS01",$this->city);
+                $emailModel->setMessage($message);
+                $emailModel->sent();
+                break;
+            default:
+                return false;
+        }
+    }
+
 	protected function sendBsData(){
         $saveArr= array("bool"=>true,"message"=>"");
-        if($this->plane_status==12){
+        if($this->plane_status==2){
             $bsCurlModel = new BsCurlModel();
             $bsCurlModel->sendData = $this->getCurlData();
             $curlData = $bsCurlModel->sendBsCurl();
@@ -431,11 +490,7 @@ class PlaneAwardForm extends CFormModel
         $suffix = Yii::app()->params['envSuffix'];
         $models = array();
         $bsStaffID = 0;
-        $plane_sum = 0;
-        $plane_sum+= empty($this->job_num)?0:floatval($this->job_num);
-        $plane_sum+= empty($this->year_num)?0:floatval($this->year_num);
-        $plane_sum+= empty($this->money_num)?0:floatval($this->money_num);
-        $plane_sum+= empty($this->other_sum)?0:floatval($this->other_sum);
+        $plane_sum = $this->plane_sum;
         $startDate = date("Y/m/01",strtotime("{$this->plane_year}-{$this->plane_month}-01"));
         $stopDate = date("Y/m/t",strtotime($startDate));
         $staffRow = Yii::app()->db->createCommand()->select("bs_staff_id")->from("hr{$suffix}.hr_employee")
