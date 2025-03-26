@@ -38,7 +38,7 @@ $this->pageTitle=Yii::app()->name . ' - PerformanceBonus';
     $search_add_html .= TbHtml::dropDownList("{$modelClass}[year_no]",$model->year_no,PerformanceBonusList::getYearList(),
         array("class"=>"form-control submitBtn","id"=>"selectYear"));
     $search_add_html.="<span>&nbsp;&nbsp;-&nbsp;&nbsp;</span>";
-    $search_add_html .= TbHtml::dropDownList("{$modelClass}[quarter_no]",$model->quarter_no,PerformanceBonusList::getQuarterList(),
+    $search_add_html .= TbHtml::dropDownList("{$modelClass}[month_no]",$model->month_no,PerformanceBonusList::getMonthList(),
         array("class"=>"form-control submitBtn","id"=>"selectMonth"));
 
     $search = array(

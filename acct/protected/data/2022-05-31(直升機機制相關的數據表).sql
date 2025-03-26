@@ -28,7 +28,7 @@ CREATE TABLE `acc_plane` (
   `job_id` int(11) NOT NULL DEFAULT '0',
   `job_num` int(11) NOT NULL DEFAULT '0',
   `money_id` int(11) NOT NULL DEFAULT '0',
-  `money_value` float(11,2) NOT NULL DEFAULT '0.00' COMMENT '當月的服務金額',
+  `money_value` float(11,2) NULL DEFAULT NULL COMMENT '當月的服務金額',
   `money_num` int(11) NOT NULL DEFAULT '0',
   `year_id` int(11) NOT NULL DEFAULT '0',
   `year_month` int(11) NOT NULL DEFAULT '0' COMMENT '員工年限',

@@ -27,12 +27,17 @@
         ?>
     </th>
     <th>
-        <?php echo TbHtml::link($this->getLabelName('status_type').$this->drawOrderArrow('f.status_type'),'#',$this->createOrderLink('PerformanceBonus-list','f.status_type'))
+        <?php echo TbHtml::link($this->getLabelName('quarter_no'),'#')
         ;
         ?>
     </th>
     <th>
-        <?php echo TbHtml::link($this->getLabelName('bonus_amount').$this->drawOrderArrow('f.bonus_amount'),'#',$this->createOrderLink('PerformanceBonus-list','f.bonus_amount'))
+        <?php echo TbHtml::link($this->getLabelName('status_type').$this->drawOrderArrow('g.status_type'),'#',$this->createOrderLink('PerformanceBonus-list','g.status_type'))
+        ;
+        ?>
+    </th>
+    <th>
+        <?php echo TbHtml::link($this->getLabelName('bonus_out').$this->drawOrderArrow('g.bonus_out'),'#',$this->createOrderLink('PerformanceBonus-list','g.bonus_out'))
         ;
         ?>
     </th>

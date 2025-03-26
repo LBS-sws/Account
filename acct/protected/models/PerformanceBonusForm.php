@@ -7,12 +7,15 @@ class PerformanceBonusForm extends CFormModel
 	public $employee_name;
 	public $city;
     public $year_no;
+    public $month_no;
     public $quarter_no;
     public $new_amount;
     public $bonus_amount;
+    public $month_amount=0;//当月应发奖金
     public $new_json;
     public $bonus_json;
     public $status_type;
+    public $info_status_type;
 
 	/**
 	 * Declares customized attribute labels.
@@ -27,6 +30,7 @@ class PerformanceBonusForm extends CFormModel
 			'employee_name'=>Yii::t('service','employee name'),
 			'status_type'=>Yii::t('service','status type'),
 			'quarter_no'=>Yii::t('service','quarter no'),
+            'month_no'=>Yii::t('app','Time'),
 			'new_amount'=>Yii::t('service','new amount'),
 			'bonus_amount'=>Yii::t('service','bonus amount'),
 		);
@@ -47,21 +51,50 @@ class PerformanceBonusForm extends CFormModel
         }
 	}
 
-	private function getPerBonusForEmployeeID($employee_id){
-        $suffix = Yii::app()->params['envSuffix'];
+	public function validateBack() {
+	    $this->getYearMonthForSession();
+        $attribute="id";
+        $sql = "select * from acc_performance_bonus where id={$this->id} AND status_type=1 AND year_no={$this->year_no} AND quarter_no={$this->quarter_no}";
+        $row = Yii::app()->db->createCommand($sql)->queryRow();
+        if($row){
+            $this->year_no = $row["year_no"];
+            $this->quarter_no = $row["quarter_no"];
+            $this->new_json = empty($row["new_json"])?array():json_decode($row["new_json"],true);
+            $this->bonus_json = empty($row["bonus_json"])?array():json_decode($row["bonus_json"],true);
+            $infoRow = Yii::app()->db->createCommand()->select("year_no,month_no")
+                ->from("acc_performance_info")
+                ->where("bonus_id={$this->id} and month_no>{$this->month_no} AND status_type=1")
+                ->queryRow();
+            if($infoRow){
+                $this->addError($attribute, "请先取消{$infoRow["year_no"]}年{$infoRow["month_no"]}月的固定");
+                return false;
+            }
+        }else{
+            $this->addError($attribute, "数据异常，请刷新重试");
+            return false;
+        }
+        return true;
+	}
+
+	protected function getYearMonthForSession(){
         $session = Yii::app()->session;
         if (isset($session['performanceBonus_xs08']) && !empty($session['performanceBonus_xs08'])) {
             $criteria = $session['performanceBonus_xs08'];
             $this->year_no = $criteria["year_no"];
-            $this->quarter_no = $criteria["quarter_no"];
+            $this->month_no = $criteria["month_no"];
         }
         if(empty($this->year_no)||!is_numeric($this->year_no)){
-            $this->year_no = date("Y",strtotime("-3 months"));
+            $this->year_no = date("Y",strtotime("-1 months"));
         }
-        if(empty($this->quarter_no)||!is_numeric($this->quarter_no)){
-            $month = date("n",strtotime("-3 months"));
-            $this->quarter_no = ceil($month/3);
+        if(empty($this->month_no)||!is_numeric($this->month_no)){
+            $this->month_no = date("n",strtotime("-1 months"));
         }
+        $this->quarter_no = ceil($this->month_no/3);
+    }
+
+	private function getPerBonusForEmployeeID($employee_id){
+        $suffix = Yii::app()->params['envSuffix'];
+        $this->getYearMonthForSession();
         $sql = "select code,name,city from hr{$suffix}.hr_employee where id=$employee_id";
         $staffRow = Yii::app()->db->createCommand($sql)->queryRow();
         if($staffRow){
@@ -75,9 +108,12 @@ class PerformanceBonusForm extends CFormModel
         $sql = "select * from acc_performance_bonus where employee_id=$employee_id AND year_no={$this->year_no} AND quarter_no={$this->quarter_no}";
         $row = Yii::app()->db->createCommand($sql)->queryRow();
         if($row){
+            $sql = "select * from acc_performance_info where bonus_id={$row["id"]} AND year_no={$this->year_no} AND month_no={$this->month_no}";
+            $infoRow = Yii::app()->db->createCommand($sql)->queryRow();
             $this->id = $row["id"];
             $this->employee_id = $row["employee_id"];
             $this->status_type = $row["status_type"];
+            $this->info_status_type = $infoRow?$infoRow["status_type"]:0;
             $this->new_amount = floatval($row["new_amount"]);
             $this->bonus_amount = floatval($row["bonus_amount"]);
             $this->new_json = empty($row["new_json"])?array():json_decode($row["new_json"],true);
@@ -85,6 +121,7 @@ class PerformanceBonusForm extends CFormModel
         }else{
             $this->employee_id = $employee_id;
             $this->status_type = 0;
+            $this->info_status_type = 0;
             Yii::app()->db->createCommand()->insert("acc_performance_bonus",array(
                 "employee_id"=>$employee_id,
                 "year_no"=>$this->year_no,
@@ -94,56 +131,68 @@ class PerformanceBonusForm extends CFormModel
             ));
             $this->id = Yii::app()->db->getLastInsertID();
         }
-        if($this->status_type!=1){
+        $minMonth = ($this->quarter_no-1)*3 + 1;
+        $monthList = "".$minMonth;
+        for ($i=$minMonth+1;$i<$minMonth+3;$i++){
+            $monthList.=",".$i;
+        }
+        if($this->status_type!=1){ //如果没有固定，则读配置
+            $this->bonus_json = PerformanceSetForm::getBonusArrForYearMonth($this->year_no,$minMonth);
+        }
+        if($this->info_status_type!=1){//如果没有固定，则读配置
             $this->new_amount = 0;
             $this->bonus_amount = 0;
-            $this->new_json = array();
-            $minMonth = ($this->quarter_no-1)*3 + 1;
-            $monthList = "".$minMonth;
-            for ($i=$minMonth+1;$i<$minMonth+3;$i++){
-                $monthList.=",".$i;
-            }
-            $this->bonus_json = PerformanceSetForm::getBonusArrForYearMonth($this->year_no,$minMonth);
-            $rows = Yii::app()->db->createCommand()->select("b.year_no,b.month_no,a.new_money,a.edit_money")
+            $new_json = array();
+            $rows = Yii::app()->db->createCommand()->select("b.year_no,b.month_no,a.new_money,a.edit_money,f.status_type,f.bonus_out")
                 ->from("acc_service_comm_dtl a")
-            ->leftJoin("acc_service_comm_hdr b","a.hdr_id=b.id")
-            ->where("b.year_no={$this->year_no} and b.month_no in ({$monthList}) and b.employee_code=:code",array(
-                ":code"=>$this->employee_code
-            ))->order("b.month_no asc")->queryAll();
+                ->leftJoin("acc_service_comm_hdr b","a.hdr_id=b.id")
+                ->leftJoin("acc_performance_info f","f.bonus_id={$this->id} and f.year_no=b.year_no and f.month_no=b.month_no")
+                ->where("b.year_no={$this->year_no} and b.month_no in ({$monthList}) and b.employee_code=:code",array(
+                    ":code"=>$this->employee_code
+                ))->order("b.month_no asc")->queryAll();
             if($rows){
                 foreach ($rows as $row){
+                    if($row["status_type"]==1){//某月已固定，则读配置
+                        $setRow = $this->getRowForNewJson($row["year_no"],$row["month_no"]);
+                        $row["new_money"]= empty($setRow)?0:floatval($setRow["new_money"]);
+                        $row["edit_money"]= empty($setRow)?0:floatval($setRow["edit_money"]);
+                    }else{
+                        $row["new_money"]= empty($row["new_money"])?0:floatval($row["new_money"]);
+                        $row["edit_money"]= empty($row["edit_money"])?0:floatval($row["edit_money"]);
+                    }
                     if($row["year_no"]==2025&&$row["month_no"]==1){
                         $row["new_money"]=0;
                         $row["edit_money"]=0;
                     }
-                    $row["new_money"]= empty($row["new_money"])?0:floatval($row["new_money"]);
-                    $row["edit_money"]= empty($row["edit_money"])?0:floatval($row["edit_money"]);
                     $this->new_amount+= $row["new_money"];
                     $this->new_amount+= $row["edit_money"];
-                    $this->new_json[]=$row;
+                    $new_json[]=$row;
                 }
             }
+            $this->new_json = $new_json;
             $this->computeBonusAmount();
         }
         return true;
     }
 
     private function computeBonusAmount(){
+        $this->bonus_amount = $this->getAmtForMoney($this->new_amount);
+        return 0;
+    }
+
+    private function getAmtForMoney($money){
 	    if(!empty($this->bonus_json)){
 	        foreach ($this->bonus_json["LE"] as $item){
-	            if($this->new_amount<$item["new_amount"]){
-	                $this->bonus_amount = $item["bonus_amount"];
+	            if($money<$item["new_amount"]){
 	                return $item["bonus_amount"];
                 }
             }
             for ($i = count($this->bonus_json["GT"])-1;$i>=0;$i--){
-                if($this->new_amount>=$this->bonus_json["GT"][$i]["new_amount"]){
-                    $this->bonus_amount = $this->bonus_json["GT"][$i]["bonus_amount"];
+                if($money>=$this->bonus_json["GT"][$i]["new_amount"]){
                     return $this->bonus_json["GT"][$i]["bonus_amount"];
                 }
             }
         }
-        $this->bonus_amount = 0;
         return 0;
     }
 	
@@ -169,10 +218,10 @@ class PerformanceBonusForm extends CFormModel
             );
             foreach ($list as $employee_id){
                 $this->retrieveData($employee_id);
-                if($this->status_type!=1){
+                if($this->info_status_type!=1){
                     $this->status_type=1;
-                    $temp = $this->getCurlDataModels();
                     $this->saveHeader($connection);
+                    $temp = $this->getCurlDataModels();
                     $curlData["models"] = array_merge($curlData["models"],$temp);
                 }
             }
@@ -234,9 +283,7 @@ class PerformanceBonusForm extends CFormModel
         $suffix = Yii::app()->params['envSuffix'];
         $models = array();
         $bsStaffID = 0;
-        $maxMonth = ($this->quarter_no-1)*3 + 3;
-        $startDate = date("Y/m/01",strtotime("{$this->year_no}-{$maxMonth}-01"));
-        $startDate = date("Y/m/01",strtotime("{$startDate} + 1 months"));//季度奖金推送到北森需要延迟一个月
+        $startDate = date("Y/m/01",strtotime("{$this->year_no}-{$this->month_no}-01"));
         $stopDate = date("Y/m/t",strtotime($startDate));
         $staffRow = Yii::app()->db->createCommand()->select("bs_staff_id")->from("hr{$suffix}.hr_employee")
             ->where("id=:id",array(":id"=>$this->employee_id))->queryRow();
@@ -248,7 +295,7 @@ class PerformanceBonusForm extends CFormModel
             "itemName"=>8,//季度绩效奖金
             "startDate"=>$startDate,
             "stopDate"=>$stopDate,
-            "numericVal"=>empty($this->bonus_amount)?0:round($this->bonus_amount,2),
+            "numericVal"=>empty($this->month_amount)?0:round($this->month_amount,2),
         );
         return $models;
     }
@@ -267,13 +314,16 @@ class PerformanceBonusForm extends CFormModel
 							luu = :luu 
 						where id = :id
 						";
+                $this->saveInfoOK();
 				break;
 			case 'back':
 				$sql = "update acc_performance_bonus set  
 							status_type = :status_type,
+							new_json = :new_json,
 							luu = :luu 
 						where id = :id
 						";
+                $this->saveInfoNO();
 				break;
 		}
 
@@ -310,11 +360,140 @@ class PerformanceBonusForm extends CFormModel
 
 		if ($this->scenario=='new')
 			$this->id = Yii::app()->db->getLastInsertID();
+
 		return true;
 	}
+
+	protected function getInfoRows(){
+        $minMonth = ($this->quarter_no-1)*3 + 1;
+        $monthList = "".$minMonth;
+        for ($i=$minMonth+1;$i<$minMonth+3;$i++){
+            $monthList.=",".$i;
+        }
+        $list = array();
+        $infoRows = Yii::app()->db->createCommand()->select("*")->from("acc_performance_info")
+            ->where("bonus_id={$this->id} and year_no={$this->year_no} and month_no in ({$monthList})")
+            ->queryAll();
+        if($infoRows){
+            foreach ($infoRows as $row){
+                $key = "{$row["year_no"]}/{$row["month_no"]}";
+                $list[$key]=$row;
+            }
+        }
+        return $list;
+    }
+
+    protected function getRowForNewJson($year,$month){
+        foreach ($this->new_json as $row) {
+            if ($row["year_no"] == $year && $row["month_no"] == $month) {
+                return $row;
+            }
+        }
+        return array();
+    }
+
+	protected function saveInfoOK(){
+        $uid = Yii::app()->user->id;
+        $this->month_amount=0;//当月应发奖金
+        if(!empty($this->new_json)) {
+            $out_all = 0;//已发放奖金
+            $infoRows = $this->getInfoRows();
+            $sum = 0;
+            $thisYear = "{$this->year_no}/{$this->month_no}";
+            foreach ($this->new_json as &$row) {
+                $key = "{$row["year_no"]}/{$row["month_no"]}";
+                $rowStatusType = key_exists($key,$infoRows)?$infoRows[$key]["status_type"]:0;
+                $sum += $row["new_money"] + $row["edit_money"];
+                $rowBonus = $this->getAmtForMoney($sum);
+                if($key<$thisYear){//小于当前固定月份
+                    $row["status_type"]=1;
+                    if(empty($rowStatusType)){//未固定
+                        $row["bonus_out"]=0;
+                        if(key_exists($key,$infoRows)){//已有详情
+                            Yii::app()->db->createCommand()->update("acc_performance_info",array(
+                                "bonus_sum"=>$sum,
+                                "bonus_amt"=>$rowBonus,
+                                "bonus_out"=>0,
+                                "status_type"=>1,
+                                "luu"=>$uid,
+                            ),"id=".$infoRows[$key]["id"]);
+                        }else{
+                            Yii::app()->db->createCommand()->insert("acc_performance_info",array(
+                                "bonus_id"=>$this->id,
+                                "year_no"=>$row["year_no"],
+                                "month_no"=>$row["month_no"],
+                                "bonus_sum"=>$sum,
+                                "bonus_amt"=>$rowBonus,
+                                "bonus_out"=>0,
+                                "status_type"=>1,
+                                "lcu"=>$uid,
+                            ));
+                        }
+                    }else{//已固定
+                        $out_all+=$infoRows[$key]["bonus_out"];
+                    }
+                }elseif ($key==$thisYear){//等于当前固定月份
+                    $row["bonus_out"]=$rowBonus-$out_all;
+                    $this->month_amount = $row["bonus_out"];
+                    $row["status_type"]=1;
+                    if(key_exists($key,$infoRows)){//已有详情
+                        Yii::app()->db->createCommand()->update("acc_performance_info",array(
+                            "bonus_sum"=>$sum,
+                            "bonus_amt"=>$rowBonus,
+                            "bonus_out"=>$row["bonus_out"],
+                            "status_type"=>1,
+                            "luu"=>$uid,
+                        ),"id=".$infoRows[$key]["id"]);
+                    }else{
+                        Yii::app()->db->createCommand()->insert("acc_performance_info",array(
+                            "bonus_id"=>$this->id,
+                            "year_no"=>$row["year_no"],
+                            "month_no"=>$row["month_no"],
+                            "bonus_sum"=>$sum,
+                            "bonus_amt"=>$rowBonus,
+                            "bonus_out"=>$row["bonus_out"],
+                            "status_type"=>1,
+                            "lcu"=>$uid,
+                        ));
+                    }
+                }
+            }
+        }
+    }
+
+	protected function saveInfoNO(){
+        $uid = Yii::app()->user->id;
+        $status_type=0;
+        if(!empty($this->new_json)) {
+            $infoRows = $this->getInfoRows();
+            $thisYear = "{$this->year_no}/{$this->month_no}";
+            foreach ($this->new_json as &$row) {
+                $key = "{$row["year_no"]}/{$row["month_no"]}";
+                $rowStatusType = key_exists($key,$infoRows)?$infoRows[$key]["status_type"]:0;
+                if($key<$thisYear){//小于当前固定月份
+                    if(!empty($rowStatusType)){//已固定
+                        $status_type=1;
+                    }
+                }elseif ($key=$thisYear){//等于当前固定月份
+                    if(key_exists($key,$infoRows)){//已有详情
+                        $row["bonus_out"]=null;
+                        $row["status_type"]=0;
+                        Yii::app()->db->createCommand()->update("acc_performance_info",array(
+                            "bonus_sum"=>null,
+                            "bonus_amt"=>null,
+                            "bonus_out"=>null,
+                            "status_type"=>0,
+                            "luu"=>$uid,
+                        ),"id=".$infoRows[$key]["id"]);
+                    }
+                }
+            }
+        }
+        $this->status_type = $status_type;
+    }
 	
 	public function isReadOnly() {
-		return ($this->status_type==1);
+		return ($this->info_status_type==1);
 	}
 
 	public static function getQuarterStr($year_no,$quarter_no){
@@ -337,25 +516,44 @@ class PerformanceBonusForm extends CFormModel
     public function new_json_html(){
 	    $html="<p>季度金额详情</p>";
 	    $html.="<table class='table table-striped table-bordered table-hover '>";
-	    $html.="<thead><tr><th>时间</th><th>新增业绩</th><th>更改新增业绩</th><th>合计</th></tr></thead>";
+	    $html.="<thead><tr><th>时间</th><th>新增业绩</th><th>更改新增业绩</th><th>累计业绩</th><th>当月奖金</th><th>当月实发奖金</th><th>状态</th></tr></thead>";
         $html.="<tbody>";
 	    if(!empty($this->new_json)){
 	        $sum = 0;
+	        $out_all = 0;
 	        foreach ($this->new_json as $row){
+	            //$rowSum = $row["new_money"]+$row["edit_money"];
+                $row["bonus_out"] = $row["bonus_out"]===null?"":floatval($row["bonus_out"]);
                 $sum+= $row["new_money"]+$row["edit_money"];
-                $html.="<tr>";
+	            $rowBonus = $this->getAmtForMoney($sum);
+                $out_all+=empty($row["bonus_out"])?0:$row["bonus_out"];
+	            $className = $row["status_type"]==1?"text-primary":"text-danger";
+	            if($this->year_no==$row["year_no"]&&$this->month_no==$row["month_no"]){
+	                $className.=" success";
+                }
+                $html.="<tr class='{$className}'>";
                 //b.year_no,b.month_no,a.new_money,a.edit_money
                 $html.="<td>".$row["year_no"]."年".$row["month_no"]."月</td>";
                 $html.="<td>".$row["new_money"]."</td>";
                 $html.="<td>".$row["edit_money"]."</td>";
-                $html.="<td>".($row["new_money"]+$row["edit_money"])."</td>";
+                $html.="<td>".$sum."</td>";
+                $html.="<td>".$rowBonus."</td>";
+                if($row["status_type"]!=1&&$this->year_no==$row["year_no"]&&$this->month_no==$row["month_no"]){
+                    $html.="<td>".($rowBonus-$out_all)."</td>";
+                }else{
+                    $html.="<td>".$row["bonus_out"]."</td>";
+                }
+                $html.="<td>".self::getStatusStr($row["status_type"])."</td>";
                 $html.="</tr>";
             }
             $html.="<tr>";
             //b.year_no,b.month_no,a.new_money,a.edit_money
+            /*
             $html.="<td colspan='3'>&nbsp;</td>";
             $html.="<td>".$sum."</td>";
+            $html.="<td colspan='3'>&nbsp;</td>";
             $html.="</tr>";
+            */
         }
         $html.="</tbody>";
 	    $html.="</table>";
@@ -468,18 +666,27 @@ class PerformanceBonusForm extends CFormModel
             $dataList[$keyStr] = $setRow;
         }
         $minMonth = ($this->quarter_no-1)*3 + 1;
+        $new_amount = 0;
+        $bonus_amount = 0;
         for ($i=$minMonth;$i<$minMonth+3;$i++){
             $keyStr = $this->year_no."_".$i;
-            if(key_exists($keyStr,$dataList)){
+            if(key_exists($keyStr,$dataList)&&$dataList[$keyStr]["status_type"]==1){
                 $list[$keyStr."new_money"]=floatval($dataList[$keyStr]["new_money"]);
                 $list[$keyStr."edit_money"]=floatval($dataList[$keyStr]["edit_money"]);
+                $list[$keyStr."bonus_out"]=floatval($dataList[$keyStr]["bonus_out"]);
+                $list[$keyStr."status_type"]="已固定";
+                $new_amount+= $list[$keyStr."new_money"];
+                $new_amount+= $list[$keyStr."edit_money"];
+                $bonus_amount+= $list[$keyStr."bonus_out"];
             }else{
                 $list[$keyStr."new_money"]="";
                 $list[$keyStr."edit_money"]="";
+                $list[$keyStr."bonus_out"]="";
+                $list[$keyStr."status_type"]="未固定";
             }
         }
-        $list["new_amount"]=floatval($row["new_amount"]);
-        $list["bonus_amount"]=floatval($row["bonus_amount"]);
+        $list["new_amount"]=$new_amount;
+        $list["bonus_amount"]=$bonus_amount;
         return $list;
     }
 
@@ -498,6 +705,8 @@ class PerformanceBonusForm extends CFormModel
                 "colspan"=>array(
                     array("name"=>"新增业绩"),//新增业绩
                     array("name"=>"更改新增业绩"),//更改新增业绩
+                    array("name"=>"当月实发奖金"),//当月实发奖金
+                    array("name"=>"状态"),//状态
                 )
             );
         }

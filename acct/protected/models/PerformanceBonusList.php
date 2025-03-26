@@ -3,6 +3,7 @@
 class PerformanceBonusList extends CListPageModel
 {
     public $year_no;
+    public $month_no;
     public $quarter_no;
 	public function attributeLabels()
 	{
@@ -12,23 +13,26 @@ class PerformanceBonusList extends CListPageModel
             'city'=>Yii::t('app','city'),
             'city_name'=>Yii::t('app','city'),
             'time'=>Yii::t('app','Time'),
+            'quarter_no'=>Yii::t('service','quarter no'),
             'dept_name'=>Yii::t('app','user_name'),
             'moneys'=>Yii::t('app','comm_total_amount'),
             'status_type'=>Yii::t('service','status type'),
             'bonus_amount'=>Yii::t('service','bonus amount'),
+            'bonus_out'=>"当月实发奖金",
 		);
 	}
 
     public function rules()
     {
         return array(
-            array('year_no,quarter_no,attr, pageNum, noOfItem, totalRow, searchField, searchValue, orderField, orderType, filter, dateRangeValue','safe',),
+            array('year_no,month_no,attr, pageNum, noOfItem, totalRow, searchField, searchValue, orderField, orderType, filter, dateRangeValue','safe',),
         );
     }
 
     public function getCriteria() {
         return array(
             'year_no'=>$this->year_no,
+            'month_no'=>$this->month_no,
             'quarter_no'=>$this->quarter_no,
             'searchField'=>$this->searchField,
             'searchValue'=>$this->searchValue,
@@ -43,20 +47,20 @@ class PerformanceBonusList extends CListPageModel
 
     public function init(){
         if(empty($this->year_no)||!is_numeric($this->year_no)){
-            $this->year_no = date("Y",strtotime("-3 months"));
+            $this->year_no = date("Y",strtotime("-1 months"));
         }
-        if(empty($this->quarter_no)||!is_numeric($this->quarter_no)){
-            $month = date("n",strtotime("-3 months"));
-            $this->quarter_no = ceil($month/3);
+        if(empty($this->month_no)||!is_numeric($this->month_no)){
+            $this->month_no = date("n",strtotime("-1 months"));
         }
         if($this->year_no==2024){
             $this->year_no = 2025;
-            $this->quarter_no=1;
+            $this->month_no=1;
         }
     }
 	
 	public function retrieveDataByPage($pageNum=1)
 	{
+        $this->quarter_no = ceil($this->month_no/3);
 		$suffix = Yii::app()->params['envSuffix'];
 		$citylist = Yii::app()->user->city_allow();
         $minMonth = ($this->quarter_no-1)*3 + 1;
@@ -71,12 +75,14 @@ class PerformanceBonusList extends CListPageModel
 		";
         $leaveTime = date("Y/m/01",strtotime("{$this->year_no}/{$minMonth}/01"));
 		//acc_performance_bonus
-		$sql1 = "select b.id,b.code,b.name,c.name as dept_name, e.name as city_name,f.status_type ,f.new_amount ,f.bonus_amount 
+		$sql1 = "select b.id,b.code,b.name,c.name as dept_name, e.name as city_name,
+                g.status_type ,g.bonus_out ,f.new_amount ,f.bonus_amount 
 				from ($hdrSql) a
 				LEFT JOIN hr$suffix.hr_employee b on b.code=a.employee_code
                 LEFT JOIN hr$suffix.hr_dept c on b.position=c.id  	
                 LEFT JOIN security$suffix.sec_city e on a.city=e.code 		
                 LEFT JOIN account$suffix.acc_performance_bonus f on f.employee_id=b.id AND f.year_no={$this->year_no} AND f.quarter_no={$this->quarter_no}		
+                LEFT JOIN account$suffix.acc_performance_info g on f.id=g.bonus_id AND g.year_no={$this->year_no} AND g.month_no={$this->month_no}		
 				where 1=1 and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime')) 
 			";
 		$sql2 = "select count(b.id)
@@ -85,6 +91,7 @@ class PerformanceBonusList extends CListPageModel
                 LEFT JOIN hr$suffix.hr_dept c on b.position=c.id  	
                 LEFT JOIN security$suffix.sec_city e on a.city=e.code 		
                 LEFT JOIN account$suffix.acc_performance_bonus f on f.employee_id=b.id AND f.year_no={$this->year_no} AND f.quarter_no={$this->quarter_no}		
+                LEFT JOIN account$suffix.acc_performance_info g on f.id=g.bonus_id AND g.year_no={$this->year_no} AND g.month_no={$this->month_no}			
 				where 1=1 and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime')) 
 			";
 		$clause = "";
@@ -130,13 +137,14 @@ class PerformanceBonusList extends CListPageModel
                     'id'=>$record['id'],
                     'code'=>$record['code'],
                     'name'=>$record['name'],
-                    'time'=>$quaStr,
+                    'time'=>"{$this->year_no}年{$this->month_no}月",
+                    'quaStr'=>$quaStr,
                     'city_name'=>$record['city_name'],
                     'dept_name'=>$record['dept_name'],
                     'ready'=>$bool&&$record['status_type']!=1,
                     'status_type'=>PerformanceBonusForm::getStatusStr($record['status_type']),
                     'new_amount'=>$record['status_type']!=1?"-":floatval($record['new_amount']),
-                    'bonus_amount'=>$record['status_type']!=1?"-":floatval($record['bonus_amount']),
+                    'bonus_out'=>$record['status_type']!=1?"-":floatval($record['bonus_out']),
                     'style'=>$record['status_type']!=1?"text-danger":""
 				);
 			}
@@ -163,5 +171,13 @@ class PerformanceBonusList extends CListPageModel
             3=>"7月~9月",
             4=>"10月~12月",
         );
+    }
+
+	public static function getMonthList(){
+        $arr = array();
+        for ($i=1;$i<=12;$i++){
+            $arr[$i] = $i."月";
+        }
+        return $arr;
     }
 }

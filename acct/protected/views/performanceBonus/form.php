@@ -41,6 +41,7 @@ $this->pageTitle=Yii::app()->name . ' - PerformanceBonus Form';
             <?php echo $form->hiddenField($model, 'city'); ?>
             <?php echo $form->hiddenField($model, 'employee_id'); ?>
             <?php echo $form->hiddenField($model, 'status_type'); ?>
+            <?php echo $form->hiddenField($model, 'info_status_type'); ?>
 
 			<div class="form-group">
 				<?php echo $form->labelEx($model,'employee_code',array('class'=>"col-sm-2 control-label")); ?>
@@ -58,6 +59,16 @@ $this->pageTitle=Yii::app()->name . ' - PerformanceBonus Form';
                     ?>
 				</div>
 			</div>
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'month_no',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-3">
+                    <?php
+                    echo TbHtml::textField("month_no","{$model->year_no}年{$model->month_no}月",
+                        array('class'=>'form-control','readonly'=>true,)
+                    );
+                    ?>
+                </div>
+            </div>
             <div class="form-group">
                 <?php echo $form->labelEx($model,'quarter_no',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-3">
@@ -88,22 +99,22 @@ $this->pageTitle=Yii::app()->name . ' - PerformanceBonus Form';
 				<?php echo $form->labelEx($model,'status_type',array('class'=>"col-sm-2 control-label")); ?>
 				<div class="col-sm-3">
                     <?php
-                    echo TbHtml::textField("status_type",$model->getStatusStr($model->status_type),
+                    echo TbHtml::textField("info_status_type",$model->getStatusStr($model->info_status_type),
                         array('class'=>'form-control','readonly'=>true,)
                     );
                     ?>
 				</div>
 			</div>
 			<div class="form-group">
-                <div class="col-lg-offset-1 col-lg-5">
+                <div class="col-lg-offset-1 col-lg-7">
                     <?php
                     echo $model->new_json_html();
                     ?>
                     <?php if ($model->year_no==2025&&$model->quarter_no==1): ?>
-                        <p class="text-danger">2025年1月份的销售提成不参与计算，业绩强制为0</p>
+                        <p class="text-warning">2025年1月份的销售提成不参与计算，业绩强制为0</p>
                     <?php endif ?>
 				</div>
-                <div class="col-lg-offset-1 col-lg-5">
+                <div class="col-lg-offset-1 col-lg-3">
                     <?php
                     echo $model->bonus_json_html();
                     ?>

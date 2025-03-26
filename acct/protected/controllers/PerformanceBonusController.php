@@ -126,9 +126,14 @@ class PerformanceBonusController extends Controller
 		$model = new PerformanceBonusForm('back');
 		if (isset($_POST['PerformanceBonusForm'])) {
 			$model->attributes = $_POST['PerformanceBonusForm'];
-			$model->status_type=0;
-			$model->saveData();
-            Dialog::message(Yii::t('dialog','Information'), "季度奖金已取消固定");
+			if($model->validateBack()){
+                $model->status_type=0;
+                $model->saveData();
+                Dialog::message(Yii::t('dialog','Information'), "季度奖金已取消固定");
+            }else{
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+            }
             $this->redirect(Yii::app()->createUrl('performanceBonus/edit',array('index'=>$model->employee_id)));
 		}
 	}
