@@ -63,5 +63,8 @@ return array(
     'take txt'=>'提成調整補充說明',
     'take money'=>'提成金額',
     'revoke'=>'退回草稿',
+
+    'money txt'=>'做單調整補充說明',
+    'money amt'=>'做單金額',
 );
 ?>

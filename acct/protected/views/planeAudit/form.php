@@ -220,6 +220,21 @@ $this->pageTitle=Yii::app()->name . ' - PlaneAudit Form';
                 </div>
             </div>
 
+            <div class="box">
+                <div class="box-body table-responsive">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <?php
+                        $this->widget('ext.layout.TableView2Widget', array(
+                            'model'=>$model,
+                            'tableidx'=>3,
+                            'attribute'=>'infoMoney',
+                            'viewhdr'=>'//planeAward/m_formhdr',
+                            'viewdtl'=>'//planeAward/m_formdtl',
+                        ));
+                        ?>
+                    </div>
+                </div>
+            </div>
 
             <div class="box">
                 <div class="box-body table-responsive">

@@ -54,6 +54,16 @@ class PlaneAwardForm extends CFormModel
         ),
     );
 
+    public $infoMoney = array(
+        array(
+            'id'=>0,
+            'planeId'=>0,
+            'moneyTxt'=>'',//做单金额说明
+            'moneyAmt'=>'',//做单金额
+            'uflag'=>'Y',
+        ),
+    );
+
 	/**
 	 * Declares customized attribute labels.
 	 * If not declared here, an attribute would have a label that is
@@ -88,6 +98,8 @@ class PlaneAwardForm extends CFormModel
             'old_money_value'=>Yii::t('plane','old money value'),
             'take_txt'=>Yii::t('plane','take txt'),
             'take_money'=>Yii::t('plane','take money'),
+            'money_txt'=>Yii::t('plane','money txt'),
+            'money_amt'=>Yii::t('plane','money amt'),
 		);
 	}
 
@@ -96,16 +108,38 @@ class PlaneAwardForm extends CFormModel
 	 */
 	public function rules(){
 		return array(
-            array('id,city,old_pay_wage,employee_id,employee_code,employee_name,entry_time,plane_date,plane_year,plane_month,info_list,infoDetail,
+            array('id,city,old_pay_wage,employee_id,employee_code,employee_name,entry_time,plane_date,plane_year,plane_month,info_list,infoDetail,infoMoney,
             reject_txt,plane_status,take_amt,old_take_amt,old_money_value,money_value','safe'),
 			array('employee_id,id','required'),
             array('old_pay_wage','numerical','allowEmpty'=>false,'integerOnly'=>false),
             array('id','validateID'),
             array('info_list','validateList','on'=>array("edit")),
             array('infoDetail','validateDetail','on'=>array("edit")),
+            array('infoMoney','validateMoney','on'=>array("edit")),
             array('reject_txt','required','on'=>array("reject")),
 		);
 	}
+
+    public function validateMoney($attribute, $params){
+        $list = array();
+        $money_amt=$this->old_money_value;
+        if(!empty($this->infoMoney)){
+            foreach ($this->infoMoney as $arr){
+                if($arr["moneyTxt"]!==""&&$arr["moneyAmt"]!==""){
+                    $arr["moneyAmt"] = round($arr["moneyAmt"],2);
+                    $list[]=$arr;//$row['uflag']
+                    if($arr["uflag"]!="D"){//不是刪除的時候
+                        $money_amt+=$arr["moneyAmt"];
+                    }
+                }
+            }
+        }
+        $this->money_value = $money_amt;
+        $this->infoMoney = $list;
+        $row = PlaneSetMoneyForm::getPlaneForDateAndMoney($this->plane_date,$this->money_value,$this->city);
+        $this->money_num=$row["value"];
+        $this->money_id=$row["id"];
+    }
 
     public function validateDetail($attribute, $params){
         $list = array();
@@ -234,7 +268,9 @@ class PlaneAwardForm extends CFormModel
             $this->reject_txt = $row['reject_txt'];
             $this->plane_status = $row['plane_status'];
 
-            $this->money_value=$row["money_value"]===null?null:floatval($row["money_value"]);
+            //$this->money_value=$row["money_value"]===null?null:floatval($row["money_value"]);
+            $this->old_money_value = floatval($row["old_money_value"]);
+            $this->money_value = floatval($row["money_value"]);
             $this->old_take_amt = floatval($row["old_take_amt"]);
             $this->take_amt = floatval($row["take_amt"]);
             $this->setUpdateBool();
@@ -247,8 +283,8 @@ class PlaneAwardForm extends CFormModel
             }else{
                 $this->money_num=$row["money_num"];
                 $this->money_id=$row["money_id"];
-                $this->old_money_value = $row['old_money_value'];
-                $this->money_value=$this->money_value===null?$this->old_money_value:$row["money_value"];
+                //$this->old_money_value = $row['old_money_value'];
+                //$this->money_value=$this->money_value===null?$this->old_money_value:$row["money_value"];
                 $this->year_num=$row["year_num"];
                 $this->year_id=$row["year_id"];
                 $this->year_month=$row["year_month"];
@@ -258,6 +294,7 @@ class PlaneAwardForm extends CFormModel
 			if($bool){
                 $this->getInfoList();
                 $this->getDetailList();
+                $this->getMoneyList();
             }
             return true;
 		}else{
@@ -319,7 +356,7 @@ class PlaneAwardForm extends CFormModel
         $take_amt = Yii::app()->db->createCommand()->select("sum(take_amt)")
             ->from("acc_plane_detail")
             ->where("plane_id=:id",array(":id"=>$this->id))->queryScalar();
-        $this->take_amt = empty($take_amt)?0:$take_amt;
+        $this->take_amt = empty($take_amt)?0:floatval($take_amt);
         $this->take_amt+= $this->old_take_amt;
     }
 
@@ -335,7 +372,12 @@ class PlaneAwardForm extends CFormModel
             ))->queryScalar();
         $old_money=$service_money?floatval($service_money):0;
         $this->old_money_value=$old_money;
-        $this->money_value = $this->money_value===null||$this->money_value===''?$old_money:floatval($this->money_value);
+        $money_amt = Yii::app()->db->createCommand()->select("sum(money_amt)")
+            ->from("acc_plane_money")
+            ->where("plane_id=:id",array(":id"=>$this->id))->queryScalar();
+        $this->money_value = empty($money_amt)?0:floatval($money_amt);
+        $this->money_value+= $this->old_money_value;
+        //$this->money_value = $this->money_value===null||$this->money_value===''?$old_money:floatval($this->money_value);
         $row = PlaneSetMoneyForm::getPlaneForDateAndMoney($this->plane_date,$this->money_value,$this->city);
         $this->money_num=$row["value"];
         $this->money_id=$row["id"];
@@ -403,6 +445,24 @@ class PlaneAwardForm extends CFormModel
             }
         }
     }
+
+	//获取做单调整补充说明列表
+	private function getMoneyList(){
+        $rows = Yii::app()->db->createCommand()->select("id,plane_id,money_txt,money_amt")->from("acc_plane_money")
+            ->where("plane_id=:id",array(":id"=>$this->id))->order("id asc")->queryAll();
+        if($rows){
+            $this->infoMoney=array();
+            foreach ($rows as $arr){
+                $temp = array();
+                $temp['id'] = $arr['id'];
+                $temp['planeId'] = $this->id;
+                $temp['moneyTxt'] = $arr['money_txt'];
+                $temp['moneyAmt'] = $arr['money_amt'];
+                $temp['uflag'] = "Y";
+                $this->infoMoney[] = $temp;
+            }
+        }
+    }
 	
 	public function saveData(){
 		$connection = Yii::app()->db;
@@ -411,6 +471,7 @@ class PlaneAwardForm extends CFormModel
             $this->saveDataForSql($connection);
             $this->saveInfo($connection);
             $this->saveDetail($connection);
+            $this->saveMoney($connection);
             $this->sendEmail();
             //$arr = array("bool"=>true,"message"=>"");
             $arr = $this->sendBsData();
@@ -429,12 +490,11 @@ class PlaneAwardForm extends CFormModel
 
 	protected function sendEmail(){
         $emailModel = new Email();
-        $money_value = $this->money_value===""?$this->old_money_value:$this->money_value;
         $message = "<p>技术部直升机奖励 - {$this->employee_name}</p>";
         $message.= "<p>奖金日期：{$this->plane_year}年{$this->plane_month}月</p>";
         $message.= "<p>员工：{$this->employee_name} ({$this->employee_code})</p>";
         $message.= "<p>城市：{$this->city_name}</p>";
-        $message.= "<p>调整后做单金额：{$money_value}</p>";
+        $message.= "<p>调整后做单金额：{$this->money_value}</p>";
         $message.= "<p>调整后提成金额：{$this->take_amt}</p>";
         $message.= "<p>原机制应发工资：{$this->old_pay_wage}</p>";
         $message.= "<p>直升机总奖金：{$this->plane_sum}</p>";
@@ -655,6 +715,71 @@ class PlaneAwardForm extends CFormModel
         }
     }
 
+    protected function saveMoney(&$connection){
+
+        $uid = Yii::app()->user->id;
+
+        if(!empty($this->infoMoney)){
+            foreach ($this->infoMoney as $row) {
+                $sql = '';
+                switch ($this->scenario) {
+                    case 'delete':
+                        $sql = "delete from acc_plane_money where plane_id = :plane_id";
+                        break;
+                    case 'new':
+                        if ($row['uflag']=='Y') {
+                            $sql = "insert into acc_plane_money(
+									plane_id, money_txt, money_amt
+								) values (
+									:plane_id, :money_txt, :money_amt
+								)";
+                        }
+                        break;
+                    case 'edit':
+                        switch ($row['uflag']) {
+                            case 'D':
+                                $sql = "delete from acc_plane_money where id = :id and plane_id = :plane_id";
+                                break;
+                            case 'Y':
+                                $sql = ($row['id']==0)
+                                    ?
+                                    "insert into acc_plane_money(
+										plane_id, money_txt, money_amt
+									) values (
+										:plane_id, :money_txt, :money_amt
+									)"
+                                    :
+                                    "update acc_plane_money set
+										money_txt = :money_txt,
+										money_amt = :money_amt
+									where id = :id and plane_id=:plane_id
+									";
+                                break;
+                        }
+                        break;
+                }
+
+                if ($sql != '') {
+//                print_r('<pre>');
+//                print_r($sql);exit();
+                    $command=$connection->createCommand($sql);
+                    if (strpos($sql,':id')!==false)
+                        $command->bindParam(':id',$row['id'],PDO::PARAM_INT);
+                    if (strpos($sql,':plane_id')!==false)
+                        $command->bindParam(':plane_id',$this->id,PDO::PARAM_INT);
+                    if (strpos($sql,':money_txt')!==false)
+                        $command->bindParam(':money_txt',$row['moneyTxt'],PDO::PARAM_INT);
+
+                    if (strpos($sql,':money_amt')!==false) {
+                        $money_amt = $row['moneyAmt'];
+                        $command->bindParam(':money_amt',$money_amt,PDO::PARAM_STR);
+                    }
+                    $command->execute();
+                }
+            }
+        }
+    }
+
 	protected function saveDataForSql(&$connection){
 		$suffix = Yii::app()->params['envSuffix'];
 		$sql = '';
@@ -669,6 +794,8 @@ class PlaneAwardForm extends CFormModel
 					  old_pay_wage = :old_pay_wage,
 					  take_amt = :take_amt,
 					  money_value = :money_value,
+					  money_num = :money_num,
+					  money_id = :money_id,
 					  plane_status = :plane_status,
 					  luu=:luu
                       where id = :id";
@@ -716,6 +843,14 @@ class PlaneAwardForm extends CFormModel
         if (strpos($sql,':money_value')!==false){
             $this->money_value = $this->money_value===""?null:$this->money_value;
             $command->bindParam(':money_value',$this->money_value,PDO::PARAM_STR);
+        }
+        if (strpos($sql,':money_id')!==false){
+            $this->money_id = $this->money_id===""?null:$this->money_id;
+            $command->bindParam(':money_id',$this->money_id,PDO::PARAM_STR);
+        }
+        if (strpos($sql,':money_num')!==false){
+            $this->money_num = $this->money_num===""?null:$this->money_num;
+            $command->bindParam(':money_num',$this->money_num,PDO::PARAM_STR);
         }
         if (strpos($sql,':plane_status')!==false){
             $this->plane_status = empty($this->plane_status)?0:$this->plane_status;

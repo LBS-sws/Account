@@ -55,6 +55,7 @@ $this->pageTitle=Yii::app()->name . ' - PlaneAward Form';
 			<?php echo $form->hiddenField($model, 'scenario'); ?>
             <?php echo CHtml::hiddenField('dtltemplate1'); ?>
             <?php echo CHtml::hiddenField('dtltemplate2'); ?>
+            <?php echo CHtml::hiddenField('dtltemplate3'); ?>
 			<?php echo $form->hiddenField($model, 'id'); ?>
 			<?php echo $form->hiddenField($model, 'employee_id'); ?>
 			<?php echo $form->hiddenField($model, 'plane_date'); ?>
@@ -122,7 +123,7 @@ $this->pageTitle=Yii::app()->name . ' - PlaneAward Form';
                 <?php echo $form->labelEx($model,'money_value',array('class'=>"col-lg-2 control-label")); ?>
                 <div class="col-lg-2">
                     <?php echo $form->numberField($model, 'money_value',
-                        array('readonly'=>($model->isReadOnly()))
+                        array('readonly'=>(true))
                     ); ?>
                 </div>
                 <?php echo $form->labelEx($model,'money_num',array('class'=>"col-lg-2 control-label")); ?>
@@ -231,6 +232,23 @@ $this->pageTitle=Yii::app()->name . ' - PlaneAward Form';
                         <?php
                         $this->widget('ext.layout.TableView2Widget', array(
                             'model'=>$model,
+                            'tableidx'=>3,
+                            'attribute'=>'infoMoney',
+                            'viewhdr'=>'//planeAward/m_formhdr',
+                            'viewdtl'=>'//planeAward/m_formdtl',
+                        ));
+                        ?>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="box">
+                <div class="box-body table-responsive">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <?php
+                        $this->widget('ext.layout.TableView2Widget', array(
+                            'model'=>$model,
                             'tableidx'=>2,
                             'attribute'=>'infoDetail',
                             'viewhdr'=>'//planeAward/t_formhdr',
@@ -322,16 +340,23 @@ $('#quickOk').on('click',function(){
             if($('#tblDetail'+id+' tr').eq(-1).find('.nullInput').val()!=''){
                 $('#tblDetail'+id).find('.btnAddRow').eq(0).trigger('click');
             }
-            if(id==1){
-                $('#tblDetail'+id+' tr').eq(-1).find('.other_id').eq(0).find('option').each(function(){
-                    if($(this).text()==val_key){
-                        $('#tblDetail'+id+' tr').eq(-1).find('.other_id').val($(this).attr('value'));
-                    }
-                });
-                $('#tblDetail'+id+' tr').eq(-1).find('.nullInput').val(val_amt);
-            }else{
-                $('#tblDetail'+id+' tr').eq(-1).find('.takeTxt').val(val_key);
-                $('#tblDetail'+id+' tr').eq(-1).find('.nullInput').val(val_amt).trigger('change');
+            switch(id){
+                case 1:
+                    $('#tblDetail'+id+' tr').eq(-1).find('.other_id').eq(0).find('option').each(function(){
+                        if($(this).text()==val_key){
+                            $('#tblDetail'+id+' tr').eq(-1).find('.other_id').val($(this).attr('value'));
+                        }
+                    });
+                    $('#tblDetail'+id+' tr').eq(-1).find('.nullInput').val(val_amt);
+                    break;
+                case 2:
+                    $('#tblDetail'+id+' tr').eq(-1).find('.takeTxt').val(val_key);
+                    $('#tblDetail'+id+' tr').eq(-1).find('.nullInput').val(val_amt).trigger('change');
+                    break;
+                case 3:
+                    $('#tblDetail'+id+' tr').eq(-1).find('.moneyTxt').val(val_key);
+                    $('#tblDetail'+id+' tr').eq(-1).find('.nullInput').val(val_amt).trigger('change');
+                    break;
             }
         }
     });
@@ -346,6 +371,8 @@ $(document).ready(function(){
 	$('#dtltemplate1').attr('value',ct);
 	ct = $('#tblDetail2 tr').eq(1).html();
 	$('#dtltemplate2').attr('value',ct);
+	ct = $('#tblDetail3 tr').eq(1).html();
+	$('#dtltemplate3').attr('value',ct);
 });
 
 $('.btnAddRow').on('click',function() {
@@ -370,6 +397,8 @@ $('.btnAddRow').on('click',function() {
 			if (id.indexOf('_other_id') != -1) $(this).val('');
 			if (id.indexOf('_takeTxt') != -1) $(this).val('');
 			if (id.indexOf('_takeAmt') != -1) $(this).val('');
+			if (id.indexOf('_moneyTxt') != -1) $(this).val('');
+			if (id.indexOf('_moneyAmt') != -1) $(this).val('');
 			if (id.indexOf('_uflag') != -1) $(this).attr('value','Y');
 			if (id.indexOf('_id') != -1) $(this).attr('value',0);
 		});
@@ -389,6 +418,17 @@ $('#tblDetail2').on('change','.takeAmt',function(){
         oldTakeAmt+=numAmt;
     });
     $('#PlaneAwardForm_take_amt').val(oldTakeAmt);
+});
+
+$('#tblDetail3').on('change','.moneyAmt',function(){
+    var oldMoneyAmt = $('#PlaneAwardForm_old_money_value').val();
+    oldMoneyAmt = oldMoneyAmt==''?0:parseFloat(oldMoneyAmt);
+    $('.moneyAmt').each(function(){
+        var numAmt = $(this).val();
+        numAmt = numAmt==''?0:parseFloat(numAmt);
+        oldMoneyAmt+=numAmt;
+    });
+    $('#PlaneAwardForm_money_value').val(oldMoneyAmt);
 });
 EOF;
     Yii::app()->clientScript->registerScript('addRow',$js,CClientScript::POS_READY);

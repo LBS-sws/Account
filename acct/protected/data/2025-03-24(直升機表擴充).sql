@@ -20,3 +20,11 @@ CREATE TABLE `acc_plane_detail` (
   `take_amt` float(13,2) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='直升機提成金額';
+
+CREATE TABLE `acc_plane_money` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `plane_id` int(11) NOT NULL,
+  `money_txt` text NOT NULL,
+  `money_amt` float(13,2) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='直升機做单金额';
