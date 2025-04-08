@@ -820,7 +820,11 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".$row['amt_money']."</td>";
                 if(key_exists("history",$row)){ //金额变少了（需要历史提成）
                     if(!empty($row["history"])){//有历史提成
-                        $html.="<td data-id='{$row['history']['id']}'>".floatval($row["history"]["royalty"])."</td>";
+                        if($row["history"]["target"]==1){
+                            $html.="<td data-id='{$row['history']['id']}'>已放入奖金库</td>";
+                        }else{
+                            $html.="<td data-id='{$row['history']['id']}'>".floatval($row["history"]["royalty"])."</td>";
+                        }
                         if(key_exists("oldSell",$row['history'])){//顯示舊數據信息
                             $html.="<td class='hide'>".implode(",",$row['history']["oldSell"])."</td>";
                         }
@@ -1199,7 +1203,11 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".$row['surplus']."</td>";
                 $html.="<td>".$row['amt_money']."</td>";
                 if(key_exists("history",$row)&&!empty($row["history"])){ //有历史提成
-                    $html.="<td data-id='{$row['history']['id']}'>".floatval($row["history"]["royalty"])."</td>";
+                    if($row["history"]["target"]==1){
+                        $html.="<td data-id='{$row['history']['id']}'>已放入奖金库</td>";
+                    }else{
+                        $html.="<td data-id='{$row['history']['id']}'>".floatval($row["history"]["royalty"])."</td>";
+                    }
                     if(key_exists("oldSell",$row['history'])){//顯示舊數據信息
                         $html.="<td class='hide'>".implode(",",$row['history']["oldSell"])."</td>";
                     }

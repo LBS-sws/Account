@@ -244,7 +244,7 @@ class SellComputeList extends CListPageModel
             $dateSql="status='{$type}' and date_format(status_dt,'%Y-%m')<'$status_dt'";
         }
         $row = Yii::app()->db->createCommand()
-            ->select("id,city,status,status_dt,first_dt,salesman_id,othersalesman_id,commission,royalty,royaltys")->from("swoper{$suffix}.swo_service")
+            ->select("id,city,status,status_dt,first_dt,salesman_id,othersalesman_id,commission,target,royalty,royaltys")->from("swoper{$suffix}.swo_service")
             ->where("{$dateSql} and id!={$service['id']} and 
              salesman_id={$service['salesman_id']} and company_id={$service['company_id']} and 
              cust_type={$service['cust_type']} and cust_type_name={$service['cust_type_name']} and
@@ -252,15 +252,21 @@ class SellComputeList extends CListPageModel
             ->order("status_dt desc")->queryRow();
         //由於舊數據沒有保存提成點，所以需要重新查詢
         if($row){
+            $oldSearch=true;
             if($type=="C"&&$row["status"]!="C"){ //如果終止服務前一個服務不是續約，則終止服務不是續約終止
                 return array();
             }
             if($sales_str=="othersalesman_id"){ //跨區
-                $row["royalty"]=$row["royaltys"];
+                if($row["target"]==1){//放入奖金库的单不计算提成
+                    $oldSearch=false;
+                    $row["royalty"]=0;//放入奖金库的单不计算提成
+                }else{
+                    $row["royalty"]=$row["royaltys"];//放入奖金库的单不计算提成
+                }
                 $row["salesman_id"]=$row["othersalesman_id"];
             }
             $royalty=floatval($row["royalty"]);
-            if(empty($royalty)){
+            if($oldSearch&&empty($royalty)){
                 self::getServiceRoyalty($row);
             }
             self::setSpanRateForService($row,$group_type);
