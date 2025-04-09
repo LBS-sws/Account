@@ -18,6 +18,9 @@ $this->pageTitle=Yii::app()->name . ' - Appraisal';
 <section class="content">
 	<div class="box"><div class="box-body">
 	<div class="btn-group" role="group">
+        <?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('service','batch back'), array(
+            'submit'=>Yii::app()->createUrl('appraisal/batchBack')));
+        ?>
         <?php echo TbHtml::button('<span class="fa fa-save"></span> '.Yii::t('service','batch fixed'), array(
             'submit'=>Yii::app()->createUrl('appraisal/batchSave')));
         ?>

@@ -169,6 +169,7 @@ class AppraisalForm extends CFormModel
         }else{
             $this->employee_id = $employee_id;
             $this->status_type = 0;
+            $this->num_score = 0;
             Yii::app()->db->createCommand()->insert("acc_appraisal",array(
                 "employee_id"=>$employee_id,
                 "year_no"=>$this->year_no,
@@ -185,7 +186,7 @@ class AppraisalForm extends CFormModel
             $this->setVisitSum();
             $this->new_sum = 0;
             $this->setNewSum();
-            $this->num_score = 0;
+            //$this->num_score = 0;
             $this->appraisal_amount = 0;
             $this->appraisal_json = self::getAppraisalSet($this->year_no,$this->month_no);
             $this->new_json=array(
@@ -304,6 +305,26 @@ class AppraisalForm extends CFormModel
             }else{
                 $transaction->commit();
             }
+        }
+        return $saveArr;
+    }
+
+	public function batchBack($list){
+        $saveArr= array("bool"=>true,"message"=>"");
+        if(!empty($list)){
+            $connection = Yii::app()->db;
+            $transaction=$connection->beginTransaction();
+            $userIDList = AppraisalForm::getSalesAccessForMe();
+            foreach ($list as $employee_id){
+                if(in_array($employee_id,$userIDList)){
+                    $this->retrieveData($employee_id);
+                    if($this->status_type==1){
+                        $this->status_type=0;
+                        $this->saveHeader($connection);
+                    }
+                }
+            }
+            $transaction->commit();
         }
         return $saveArr;
     }

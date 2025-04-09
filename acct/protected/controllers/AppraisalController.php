@@ -24,7 +24,7 @@ class AppraisalController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('edit','back','save','batchSave'),
+				'actions'=>array('edit','back','save','batchSave','batchBack'),
 				'expression'=>array('AppraisalController','allowReadWrite'),
 			),
 			array('allow', 
@@ -71,6 +71,26 @@ class AppraisalController extends Controller
             $arr = $model->batchSave($checkList);
             if($arr["bool"]){
                 Dialog::message(Yii::t('dialog','Information'), "已批量固定");
+            }else{
+                Dialog::message("北森验证异常", $arr["message"]);
+            }
+        }else{
+            Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','No Record Found'));
+        }
+        $this->redirect(Yii::app()->createUrl('appraisal/index'));
+    }
+
+    public function actionBatchBack()
+    {
+        $model = new AppraisalForm("back");
+        if(!empty($_POST['checkList'])){
+            //ini_set('memory_limit','500M');
+            $checkList = $_POST['checkList'];
+            $checkList = explode(",",$checkList);
+
+            $arr = $model->batchBack($checkList);
+            if($arr["bool"]){
+                Dialog::message(Yii::t('dialog','Information'), "已批量取消");
             }else{
                 Dialog::message("北森验证异常", $arr["message"]);
             }

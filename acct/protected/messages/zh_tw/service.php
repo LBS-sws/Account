@@ -35,6 +35,7 @@ return array(
     'Appraisal date'=>'考核日期',
     'appraisal amount'=>'實際績效獎金',
     'batch fixed'=>'批量固定',
+    'batch back'=>'批量取消',
     'down fixed'=>'已固定報表',
 );
 ?>
