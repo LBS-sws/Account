@@ -129,7 +129,7 @@ class AppraisalList extends CListPageModel
                     'time'=>$quaStr,
                     'city_name'=>$record['city_name'],
                     'dept_name'=>$record['dept_name'],
-                    'ready'=>$record['status_type']!=1&&in_array($record["id"],$userIDList),
+                    'ready'=>in_array($record["id"],$userIDList),
                     'entry_time'=>General::toDate($record['entry_time']),
                     'status_type'=>AppraisalForm::getStatusStr($record['status_type']),
                     'appraisal_money'=>$record['status_type']!=1?"-":floatval($record['appraisal_amount'])*20,
