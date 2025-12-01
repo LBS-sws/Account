@@ -105,11 +105,12 @@ class PayReqForm extends CFormModel
 
 	public function rules() {
 		return array(
-			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount, item_code, pitem_desc, acct_code, city','required'),
+			array('trans_type_code, req_user, req_dt, payee_name, payee_type, acct_id, amount, item_code, pitem_desc, acct_code','required'),
 			array('city','validateCity'),
 			array('acct_id','validateAcctId'),
-			array('id, item_desc, payee_id, status, status_desc, acct_code_desc, int_fee, city, reason, reason_cf','safe'),
+			array('id, item_desc, payee_id, status, status_desc, acct_code_desc, int_fee, city, reason, reason_cf','safe'), 
 			array('files, removeFileId, docMasterId, no_of_attm,lcu,luu,lcd,lud','safe'),
+				
 		);
 	}
 
@@ -118,6 +119,7 @@ class PayReqForm extends CFormModel
         $city_allow = Yii::app()->user->city_allow();
         $city =strpos("'{$city_allow}'","'{$city}'")!==false?$city:Yii::app()->user->city();
         $this->city=$city;
+        //$this->addError($attribute, "会计系统不允许提交付款申请");
     }
 
 	public function validateAcctId($attribute, $params) {
@@ -240,8 +242,7 @@ class PayReqForm extends CFormModel
 			$this->updateDocman($connection,'PAYREQ');
 			$this->updateDocman($connection,'TAX');
 			if ($wf->startProcess('PAYMENT',$this->id,$this->req_dt)) {
-				$wf->saveRequestData('CITY',$this->city);
-				//$wf->saveRequestData('CITY',Yii::app()->user->city());
+				$wf->saveRequestData('CITY',Yii::app()->user->city());
 				$wf->saveRequestData('REQ_USER',Yii::app()->user->id);
 				$wf->saveRequestData('REF_NO',$this->ref_no);
 				$wf->saveRequestData('AMOUNT',$this->amount);

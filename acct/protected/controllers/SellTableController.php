@@ -33,7 +33,7 @@ SellTableController extends Controller
                 'expression'=>array('SellTableController','allowReadWrite'),
             ),
             array('allow',
-                'actions'=>array('index','view','down','downAll','sendAllBS'),
+                'actions'=>array('index','view','down','downAll','sendAllBS','auditAll'),
 				'expression'=>array('SellTableController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -42,7 +42,17 @@ SellTableController extends Controller
 		);
 	}
 
-	public function actionIndex($pageNum=0) 
+	public function actionAuditAll($year=2025,$month=6)
+	{
+		$model = new SellTableForm();
+        echo "Year:{$year}<br>";
+        echo "Month:{$month}<br>";
+        $model->auditAll($year,$month);
+        echo "End!!<br>";
+        die();
+	}
+
+	public function actionIndex($pageNum=0)
 	{
 		$model = new SellTableList();
 		if (isset($_POST['SellTableList'])) {

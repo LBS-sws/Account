@@ -11,7 +11,7 @@ $this->pageTitle=Yii::app()->name . ' - TemporarySearch';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('app','Temporary Search'); ?></strong>
+		<strong><?php echo Yii::t('app','Remit Search'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
@@ -24,7 +24,7 @@ $this->pageTitle=Yii::app()->name . ' - TemporarySearch';
 
 <section class="content">
 	<?php $this->widget('ext.layout.ListPageWidget', array(
-			'title'=>Yii::t('app','Temporary Apply'),
+			'title'=>Yii::t('app','Expense Apply'),
 			'model'=>$model,
 				'viewhdr'=>'//temporarySearch/_listhdr',
 				'viewdtl'=>'//temporarySearch/_listdtl',
@@ -36,7 +36,6 @@ $this->pageTitle=Yii::app()->name . ' - TemporarySearch';
 							'apply_date',
 							'employee',
 							'department',
-							'status_type',
 						),
 		));
 	?>

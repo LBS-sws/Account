@@ -1,6 +1,6 @@
 <tr>
     <td>
-        <?php echo TbHtml::dropDownList($this->getFieldName('name'),  $this->record['name'], array('fw'=>'服务(IA/IB/IC/飘盈香/甲醛)'),
+        <?php echo TbHtml::dropDownList($this->getFieldName('name'),  $this->record['name'], array('fw'=>'服务(IA/IB/IC/飘盈香/甲醛)','inv'=>'INV','zyj'=>'皂液机','zy'=>'皂液等其他化学液体','zp'=>'纸品','xdy'=>'洗地易 ','ngd'=>'尿缸垫 '),
             array('disabled'=>$this->model->isReadOnly())
         ); ?>
     </td>

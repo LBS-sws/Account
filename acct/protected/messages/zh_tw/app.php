@@ -223,5 +223,8 @@ return array(
     'performance bonus setting'=>'績效獎金配置',
     'Performance appraisal'=>'銷售顧問績效考核表',
     'Audit for plane'=>'审核直升机奖金',
+    'Sales Group'=>'銷售團隊',
+    'Sales Group Below'=>'銷售團隊下線提成',
+    'Sales Group Set'=>'銷售團隊下線配置',
 );
 ?>

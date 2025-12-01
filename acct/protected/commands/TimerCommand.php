@@ -11,7 +11,8 @@ workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt) as wfstatusdesc
 FROM acc_request a left outer join acc_request_info f on f.req_id = a.id and f.field_id='ref_no'
 LEFT JOIN security$suffix.sec_city g ON a.city = g.code
 WHERE workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>'ED' and workflow$suffix.RequestStatus('PAYMENT',a.id,a.req_dt)<>''";
-        $records = Yii::app()->db->createCommand($sql)->queryAll();
+        //$records = Yii::app()->db->createCommand($sql)->queryAll();
+        $records = array();//2025年2月17日开始取消付款申请报销提醒
         $firstDay = date("Y/m/d", strtotime("$firstDay - 30 day"));
         $firstDay1 = date("Y/m/d", strtotime("$firstDay - 60 day"));
         $firstDay2 = date("Y/m/d", strtotime("$firstDay - 90 day"));

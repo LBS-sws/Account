@@ -8,12 +8,11 @@ class PlaneAllotList extends CListPageModel
     public $jobList;
 
     public function init(){
-        $date = strtotime("- 1 months");
         if(empty($this->year)||!is_numeric($this->year)){
-            $this->year = date("Y",$date);
+            $this->year = date("Y");
         }
         if(empty($this->month)||!is_numeric($this->month)){
-            $this->month = date("n",$date);
+            $this->month = date("n");
         }
     }
 

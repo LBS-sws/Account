@@ -39,3 +39,7 @@ CREATE TABLE `acc_appraisal` (
   `lud` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COMMENT='销售顾问绩效考核表';
+
+
+ALTER TABLE acc_appraisal ADD COLUMN last_num_score int(2) DEFAULT '0' COMMENT '补上月打分' AFTER status_type;
+ALTER TABLE acc_appraisal ADD COLUMN last_score_money double(11,2) DEFAULT '0.00'COMMENT '上月补分金额' AFTER status_type;

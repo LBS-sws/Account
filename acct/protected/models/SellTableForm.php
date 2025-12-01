@@ -80,7 +80,7 @@ class SellTableForm extends SellComputeForm{
             switch ($scenario){
                 case "save"://保存
                 case "examine"://要求审核
-                    $this->final_money = $this->sumAllMoney[0]+$this->sumAllMoney[1]+$this->sumAllMoney[2];
+                    $this->final_money = $this->sumAllMoney[0]+$this->sumAllMoney[1]+$this->sumAllMoney[2]+$this->sumAllMoney[3];
                     $this->supplement_money = 0;//額外補充金額
                     $arr=array();
                     $detailList = key_exists("detail",$_POST["SellTableForm"])?$_POST["SellTableForm"]["detail"]:array();
@@ -110,7 +110,7 @@ class SellTableForm extends SellComputeForm{
                     }
                     break;
                 case "break"://退回
-                    if($this->examine!="A"||$this->getScenario()!="edit"){
+                    if($this->examine!="A"||$this->getScenario()!="edit"||!$this->getFormUpdateBool()){
                         $this->addError($attribute, "权限异常或多次提交，请刷新重试");
                     }
                     break;
@@ -147,6 +147,20 @@ class SellTableForm extends SellComputeForm{
                 ->select("a.*")
                 ->from("acc_product a")
                 ->where("a.service_hdr_id=:id",array(":id"=>$this->id))->queryRow();
+            $this->examine_row = array();
+            $this->detail = array(
+                array('id'=>0,
+                    'date'=>'',//日期
+                    'hdr_id'=>0,
+                    'customer'=>'',//客戶名稱
+                    'type'=>'0',//類型
+                    'information'=>'',//情况说明
+                    'commission'=>'',//提成金额
+                    'examine'=>'',
+                    'uflag'=>'N',
+                )
+            );
+            $this->supplement_money = 0;
             if($row){
                 $this->examine = $row["examine"];
                 $this->ject_remark = $row["ject_remark"];
@@ -201,12 +215,20 @@ class SellTableForm extends SellComputeForm{
         foreach ($arr as $item){
             $this->rateMoneyList[$item]=0;
         }
+        $arr = array(29);//恢复服務
+        foreach ($arr as $item){
+            $this->rateMoneyList[$item]=0;
+        }
     }
 
     //初始化跨區提成金额列表
     private function setOtherRateMoneyList(){
         $this->otherRateMoneyList=array(0=>"",1=>Yii::t("salestable","Other Commission amount"));
         $arr = array(2,3,4,7,8,9);//服務
+        foreach ($arr as $item){
+            $this->otherRateMoneyList[$item]=0;
+        }
+        $arr = array(29);//恢复服務
         foreach ($arr as $item){
             $this->otherRateMoneyList[$item]=0;
         }
@@ -230,7 +252,7 @@ class SellTableForm extends SellComputeForm{
 
     //匯總提成金額
     private function setSumAllMoney(){
-        $this->sumAllMoney=array(0=>0,1=>0,2=>0);
+        $this->sumAllMoney=array(0=>0,1=>0,2=>0,3=>0);
         $sumNum = array(2,5,8,11,12,13,14,16,17);
         foreach ($sumNum as $num){
             $this->sumAllMoney[0]+=$this->sumRateMoney[$num];
@@ -243,7 +265,11 @@ class SellTableForm extends SellComputeForm{
         foreach ($sumNum as $num){
             $this->sumAllMoney[2]+=$this->sumRateMoney[$num];
         }
-        $this->final_money = $this->sumAllMoney[0]+$this->sumAllMoney[1]+$this->sumAllMoney[2];
+        $sumNum = array(29);
+        foreach ($sumNum as $num){
+            $this->sumAllMoney[3]+=$this->sumRateMoney[$num];
+        }
+        $this->final_money = $this->sumAllMoney[0]+$this->sumAllMoney[1]+$this->sumAllMoney[2]+$this->sumAllMoney[3];
     }
 
     //匯總提成金額
@@ -276,6 +302,7 @@ class SellTableForm extends SellComputeForm{
         $this->sumRateMoney[25]=$this->rateMoneyList[25];//新增（ID服務）
         $this->sumRateMoney[27]=$this->rateMoneyList[26];//更改（ID服務）
         $this->sumRateMoney[28]=$this->rateMoneyList[27];//續約（ID服務）
+        $this->sumRateMoney[29]=$this->rateMoneyList[29]+$this->otherRateMoneyList[29];//恢复
     }
 
     //初始化營業額列表
@@ -314,15 +341,15 @@ class SellTableForm extends SellComputeForm{
         $this->serviceList=array();
         $suffix = Yii::app()->params['envSuffix'];
         $turnoverList=array(2,3,4,6,14,15,16,17,18,19,20,21,22,23);//營業額只統計的鍵位
-        $rateMoneyList=array(2,3,4,6,7,8,9,14,15,16,17,18,19,20,21,22,23,25,26,27);//提成金额只統計的鍵位
-        $otherRateMoneyList=array(2,3,4,7,8,9);//跨區提成金额只統計的鍵位
+        $rateMoneyList=array(2,3,4,6,7,8,9,14,15,16,17,18,19,20,21,22,23,25,26,27,29);//提成金额只統計的鍵位
+        $otherRateMoneyList=array(2,3,4,7,8,9,29);//跨區提成金额只統計的鍵位
         //日報表的客戶服務放入服務列表內
         $rows = Yii::app()->db->createCommand()
             ->select("a.*,b.description,IF(a.status='N',a.first_dt,a.status_dt) as service_date")
             ->from("swoper{$suffix}.swo_service a")
             ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
             ->where("a.city='{$this->city}' and (
-            (a.status='N' and a.first_dt between '{$this->startDate}' and '{$this->endDate}') or 
+            (a.status='N' and if(ifnull(a.first_dt,'2222-12-31')>a.status_dt,a.first_dt,a.status_dt) between '{$this->startDate}' and '{$this->endDate}') or 
             (a.status!='N' and a.status_dt between '{$this->startDate}' and '{$this->endDate}')
             ) and 
             ((a.commission is not null and a.salesman_id={$this->employee_id}) or 
@@ -345,7 +372,11 @@ class SellTableForm extends SellComputeForm{
                 $row['turnover']=$row['amt_sum'];
                 $list=array();//初始化list
                 $arr = $this->setServiceNumForStatus($row);
-                $minKey = $this->getIAIBICForName($row["description"]);
+                if($row["status"]=="R"){//恢复不区分IA、IB、IC
+                    $minKey = 1;
+                }else{
+                    $minKey = $this->getIAIBICForName($row["description"]);
+                }
                 $maxKey = $row["maxKey"];
                 $key = $maxKey+$minKey;
                 $list["data"][0]=General::toDate($row["service_date"]);
@@ -474,6 +505,11 @@ class SellTableForm extends SellComputeForm{
         }
         $list = array();
         switch ($row["status"]){
+            case "R"://恢复
+                $list[1]=$row["rateMoney"];//提成金额
+                $list[2]=$row["royalty"];//提成點數
+                $row["maxKey"] = 28;
+                break;
             case "T"://終止
                 $list[4]=$row["ctrt_period"];//合同月份
                 $list[5]=$row["all_number"];//服务总次数
@@ -499,7 +535,7 @@ class SellTableForm extends SellComputeForm{
                 break;
             case "A"://更改
                 $row["amt_paid"] = $row["amt_paid"]-$row["b4_amt_paid"];
-                if($row["commission"]<0){//更改減少
+                if($row["commission"]<=0){//更改減少
                     $row["amt_paid"]*=-1;//金額需要顯示正數
                     $row["maxKey"] = 6;
                     $list[4]=$row["ctrt_period"];//合同月份
@@ -577,6 +613,7 @@ class SellTableForm extends SellComputeForm{
         $html.="<td colspan='2' style='padding: 20px 0px;'>".Yii::t("salestable","new customer for IA/IB/IC")."</td>";
         $html.="<td colspan='23'>{$this->yearTurnOverMoney}</td>";
         $html.="<td colspan='4'>&nbsp;</td>";
+        $html.="<td colspan='2'>&nbsp;</td>";
         $html.="</tr>";
         $html.=$this->footerHeadHtml();
         $html.=$this->footerRateAndMoney();
@@ -606,6 +643,7 @@ class SellTableForm extends SellComputeForm{
             array('startNum'=>25,"length"=>2),
             array('startNum'=>27,"length"=>1),
             array('startNum'=>28,"length"=>1),
+            array('startNum'=>29,"length"=>2),
         );
         foreach ($keyList as $item){
             $oneNum = key_exists($item["startNum"],$this->sumRate)?$this->sumRate[$item["startNum"]]:"/";
@@ -619,6 +657,7 @@ class SellTableForm extends SellComputeForm{
         $html.="<td colspan='17'>".$this->sumAllMoney[0]."</td>";
         $html.="<td colspan='6'>".$this->sumAllMoney[1]."</td>";
         $html.="<td colspan='4'>".$this->sumAllMoney[2]."</td>";
+        $html.="<td colspan='2'>".$this->sumAllMoney[3]."</td>";
         $html.="</tr>";
         return $html;
     }
@@ -661,7 +700,8 @@ class SellTableForm extends SellComputeForm{
                     array("name"=>"update"),//IB（灭虫）
                     array("name"=>"contract"),//IC（租机）
                 )
-            ),//本月停单/更改减少/续约终止客户（包括跨区）
+            ),//ID客户
+            array("name"=>"Recovery Commission","rowspan"=>2,"colspan"=>2),//恢复提成
         );
         $trOne="";
         $trTwo="";
@@ -705,7 +745,7 @@ class SellTableForm extends SellComputeForm{
         $forList = array($this->turnoverList,$this->rateList,$this->rateMoneyList,$this->otherRateMoneyList);
         foreach ($forList as $row){
             $html.="<tr class='tr-end' style='background-color: #acc8cc'>";
-            for ($i=0;$i<=28;$i++){
+            for ($i=0;$i<=30;$i++){
                 $value = key_exists($i,$row)?$row[$i]:"/";
                 $html.="<td>".$value."</td>";
             }
@@ -729,7 +769,7 @@ class SellTableForm extends SellComputeForm{
                 $html.=">";
                 if(key_exists("data",$row)){
                     $data = $row["data"];
-                    for ($i=0;$i<=28;$i++){
+                    for ($i=0;$i<=30;$i++){
                         $tdValue = key_exists($i,$data)?$data[$i]:"&nbsp;";
                         $html.="<td>{$tdValue}</td>";
                     }
@@ -795,6 +835,12 @@ class SellTableForm extends SellComputeForm{
                     array("name"=>"rate"),//提成比例
                 )
             ),//ID客户
+            array("name"=>"Customer recovery this month","background"=>"rgb(237,199,228)",
+                "colspan"=>array(
+                    array("name"=>"Commission"),//提成金额
+                    array("name"=>"rate"),//提成比例
+                )
+            ),//本月恢复客户
         );
         $trOne="";
         $trTwo="";
@@ -832,7 +878,7 @@ class SellTableForm extends SellComputeForm{
     //設置表格的單元格寬度
     private function tableHeaderWidth(){
         $html="<tr>";
-        for($i=0;$i<=28;$i++){
+        for($i=0;$i<=30;$i++){
             if(in_array($i,array(1))){
                 $width=100;
             }elseif (in_array($i,array(0,11))){
@@ -849,11 +895,18 @@ class SellTableForm extends SellComputeForm{
 
     //判斷輸入框是否允許修改
     public function getReadonly(){
-        if(in_array($this->examine,array("N","S"))&&$this->getScenario()=="edit"){ //未審核或者拒絕時可以修改
+        $updateBool = $this->getFormUpdateBool();
+        if(in_array($this->examine,array("N","S"))&&$this->getScenario()=="edit"&&$updateBool){ //未審核或者拒絕時可以修改
             return true;
         }else{
             return false;
         }
+    }
+
+    public function getFormUpdateBool(){
+        $updateDate = date("Y-m-01");
+        $updateBool = SellComputeForm::isVivienne()||$this->startDate>=$updateDate;
+        return $updateBool;
     }
 
     public function saveData(){
@@ -905,9 +958,19 @@ class SellTableForm extends SellComputeForm{
                     $saveArr["message"]=$curlData["message"];
                     return $saveArr;
                 }
-                Yii::app()->db->createCommand()->update("acc_product",array(
-                    "examine"=>"A",
-                ),"id=:id",array(":id"=>$this->examine_row["id"]));
+                if(empty($this->examine_row)){
+                    Yii::app()->db->createCommand()->insert("acc_product",array(
+                        "service_hdr_id"=>$this->id,
+                        "amt_install_royalty"=>$this->pro_rate_list["paper"],
+                        "final_money"=>$this->final_money,
+                        "examine"=>"A",
+                        "city"=>$this->city,
+                    ));
+                }else{
+                    Yii::app()->db->createCommand()->update("acc_product",array(
+                        "examine"=>"A",
+                    ),"id=:id",array(":id"=>$this->examine_row["id"]));
+                }
                 break;
             case "ject"://拒绝
                 Yii::app()->db->createCommand()->update("acc_product",array(
@@ -926,7 +989,8 @@ class SellTableForm extends SellComputeForm{
             $this->saveInfoDetail();
             $this->saveSupplementMoney();
 
-            $this->sendEmail();
+            $this->sendFlow();
+            //$this->sendEmail();
         }
         return $saveArr;
     }
@@ -1012,6 +1076,55 @@ class SellTableForm extends SellComputeForm{
         );
     }
 
+
+    protected function sendFlow(){
+        $message = "<p>销售提成表</p>";
+        $message.= "<p>提成时间：{$this->year}年{$this->month}月</p>";
+        $message.= "<p>销售员：{$this->employee_name} ({$this->employee_code})</p>";
+        $message.= "<p>补充金额合计：{$this->supplement_money}</p>";
+        $message.= "<p>最终金额合计：{$this->final_money}</p>";
+        $menuCode = "XS07";
+        $flowModel = new CNoticeFlowModel($menuCode,$this->id);
+        $flowModel->setOwerNumForUsername($this->lcu);
+        $flowModel->setMB_PC_Url("sellTable/edit",array("index"=>$this->id));
+        switch ($this->getScenario()){
+            case "examine"://要求审核
+                $flowModel->setSubject("{$this->employee_name}销售提成表({$this->year}年{$this->month}月) - 待审核");
+                $flowModel->addEmailToPrefixAndCity("CN12",$this->city,3);
+                $flowModel->setMessage($message);
+                $flowModel->note_type=1;//审核流程
+                $flowModel->saveFlowAll('',$menuCode);
+                break;
+            case "audit"://审核通过
+                $flowModel->setSubject("{$this->employee_name}销售提成表({$this->year}年{$this->month}月) - 审核通过");
+                $flowModel->addEmailToPrefixAndCity("XS07",$this->city);
+                $flowModel->setMessage($message);
+                $flowModel->sendFinishFlow($menuCode);
+                $flowModel->note_type=2;//通知流程
+                $flowModel->saveNoticeAll();
+                break;
+            case "ject"://拒绝
+                $flowModel->setSubject("{$this->employee_name}销售提成表({$this->year}年{$this->month}月) - 已拒绝");
+                $flowModel->addEmailToPrefixAndCity("XS07",$this->city);
+                $message.= "<p>拒绝原因：{$this->ject_remark}</p>";
+                $flowModel->setMessage($message);
+                $flowModel->sendRefuseFlow($menuCode);
+                $flowModel->note_type=2;//通知流程
+                $flowModel->saveNoticeAll();
+                break;
+            case "break"://退回
+                $flowModel->setSubject("{$this->employee_name}销售提成表({$this->year}年{$this->month}月) - 已退回");
+                $flowModel->addEmailToPrefixAndCity("XS07",$this->city);
+                $flowModel->setMessage($message);
+                $flowModel->sendRevokeFlow($menuCode);
+                $flowModel->note_type=2;//通知流程
+                $flowModel->saveNoticeAll();
+                break;
+            default:
+                return false;
+        }
+    }
+
     private function sendEmail(){
         $emailModel = new Email();
         $subject = "";
@@ -1074,7 +1187,7 @@ class SellTableForm extends SellComputeForm{
                                 "information"=>$row["information"],
                                 "date"=>$row["date"],
                                 "commission"=>$row["commission"],
-                                "luu"=>Yii::app()->user->id,
+                                "luu"=>Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id,
                             ),"id=:id and hdr_id=:hdr_id",array(":id"=>$row["id"],":hdr_id"=>$this->id));
                         }else{ //增加
                             Yii::app()->db->createCommand()->insert("acc_salestable",array(
@@ -1084,7 +1197,7 @@ class SellTableForm extends SellComputeForm{
                                 "information"=>$row["information"],
                                 "date"=>$row["date"],
                                 "commission"=>$row["commission"],
-                                "lcu"=>Yii::app()->user->id,
+                                "lcu"=>Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id,
                             ));
                         }
                 }
@@ -1116,7 +1229,7 @@ class SellTableForm extends SellComputeForm{
             $objPHPExcel->getActiveSheet()->getStyle("A{$rowKey}:AC{$rowKey}")->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_BLACK);
             if(key_exists("data",$service)){ //含有服務數據
                 $data = $service["data"];
-                for ($stringNum=0;$stringNum<=28;$stringNum++){
+                for ($stringNum=0;$stringNum<=30;$stringNum++){
                     $string = PHPExcel_Cell::stringFromColumnIndex($stringNum);
                     $tdValue = key_exists($stringNum,$data)?$data[$stringNum]:"";
                     $objActSheet->setCellValue($string.$rowKey, $tdValue) ;
@@ -1136,7 +1249,7 @@ class SellTableForm extends SellComputeForm{
             $rowKey++;
             //設置默認文本顏色
             $objPHPExcel->getActiveSheet()->getStyle("A{$rowKey}:AC{$rowKey}")->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_BLACK);
-            for ($stringNum=0;$stringNum<=28;$stringNum++){
+            for ($stringNum=0;$stringNum<=30;$stringNum++){
                 $string = PHPExcel_Cell::stringFromColumnIndex($stringNum);
                 $tdValue = key_exists($stringNum,$row)?$row[$stringNum]:"/";
                 $objActSheet->setCellValue($string.$rowKey, $tdValue) ;
@@ -1247,6 +1360,38 @@ class SellTableForm extends SellComputeForm{
                 case "blue":
                     $objPHPExcel->getActiveSheet()->getStyle("A{$rowKey}:AC{$rowKey}")->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_BLUE);
                     break;
+            }
+        }
+    }
+
+    //批量审核某月的所有销售提成
+    public function auditTableAll($year,$month){
+        $suffix = Yii::app()->params['envSuffix'];
+        $leaveTime = date("Y/m/01",strtotime("{$year}/{$month}/01"));
+        $sellRows = Yii::app()->db->createCommand()
+            ->select("a.id,a.employee_code,a.employee_name,b.examine")
+            ->from("acc_service_comm_hdr a")
+            ->leftJoin("acc_product b","a.id=b.service_hdr_id")
+            ->leftJoin("acc_service_comm_dtl f","a.id=f.hdr_id")
+            ->leftJoin("hr{$suffix}.hr_employee g","g.code=a.employee_code")
+            ->where("a.year_no=:year and a.month_no=:month and (g.staff_status!='-1' or (g.staff_status='-1' and replace(g.leave_time,'-', '/')>='$leaveTime'))",array(":year"=>$year,":month"=>$month))->queryAll();
+        if($sellRows){
+            foreach ($sellRows as $sellRow){
+                $tableModel = new SellTableForm("view");
+                echo "staff:".$sellRow["employee_name"]."({$sellRow["employee_code"]})";
+                $bool = $tableModel->retrieveData($sellRow["id"],false);
+                if($bool){
+                    $tableModel->setScenario("audit");
+                    $arr = $tableModel->saveData();
+                    if($arr["bool"]){
+                        echo " - Success!";
+                    }else{
+                        echo " - BS Error!";
+                    }
+                }else{
+                    echo " - Error!";
+                }
+                echo "<br>\n";
             }
         }
     }

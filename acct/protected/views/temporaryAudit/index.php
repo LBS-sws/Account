@@ -24,7 +24,7 @@ $this->pageTitle=Yii::app()->name . ' - TemporaryAudit';
 
 <section class="content">
 	<?php $this->widget('ext.layout.ListPageWidget', array(
-			'title'=>Yii::t('app','Temporary Apply'),
+			'title'=>Yii::t('app','Remit Apply'),
 			'model'=>$model,
 				'viewhdr'=>'//temporaryAudit/_listhdr',
 				'viewdtl'=>'//temporaryAudit/_listdtl',

@@ -16,11 +16,13 @@ class SellComputeList extends CListPageModel
         'point'=>array('value'=>'point','name'=>''),
         'new_calc'=>array('value'=>'new_calc','name'=>''),
         'new_amount'=>array('value'=>'new_amount','name'=>'','amount'=>true),
+        'lbs_new_amount'=>array('value'=>'lbs_new_amount','name'=>'','amount'=>true),
         'edit_amount'=>array('value'=>'edit_amount','name'=>'','amount'=>true),
         'install_amount'=>array('value'=>'install_amount','name'=>'','amount'=>true),
         'end_amount'=>array('value'=>'end_amount','name'=>'','amount'=>true),
         'performance_amount'=>array('value'=>'performance_amount','name'=>'','amount'=>true),
         'new_money'=>array('value'=>'new_money','name'=>''),
+        'lbs_new_money'=>array('value'=>'lbs_new_money','name'=>''),
         'edit_money'=>array('value'=>'edit_money','name'=>''),
         'install_money'=>array('value'=>'install_money','name'=>''),
         'out_money'=>array('value'=>'out_money','name'=>''),
@@ -31,15 +33,17 @@ class SellComputeList extends CListPageModel
         'renewal_money'=>array('value'=>'renewal_money','name'=>''),
         'renewalend_amount'=>array('value'=>'renewalend_amount','name'=>'','amount'=>true),
         'product_amount'=>array('value'=>'product_amount','name'=>'','amount'=>true),
+        'recovery_amount'=>array('value'=>'recovery_amount','name'=>'','amount'=>true),
+        'perrecovery_amount'=>array('value'=>'perrecovery_amount','name'=>'','amount'=>true),
         'supplement_money'=>array('value'=>'supplement_money','name'=>''),
     );
 
     public function init(){
         if(empty($this->year)||!is_numeric($this->year)){
-            $this->year = date("Y",strtotime("-1 months"));
+            $this->year = date("Y");
         }
         if(empty($this->month)||!is_numeric($this->month)){
-            $this->month = date("n",strtotime("-1 months"));
+            $this->month = date("n");
         }
         if(empty($this->city)){
             $this->city=Yii::app()->user->city();
@@ -243,12 +247,17 @@ class SellComputeList extends CListPageModel
         }else{
             $dateSql="status='{$type}' and date_format(status_dt,'%Y-%m')<'$status_dt'";
         }
+        $commissionSQL = "commission is not null and commission !=''";
+        if($sales_str!=="salesman_id"){
+            $commissionSQL = "other_commission is not null and other_commission !=''";
+        }
         $row = Yii::app()->db->createCommand()
-            ->select("id,city,status,status_dt,first_dt,salesman_id,othersalesman_id,commission,target,royalty,royaltys")->from("swoper{$suffix}.swo_service")
+            ->select("id,city,status,status_dt,first_dt,salesman_id,othersalesman_id,commission,target,royalty,royaltys")
+            ->from("swoper{$suffix}.swo_service")
             ->where("{$dateSql} and id!={$service['id']} and 
              salesman_id={$service['salesman_id']} and company_id={$service['company_id']} and 
              cust_type={$service['cust_type']} and cust_type_name={$service['cust_type_name']} and
-             commission is not null and commission !=''")
+             {$commissionSQL}")
             ->order("status_dt desc")->queryRow();
         //由於舊數據沒有保存提成點，所以需要重新查詢
         if($row){
@@ -257,7 +266,7 @@ class SellComputeList extends CListPageModel
                 return array();
             }
             if($sales_str=="othersalesman_id"){ //跨區
-                if($row["target"]==1){//放入奖金库的单不计算提成
+                if($type=="N"&&$row["target"]==1){//放入奖金库的单不计算提成
                     $oldSearch=false;
                     $row["royalty"]=0;//放入奖金库的单不计算提成
                 }else{
@@ -272,6 +281,50 @@ class SellComputeList extends CListPageModel
             self::setSpanRateForService($row,$group_type);
         }
         return $row?$row:array();
+    }
+
+    //查找变更前的服务 $service：当前服务 $type：变更前的服务类型(N:新增,C:续约)
+    public static function getBeforeServiceListByStop($service,$sales_str="salesman_id",$group_type=0){
+        $service['salesman_id']=empty($service['salesman_id'])?0:$service['salesman_id'];
+        $service['company_id']=empty($service['company_id'])?0:$service['company_id'];
+        $service['cust_type']=empty($service['cust_type'])?0:$service['cust_type'];
+        $service['cust_type_name']=empty($service['cust_type_name'])?0:$service['cust_type_name'];
+        $status_dt = date("Y-m-d",strtotime($service['status_dt'])); //服务日期（服务表单的第一个日期:新增、更改、续约、终止）
+        //$sign_dt = date("Y-m",strtotime($service['sign_dt'])); //签约日期
+        $suffix = Yii::app()->params['envSuffix'];
+        $dateSql="date_format(status_dt,'%Y-%m-%d')<='$status_dt'";
+        $row = Yii::app()->db->createCommand()
+            ->select("id,city,status,status_dt,first_dt,surplus_amt,salesman_id,othersalesman_id,commission,other_commission,target,royalty,royaltys,
+            amt_paid,ctrt_period,all_number,surplus,paid_type")
+            ->from("swoper{$suffix}.swo_service")
+            ->where("{$dateSql} and id!={$service['id']} and 
+             salesman_id={$service['salesman_id']} and company_id={$service['company_id']} and 
+             cust_type={$service['cust_type']} and cust_type_name={$service['cust_type_name']}")
+            ->order("status_dt desc")->queryRow();
+        $returnList=array();
+        if($row){
+            if($row["status"]=="T"){//恢复之前的状态只能是终止
+                $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
+                $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
+                $row['all_number'] = is_numeric($row['all_number'])?floatval($row['all_number']):0;
+                $row['surplus'] = is_numeric($row['surplus'])?floatval($row['surplus']):0;
+                $row['amt_money'] = is_numeric($row['surplus_amt'])?floatval($row['surplus_amt']):0;//终止用剩余金额
+                /*
+                 * 2025年8月25日17:38:30终止增加了剩余金额，不需要手动计算
+                $row['amt_money'] = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
+                //变动金额 = (总金额/服务总次数) * 剩余次数
+                $row['amt_money']=empty($row['all_number'])?0:$row['amt_money']/$row['all_number']*$row['surplus'];
+                */
+                $row['amt_money']=round($row['amt_money'],2)*-1;
+                if($sales_str=="othersalesman_id"){ //跨區
+                    $row["royalty"]=$row["royaltys"];
+                    $row["salesman_id"]=$row["othersalesman_id"];
+                }
+                self::setSpanRateForService($row,$group_type);
+                $returnList = $row;
+            }
+        }
+        return $returnList;
     }
 
     //设置跨区客户服务的跨区提成比例
@@ -445,5 +498,68 @@ class SellComputeList extends CListPageModel
             ->where("a.user_id=:username",array(":username"=>$username))
             ->queryRow();
         return $row?$row:array();
+    }
+
+    //取消全部计算
+    public function backAll(){
+        $city = Yii::app()->user->city();
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
+        $suffix = Yii::app()->params['envSuffix'];
+        $startDate = date("Y-m-d",strtotime("{$this->year}/{$this->month}/01"));
+        $endDate = date("Y-m-t",strtotime($startDate));//
+        $companyRows =Yii::app()->db->createCommand()->select("id")
+            ->from("acc_service_comm_hdr")
+            ->where("city=:city and year_no=:year and month_no=:month",array(
+                ":city"=>$city,":year"=>$this->year,":month"=>$this->month
+            ))->queryAll();
+        if($companyRows){
+            $historyList=array("service_id"=>0,"lcu"=>$uid,"service_type"=>1,"update_type"=>1,"change_amt"=>0,"update_html"=>"<span>取消全部销售提成计算</span>");
+            $hdr_id = array();
+            foreach ($companyRows as $companyRow){
+                $hdr_id[]=$companyRow["id"];
+            }
+            $hdr_id = implode(",",$hdr_id);
+            Yii::app()->db->createCommand()->delete('acc_service_comm_dtl',"hdr_id in ({$hdr_id})");
+            $serviceWhere="city='{$city}' and (
+            (status='N' and if(ifnull(first_dt,'2222-12-31')>status_dt,first_dt,status_dt) between '{$startDate}' and '{$endDate}') or 
+            (status!='N' and status_dt between '{$startDate}' and '{$endDate}')
+            )";
+            $serviceWhere.=" and (commission is not null or other_commission is not null or target=1)";
+            $serviceRows =Yii::app()->db->createCommand()->select("id")
+                ->from("swoper{$suffix}.swo_service")
+                ->where($serviceWhere)->queryAll();
+            if($serviceRows){
+                foreach ($serviceRows as $serviceRow){
+                    Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
+                        "target"=>0,
+                        "other_commission"=>null,
+                        "commission"=>null,
+                        "royaltys"=>null,
+                        "royalty"=>null,
+                        "luu"=>$uid,
+                    ),"id=".$serviceRow["id"]);
+                    $historyList["service_id"]=$serviceRow["id"];
+                    Yii::app()->db->createCommand()->insert("swoper{$suffix}.swo_service_history", $historyList);
+                }
+            }
+
+            $logisticRows =Yii::app()->db->createCommand()->select("a.id")
+                ->from("swoper$suffix.swo_logistic_dtl a")
+                ->leftJoin("swoper$suffix.swo_logistic b","a.log_id=b.id")
+                ->where("a.commission=1 and b.city=:city and b.log_dt between '{$startDate}' and '{$endDate}' and a.qty>0 and a.money>0",array(
+                    ":city"=>$city
+                ))->queryAll();
+            if($logisticRows){
+                $logisticID=array();
+                foreach ($logisticRows as $logisticRow){
+                    $logisticID[]=$logisticRow["id"];
+                }
+                $logisticID = implode(",",$logisticID);
+                Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_logistic_dtl",array(
+                    "commission"=>2,
+                    "luu"=>$uid,
+                ),"id in ({$logisticID})");
+            }
+        }
     }
 }

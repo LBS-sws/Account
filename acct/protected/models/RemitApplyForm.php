@@ -20,13 +20,12 @@ class RemitApplyForm extends ExpenseApplyForm
         "end_pay_date"=>"",//最晚付款日
         "invoice_bool"=>0,//发票情况
         "invoice_no"=>"",//发票号码
-        'purchase_type'=>0,//是否采购单
+        'purchase_bool'=>0,//是否采购单
         'purchase_code'=>null,//采购单编号
         'payment_condition'=>null,//付款条件
     );
     protected $fileList=array(
         array("field_id"=>"outside","field_type"=>"list","field_name"=>"outside","display"=>"none"),//外部
-        array("field_id"=>"payee_code","field_type"=>"text","field_name"=>"payee_code","display"=>"none"),//供应商编号
         array("field_id"=>"payee","field_type"=>"text","field_name"=>"payee","display"=>"none"),//收款单位
         array("field_id"=>"taxpayer_no","field_type"=>"text","field_name"=>"taxpayer no","display"=>"none"),//纳税人识别号
         array("field_id"=>"bank_name","field_type"=>"text","field_name"=>"bank name","display"=>"none"),//开户行名称
@@ -37,8 +36,7 @@ class RemitApplyForm extends ExpenseApplyForm
         array("field_id"=>"invoice_bool","field_type"=>"list","field_name"=>"invoice bool","display"=>"none"),//发票情况
         array("field_id"=>"invoice_no","field_type"=>"text","field_name"=>"invoice no","display"=>"none"),//发票号码
 
-        array("field_id"=>"prepayment","field_type"=>"list","field_name"=>"prepayment","display"=>"none"),//预付款
-        array("field_id"=>"purchase_type","field_type"=>"list","field_name"=>"purchase bool","display"=>"none"),//是否采购单
+        array("field_id"=>"purchase_bool","field_type"=>"list","field_name"=>"purchase bool","display"=>"none"),//是否采购单
         array("field_id"=>"purchase_code","field_type"=>"list","field_name"=>"purchase code","display"=>"none"),//采购单编号
         array("field_id"=>"payment_condition","field_type"=>"list","field_name"=>"payment condition","display"=>"none"),//付款条件
         array("field_id"=>"payment_company","field_type"=>"list","field_name"=>"payment company","display"=>"none"),//支付公司
@@ -72,18 +70,13 @@ class RemitApplyForm extends ExpenseApplyForm
                 }
             }
         }
-        //in_array($model->tableDetail['purchase_type'],array("A0","A4","A5","A7")
-        if (!key_exists("purchase_type",$this->tableDetail)||$this->tableDetail["purchase_type"]===""){
-            $this->addError($attribute, "付款类别不能为空");
+        if (!key_exists("purchase_bool",$this->tableDetail)||$this->tableDetail["purchase_bool"]===""){
+            $this->addError($attribute, "物料采购不能为空");
         }else{
-            if(in_array($this->tableDetail['purchase_type'],array("A0"))){//是物料采购
+            if($this->tableDetail["purchase_bool"]==1){//是物料采购
                 if(empty($this->tableDetail["purchase_code"])){
                     $this->addError($attribute, "采购订单/财务应付单不能为空");
-                }elseif (strpos($this->tableDetail["purchase_code"],'CGDD')===false&&strpos($this->tableDetail["purchase_code"],'AP')===false){
-                    $this->addError($attribute, "采购订单/财务应付单 必须包含CGDD或AP");
                 }
-            }else{
-                $this->tableDetail["purchase_code"]=null;
             }
         }
     }
@@ -92,8 +85,7 @@ class RemitApplyForm extends ExpenseApplyForm
         $updateList = array();
         $deleteList = array();
         $this->amt_money = 0;
-        foreach ($this->infoDetail as $rowKey=>$list){
-            $list["rowKey"] = $rowKey;
+        foreach ($this->infoDetail as $list){
             if($list["uflag"]=="D"){
                 $deleteList[] = $list;
             }else{
@@ -109,10 +101,12 @@ class RemitApplyForm extends ExpenseApplyForm
                         $this->addError($attribute, "日期不能为空");
                         break;
                     }
+                    /*
                     if($list["amtType"]===""){
                         $this->addError($attribute, "费用类别不能为空");
                         break;
                     }
+                    */
                 }
             }
         }
@@ -239,20 +233,6 @@ EOF;
 </table>
 EOF;
         $pdf->writeHTML($html, true, false, false, false, '');
-
-        $auditHtml = "";
-        $auditList = ExpenseFun::getAuditListForID($model->id);
-        if(!empty($auditList)){
-            foreach ($auditList as $userList){
-                $userList['audit_user'] = ExpenseFun::getEmployeeNameForUsername($userList['audit_user']);
-                $auditHtml.='<tr style="line-height: 30px;">';
-                $auditHtml.='<td style="border-top:1px solid black;border-right:1px solid black;width:15%">&nbsp;审核人</td>';
-                $auditHtml.='<td style="width:30%;border-top:1px solid black;border-right:1px solid black;">&nbsp;'.$userList['audit_user'].'</td>';
-                $auditHtml.='<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;审核时间</td>';
-                $auditHtml.='<td style="width:35%;border-top:1px solid black;border-right:2px solid black;">&nbsp;'.$userList['lcd'].'</td> ';
-                $auditHtml.='</tr>';
-            }
-        }
         //审核人
         $html=<<<EOF
 <table border="0" width="{$tableBoxWidth}px" cellspacing="0" cellpadding="0" style="border-bottom: 2px solid black;border-left: 2px solid black;">
@@ -260,12 +240,19 @@ EOF;
 <th colspan="2" style="width:45%;background-color:#BFBFBF;border-left: 2px solid black;border-top: 2px solid black;border-right: 2px solid black;">&nbsp;<b>PART C:审批签字</b></th>
 <th colspan="2" style="width:55%;border-bottom:2px solid black;">&nbsp;</th>
 </tr>
-{$auditHtml}
+<tr style="line-height: 30px;">
+<td style="border-top:1px solid black;border-right:1px solid black;width:15%">&nbsp;申请人</td><td style="width:30%;border-top:1px solid black;border-right:1px solid black;">&nbsp;</td>
+<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;部门负责人</td><td style="width:35%;border-top:1px solid black;border-right:2px solid black;">&nbsp;</td>
+</tr>
+<tr style="line-height: 30px;">
+<td style="border-top:1px solid black;border-right:1px solid black;width:15%">&nbsp;财务部</td><td style="width:30%;border-top:1px solid black;border-right:1px solid black;">&nbsp;</td>
+<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;总经理</td><td style="width:35%;border-top:1px solid black;border-right:2px solid black;">&nbsp;</td>
+</tr>
 </table>
 EOF;
         $y1=$pdf->GetY();
         $x1=$pdf->GetX()-1;
-        $height = $y1<250?250:$y1;
+        $height = $y1<255?255:$y1;
         $pdf->writeHTMLCell(200, 27,$x1,$height, $html,0);
 
         $html = "√";
@@ -285,16 +272,5 @@ EOF;
             $pdf->writeHTMLCell(7, 7,149,46, $html, 0, 1, false, true, 'L', true);
         }
         return $html;
-    }
-
-    protected function updateDocman(&$connection, $doctype) {
-        if ($this->scenario=='new') {
-            $docidx = strtolower($doctype);
-            if ($this->docMasterId[$docidx] > 0) {
-                $docman = new DocMan($doctype,$this->id,get_class($this));
-                $docman->masterId = $this->docMasterId[$docidx];
-                $docman->updateDocId($connection, $this->docMasterId[$docidx]);
-            }
-        }
     }
 }

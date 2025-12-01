@@ -9,7 +9,7 @@ $this->pageTitle=Yii::app()->name . ' - RemitPayment Form';
 'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
 )); ?>
 <style>
-    input[readonly],select[readonly],label[readonly]{ pointer-events: none;}
+    *[readonly]{ pointer-events: none;}
     .table-fixed{ table-layout: fixed;}
     .table-fixed>tbody>tr>th{ vertical-align: bottom;}
 </style>

@@ -39,9 +39,19 @@ class Controller extends CController
                 $session['system'] = Yii::app()->params['systemId'];
                 Yii::app()->user->saveUserOption($uname, 'system', Yii::app()->params['systemId']);
             }
+            if(isset($_GET['portalnumber'])){
+                $staffCode=$this->getStaffCodeForUsername();
+                if($_GET['portalnumber']!=base64_encode($staffCode)){
+                    Yii::app()->user->logout();
+                    $this->redirect(Yii::app()->createUrl('site/login'));
+                }
+            }
         }else{//由于找不到框架的过滤器在哪，所以写在了这里
             if(isset($_GET['ticket'])){
                 $lbsUrl = Yii::app()->getBaseUrl(true);
+                if(isset($_GET["user_id"])){
+                    $lbsUrl.="?user_id=".$_GET["user_id"];//多用户登录
+                }
                 //$lbsUrl = urlencode($lbsUrl);
                 $url = Yii::app()->params['MHCurlRootURL']."/cas/p3/serviceValidate?";
                 $queryArr = array(
@@ -54,11 +64,18 @@ class Controller extends CController
                 $resultJson = json_decode($result,true);
                 if(is_array($resultJson)){
                     if(isset($resultJson["serviceResponse"]["authenticationSuccess"]["user"])){
+                        $user_id = isset($_GET['user_id'])?$_GET['user_id']:"";
                         $userCode = $resultJson["serviceResponse"]["authenticationSuccess"]["user"];
                         $model=new LoginForm;
-                        $bool = $model->MHLogin($userCode);
+                        $bool = $model->MHLogin($userCode,$user_id);
                         if($bool){
                             $this->redirect(Yii::app()->user->returnUrl);
+                        }elseif (!empty($model->selectUser)){//多个账号
+                            $userRows = $model->getUserRows();
+                            $this->layout=false;
+                            $url = Yii::app()->getBaseUrl(true)."/site/login?";
+                            $this->render('//site/selectUser',array('selectUser'=>$userRows,'selectUrl'=>$url));
+                            Yii::app()->end();
                         }
                     }else{
                         Dialog::message("ticket异常", $result);
@@ -67,11 +84,47 @@ class Controller extends CController
                     Dialog::message("ticket异常", $result);
                 }
                 $this->redirect(Yii::app()->createUrl('site/loginOld'));//账号异常跳转本页登录（防止死循环）
+            }elseif(isset($_GET["state"])&&strpos($_GET["state"],'LBSWeChatApp')!==false){//微信自动登录
+                $weChatModel = new CWeChatModel();
+                $code = isset($_GET["code"])?$_GET["code"]:"000";
+                $weChatList = $weChatModel->getWeChatUserList($code);
+                if($weChatList["status"]){
+                    $user_id = str_replace("LBSWeChatApp", "", $_GET["state"]);;
+                    $model=new LoginForm;
+                    $bool = $model->WeChatLogin($weChatList,$user_id);
+                    if($bool){
+                        $this->redirect(Yii::app()->user->returnUrl);
+                    }elseif (!empty($model->selectUser)){//多个账号
+                        $userRows = $model->getUserRows();
+                        $this->layout=false;
+                        $url = Yii::app()->getBaseUrl(true)."/site/login?loginType=mobile";
+                        $this->render('//site/selectUser',array('selectUser'=>$userRows,'selectUrl'=>$url));
+                        Yii::app()->end();
+                    }
+                }else{
+                    Dialog::message("微信接口异常", $weChatList["message"]);
+                }
+                $this->redirect(Yii::app()->createUrl('site/loginOld'));//账号异常跳转本页登录（防止死循环）
             }
         }
 	}
 
+	protected function getStaffCodeForUsername(){
+        $suffix = Yii::app()->params['envSuffix'];
+        $staffRow = Yii::app()->db->createCommand()->select("b.code")
+            ->from("hr{$suffix}.hr_binding a")
+            ->leftJoin("hr{$suffix}.hr_employee b","a.employee_id=b.id")
+            ->where("a.user_id=:user_id",array(":user_id"=>Yii::app()->user->id))->queryRow();
+        if($staffRow){
+            return $staffRow["code"];
+        }else{
+            return "0";
+        }
+    }
+
     public function beforeAction($action) {
+	    $actionId = Yii::app()->getController()->getAction()->id;
+        $actionId = strtolower($actionId);
         //ajax請求並且是ajaxController內的方法不需要驗證
         if(Yii::app()->request->isAjaxRequest&&Yii::app()->controller->id=="ajax"){
             return true;
@@ -81,6 +134,14 @@ class Controller extends CController
             $obj = new SysBlock();
             $url = $obj->blockNRoute($this->id, $this->function_id);
             if ($url!==false) $this->redirect($url);
+        }elseif(!in_array($actionId,array("loginold","mhview","password","resetloginpassword"))){
+            $userAgent = isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:"";
+            //if (strpos($userAgent, 'MicroMessenger') !== false) {//可能是企微
+            if (strpos($userAgent, 'wxwork') !== false) {//可能是企微
+                $weChatModel = new CWeChatModel();
+                $weChatUrl = $weChatModel->getWeChatLoginUrl();
+                $this->redirect($weChatUrl);
+            }
         }
         return true;
     }

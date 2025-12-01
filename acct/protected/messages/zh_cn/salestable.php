@@ -64,5 +64,7 @@ return array(
     'Aggregate amount'=>'金额合计',
     'Total Supplementary Amount'=>'补充金额合计',
     'Total final amount'=>'最终金额合计',
+    'Customer recovery this month'=>'本月恢复客户',
+    'Recovery Commission'=>'恢复提成',
 );
 ?>

@@ -9,7 +9,7 @@ $this->pageTitle=Yii::app()->name . ' - TemporaryApply Form';
 'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
 )); ?>
 <style>
-    input[readonly],select[readonly],label[readonly]{ pointer-events: none;}
+    *[readonly]{ pointer-events: none;}
     .table-fixed{ table-layout: fixed;}
     .table-fixed>tbody>tr>th{ vertical-align: bottom;}
     .select2-container .select2-selection--single{ height: 34px;}

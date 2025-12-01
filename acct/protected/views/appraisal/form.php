@@ -101,6 +101,30 @@ $this->pageTitle=Yii::app()->name . ' - Appraisal Form';
                     ?>
                 </div>
             </div>
+            <?php
+            $lastRow = $model->getLastAppraisalRow();
+            if($lastRow){
+                $lastRow['num_score'] = floatval($lastRow['num_score']);
+            }
+            ?>
+            <?php if ($lastRow&&empty($lastRow['num_score'])): ?>
+                <div class="form-group">
+                    <?php echo $form->labelEx($model,'last_num_score',array('class'=>"col-sm-2 control-label")); ?>
+                    <div class="col-sm-3">
+                        <?php echo $form->numberField($model, 'last_num_score',
+                            array('class'=>'form-control','id'=>'last_num_score','readonly'=>!($model->ready&&$model->status_type==0&&!$model->ltNowDate),'min'=>0,'max'=>12));
+                        ?>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <?php echo $form->labelEx($model,'last_score_money',array('class'=>"col-sm-2 control-label")); ?>
+                    <div class="col-sm-3">
+                        <?php echo $form->textField($model, 'last_score_money',
+                            array('class'=>'form-control','id'=>'last_score_money','readonly'=>true,));
+                        ?>
+                    </div>
+                </div>
+            <?php endif ?>
 		</div>
 	</div>
 </section>
@@ -135,6 +159,21 @@ function changeTotalAmt(){
     $('#appraisal_amount').text(appraisal_amount);
     $('#appraisal_money').val(appraisal_money);
 }
+
+$('#last_num_score').change(function(){
+    var num = $(this).val();
+    if(num!=''){
+        num = parseFloat(num);
+        if(num<0||num>12){
+            $(this).val(0);
+            num = 0;
+        }
+        var last_score_money = num*20;
+        $('#last_score_money').val(last_score_money);
+    }else{
+        $('#last_score_money').val(0);
+    }
+});
 ";
 Yii::app()->clientScript->registerScript('calcFunction',$js,CClientScript::POS_READY);
 

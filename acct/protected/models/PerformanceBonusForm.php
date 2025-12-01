@@ -17,6 +17,8 @@ class PerformanceBonusForm extends CFormModel
     public $status_type;
     public $info_status_type;
 
+    public $ltNowDate=false;//小于当前日期：true
+    public $systemRun=false;//小于当前日期：true
 	/**
 	 * Declares customized attribute labels.
 	 * If not declared here, an attribute would have a label that is
@@ -52,6 +54,7 @@ class PerformanceBonusForm extends CFormModel
 	}
 
 	public function validateBack() {
+        $thisDate = SellComputeForm::isVivienne()?"0000/00/00":date("Y/m/01");
 	    $this->getYearMonthForSession();
         $attribute="id";
         $sql = "select * from acc_performance_bonus where id={$this->id} AND status_type=1 AND year_no={$this->year_no} AND quarter_no={$this->quarter_no}";
@@ -68,6 +71,13 @@ class PerformanceBonusForm extends CFormModel
             if($infoRow){
                 $this->addError($attribute, "请先取消{$infoRow["year_no"]}年{$infoRow["month_no"]}月的固定");
                 return false;
+            }else{
+                $row["log_dt"] = date("Y/m/d",strtotime("{$this->year_no}/{$this->month_no}/01"));
+                $this->ltNowDate = $row["log_dt"]<$thisDate;
+                if($row["log_dt"]<$thisDate){
+                    $this->addError($attribute, "无法固定或取消({$row["log_dt"]})时间段的数据");
+                    return false;
+                }
             }
         }else{
             $this->addError($attribute, "数据异常，请刷新重试");
@@ -92,9 +102,13 @@ class PerformanceBonusForm extends CFormModel
         $this->quarter_no = ceil($this->month_no/3);
     }
 
-	private function getPerBonusForEmployeeID($employee_id){
+	private function getPerBonusForEmployeeID($employee_id,$resetBool=false){
         $suffix = Yii::app()->params['envSuffix'];
-        $this->getYearMonthForSession();
+        if(!$resetBool){
+            $this->getYearMonthForSession();
+        }else{
+            $this->quarter_no = ceil($this->month_no/3);
+        }
         $sql = "select code,name,city from hr{$suffix}.hr_employee where id=$employee_id";
         $staffRow = Yii::app()->db->createCommand($sql)->queryRow();
         if($staffRow){
@@ -126,7 +140,7 @@ class PerformanceBonusForm extends CFormModel
                 "employee_id"=>$employee_id,
                 "year_no"=>$this->year_no,
                 "quarter_no"=>$this->quarter_no,
-                "lcu"=>Yii::app()->user->id,
+                "lcu"=>Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id,
                 "city"=>$this->city
             ));
             $this->id = Yii::app()->db->getLastInsertID();
@@ -139,7 +153,7 @@ class PerformanceBonusForm extends CFormModel
         if($this->status_type!=1){ //如果没有固定，则读配置
             $this->bonus_json = PerformanceSetForm::getBonusArrForYearMonth($this->year_no,$minMonth);
         }
-        if($this->info_status_type!=1){//如果没有固定，则读配置
+        if($this->info_status_type!=1||$resetBool){//如果没有固定，则读配置
             $this->new_amount = 0;
             $this->bonus_amount = 0;
             $new_json = array();
@@ -152,6 +166,7 @@ class PerformanceBonusForm extends CFormModel
                 ))->order("b.month_no asc")->queryAll();
             if($rows){
                 foreach ($rows as $row){
+                    $row["status_type"] = $resetBool&&$this->year_no==$row["year_no"]&&$this->month_no==$row["month_no"]?0:$row["status_type"];
                     if($row["status_type"]==1){//某月已固定，则读配置
                         $setRow = $this->getRowForNewJson($row["year_no"],$row["month_no"]);
                         $row["new_money"]= empty($setRow)?0:floatval($setRow["new_money"]);
@@ -196,18 +211,16 @@ class PerformanceBonusForm extends CFormModel
         return 0;
     }
 	
-	public function retrieveData($employee_id)
+	public function retrieveData($employee_id,$resetBool=false)
 	{
-		$city = Yii::app()->user->city_allow();
-		if ($this->getPerBonusForEmployeeID($employee_id)) {
+		if ($this->getPerBonusForEmployeeID($employee_id,$resetBool)) {
 			return true;
 		} else {
 			return false;
 		}
-		
 	}
 
-    public function batchSave($list){
+    public function batchSave($list,$resetBool=false){
         $saveArr= array("bool"=>true,"message"=>"");
         if(!empty($list)){
             $connection = Yii::app()->db;
@@ -217,8 +230,8 @@ class PerformanceBonusForm extends CFormModel
                 "models"=>array()
             );
             foreach ($list as $employee_id){
-                $this->retrieveData($employee_id);
-                if($this->info_status_type!=1){
+                $this->retrieveData($employee_id,$resetBool);
+                if($resetBool||$this->info_status_type!=1){
                     $this->status_type=1;
                     $this->saveHeader($connection);
                     $temp = $this->getCurlDataModels();
@@ -327,8 +340,7 @@ class PerformanceBonusForm extends CFormModel
 				break;
 		}
 
-		$city = Yii::app()->user->city();
-		$uid = Yii::app()->user->id;
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
 		$command=$connection->createCommand($sql);
 		if (strpos($sql,':id')!==false)
 			$command->bindParam(':id',$this->id,PDO::PARAM_INT);
@@ -393,7 +405,7 @@ class PerformanceBonusForm extends CFormModel
     }
 
 	protected function saveInfoOK(){
-        $uid = Yii::app()->user->id;
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
         $this->month_amount=0;//当月应发奖金
         if(!empty($this->new_json)) {
             $out_all = 0;//已发放奖金
@@ -462,7 +474,7 @@ class PerformanceBonusForm extends CFormModel
     }
 
 	protected function saveInfoNO(){
-        $uid = Yii::app()->user->id;
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
         $status_type=0;
         if(!empty($this->new_json)) {
             $infoRows = $this->getInfoRows();

@@ -19,13 +19,11 @@ class CashinAuditList extends CListPageModel
 	{
 		$suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city_allow();
-		$version = Yii::app()->params['version'];
-		$citystr = ($version=='intl' ? ' and w.city=x.city ' : '');
 		$sql1 = "select a.id, a.audit_dt, a.balance, b.disp_name as req_user_name, c.disp_name as audit_user_name,
 					d.name as city_name, a.city,
 					(SELECT sum(if(x.adj_type='N',w.amount,-1*w.amount))
 					FROM acc_trans w, acc_trans_type x, acc_trans_audit_dtl y
-					WHERE w.trans_type_code = x.trans_type_code and w.id = y.trans_id and y.hdr_id = a.id $citystr 
+					WHERE w.trans_type_code = x.trans_type_code and w.id = y.trans_id and y.hdr_id = a.id
 					and x.trans_cat = 'IN'
 					) as rec_amt
 				from acc_trans_audit_hdr a 

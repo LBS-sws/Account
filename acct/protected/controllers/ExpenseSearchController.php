@@ -28,7 +28,7 @@ class ExpenseSearchController extends Controller
 				'expression'=>array('ExpenseSearchController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view','filedownload','print','listFile'),
+				'actions'=>array('index','view','filedownload','print'),
 				'expression'=>array('ExpenseSearchController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -39,7 +39,7 @@ class ExpenseSearchController extends Controller
 
     public function actionPrint($index)
     {
-        $model = new ExpenseApplyForm();
+        $model = new ExpenseSearchForm();
         if (!$model->retrievePrint($index)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
@@ -86,11 +86,7 @@ class ExpenseSearchController extends Controller
 	}
 
     public function actionFileDownload($mastId, $docId, $fileId, $doctype) {
-        if($doctype==="EXINFO"){
-            $sql = "select id from acc_expense_info where id = $docId";
-        }else{
-            $sql = "select id from acc_expense where id = $docId";
-        }
+        $sql = "select id from acc_expense where id = $docId";
         $row = Yii::app()->db->createCommand($sql)->queryRow();
         if ($row!==false) {
             $docman = new DocMan($doctype,$docId,'ExpenseSearchForm');
@@ -98,20 +94,6 @@ class ExpenseSearchController extends Controller
             $docman->fileDownload($fileId);
         } else {
             throw new CHttpException(404,'Record not found.');
-        }
-    }
-
-    public function actionListFile() {
-        $model = new ExpenseSearchForm();
-        if (isset($_POST['ExpenseSearchForm'])) {
-            $model->attributes = $_POST['ExpenseSearchForm'];
-
-            $docman = new DocMan($model->docType,$model->docId,'ExpenseSearchForm');
-            $docman->setDocMasterId($model->docType,$model->docId,$model->docMasterId);
-            $result = $docman->genTableFileListEx(true);
-            print json_encode($result);
-        } else {
-            echo "NIL";
         }
     }
 	

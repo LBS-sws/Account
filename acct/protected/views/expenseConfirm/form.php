@@ -50,10 +50,9 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseConfirm Form';
                 );
                 ?>
                 <?php
-                $docExpenId = 'EXPEN_'.(empty($model->id)?0:$model->id);
-                $counter = (isset($model->no_of_attm[$docExpenId])&&$model->no_of_attm[$docExpenId] > 0) ? ' <span class="label label-info">'.$model->no_of_attm[$docExpenId].'</span>' : ' <span class="label label-info"></span>';
+                $counter = ($model->no_of_attm['expen'] > 0) ? ' <span id="docexpen" class="label label-info">'.$model->no_of_attm['expen'].'</span>' : ' <span id="docexpen"></span>';
                 echo TbHtml::button('<span class="fa  fa-file-text-o"></span> '.Yii::t('misc','Attachment').$counter, array(
-                        'class'=>'btn-file-open','data-id'=>(empty($model->id)?0:$model->id),'data-type'=>'EXPEN','data-index'=>0)
+                        'name'=>'btnFile','id'=>'btnFile','data-toggle'=>'modal','data-target'=>'#fileuploadexpen',)
                 );
                 ?>
             </div>
@@ -77,7 +76,7 @@ $this->pageTitle=Yii::app()->name . ' - ExpenseConfirm Form';
 <?php $this->renderPartial('//expenseApply/expenseHistory',array("model"=>$model)); ?>
 <?php $this->renderPartial('//expenseApply/tripForm',array("model"=>$model)); ?>
 
-<?php $this->renderPartial('//site/fileuploadEX',array('model'=>$model,
+<?php $this->renderPartial('//site/fileupload',array('model'=>$model,
     'form'=>$form,
     'doctype'=>'EXPEN',
     'header'=>Yii::t('dialog','File Attachment'),
@@ -106,7 +105,7 @@ $this->widget('bootstrap.widgets.TbModal', array(
 ?>
 
 <?php
-Script::genFileUploadEX($model,$form->id);
+Script::genFileUpload($model,$form->id,'EXPEN');
 $language = Yii::app()->language;
 
 $js = "

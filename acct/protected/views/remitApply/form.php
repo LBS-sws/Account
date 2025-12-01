@@ -9,7 +9,7 @@ $this->pageTitle=Yii::app()->name . ' - RemitApply Form';
 'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
 )); ?>
 <style>
-    input[readonly],select[readonly],label[readonly]{ pointer-events: none;}
+    *[readonly]{ pointer-events: none;}
     .table-fixed{ table-layout: fixed;}
     .table-fixed>tbody>tr>th{ vertical-align: bottom;}
     .select2-container .select2-selection--single{ height: 34px;}
@@ -267,7 +267,7 @@ EOF;
 
     $js = <<<EOF
 $(document).ready(function(){
-	var ct = $('#tblDetail>tbody>tr.changeTr').eq(0).html();
+	var ct = $('#tblDetail>tbody>tr').eq(-1).html();
 	$('#dtltemplate').attr('value',ct);
 });
 
@@ -295,8 +295,7 @@ $('#btnAddRow').on('click',function() {
 			if (id.indexOf('_setId') != -1) $(this).val('');
 			if (id.indexOf('_infoRemark') != -1) $(this).val('');
 			if (id.indexOf('_amtType') != -1){
-			    $(this).val('');
-			    $('#purchase_type').trigger('change');
+			    $(this).val('').trigger('change');
 			}
 		});
 		if (nid != '') {

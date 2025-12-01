@@ -60,7 +60,7 @@ class TemporaryPaymentController extends Controller
 			$model = new TemporaryPaymentForm("audit");
 			$model->attributes = $_POST['TemporaryPaymentForm'];
 			if ($model->validate()) {
-                $model->status_type=9;
+                $model->status_type=6;
 				$model->saveData();
 				$model->scenario = 'edit';
 				Dialog::message(Yii::t('dialog','Information'), Yii::t('give','Confirm Done'));

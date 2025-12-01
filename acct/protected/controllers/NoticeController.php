@@ -36,10 +36,10 @@ class NoticeController extends Controller
 		}
 		if (!empty($type)) {
 			if ($type=='ACTN' || $type=='NOTI' || $type=='ALL') {
-				$model->searchField = $type=='ALL' ? '' :'note_type';
+				$model->searchField = $type=='ALL' ? '' :'ready_bool';
 				switch ($type) {
-					case 'ACTN': $model->searchValue = Yii::t('queue','Action'); break;
-					case 'NOTI': $model->searchValue = Yii::t('queue','Notify'); break;
+					case 'ACTN': $model->searchValue = "未执行"; break;
+					case 'NOTI': $model->searchValue = "未读"; break;
 					case 'ALL': $model->searchValue = ''; break;
 				}
 			}

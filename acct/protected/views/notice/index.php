@@ -38,10 +38,9 @@ $this->pageTitle=Yii::app()->name . ' - Notification';
 				'viewhdr'=>'//notice/_listhdr',
 				'viewdtl'=>'//notice/_listdtl',
 				'search'=>array(
-							'note_dt',
-							'note_type',
-							'subject',
-							'status',
+							'lcd',
+							'flow_title',
+							'ready_bool',
 						),
 		));
 	?>

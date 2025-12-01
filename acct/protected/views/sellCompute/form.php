@@ -32,6 +32,13 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute Form';
 				'submit'=>Yii::app()->createUrl('sellCompute/index')));
 		?>
 	</div>
+            <?php if (SellComputeForm::isVivienne()): ?>
+                <div class="btn-group pull-right" role="group">
+                    <?php echo TbHtml::button('<span class="fa fa-save"></span> 一键计算', array(
+                        'submit'=>Yii::app()->createUrl("sellCompute/auditAll?year={$model->year}&month={$model->month}&id={$model->id}")));
+                    ?>
+                </div>
+            <?php endif ?>
 	</div></div>
 
     <div class="box">
@@ -141,7 +148,7 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute Form';
                     </div>
                     <div class="col-lg-4">
                         <?php
-                        $rowList = array("new_amount","edit_amount","end_amount","performance_amount","performanceedit_amount","performanceend_amount","renewal_amount",
+                        $rowList = array("new_amount","lbs_new_amount","edit_amount","end_amount","recovery_amount","performance_amount","performanceedit_amount","performanceend_amount","perrecovery_amount","renewal_amount",
                             "renewalend_amount","product_amount","install_amount");
                         foreach ($rowList as $item){
                             echo '<div class="form-group" >';
@@ -163,7 +170,7 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute Form';
                     </div>
                     <div class="col-lg-4">
                         <?php
-                        $rowList = array("new_money","edit_money","","out_money","performanceedit_money","",
+                        $rowList = array("new_money","lbs_new_money","edit_money","","","out_money","performanceedit_money","","",
                             "renewal_money","","","install_money");
                         foreach ($rowList as $item){
                             if(!empty($item)){

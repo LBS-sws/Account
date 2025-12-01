@@ -11,7 +11,7 @@ class TransTypeForm extends CFormModel
 
     public $jd_set = array();
     public static $jd_set_list=array(
-        //array("field_id"=>"jd_trans_code","field_type"=>"text","field_name"=>"jd trans code"),
+        array("field_id"=>"jd_trans_code","field_type"=>"text","field_name"=>"jd trans code"),
     );
 	/**
 	 * Declares customized attribute labels.
@@ -35,9 +35,9 @@ class TransTypeForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('trans_type_code, trans_type_desc, adj_type','required'),
+			array('jd_set,trans_type_code, trans_type_desc, adj_type','required'),
 			array('trans_type_code','validateCode'),
-			array('jd_set,trans_cat, counter_type','safe'),
+			array('trans_cat, counter_type','safe'), 
 		);
 	}
 

@@ -13,7 +13,6 @@ class ExpenseConfirmForm extends ExpenseApplyForm
 			array('employee_id,apply_date','required'),
             array('id','validateID'),
             array('employee_id','validateEmployee','on'=>array("audit")),
-            array('no_of_attm,new_of_id, docType,docId, files, removeFileId, docMasterId','safe'),
 		);
 	}
 
@@ -91,13 +90,11 @@ class ExpenseConfirmForm extends ExpenseApplyForm
             $this->payment_id = $row['payment_id'];
             $this->acc_id = $row['acc_id'];
             $this->no_of_attm['expen'] = $row['expendoc'];
-            $this->no_of_attm['EXPEN_'.$index] = $row['expendoc'];
-            $sql = "select *,docman$suffix.countdoc('exinfo',id) as infodoc from acc_expense_info where exp_id='".$index."'";
+            $sql = "select * from acc_expense_info where exp_id='".$index."'";
             $infoRows = Yii::app()->db->createCommand($sql)->queryAll();
             if($infoRows){
                 $this->infoDetail=array();
                 foreach ($infoRows as $infoRow){
-                    $this->no_of_attm['EXINFO_'.$infoRow["id"]] = $infoRow['infodoc'];
                     $this->infoDetail[]=array(
                         "id"=>$infoRow["id"],
                         "expId"=>$infoRow["exp_id"],

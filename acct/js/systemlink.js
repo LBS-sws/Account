@@ -2,10 +2,10 @@ function remoteLoginTwApp(id,url,home) {
 	var homeurl = home+'/ajax/remotelogin';
 	var appurl = url+'/remote/lbsremote.php';
 	var wid = "view"+id;
-	$.ajax({
-		type: 'GET',
+    $.ajax({
+		type: 'GET', 
 		url: homeurl,
-		dataType: 'json',
+		dataType: 'json', 
 		success: function(json) {
 			var x = json;
 			var data = json;
@@ -14,32 +14,32 @@ function remoteLoginTwApp(id,url,home) {
 				var skey = data.sk;
 				var key = data.ky;
 				var lang = data.lang;
-
+				
 				var form = document.createElement("form");
 				form.setAttribute("method", "post");
 				form.setAttribute("action", appurl);
-
+				
 				form.setAttribute("target", wid);
 
-				var hiddenField1 = document.createElement("input");
+				var hiddenField1 = document.createElement("input"); 
 				hiddenField1.setAttribute("type", "hidden");
 				hiddenField1.setAttribute("name", "lbstwid");
 				hiddenField1.setAttribute("value", id);
 				form.appendChild(hiddenField1);
-
-				var hiddenField2 = document.createElement("input");
+	
+				var hiddenField2 = document.createElement("input"); 
 				hiddenField2.setAttribute("type", "hidden");
 				hiddenField2.setAttribute("name", "lbstwkey");
 				hiddenField2.setAttribute("value", key);
 				form.appendChild(hiddenField2);
 
-				var hiddenField3 = document.createElement("input");
+				var hiddenField3 = document.createElement("input"); 
 				hiddenField3.setAttribute("type", "hidden");
 				hiddenField3.setAttribute("name", "lbstwlang");
 				hiddenField3.setAttribute("value", lang);
 				form.appendChild(hiddenField3);
 
-				var hiddenField4 = document.createElement("input");
+				var hiddenField4 = document.createElement("input"); 
 				hiddenField4.setAttribute("type", "hidden");
 				hiddenField4.setAttribute("name", "lbstwskey");
 				hiddenField4.setAttribute("value", skey);
@@ -49,7 +49,7 @@ function remoteLoginTwApp(id,url,home) {
 
 				window.open('', wid);
 
-				form.submit();
+				form.submit();	
 			}
 		},
 		error: function(xhr, status, error) {
@@ -57,15 +57,15 @@ function remoteLoginTwApp(id,url,home) {
 		}
 	});
 }
-
+	
 function remoteLoginOnlib(id,url,home) {
 	var homeurl = home+'/ajax/remoteloginonlib';
 	var appurl = url+'/restapi/index.php/rlogin';
 	var wid = "view"+id;
-	$.ajax({
-		type: 'GET',
+    $.ajax({
+		type: 'GET', 
 		url: homeurl,
-		dataType: 'json',
+		dataType: 'json', 
 		success: function(json) {
 			var rtn = json;
 			if (json!='') {
@@ -74,26 +74,26 @@ function remoteLoginOnlib(id,url,home) {
 //				}, 'json');
 				var id = json.id;
 				var pass = json.pwd;
-
+				
 				var form = document.createElement("form");
 				form.setAttribute("method", "post");
 				form.setAttribute("action", appurl);
-
+				
 				form.setAttribute("target", wid);
 
-				var hiddenField1 = document.createElement("input");
+				var hiddenField1 = document.createElement("input"); 
 				hiddenField1.setAttribute("type", "hidden");
 				hiddenField1.setAttribute("name", "user");
 				hiddenField1.setAttribute("value", id);
 				form.appendChild(hiddenField1);
-
-				var hiddenField2 = document.createElement("input");
+	
+				var hiddenField2 = document.createElement("input"); 
 				hiddenField2.setAttribute("type", "hidden");
 				hiddenField2.setAttribute("name", "pass");
 				hiddenField2.setAttribute("value", pass);
 				form.appendChild(hiddenField2);
 
-				var hiddenField3 = document.createElement("input");
+				var hiddenField3 = document.createElement("input"); 
 				hiddenField3.setAttribute("type", "hidden");
 				hiddenField3.setAttribute("name", "url");
 				hiddenField3.setAttribute("value", url);
@@ -103,7 +103,7 @@ function remoteLoginOnlib(id,url,home) {
 
 				window.open('', wid);
 
-				form.submit();
+				form.submit();	
 			}
 		},
 		error: function(xhr, status, error) {
@@ -114,8 +114,9 @@ function remoteLoginOnlib(id,url,home) {
 }
 
 // 前往派单系统
-function goNewUnited(id, url, home, string, user_id){
+function goNewUnited(id, url, home, string, user_id,code){
 	if(id!=='nu'){ return false; }
+	if(code === false) { alert('该账号未绑定员工号，无法跳转！请联系管理员进行绑定') }
 	var token_time = 43200//设置cookie有效时间 5小时
 
 	var cookie = {
@@ -150,22 +151,26 @@ function goNewUnited(id, url, home, string, user_id){
 			},
 			success: function(json) {
 				// console.log(json)
-				if (json!='') {
+				if (json!='' && json.code==200) {
 					// 设置cookie
-					setCookie(cookie['Token'],json.data.AdminToken,json.data.token_time || token_time)
-					setCookie(cookie['Username'],json.data.name)
-					setCookie(cookie['Nickname'],json.data.nickname)
-					setCookie(cookie['Avatar'],null)
-					setCookie(cookie['SystemName'],json.data.system_name)
-					setCookie(cookie['PageTitle'],json.data.page_title)
-					setCookie(cookie['LogoUrl'],json.data.logo_url)
-					setCookie(cookie['FaviconUrl'],json.data.favicon_url)
-					setCookie(cookie['TokenType'],json.data.token_type)
-					setCookie(cookie['TokenName'],json.data.token_name)
-					setCookie(cookie['Id'],user_id)
-					setCookie(cookie['ttl'],timestamp+parseInt(token_time))
+					setCookie(cookie['Token'], json.data.AdminToken, json.data.token_time || token_time)
+					setCookie(cookie['Username'], json.data.name)
+					setCookie(cookie['Nickname'], json.data.nickname)
+					setCookie(cookie['Avatar'], null)
+					setCookie(cookie['SystemName'], json.data.system_name)
+					setCookie(cookie['PageTitle'], json.data.page_title)
+					setCookie(cookie['LogoUrl'], json.data.logo_url)
+					setCookie(cookie['FaviconUrl'], json.data.favicon_url)
+					setCookie(cookie['TokenType'], json.data.token_type)
+					setCookie(cookie['TokenName'], json.data.token_name)
+					setCookie(cookie['Id'], user_id)
+					setCookie(cookie['ttl'], timestamp + parseInt(token_time))
 
 					window.open(url, '_self');
+				}else if(json.code===300){//未绑定办公室
+					alert('账号在派单系统未设置办公室权限,无法跳转，请联系你的上级处理')
+				}else if(json.code===400){//账号禁用
+					alert('账号在派单系统被禁用,禁止跳转')
 				}else{
 					alert('切换失败，找不到账号')
 				}

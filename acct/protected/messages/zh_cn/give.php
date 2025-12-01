@@ -75,7 +75,6 @@ return array(
 	'JD System Curl' => '金蝶同步相关数据',
 	'jd trans code' => '金蝶结算方式编码',
 	'jd org code' => '金蝶组织编码',
-	'jd acct code' => '金蝶银行账户编码',
 
 	'trip bool' => '是否关联出差申请',
 	'trip id' => '选择出差申请',
@@ -106,9 +105,5 @@ return array(
 	'purpose text' => '用途',
 	'loan start date' => '借款开始日期',
 	'loan end date' => '借款结束日期',
-
-	'purchase type' => '付款类别',
-	'prepayment' => '预付款',
-	'payee code' => '供应商编码',
 );
 ?>

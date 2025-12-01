@@ -98,7 +98,7 @@ class TranstypeController extends Controller
 		$model = new TransTypeForm('delete');
 		if (isset($_POST['TransTypeForm'])) {
 			$model->attributes = $_POST['TransTypeForm'];
-			if ($model->isOccupied($model->trans_type_code)) {
+			if ($model->isOccupied($model->id)) {
 				Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','This record is already in use'));
 				$this->redirect(Yii::app()->createUrl('transtype/edit',array('index'=>$model->trans_type_code)));
 			} else {

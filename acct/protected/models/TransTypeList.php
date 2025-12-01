@@ -14,16 +14,14 @@ class TransTypeList extends CListPageModel
 	
 	public function retrieveDataByPage($pageNum=1)
 	{
-		$city = Yii::app()->user->city();
-		$version = Yii::app()->params['version'];
-		$citystr = ($version=='intl' ? " and city='$city' " : '');
+		$city = Yii::app()->user->city_allow();
 		$sql1 = "select * 
 				from acc_trans_type 
-				where trans_type_code <> '' $citystr
+				where trans_type_code <> '' 
 			";
 		$sql2 = "select count(trans_type_code)
 				from acc_trans_type 
-				where trans_type_code <> '' $citystr
+				where trans_type_code <> '' 
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -77,7 +75,6 @@ class TransTypeList extends CListPageModel
 					'trans_type_desc'=>$record['trans_type_desc'],
 					'adj_type'=>$record['adj_type']=='Y'?Yii::t('misc','Yes'):Yii::t('misc','No'),
 					'trans_cat'=>$record['trans_cat']=='OUT'?Yii::t('code','Out'):Yii::t('code','In'),
-					'city'=>($version=='intl' ? $record['city'] : ''),
 				);
 			}
 		}

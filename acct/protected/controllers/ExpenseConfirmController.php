@@ -28,7 +28,7 @@ class ExpenseConfirmController extends Controller
 				'expression'=>array('ExpenseConfirmController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view','filedownload','listFile'),
+				'actions'=>array('index','view','filedownload'),
 				'expression'=>array('ExpenseConfirmController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -113,11 +113,7 @@ class ExpenseConfirmController extends Controller
 	}
 
     public function actionFileDownload($mastId, $docId, $fileId, $doctype) {
-        if($doctype==="EXINFO"){
-            $sql = "select id from acc_expense_info where id = $docId";
-        }else{
-            $sql = "select id from acc_expense where id = $docId";
-        }
+        $sql = "select id from acc_expense where id = $docId";
         $row = Yii::app()->db->createCommand($sql)->queryRow();
         if ($row!==false) {
             $docman = new DocMan($doctype,$docId,'ExpenseConfirmForm');
@@ -125,20 +121,6 @@ class ExpenseConfirmController extends Controller
             $docman->fileDownload($fileId);
         } else {
             throw new CHttpException(404,'Record not found.');
-        }
-    }
-
-    public function actionListFile() {
-        $model = new ExpenseConfirmForm();
-        if (isset($_POST['ExpenseConfirmForm'])) {
-            $model->attributes = $_POST['ExpenseConfirmForm'];
-
-            $docman = new DocMan($model->docType,$model->docId,'ExpenseConfirmForm');
-            $docman->setDocMasterId($model->docType,$model->docId,$model->docMasterId);
-            $result = $docman->genTableFileListEx(true);
-            print json_encode($result);
-        } else {
-            echo "NIL";
         }
     }
 	

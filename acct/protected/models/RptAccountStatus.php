@@ -12,6 +12,33 @@ class RptAccountStatus extends CReport {
 		$this->submitEmail($output);
 		return $output;
 	}
+
+	public function genReportMore() {
+		$this->retrieveData();
+		$output = $this->printReport();
+		$this->submitEmailMore($output);
+		return $output;
+	}
+	
+	public function submitEmailMore($msg) {
+		$city = $this->criteria['CITY'];
+		$date = $this->criteria['TARGET_DT'];
+		$to = array('rejina@lbsgroup.com.cn');
+		$cc = array();
+		
+		$subject = Yii::t('report','Payment Receive Daily Report').' ('.General::getCityName($city).') - '.General::toDate($date);
+		$desc = Yii::t('report','Customer Cash In Daily Report').' ('.General::getCityName($city).') - '.General::toDate($date);
+		$param = array(
+				'from_addr'=>'it@lbsgroup.com.hk',
+				'to_addr'=>json_encode($to),
+				'cc_addr'=>json_encode($cc),
+				'subject'=>$subject,
+				'description'=>$desc,
+				'message'=>$msg,
+			);
+		$connection = Yii::app()->db;
+		$this->sendEmail($connection, $param);
+	}
 	
 	public function retrieveData() {
 		$start_dt = $this->criteria['TARGET_DT'].' 00:00:00';

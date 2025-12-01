@@ -238,6 +238,7 @@ class InvoiceForm extends CFormModel
         if(!empty($arr['data'])){
             foreach ($arr['data'] as $a){
                 $invoice_no = key_exists("invoice_no",$a)?$a["invoice_no"]:"";
+                $invoice_dt = key_exists("invoice_dt",$a)?$a["invoice_dt"]:"";
                 $city_not_no = explode($this->city,$invoice_no);
                 $invoice_no = end($city_not_no);
 //	        $sql_s="select id from acc_invoice where dates='".$invoice_dt."' and customer_account='".$a['customer_code']."' and invoice_no='".$a['invoice_no']."'";
@@ -247,7 +248,6 @@ class InvoiceForm extends CFormModel
                 if(!$records){
 //        $sql="insert into acc_invoice (dates,payment_term,customer_po_no,customer_account,salesperson,sales_order_no,sales_order_date,ship_via,invoice_company,invoice_address,invoice_tel,delivery_company,delivery_address,delivery_tel,description,quantity,unit_price,disc,amount,sub_total,gst,total_amount,generated_by,lcu,luu) value ()";
                     $uid = Yii::app()->user->id;
-                    $invoice_dt = key_exists("invoice_dt",$a)?$a["invoice_dt"]:"";
                     $customer_code = key_exists("customer_code",$a)?$a["customer_code"]:"";
                     //$name_zh = key_exists("name_zh",$a)?$a["name_zh"]:"";
                     $head_type = $this->getLastHeadType($invoice_dt,$customer_code);
@@ -335,6 +335,10 @@ class InvoiceForm extends CFormModel
                         }
 						$old_no = implode(",",$old_no);
 						$old_no = mb_strlen($old_no,'UTF-8')>240?mb_substr($old_no,0,240,'UTF-8'):$old_no;
+                        if (strpos($invoice_no,'INV')!==0){
+                            $remarks.=empty($remarks)?'':"\n";
+                            $remarks.=date("Y年n月",strtotime($invoice_dt))."服務費用";
+                        }
                         $updateArr=array(
                             'invoice_no'=>$invoice_no,
                             'old_no'=>$old_no,

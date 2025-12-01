@@ -31,10 +31,6 @@ $this->pageTitle=Yii::app()->name . ' - T3 Balance Checking';
 					'submit'=>Yii::app()->createUrl('t3audit/new'), 
 				)); 
 		?>
-<?php 
-// Dummy Button for include jQuery.yii.submitForm
-echo TbHtml::button('dummyButton', array('style'=>'display:none','disabled'=>true,'submit'=>'#',));
-?>		
 	</div>
 	</div></div>
 	<?php 
@@ -56,6 +52,11 @@ echo TbHtml::button('dummyButton', array('style'=>'display:none','disabled'=>tru
 		));
 	?>
 </section>
+<?php
+// Dummy Button for include jQuery.yii.submitForm
+echo TbHtml::button('dummyButton', array('style'=>'display:none','disabled'=>true,'submit'=>'#',));
+?>
+
 <?php
 	echo $form->hiddenField($model,'pageNum');
 	echo $form->hiddenField($model,'totalRow');

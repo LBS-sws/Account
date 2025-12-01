@@ -27,8 +27,6 @@ class ExpenseApplyForm extends CFormModel
 	public $lcd;
 	public $lud;
 
-	public $finance_bool=false;
-
 	public $infoDetail=array(
 	    array(
             "id"=>"",
@@ -48,21 +46,17 @@ class ExpenseApplyForm extends CFormModel
     public $no_of_attm = array(
         'expen'=>0
     );
-    public $new_of_id = array();
     public $docType = 'EXPEN';
-    public $docId = 0;
     public $docMasterId = 0;
     public $files;
     public $removeFileId = 0;
     public $tableDetail=array(
         'local_bool'=>0,//费用是否归属本地区 0：否 1：是
         'payment_condition'=>null,//付款条件
-        'payment_company'=>null,//支付公司
     );
     protected $fileList=array(
         array("field_id"=>"local_bool","field_type"=>"list","field_name"=>"local bool","display"=>"none"),//费用是否归属本地区
         array("field_id"=>"payment_condition","field_type"=>"list","field_name"=>"payment condition","display"=>"none"),//付款条件
-        array("field_id"=>"payment_company","field_type"=>"list","field_name"=>"payment company","display"=>"none"),//支付公司
     );
 
 	/**
@@ -105,7 +99,7 @@ class ExpenseApplyForm extends CFormModel
             array('tableDetail','validateDetail'),
             array('infoDetail','validateInfo'),
             array('status_type','validateStatus'),
-            array('no_of_attm,new_of_id, docType,docId, files, removeFileId, docMasterId','safe'),
+            array('no_of_attm, docType, files, removeFileId, docMasterId','safe'),
         );
 	}
 
@@ -175,8 +169,7 @@ class ExpenseApplyForm extends CFormModel
         $typeTwoList = ExpenseFun::getAmtTypeTwo();
         $localSetID = ExpenseFun::getLocalSetIdToCity($this->city);
         $tripList =ExpenseFun::getTripListForEmployeeID($this->employee_id,$this->id);
-        foreach ($this->infoDetail as $rowKey=>$list){
-            $list["rowKey"] = $rowKey;
+        foreach ($this->infoDetail as $list){
             if($this->tableDetail["local_bool"]==1){
                 $list["setId"] = $localSetID;//如果费用是归属本地区,强制转换
             }
@@ -229,9 +222,7 @@ class ExpenseApplyForm extends CFormModel
             $this->addError($attribute, "报销明细最多填写30条");
             return false;
         }
-        if(empty($this->getErrors())){
-            $this->infoDetail = array_merge($updateList,$deleteList);
-        }
+        $this->infoDetail = array_merge($updateList,$deleteList);
     }
 
     public function validateEmployee($attribute, $params) {
@@ -282,13 +273,11 @@ class ExpenseApplyForm extends CFormModel
             $this->remark = $row['remark'];
             $this->reject_note = $row['reject_note'];
             $this->no_of_attm['expen'] = $row['expendoc'];
-            $this->no_of_attm['EXPEN_'.$index] = $row['expendoc'];
-            $sql = "select *,docman$suffix.countdoc('exinfo',id) as infodoc from acc_expense_info where exp_id='".$index."'";
+            $sql = "select * from acc_expense_info where exp_id='".$index."'";
             $infoRows = Yii::app()->db->createCommand($sql)->queryAll();
             if($infoRows){
                 $this->infoDetail=array();
                 foreach ($infoRows as $infoRow){
-                    $this->no_of_attm['EXINFO_'.$infoRow["id"]] = $infoRow['infodoc'];
                     $this->infoDetail[]=array(
                         "id"=>$infoRow["id"],
                         "expId"=>$infoRow["exp_id"],
@@ -309,8 +298,6 @@ class ExpenseApplyForm extends CFormModel
                 foreach ($this->fileList as $detailRow){
                     if(key_exists($detailRow["field_id"],$tableDetailList)){
                         $this->tableDetail[$detailRow["field_id"]] = $tableDetailList[$detailRow["field_id"]]["field_value"];
-                    }else{
-                        $this->tableDetail[$detailRow["field_id"]] = "";
                     }
                 }
             }
@@ -392,8 +379,6 @@ class ExpenseApplyForm extends CFormModel
         $tdTwoList = ExpenseFun::getAmtTypeTwo();
         $setNameList = ExpenseSetNameForm::getExpenseSetAllList();
         $amtTypeList = ExpenseFun::getAmtTypeOne();
-        $companyID = ExpenseFun::getExpenseTableDetailForIDAndField($model->id,"payment_company");
-        $companyName = ExpenseFun::getCompanyNameToID($companyID);
         $tdCount = count($tdTwoList);
         $tableOneWidth=270;
         $tableTwoWidth=$tableOneWidth*2;
@@ -419,10 +404,7 @@ EOF;
 </tr>
 <tr>
 <td style="border-top:1px solid black;border-right:1px solid black;width:16%">&nbsp;部门</td><td style="width:34%;border-top:1px solid black;border-right:1px solid black;">&nbsp;{$employeeList['department']}</td>
-<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;报销编号</td><td style="width:30%;border-top:1px solid black;border-right:2px solid black;">&nbsp;{$model->exp_code}</td>
-</tr>
-<tr>
-<td style="border-top:1px solid black;border-right:1px solid black;width:16%">&nbsp;支付公司</td><td colspan="3" style="border-top:1px solid black;border-right:2px solid black;">&nbsp;{$companyName}</td>
+<td colspan="2" style="border-top:1px solid black;border-right:2px solid black;">&nbsp;</td>
 </tr>
 </table>
 EOF;
@@ -512,21 +494,6 @@ EOF;
 </table>
 EOF;
         $pdf->writeHTML($html, true, false, false, false, '');
-
-        $auditHtml = "";
-        $auditList = ExpenseFun::getAuditListForID($model->id);
-        if(!empty($auditList)){
-            foreach ($auditList as $userList){
-                $userList['audit_user'] = ExpenseFun::getEmployeeNameForUsername($userList['audit_user']);
-                $auditHtml.='<tr style="line-height: 30px;">';
-                $auditHtml.='<td style="border-top:1px solid black;border-right:1px solid black;width:16%">&nbsp;审核人</td>';
-                $auditHtml.='<td style="width:34%;border-top:1px solid black;border-right:1px solid black;">&nbsp;'.$userList['audit_user'].'</td>';
-                $auditHtml.='<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;审核时间</td>';
-                $auditHtml.='<td style="width:30%;border-top:1px solid black;border-right:2px solid black;">&nbsp;'.$userList['lcd'].'</td> ';
-                $auditHtml.='</tr>';
-            }
-        }
-
         //审核人
         $html=<<<EOF
 <table border="0" width="{$tableOneWidth}px" cellspacing="0" cellpadding="0" style="border-bottom: 2px solid black;border-left: 2px solid black;">
@@ -534,12 +501,19 @@ EOF;
 <th colspan="2" style="background-color:#BFBFBF;border-left: 2px solid black;border-top: 2px solid black;border-right: 2px solid black;">&nbsp;<b>PART C:审批签字</b></th>
 <th colspan="2" style="border-bottom:2px solid black;">&nbsp;</th>
 </tr>
-{$auditHtml}
+<tr style="line-height: 30px;">
+<td style="border-top:1px solid black;border-right:1px solid black;width:16%">&nbsp;申请人</td><td style="width:34%;border-top:1px solid black;border-right:1px solid black;">&nbsp;</td>
+<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;部门负责人</td><td style="width:30%;border-top:1px solid black;border-right:2px solid black;">&nbsp;</td>
+</tr>
+<tr style="line-height: 30px;">
+<td style="border-top:1px solid black;border-right:1px solid black;width:16%">&nbsp;财务部</td><td style="width:34%;border-top:1px solid black;border-right:1px solid black;">&nbsp;</td>
+<td style="border-top:1px solid black;border-right:1px solid black;width:20%">&nbsp;总经理</td><td style="width:30%;border-top:1px solid black;border-right:2px solid black;">&nbsp;</td>
+</tr>
 </table>
 EOF;
         $y1=$pdf->GetY();
         $x1=$pdf->GetX()-1;
-        $height = $y1<160?160:$y1;
+        $height = $y1<170?170:$y1;
         $pdf->writeHTMLCell(200, 27,$x1,$height, $html,0);
 
 	    return $html;
@@ -564,27 +538,12 @@ EOF;
 	}
 
     protected function updateDocman(&$connection, $doctype) {
-        $suffix = Yii::app()->params['envSuffix'];
-        $uid = Yii::app()->user->id;
-        if(!empty($this->new_of_id)){
-            foreach ($this->new_of_id as $mastId=>$old_str){
-                $old_list = explode("_",$old_str);
-                if(!empty($mastId)&&count($old_list)==2){//新增时含有附件
-                    $old_key = $old_list[0];
-                    $old_id = $old_key=="EXPEN"?$this->id:$old_list[1];
-                    $boolRow = Yii::app()->db->createCommand()->select('id')->from("docman{$suffix}.dm_master")
-                        ->where("doc_id=:doc_id and doc_type_code=:code",array(":doc_id"=>$old_id,":code"=>$old_key))
-                        ->queryRow();
-                    if(!$boolRow){
-                        $connection->createCommand()->update("docman{$suffix}.dm_master", array(
-                            "doc_id"=>$old_id,
-                        ), "id=:id and lcu=:lcu and doc_type_code=:code", array(
-                            ":id" =>$mastId,
-                            ":lcu" =>$uid,
-                            ":code" =>$old_key,
-                        ));
-                    }
-                }
+        if ($this->scenario=='new') {
+            $docidx = strtolower($doctype);
+            if ($this->docMasterId[$docidx] > 0) {
+                $docman = new DocMan($doctype,$this->id,get_class($this));
+                $docman->masterId = $this->docMasterId[$docidx];
+                $docman->updateDocId($connection, $this->docMasterId[$docidx]);
             }
         }
     }
@@ -634,18 +593,6 @@ EOF;
                             "trip_id"=>empty($list["tripId"])||!is_numeric($list["tripId"])?null:$list["tripId"],
                             "info_json"=>key_exists("infoJson",$list)?$list["infoJson"]:"[]",
                         ));
-
-                        $rowKey = isset($list["rowKey"])?$list["rowKey"]:0;
-                        $info_id = Yii::app()->db->getLastInsertID();
-
-                        echo "<br/>";
-                        if(!empty($this->new_of_id)){
-                            foreach ($this->new_of_id as $mastId=>$old_str){
-                                if($old_str === "EXINFO_{$rowKey}"){
-                                    $this->new_of_id[$mastId] = "EXINFO_{$info_id}";
-                                }
-                            }
-                        }
                     }
                 }
                 break;
@@ -667,16 +614,6 @@ EOF;
                                     "trip_id"=>empty($list["tripId"])||!is_numeric($list["tripId"])?null:$list["tripId"],
                                     "info_json"=>key_exists("infoJson",$list)?$list["infoJson"]:"[]",
                                 ));
-
-                                $rowKey = isset($list["rowKey"])?$list["rowKey"]:0;
-                                $info_id = Yii::app()->db->getLastInsertID();
-                                if(!empty($this->new_of_id)){
-                                    foreach ($this->new_of_id as $mastId=>$old_str){
-                                        if($old_str === "EXINFO_{$rowKey}"){
-                                            $this->new_of_id[$mastId] = "EXINFO_{$info_id}";
-                                        }
-                                    }
-                                }
                             }else{
                                 $connection->createCommand()->update("acc_expense_info", array(
                                     "set_id"=>$list["setId"],
@@ -758,27 +695,8 @@ EOF;
         }
 
         $this->saveHistory($connection);
-        $this->sendEmail($connection);
 		return true;
 	}
-
-    protected function sendEmail($connection){
-        if($this->status_type==2){
-            $subject=ExpenseFun::getTableStrToNum($this->table_type);
-            $subject.=" - 申请";
-            $employeeList = ExpenseFun::getEmployeeListForID($this->employee_id);
-            $emailModel = new Email($subject,'',$subject);
-            $message = "<h3>{$subject}</h3>";
-            $message.= "<p>申请员工：".$employeeList["employee"]."</p>";
-            $message.= "<p>员工部门：".$employeeList["department"]."</p>";
-            $message.= "<p>申请时间：".$this->apply_date."</p>";
-            $message.= "<p>报销编号：".$this->exp_code."</p>";
-            $message.= "<p>申请总金额：".$this->amt_money."</p>";
-            $emailModel->setMessage($message);
-            $emailModel->addEmailToLcu($this->audit_user);
-            $emailModel->sent();
-        }
-    }
 
 	protected function updateThisExpCode($connection){
         $this->id = Yii::app()->db->getLastInsertID();

@@ -44,10 +44,10 @@ class AppraisalList extends CListPageModel
 
     public function init(){
         if(empty($this->year_no)||!is_numeric($this->year_no)){
-            $this->year_no = date("Y",strtotime("-1 months"));
+            $this->year_no = date("Y");
         }
         if(empty($this->month_no)||!is_numeric($this->month_no)){
-            $this->month_no = date("n",strtotime("-1 months"));
+            $this->month_no = date("n");
         }
         if($this->year_no==2025&&$this->month_no==1){
             $this->month_no=2;
@@ -69,9 +69,16 @@ class AppraisalList extends CListPageModel
                 LEFT JOIN hr$suffix.hr_dept c on b.position=c.id  	
                 LEFT JOIN security$suffix.sec_city e on a.city=e.code 		
                 LEFT JOIN account$suffix.acc_appraisal f on f.employee_id=b.id AND f.year_no={$this->year_no} AND f.month_no={$this->month_no}		
-				where a.city in ({$citylist}) and a.year_no={$this->year_no} and a.month_no={$this->month_no}
-				AND DATE_FORMAT(b.entry_time, '%Y-%m-%d') BETWEEN '{$minEntry}' and '{$maxEntry}'
-				AND (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
+				where a.city in ({$citylist}) and a.year_no={$this->year_no} and a.month_no={$this->month_no} AND 
+				(
+				  (f.id is NOT NULL)
+				   OR 
+				  (
+                    DATE_FORMAT(b.entry_time, '%Y-%m-%d') BETWEEN '{$minEntry}' and '{$maxEntry}'
+                    AND (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
+				  )
+				)
+				
 			";
 		$sql2 = "select count(b.id)
 				from acc_service_comm_hdr a
@@ -79,9 +86,15 @@ class AppraisalList extends CListPageModel
                 LEFT JOIN hr$suffix.hr_dept c on b.position=c.id  	
                 LEFT JOIN security$suffix.sec_city e on a.city=e.code 	
                 LEFT JOIN account$suffix.acc_appraisal f on f.employee_id=b.id AND f.year_no={$this->year_no} AND f.month_no={$this->month_no}		
-				where a.city in ({$citylist}) and a.year_no={$this->year_no} and a.month_no={$this->month_no}
-				AND DATE_FORMAT(b.entry_time, '%Y-%m-%d') BETWEEN '{$minEntry}' and '{$maxEntry}'
-				AND (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
+				where a.city in ({$citylist}) and a.year_no={$this->year_no} and a.month_no={$this->month_no} AND 
+				(
+				  (f.id is NOT NULL)
+				   OR 
+				  (
+                    DATE_FORMAT(b.entry_time, '%Y-%m-%d') BETWEEN '{$minEntry}' and '{$maxEntry}'
+                    AND (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
+				  )
+				)
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
@@ -119,17 +132,20 @@ class AppraisalList extends CListPageModel
 		$list = array();
 		$this->attr = array();
 		if (count($records) > 0) {
+            $thisDate = SellComputeForm::isVivienne()?"0000/00/00":date("Y/m/01");
+            $log_dt = date("Y/m/d",strtotime("{$this->year_no}/{$this->month_no}/01"));
+            $ltNowDate = $log_dt<$thisDate;
 		    $userIDList = AppraisalForm::getSalesAccessForMe();
 		    $quaStr = $this->year_no."年".$this->month_no."月";
 			foreach ($records as $k=>$record) {
-				$this->attr[] = array(
+                $this->attr[] = array(
                     'id'=>$record['id'],
                     'code'=>$record['code'],
                     'name'=>$record['name'],
                     'time'=>$quaStr,
                     'city_name'=>$record['city_name'],
                     'dept_name'=>$record['dept_name'],
-                    'ready'=>in_array($record["id"],$userIDList),
+                    'ready'=>in_array($record["id"],$userIDList)&&!$ltNowDate,
                     'entry_time'=>General::toDate($record['entry_time']),
                     'status_type'=>AppraisalForm::getStatusStr($record['status_type']),
                     'appraisal_money'=>$record['status_type']!=1?"-":floatval($record['appraisal_amount'])*20,

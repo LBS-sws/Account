@@ -103,7 +103,11 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        //$url = Yii::app()->user->returnUrl;
         $lbsUrl = Yii::app()->getBaseUrl(true);
+        if(isset($_GET["user_id"])){
+            $lbsUrl.="?user_id=".$_GET["user_id"];//多用户登录
+        }
         $muUrl = Yii::app()->params['MHCurlRootURL']."/cas/login?service=".$lbsUrl;
         $this->redirect($muUrl);
     }
@@ -134,8 +138,10 @@ class SiteController extends Controller
 			}
 			else
 			{
-				$message=CHtml::errorSummary($model);
-				Dialog::message('Validation Message', $message);
+                $errorCode = $model->errorCode;
+                $message=CHtml::errorSummary($model);
+                $Validation_Message = $errorCode == UserIdentity::ERROR_RESET_PASSWORD ? $_POST['LoginForm']['username'] : 'Validation Message';
+                Dialog::message($Validation_Message, $message,$errorCode);
 			}
 		}
 		// display the login form
@@ -149,7 +155,7 @@ class SiteController extends Controller
 	public function actionLogout()
 	{
         Yii::app()->user->logout();
-        $lbsUrl = Yii::app()->getBaseUrl(true);
+        $lbsUrl = Yii::app()->getBaseUrl(true)."/site/login";
         $url = Yii::app()->params['MHCurlRootURL']."/cas/logout?service=".$lbsUrl;
         //$result = file_get_contents($url);//单点登出门户网站
         $this->redirect($url);

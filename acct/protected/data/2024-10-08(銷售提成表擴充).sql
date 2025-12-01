@@ -10,3 +10,9 @@ SET a.supplement_money=(
 );
 
 UPDATE acc_service_comm_dtl set supplement_money=0 where supplement_money is null;
+
+ALTER TABLE acc_service_comm_dtl ADD COLUMN lbs_new_amount decimal(11,2) NULL DEFAULT 0.00 COMMENT '利比斯提成' AFTER new_amount;
+ALTER TABLE acc_service_comm_dtl ADD COLUMN lbs_new_money decimal(11,2) NULL DEFAULT 0.00 COMMENT '利比斯业绩' AFTER new_amount;
+
+ALTER TABLE acc_service_comm_dtl ADD COLUMN recovery_amount decimal(11,2) NULL DEFAULT 0.00 COMMENT '恢复提成' AFTER new_amount;
+ALTER TABLE acc_service_comm_dtl ADD COLUMN perrecovery_amount decimal(11,2) NULL DEFAULT 0.00 COMMENT '跨区恢复提成' AFTER new_amount;

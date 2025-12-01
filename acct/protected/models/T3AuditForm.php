@@ -321,6 +321,12 @@ class T3AuditForm extends CFormModel
 				$this->record[$i]['tot_adj_t'] = $this->record[$i]['bal_t3'] - $this->record[$i]['tot_tr_lnr'] + $this->record[$i]['tot_tp_lnp'];
 				$this->record[$i]['tot_adj_l'] = $this->record[$i]['bal_lbs'] - $this->record[$i]['tot_lr_tnr'] + $this->record[$i]['tot_lp_tnp'];
 			}
+			if(empty($this->record[$i]['t3record'])){
+                $this->record[$i]['t3record'] = array(array('id'=>'0','adjtype'=>'','amount'=>'','remarks'=>'','uflag'=>'N'));
+            }
+			if(empty($this->record[$i]['lbsrecord'])){
+			    $this->record[$i]['lbsrecord'] = array(array('id'=>'0','adjtype'=>'','amount'=>'','remarks'=>'','uflag'=>'N'));
+            }
 			//empty($this->record[$i]['t3record']) && $this->record[$i]['t3record'] = array(array('id'=>'0','adjtype'=>'','amount'=>'','remarks'=>'','uflag'=>'N'));
 			//empty($this->record[$i]['lbsrecord']) && $this->record[$i]['lbsrecord'] = array(array('id'=>'0','adjtype'=>'','amount'=>'','remarks'=>'','uflag'=>'N'));
 		}

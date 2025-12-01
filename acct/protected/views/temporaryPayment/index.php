@@ -11,7 +11,7 @@ $this->pageTitle=Yii::app()->name . ' - TemporaryPayment';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('app','Temporary Payment'); ?></strong>
+		<strong><?php echo Yii::t('app','Remit Payment'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
@@ -24,7 +24,7 @@ $this->pageTitle=Yii::app()->name . ' - TemporaryPayment';
 
 <section class="content">
 	<?php $this->widget('ext.layout.ListPageWidget', array(
-			'title'=>Yii::t('app','Temporary Apply'),
+			'title'=>Yii::t('app','Remit Apply'),
 			'model'=>$model,
 				'viewhdr'=>'//temporaryPayment/_listhdr',
 				'viewdtl'=>'//temporaryPayment/_listdtl',

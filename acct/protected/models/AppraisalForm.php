@@ -18,9 +18,13 @@ class AppraisalForm extends CFormModel
     public $new_json;
     public $appraisal_json;
     public $status_type;
+    public $last_num_score=0;
+    public $last_score_money=0;
 
     public $ready=true;
 
+    public $ltNowDate=false;//小于当前日期：true
+    public $systemRun=false;//小于当前日期：true
 	/**
 	 * Declares customized attribute labels.
 	 * If not declared here, an attribute would have a label that is
@@ -37,17 +41,83 @@ class AppraisalForm extends CFormModel
 			'new_amount'=>Yii::t('service','new amount'),
 			'bonus_amount'=>Yii::t('service','bonus amount'),
 			'appraisal_amount'=>Yii::t('service','appraisal amount'),
+			'last_num_score'=>"补上月评分",
+			'last_score_money'=>"补上月评分金额",
 		);
 	}
 
 	public function rules()
 	{
 		return array(
-			array('id,employee_id','safe'),
+			array('id,employee_id,last_num_score,last_score_money','safe'),
+            array('id','validateID'),
 			array('employee_id','required'),
 			array('employee_id','validateEmployee'),
+            array('last_num_score','validateLastScore'),
 		);
 	}
+
+    public function setLTNowDate(){
+        $thisDate = SellComputeForm::isVivienne()?"0000/00/00":date("Y/m/01");
+        $log_dt = date("Y/m/d",strtotime("{$this->year_no}/{$this->month_no}/01"));
+        $this->ltNowDate = $log_dt<$thisDate;
+    }
+
+    public function validateLastScore($attribute, $params) {
+        $lastRow = $this->getLastAppraisalRow();
+        if($lastRow){
+            if(isset($_POST['AppraisalForm']['last_num_score'])){
+                $this->last_num_score = $_POST['AppraisalForm']['last_num_score'];
+            }
+            $lastRow['num_score'] = floatval($lastRow['num_score']);
+            if(empty($lastRow['num_score'])){
+                $last_num_score = $this->last_num_score;
+                $last_num_score = is_numeric($last_num_score)?floatval($last_num_score):0;
+                $this->last_num_score = $last_num_score;
+                if($last_num_score<0||$last_num_score>12){
+                    $this->addError($attribute, "补上月评分必须在0至12之间");
+                }else{
+                    $this->last_score_money = round($last_num_score*20,2);
+                }
+            }
+        }else{
+            $this->last_num_score = 0;
+            $this->last_score_money = 0;
+        }
+    }
+
+    public function getLastAppraisalRow(){
+        $timer = "{$this->year_no}/{$this->month_no}/01";
+        $lastYear = date("Y",strtotime($timer." - 1 months"));
+        $lastMonth = date("n",strtotime($timer." - 1 months"));
+        $row = Yii::app()->db->createCommand()->select("*")->from("acc_appraisal")
+            ->where("employee_id=:employee_id  AND year_no={$lastYear} AND month_no={$lastMonth}",array(":employee_id"=>$this->employee_id))->queryRow();
+        return $row;
+    }
+
+    public function validateID($attribute, $params) {
+        $thisDate = SellComputeForm::isVivienne()?"0000/00/00":date("Y/m/01");
+        $scenario = $this->getScenario();
+        $id= empty($this->id)?0:$this->id;
+        $row = Yii::app()->db->createCommand()->select("a.*")->from("acc_appraisal a")
+            ->where("a.id=:id",array(":id"=>$id))->queryRow();
+        if($row){
+            $row["log_dt"] = date("Y/m/d",strtotime("{$row["year_no"]}/{$row["month_no"]}/01"));
+            $this->ltNowDate = $row["log_dt"]<$thisDate;
+            if(in_array($scenario,array("back","edit"))){
+                if($row["log_dt"]<$thisDate){
+                    $this->addError($attribute, "无法固定或取消({$row["log_dt"]})时间段的数据");
+                }
+            }else{
+                $updateBool = $row["log_dt"]<$thisDate;//验证修改前的时间
+                if($updateBool){
+                    $_POST["num_score"] = $row["num_score"];
+                }
+            }
+        }else{
+            $this->addError($attribute, "数据异常，请刷新重试");
+        }
+    }
 
 	public function validateEmployee($attribute, $params) {
 	    if(!$this->getAppraisalForEmployeeID($this->employee_id)){
@@ -69,7 +139,7 @@ class AppraisalForm extends CFormModel
 	private function setModelReady(){
         $this->ready = false;
         $suffix = Yii::app()->params['envSuffix'];
-        $lcu = Yii::app()->user->id;
+        $lcu = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
         $bindingRow = Yii::app()->db->createCommand()->select("employee_id")
             ->from("hr{$suffix}.hr_binding")
             ->where("user_id='{$lcu}'")
@@ -95,7 +165,7 @@ class AppraisalForm extends CFormModel
 
 	public static function getSalesAccessForMe(){
         $suffix = Yii::app()->params['envSuffix'];
-        $lcu = Yii::app()->user->id;
+        $lcu = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
         $bindingRow = Yii::app()->db->createCommand()->select("employee_id")
             ->from("hr{$suffix}.hr_binding")
             ->where("user_id='{$lcu}'")
@@ -123,13 +193,15 @@ class AppraisalForm extends CFormModel
         return $userList;
     }
 
-	private function getAppraisalForEmployeeID($employee_id){
+	private function getAppraisalForEmployeeID($employee_id,$bool=true){
         $suffix = Yii::app()->params['envSuffix'];
-        $session = Yii::app()->session;
-        if (isset($session['appraisal_xs08']) && !empty($session['appraisal_xs08'])) {
-            $criteria = $session['appraisal_xs08'];
-            $this->year_no = $criteria["year_no"];
-            $this->month_no = $criteria["month_no"];
+        if($bool){
+            $session = Yii::app()->session;
+            if (isset($session['appraisal_xs08']) && !empty($session['appraisal_xs08'])) {
+                $criteria = $session['appraisal_xs08'];
+                $this->year_no = $criteria["year_no"];
+                $this->month_no = $criteria["month_no"];
+            }
         }
         if(empty($this->year_no)||!is_numeric($this->year_no)){
             $this->year_no = date("Y",strtotime("-1 months"));
@@ -164,22 +236,26 @@ class AppraisalForm extends CFormModel
             $this->visit_sum = floatval($row["visit_sum"]);
             $this->num_score = floatval($row["num_score"]);
             $this->appraisal_amount = floatval($row["appraisal_amount"]);
+            $this->last_num_score = floatval($row["last_num_score"]);
+            $this->last_score_money = floatval($row["last_score_money"]);
             $this->new_json = empty($row["new_json"])?array():json_decode($row["new_json"],true);
             $this->appraisal_json = empty($row["appraisal_json"])?array():json_decode($row["appraisal_json"],true);
         }else{
             $this->employee_id = $employee_id;
             $this->status_type = 0;
             $this->num_score = 0;
+            $this->last_num_score = 0;
+            $this->last_score_money = 0;
             Yii::app()->db->createCommand()->insert("acc_appraisal",array(
                 "employee_id"=>$employee_id,
                 "year_no"=>$this->year_no,
                 "month_no"=>$this->month_no,
-                "lcu"=>Yii::app()->user->id,
+                "lcu"=>Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id,
                 "city"=>$this->city
             ));
             $this->id = Yii::app()->db->getLastInsertID();
         }
-        if($this->status_type!=1){
+        if($this->status_type!=1||!$bool){
             $this->new_amount = 0;
             $this->setNewMoneyAmt();
             $this->visit_sum = 0;
@@ -260,11 +336,11 @@ class AppraisalForm extends CFormModel
         );
     }
 	
-	public function retrieveData($employee_id)
+	public function retrieveData($employee_id,$bool=true)
 	{
-		$city = Yii::app()->user->city_allow();
-		if ($this->getAppraisalForEmployeeID($employee_id)) {
+		if ($this->getAppraisalForEmployeeID($employee_id,$bool)) {
 		    $this->setModelReady();
+		    $this->setLTNowDate();
 			return true;
 		} else {
 			return false;
@@ -285,7 +361,8 @@ class AppraisalForm extends CFormModel
             foreach ($list as $employee_id){
                 if(in_array($employee_id,$userIDList)){
                     $this->retrieveData($employee_id);
-                    if($this->status_type!=1){
+                    $this->setLTNowDate();
+                    if($this->status_type!=1&&!$this->ltNowDate){
                         $this->new_json_html();//计算总金额
                         $this->status_type=1;
                         $temp = $this->getCurlDataModels();
@@ -309,6 +386,64 @@ class AppraisalForm extends CFormModel
         return $saveArr;
     }
 
+	public function systemBatchSave(){
+        $saveArr= array("bool"=>true,"message"=>"");
+        $suffix = Yii::app()->params['envSuffix'];
+        $thisDate = date("Y-m-d",strtotime("{$this->year_no}-{$this->month_no}-01"));
+        $minEntry = date("Y-m-d",strtotime("{$thisDate} - 5 months"));
+        $maxEntry = date("Y-m-d",strtotime("{$thisDate} + 1 months - 1 days"));
+        $leaveTime = date("Y/m/01",strtotime("{$this->year_no}/{$this->month_no}/01"));
+        $whereSql = "a.year_no={$this->year_no} and a.month_no={$this->month_no} AND 
+				(
+				  (f.id is NOT NULL)
+				   OR 
+				  (
+                    DATE_FORMAT(b.entry_time, '%Y-%m-%d') BETWEEN '{$minEntry}' and '{$maxEntry}'
+                    AND (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
+				  )
+				)";
+        $lists =Yii::app()->db->createCommand()->select("b.id")
+            ->from("acc_service_comm_hdr a")
+            ->leftJoin("hr$suffix.hr_employee b","b.code=a.employee_code")
+            ->leftJoin("account$suffix.acc_appraisal f","f.employee_id=b.id AND f.year_no={$this->year_no} AND f.month_no={$this->month_no}")
+            ->where($whereSql)
+            ->queryAll();
+        if($lists){
+            $this->systemRun=true;
+            $this->setScenario('edit');
+            $connection = Yii::app()->db;
+            $transaction=$connection->beginTransaction();
+            $curlData=array(
+                "presetSalarySubsetCode"=>"PresetSalarySubset1",
+                "models"=>array()
+            );
+            foreach ($lists as $list){
+                $employee_id = $list["id"];
+                $this->retrieveData($employee_id,false);
+                $this->new_json_html();//计算总金额
+                $this->status_type=1;
+                $temp = $this->getCurlDataModels();
+                $this->saveHeader($connection);
+                $curlData["models"] = array_merge($curlData["models"],$temp);
+            }
+            $bsCurlModel = new BsCurlModel();
+            $bsCurlModel->sendData = $curlData;
+            $curlData = $bsCurlModel->sendBsCurl();
+            if($curlData["code"]!=200){//curl异常，不继续执行
+                echo "-error \n";
+                $bsCurlModel->logError($curlData);
+                $saveArr["bool"]=false;
+                $saveArr["message"]=$curlData["message"];
+                $transaction->rollback();
+            }else{
+                echo "-success \n";
+                $bsCurlModel->logError($curlData);
+                $transaction->commit();
+            }
+        }
+        return $saveArr;
+    }
+
 	public function batchBack($list){
         $saveArr= array("bool"=>true,"message"=>"");
         if(!empty($list)){
@@ -318,7 +453,8 @@ class AppraisalForm extends CFormModel
             foreach ($list as $employee_id){
                 if(in_array($employee_id,$userIDList)){
                     $this->retrieveData($employee_id);
-                    if($this->status_type==1){
+                    $this->setLTNowDate();
+                    if($this->status_type==1&&!$this->ltNowDate){
                         $this->status_type=0;
                         $this->saveHeader($connection);
                     }
@@ -386,6 +522,13 @@ class AppraisalForm extends CFormModel
             "stopDate"=>$stopDate,
             "numericVal"=>$this->appraisal_amount*20,
         );
+        $models[]=array(
+            "staffId"=>$bsStaffID,
+            "itemName"=>9,//上月补分金额
+            "startDate"=>$startDate,
+            "stopDate"=>$stopDate,
+            "numericVal"=>$this->last_score_money,
+        );
         return $models;
     }
 
@@ -403,6 +546,8 @@ class AppraisalForm extends CFormModel
 							new_json = :new_json,
 							appraisal_json = :appraisal_json,
 							status_type = :status_type,
+							last_num_score = :last_num_score,
+							last_score_money = :last_score_money,
 							luu = :luu 
 						where id = :id
 						";
@@ -416,8 +561,7 @@ class AppraisalForm extends CFormModel
 				break;
 		}
 
-		$city = Yii::app()->user->city();
-		$uid = Yii::app()->user->id;
+		$uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
 		$command=$connection->createCommand($sql);
 		if (strpos($sql,':id')!==false)
 			$command->bindParam(':id',$this->id,PDO::PARAM_INT);
@@ -434,12 +578,20 @@ class AppraisalForm extends CFormModel
             $command->bindParam(':visit_sum',$this->visit_sum,PDO::PARAM_STR);
         }
         if (strpos($sql,':num_score')!==false) {
-            $this->num_score = empty($this->num_score)?0:round($this->num_score,2);
+            $this->num_score = empty($this->num_score)?0:intval($this->num_score);
             $command->bindParam(':num_score',$this->num_score,PDO::PARAM_STR);
         }
         if (strpos($sql,':appraisal_amount')!==false) {
             $this->appraisal_amount = empty($this->appraisal_amount)?0:round($this->appraisal_amount,2);
             $command->bindParam(':appraisal_amount',$this->appraisal_amount,PDO::PARAM_STR);
+        }
+        if (strpos($sql,':last_num_score')!==false) {
+            $this->last_num_score = empty($this->last_num_score)?0:intval($this->last_num_score);
+            $command->bindParam(':last_num_score',$this->last_num_score,PDO::PARAM_STR);
+        }
+        if (strpos($sql,':last_score_money')!==false) {
+            $this->last_score_money = empty($this->last_score_money)?0:round($this->last_score_money,2);
+            $command->bindParam(':last_score_money',$this->last_score_money,PDO::PARAM_STR);
         }
         if (strpos($sql,':new_json')!==false) {
             $new_json = empty($this->new_json)?null:json_encode($this->new_json);
@@ -478,7 +630,7 @@ class AppraisalForm extends CFormModel
     }
 
     public function new_json_html(){
-	    $ready = $this->ready&&$this->status_type==0;
+	    $ready = $this->ready&&$this->status_type==0&&!$this->ltNowDate;
 	    $arrTitleList=array(
 	        "new_amount"=>array("htmlOptions"=>array("min"=>0,"readonly"=>true,"id"=>"new_amount"),"title"=>"新签合同金额","body"=>"根据完成率按比例计算得分，当项得分最低为0，最高为150%"),
 	        "visit_sum"=>array("htmlOptions"=>array("min"=>0,"readonly"=>true,"id"=>"new_sum"),"title"=>"客户拜访数量","body"=>"根据完成率按比例计算得分，当项得分最低为0，最高为150%"),
@@ -523,11 +675,14 @@ class AppraisalForm extends CFormModel
                 $html.="<td>".($row["rate"]*100)."%</td>";
                 $html.="<td>".$row["text"]."</td>";
                 $html.="<td>".$body."</td>";
-                $html.="<td>".TbHtml::numberField($keyStr,$money,$htmlOptions)."</td>";
+                if(!$this->systemRun){
+                    $html.="<td>".TbHtml::numberField($keyStr,$money,$htmlOptions)."</td>";
+                }
                 $html.="<td id='{$keyStr}_rate'>".($rate*100)."%</td>";
                 $html.="<td id='{$keyStr}_ok'>".sprintf("%.2f",$money_ok)."</td>";
                 $html.="</tr>";
             }
+            $sum = $sum>120?120:$sum;
             $this->appraisal_amount = $sum;
             $html.="<tr>";
             //b.year_no,b.month_no,a.new_money,a.edit_money
@@ -641,6 +796,8 @@ class AppraisalForm extends CFormModel
         }
         $list["appraisal_amount"]=floatval($row["appraisal_amount"]);
         $list["appraisal_money"]=$list["appraisal_amount"]*20;
+        $list["last_num_score"]=floatval($row["last_num_score"]);
+        $list["last_score_money"]=floatval($row["last_score_money"]);
         return $list;
     }
 
@@ -691,6 +848,10 @@ class AppraisalForm extends CFormModel
             array("name"=>" ","background"=>"#ffff00","color"=>"#000000","colspan"=>array(
                 array("name"=>"实际绩效奖金"),//实际绩效奖金
             )),//实际绩效奖金
+            array("name"=>"补上月评分","background"=>"#ffff00","color"=>"#000000","colspan"=>array(
+                array("name"=>"补上月评分"),//补上月评分
+                array("name"=>"补上月评分金额"),//补上月评分金额
+            )),//补上月评分
         );
         return $topList;
     }

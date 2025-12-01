@@ -39,19 +39,6 @@ $employeeList = ExpenseFun::getEmployeeAllListForID($model->employee_id);
         ?>
     </div>
 </div>
-<div class="form-group">
-    <?php echo Tbhtml::label(Yii::t("give","payment company"),'payment_company',array('class'=>"col-sm-2 control-label")); ?>
-    <div class="col-sm-3">
-        <?php
-        $payment_company = in_array($model->status_type,array(0,3))?ExpenseFun::getCompanyIdToEmployeeID($model->employee_id):$model->tableDetail["payment_company"];
-        $model->tableDetail["payment_company"] = $payment_company;
-        echo $form->hiddenField($model, 'tableDetail[payment_company]');
-        echo TbHtml::textField("payment_company", ExpenseFun::getCompanyNameToID($payment_company),
-            array('readonly'=>true,'id'=>'payment_company'
-            ));
-        ?>
-    </div>
-</div>
 
 <div class="form-group">
     <?php echo $form->labelEx($model,'apply_date',array('class'=>"col-sm-2 control-label")); ?>
@@ -103,12 +90,30 @@ $employeeList = ExpenseFun::getEmployeeAllListForID($model->employee_id);
             ));
         ?>
     </div>
-    <?php echo Tbhtml::label(Yii::t("give","loan end date"),'loan_end_date',array('class'=>"col-sm-2 control-label",'required'=>true)); ?>
+    <?php echo Tbhtml::label(Yii::t("give","loan end date"),'payment_company',array('class'=>"col-sm-2 control-label",'required'=>true)); ?>
     <div class="col-sm-3">
         <?php
         echo $form->textField($model, 'tableDetail[loan_end_date]',
             array('readonly'=>$model->readonly(),'id'=>'loan_end_date','autocomplete'=>'off',
                 'prepend'=>'<span class="fa fa-calendar"></span> '
+            ));
+        ?>
+    </div>
+</div>
+<div class="form-group">
+    <?php echo Tbhtml::label(Yii::t("give","payment condition"),'payment_condition',array('class'=>"col-sm-2 control-label")); ?>
+    <div class="col-sm-3">
+        <?php
+        echo $form->dropDownList($model, 'tableDetail[payment_condition]',ExpenseFun::getPaymentConditionList(),
+            array('readonly'=>$model->readonly(),'id'=>'payment_condition','empty'=>''
+            ));
+        ?>
+    </div>
+    <?php echo Tbhtml::label(Yii::t("give","payment company"),'payment_company',array('class'=>"col-sm-2 control-label")); ?>
+    <div class="col-sm-3">
+        <?php
+        echo $form->dropDownList($model, 'tableDetail[payment_company]',ExpenseFun::getPaymentCompanyList(),
+            array('readonly'=>$model->readonly(),'id'=>'payment_company','empty'=>''
             ));
         ?>
     </div>
@@ -149,7 +154,6 @@ switch(Yii::app()->language) {
 }
 if(!$model->readonly()){
     $disabled = 'false';
-    /*
     $js.="
     $('#payment_company').select2({
         multiple: false,
@@ -162,7 +166,6 @@ if(!$model->readonly()){
         return rtn;
     }
     ";
-    */
 }
 Yii::app()->clientScript->registerScript('changeTripDiv',$js,CClientScript::POS_READY);
 ?>

@@ -16,7 +16,6 @@
     ?>
 </tr>
 <tr>
-    <th>&nbsp;</th>
     <th>人民币大写</th>
     <th colspan="4" class="text-center" id="changeFootSumStr">&nbsp;</th>
     <th>&nbsp;</th>

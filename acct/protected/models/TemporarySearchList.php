@@ -58,10 +58,6 @@ class TemporarySearchList extends CListPageModel
                 case 'department':
                     $clause .= General::getSqlConditionClause('f.name',$svalue);
                     break;
-                case 'status_type':
-                    $statusSql = ExpenseFun::getSearchStatusForStr($svalue);
-                    $clause .= "and a.status_type in ({$statusSql})";
-                    break;
 			}
 		}
 		

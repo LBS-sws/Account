@@ -5,6 +5,11 @@ class PerformanceBonusList extends CListPageModel
     public $year_no;
     public $month_no;
     public $quarter_no;
+
+    public static $deptNameList=array(
+        "销售顾问","商业销售顾问","高级销售顾问","高级商业销售顾问","销售主任",
+        "高级销售主任","办事处副经理","销售副经理","办事处经理","333","初級"
+    );
 	public function attributeLabels()
 	{
 		return array(
@@ -61,6 +66,7 @@ class PerformanceBonusList extends CListPageModel
 	public function retrieveDataByPage($pageNum=1)
 	{
         $this->quarter_no = ceil($this->month_no/3);
+        $deptSqlList = "'".implode("','",self::$deptNameList)."'";
 		$suffix = Yii::app()->params['envSuffix'];
 		$citylist = Yii::app()->user->city_allow();
         $minMonth = ($this->quarter_no-1)*3 + 1;
@@ -83,7 +89,7 @@ class PerformanceBonusList extends CListPageModel
                 LEFT JOIN security$suffix.sec_city e on a.city=e.code 		
                 LEFT JOIN account$suffix.acc_performance_bonus f on f.employee_id=b.id AND f.year_no={$this->year_no} AND f.quarter_no={$this->quarter_no}		
                 LEFT JOIN account$suffix.acc_performance_info g on f.id=g.bonus_id AND g.year_no={$this->year_no} AND g.month_no={$this->month_no}		
-				where 1=1 and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime')) 
+				where c.name in ({$deptSqlList}) and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime')) 
 			";
 		$sql2 = "select count(b.id)
 				from ($hdrSql) a
@@ -92,7 +98,7 @@ class PerformanceBonusList extends CListPageModel
                 LEFT JOIN security$suffix.sec_city e on a.city=e.code 		
                 LEFT JOIN account$suffix.acc_performance_bonus f on f.employee_id=b.id AND f.year_no={$this->year_no} AND f.quarter_no={$this->quarter_no}		
                 LEFT JOIN account$suffix.acc_performance_info g on f.id=g.bonus_id AND g.year_no={$this->year_no} AND g.month_no={$this->month_no}			
-				where 1=1 and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime')) 
+				where c.name in ({$deptSqlList}) and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime')) 
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {

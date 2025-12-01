@@ -28,7 +28,7 @@ class RemitSearchController extends Controller
 				'expression'=>array('RemitSearchController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view','filedownload','print'),
+				'actions'=>array('index','view','filedownload'),
 				'expression'=>array('RemitSearchController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -36,17 +36,6 @@ class RemitSearchController extends Controller
 			),
 		);
 	}
-
-    public function actionPrint($index)
-    {
-        $model = new RemitApplyForm();
-        if (!$model->retrievePrint($index)) {
-            throw new CHttpException(404,'The requested page does not exist.');
-        } else {
-            $model->printOne();
-            Yii::app()->end();
-        }
-    }
 
 	public function actionIndex($pageNum=0) 
 	{

@@ -14,10 +14,10 @@ class ExpensePaymentForm extends ExpenseApplyForm
 			array('employee_id,apply_date','required'),
             array('id','validateID'),
             array('acc_id,payment_type,payment_date','required','on'=>array("audit")),
-            array('status_type','validateFiles','on'=>array("audit")),//验证审核时有没有上传附件
+            //array('status_type','validateFiles','on'=>array("audit")),//验证审核时有没有上传附件
             array('reject_note','required','on'=>array("reject")),
             array('shift_city','required','on'=>array("shift")),
-            array('no_of_attm,new_of_id, docType,docId, files, removeFileId, docMasterId','safe'),
+            array('no_of_attm, docType, files, removeFileId, docMasterId','safe'),
 		);
 	}
 
@@ -59,7 +59,7 @@ class ExpensePaymentForm extends ExpenseApplyForm
                             "id"=>$infoRow["id"],
                             "expId"=>$infoRow["exp_id"],
                             "setId"=>$infoRow["set_id"],
-                            "tripId"=>$infoRow["trip_id"],
+                        "tripId"=>$infoRow["trip_id"],
                             "infoDate"=>General::toMyDate($infoRow["info_date"]),
                             "amtType"=>$infoRow["amt_type"],
                             "infoRemark"=>$infoRow["info_remark"],
@@ -106,13 +106,11 @@ class ExpensePaymentForm extends ExpenseApplyForm
             $this->payment_id = $row['payment_id'];
             $this->acc_id = $row['acc_id'];
             $this->no_of_attm['expen'] = $row['expendoc'];
-            $this->no_of_attm['EXPEN_'.$index] = $row['expendoc'];
-            $sql = "select *,docman$suffix.countdoc('exinfo',id) as infodoc from acc_expense_info where exp_id='".$index."'";
+            $sql = "select * from acc_expense_info where exp_id='".$index."'";
             $infoRows = Yii::app()->db->createCommand($sql)->queryAll();
             if($infoRows){
                 $this->infoDetail=array();
                 foreach ($infoRows as $infoRow){
-                    $this->no_of_attm['EXINFO_'.$infoRow["id"]] = $infoRow['infodoc'];
                     $this->infoDetail[]=array(
                         "id"=>$infoRow["id"],
                         "expId"=>$infoRow["exp_id"],
@@ -133,8 +131,6 @@ class ExpensePaymentForm extends ExpenseApplyForm
                 foreach ($this->fileList as $detailRow){
                     if(key_exists($detailRow["field_id"],$tableDetailList)){
                         $this->tableDetail[$detailRow["field_id"]] = $tableDetailList[$detailRow["field_id"]]["field_value"];
-                    }else{
-                        $this->tableDetail[$detailRow["field_id"]] = "";
                     }
                 }
             }

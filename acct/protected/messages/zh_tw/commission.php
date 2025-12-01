@@ -88,5 +88,13 @@ return array(
 
     'supplement_money'=>'補充金額合計',
     'final_money'=>'最終金額合計',
+    'lbs_new_amount'=>'利比斯新增提成',
+    'lbs_new_money'=>'利比斯新增業績',
+    'Recovery'=>'恢複生意額',
+    'PerRecovery'=>'跨區恢複生意額',
+    'recovery date'=>'恢複日期',
+    'recovery_sum'=>'恢複總金額',
+    'recovery_amount'=>'恢複生意提成',
+    'perrecovery_amount'=>'跨區恢複生意提成',
 );
 ?>

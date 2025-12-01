@@ -92,5 +92,13 @@ return array(
 
     'supplement_money'=>'补充金额合计',
     'final_money'=>'最终金额合计',
+    'lbs_new_amount'=>'利比斯新增提成',
+    'lbs_new_money'=>'利比斯新增业绩',
+    'Recovery'=>'恢复生意额',
+    'PerRecovery'=>'跨区恢复生意额',
+    'recovery date'=>'恢复日期',
+    'recovery_sum'=>'恢复总金额',
+    'recovery_amount'=>'恢复生意提成',
+    'perrecovery_amount'=>'跨区恢复生意提成',
 );
 ?>

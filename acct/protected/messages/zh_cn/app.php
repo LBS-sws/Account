@@ -227,5 +227,8 @@ return array(
 	'performance bonus setting'=>'绩效奖金配置',
 	'Performance appraisal'=>'销售顾问绩效考核表',
 	'Audit for plane'=>'审核直升机奖金',
+	'Sales Group'=>'销售团队',
+	'Sales Group Below'=>'销售团队下线提成',
+	'Sales Group Set'=>'销售团队下线配置',
 );
 ?>

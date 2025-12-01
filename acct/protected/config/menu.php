@@ -296,14 +296,30 @@ return array(
             ),
         ),
     ),
+	'Sales Group'=>array( //销售团队
+		'access'=>'SG',
+		'icon'=>'fa-tree',
+		'items'=>array(
+            'Sales Group Below'=>array(//销售团队下线提成
+                'access'=>'SG01',
+                'url'=>'/salesGroupBelow/index'
+            ),
+            'Sales Group Set'=>array(//销售团队下线配置
+                'access'=>'SG02',
+                'url'=>'/salesGroupSet/index'
+            ),
+        )
+    ),
 	'Plane System'=>array( //技术部直升机机制
 		'access'=>'PS',
 		'icon'=>'fa-plane',
 		'items'=>array(
+		/*
             'Audit for plane'=>array(//审核技术部直升机
                 'access'=>'PS07',
                 'url'=>'/planeAudit/index'
             ),
+			*/
             'Plane Award'=>array(//技术部直升机奖励制度
                 'access'=>'PS01',
                 'url'=>'/planeAward/index'

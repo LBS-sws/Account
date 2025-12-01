@@ -24,7 +24,7 @@ class RemitAuditController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('edit','audit','reject','ajaxPayeeCode'),
+				'actions'=>array('edit','audit','reject'),
 				'expression'=>array('RemitAuditController','allowReadWrite'),
 			),
 			array('allow', 
@@ -36,11 +36,6 @@ class RemitAuditController extends Controller
 			),
 		);
 	}
-
-    public function actionAjaxPayeeCode($group='',$city='')
-    {
-        echo ExpenseFun::AjaxPayeeCode($group,$city);
-    }
 
 	public function actionIndex($pageNum=0) 
 	{
@@ -66,21 +61,15 @@ class RemitAuditController extends Controller
 			$model->attributes = $_POST['RemitAuditForm'];
 			if ($model->validate()) {
                 $model->status_type=2;
-                $bool = $model->saveData();
+				$model->saveData();
 				$model->scenario = 'edit';
-                if($bool){
-                    Dialog::message(Yii::t('dialog','Information'), Yii::t('give','Audit Done'));
-                    $this->redirect(Yii::app()->createUrl('remitAudit/index'));
-                }else{
-                    $message = CHtml::errorSummary($model);
-                    Dialog::message("金蝶系统异常", $message);
-                    $this->redirect(Yii::app()->createUrl('remitAudit/edit',array("index"=>$model->id)));
-                }
+				Dialog::message(Yii::t('dialog','Information'), Yii::t('give','Audit Done'));
+                $this->redirect(Yii::app()->createUrl('remitAudit/index'));
 			} else {
                 $model->scenario = 'edit';
 				$message = CHtml::errorSummary($model);
 				Dialog::message(Yii::t('dialog','Validation Message'), $message);
-                $this->redirect(Yii::app()->createUrl('remitAudit/edit',array("index"=>$model->id)));
+				$this->render('form',array('model'=>$model,));
 			}
 		}
 	}

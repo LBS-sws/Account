@@ -33,7 +33,7 @@ $this->pageTitle=Yii::app()->name . ' - Account Type';
 		?>
 	</div>
 	</div></div>
-	<?php
+	<?php 
 		$search = array(
 						'acct_type_desc',
 						'rpt_cat'

@@ -25,19 +25,6 @@ $employeeList = ExpenseFun::getEmployeeListForID($model->employee_id);
         ?>
     </div>
 </div>
-<div class="form-group">
-    <?php echo Tbhtml::label(Yii::t("give","payment company"),'payment_company',array('class'=>"col-sm-2 control-label")); ?>
-    <div class="col-sm-3">
-        <?php
-        $payment_company = in_array($model->status_type,array(0,3))?ExpenseFun::getCompanyIdToEmployeeID($model->employee_id):$model->tableDetail["payment_company"];
-        $model->tableDetail["payment_company"] = $payment_company;
-        echo $form->hiddenField($model, 'tableDetail[payment_company]');
-        echo TbHtml::textField("payment_company", ExpenseFun::getCompanyNameToID($payment_company),
-            array('readonly'=>true,'id'=>'payment_company'
-            ));
-        ?>
-    </div>
-</div>
 
 <div class="form-group">
     <?php echo $form->labelEx($model,'apply_date',array('class'=>"col-sm-2 control-label")); ?>
@@ -61,7 +48,7 @@ $employeeList = ExpenseFun::getEmployeeListForID($model->employee_id);
 
 <!--额外资料-->
 <div class="form-group">
-    <?php echo TbHtml::label(Yii::t('give',"outside"),'outside',array('class'=>"col-sm-2 control-label",'required'=>true)); ?>
+    <?php echo TbHtml::label(Yii::t('give',"outside"),'outside',array('class'=>"col-sm-2 control-label")); ?>
     <div class="col-sm-2">
         <?php
         echo $form->dropDownList($model, 'tableDetail[outside]',ExpenseFun::getOutsideList(),
@@ -69,28 +56,6 @@ $employeeList = ExpenseFun::getEmployeeListForID($model->employee_id);
         ?>
     </div>
 </div>
-<?php if (!in_array($model->status_type,array(0,3))): ?>
-    <div class="form-group">
-        <?php echo TbHtml::label(Yii::t('give',"payee code"),'payee_code',array('class'=>"col-sm-2 control-label",'required'=>$model->tableDetail["purchase_type"]!="A0")); ?>
-        <div class="col-sm-3">
-            <div class="btn-group" style="width:100%" id="payeeCodeGroup">
-                <?php
-                echo $form->textField($model, 'tableDetail[payee_code]',
-                    array('readonly'=>!$model->finance_bool,"id"=>"payee_code",'autocomplete'=>'off'));
-                ?>
-                <ul class="dropdown-menu" style="min-width: 100%;overflow: hidden;">
-                </ul>
-            </div>
-        </div>
-        <?php echo TbHtml::label(Yii::t('give',"prepayment"),'prepayment',array('class'=>"col-sm-2 control-label",'required'=>true)); ?>
-        <div class="col-sm-3">
-            <?php
-            echo $form->inlineRadioButtonList($model, 'tableDetail[prepayment]',ExpenseFun::getUrgentList(),
-                array('readonly'=>!$model->finance_bool,"id"=>"prepayment",'labelOptions'=>array('readonly'=>!$model->finance_bool)));
-            ?>
-        </div>
-    </div>
-<?php endif ?>
 <div class="form-group">
     <?php echo TbHtml::label(Yii::t('give',"payee"),'payee',array('class'=>"col-sm-2 control-label")); ?>
     <div class="col-sm-3">
@@ -99,7 +64,7 @@ $employeeList = ExpenseFun::getEmployeeListForID($model->employee_id);
             echo $form->textField($model, 'tableDetail[payee]',
                 array('readonly'=>$model->readonly(),"id"=>"payee",'autocomplete'=>'off'));
             ?>
-            <ul class="dropdown-menu" style="min-width: 100%;overflow: hidden;">
+            <ul class="dropdown-menu" style="width: 100%;overflow: hidden;">
             </ul>
         </div>
     </div>
@@ -128,11 +93,11 @@ $employeeList = ExpenseFun::getEmployeeListForID($model->employee_id);
     </div>
 </div>
 <div class="form-group">
-    <?php echo TbHtml::label(Yii::t('give',"urgent"),'urgent',array('class'=>"col-sm-2 control-label",'required'=>true)); ?>
+    <?php echo TbHtml::label(Yii::t('give',"urgent"),'urgent',array('class'=>"col-sm-2 control-label")); ?>
     <div class="col-sm-3">
         <?php
         echo $form->inlineRadioButtonList($model, 'tableDetail[urgent]',ExpenseFun::getUrgentList(),
-            array('readonly'=>$model->readonly(),"id"=>"urgent",'labelOptions'=>array('readonly'=>$model->readonly())));
+            array('readonly'=>$model->readonly(),"id"=>"urgent"));
         ?>
     </div>
     <?php echo TbHtml::label(Yii::t('give',"end pay date"),'end_pay_date',array('class'=>"col-sm-2 control-label")); ?>
@@ -145,11 +110,11 @@ $employeeList = ExpenseFun::getEmployeeListForID($model->employee_id);
     </div>
 </div>
 <div class="form-group">
-    <?php echo TbHtml::label(Yii::t('give',"invoice bool"),'invoice_bool',array('class'=>"col-sm-2 control-label",'required'=>true)); ?>
+    <?php echo TbHtml::label(Yii::t('give',"invoice bool"),'invoice_bool',array('class'=>"col-sm-2 control-label")); ?>
     <div class="col-sm-3">
         <?php
         echo $form->inlineRadioButtonList($model, 'tableDetail[invoice_bool]',ExpenseFun::getInvoiceBoolList(),
-            array('readonly'=>$model->readonly(),"id"=>"invoice_bool",'labelOptions'=>array('readonly'=>$model->readonly())));
+            array('readonly'=>$model->readonly(),"id"=>"invoice_bool"));
         ?>
     </div>
     <?php echo TbHtml::label(Yii::t('give',"invoice no"),'invoice_no',array('class'=>"col-sm-2 control-label")); ?>
@@ -161,18 +126,18 @@ $employeeList = ExpenseFun::getEmployeeListForID($model->employee_id);
     </div>
 </div>
 <div class="form-group">
-    <?php echo TbHtml::label(Yii::t('give',"purchase type"),'purchase_type',array('class'=>"col-sm-2 control-label",'required'=>true)); ?>
+    <?php echo TbHtml::label(Yii::t('give',"purchase bool"),'purchase_bool',array('class'=>"col-sm-2 control-label")); ?>
     <div class="col-sm-3">
         <?php
-        echo $form->dropDownList($model, 'tableDetail[purchase_type]',ExpenseFun::getRemitTypeOne(),
-            array('readonly'=>$model->readonly(),"id"=>"purchase_type","empty"=>""));
+        echo $form->inlineRadioButtonList($model, 'tableDetail[purchase_bool]',ExpenseFun::getInvoiceBoolList(),
+            array('readonly'=>$model->readonly(),"id"=>"purchase_bool"));
         ?>
     </div>
     <?php echo TbHtml::label(Yii::t('give',"purchase code"),'purchase_code',array('class'=>"col-sm-2 control-label")); ?>
     <div class="col-sm-3">
         <?php
         echo $form->textField($model, 'tableDetail[purchase_code]',
-            array('readonly'=>(!in_array($model->tableDetail['purchase_type'],array("A0","A4","A5","A7"))||empty($model->tableDetail['purchase_type'])||$model->readonly()),"id"=>"purchase_code",'autocomplete'=>'off'));
+            array('readonly'=>(empty($model->tableDetail['purchase_bool'])||$model->readonly()),"id"=>"purchase_code",'autocomplete'=>'off'));
         ?>
     </div>
 </div>
@@ -182,6 +147,14 @@ $employeeList = ExpenseFun::getEmployeeListForID($model->employee_id);
         <?php
         echo $form->dropDownList($model, 'tableDetail[payment_condition]',ExpenseFun::getPaymentConditionList(),
             array('readonly'=>$model->readonly(),'id'=>'payment_condition','empty'=>''
+            ));
+        ?>
+    </div>
+    <?php echo Tbhtml::label(Yii::t("give","payment company"),'payment_company',array('class'=>"col-sm-2 control-label")); ?>
+    <div class="col-sm-3">
+        <?php
+        echo $form->dropDownList($model, 'tableDetail[payment_company]',ExpenseFun::getPaymentCompanyList(),
+            array('readonly'=>$model->readonly(),'id'=>'payment_company','empty'=>''
             ));
         ?>
     </div>
@@ -216,34 +189,13 @@ $employeeList = ExpenseFun::getEmployeeListForID($model->employee_id);
 
 <?php
 $js = <<<EOF
-$('#purchase_type').on('change',function() {
-    if($(this).attr('readonly')=='readonly'){
-        return false;
-    }
-    var purchase_type = $(this).val();
-    if(["A0"].indexOf(purchase_type)>-1){
-        $('#purchase_code').removeAttr('readonly').removeClass('readonly');
-    }else{
+$('input[name="RemitApplyForm[tableDetail][purchase_bool]"]').on('click',function() {
+    if($(this).val()==0){
         $('#purchase_code').val('').attr('readonly','readonly').addClass('readonly');
+    }else{
+        $('#purchase_code').removeAttr('readonly').removeClass('readonly');
     }
-    $('.amtType>option').hide();
-    $('.amtType>option[value=""]').show();
-    $('.amtType').find('option[value*="'+purchase_type+'"]').show();
-    $('.amtType').each(function(){
-        var val = $(this).data('val');
-        if($(this).find('option[value="'+val+'"]').attr('style')==''){
-            $(this).val(val);
-        }else{
-            $(this).val('');
-        }
-    });
 });
-$('#purchase_type').trigger('change');
-
-$('#tblDetail').on('change','.amtType',function(){
-    $(this).data('val',$(this).val());
-});
-
 $('input[name="RemitApplyForm[tableDetail][invoice_bool]"]').on('click',function() {
     if($(this).val()==0){
         $('#invoice_no').val('').attr('readonly','readonly').addClass('readonly');
@@ -259,7 +211,6 @@ switch(Yii::app()->language) {
 }
 if(!$model->readonly()){
     $disabled = 'false';
-    /*
     $js.="
     $('#payment_company').select2({
         multiple: false,
@@ -272,7 +223,6 @@ if(!$model->readonly()){
         return rtn;
     }
     ";
-    */
 }
 Yii::app()->clientScript->registerScript('changeTripDiv',$js,CClientScript::POS_READY);
 ?>

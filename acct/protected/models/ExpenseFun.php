@@ -2,16 +2,6 @@
 
 class ExpenseFun
 {
-    public static function getTableStrToNum($table_type){
-        switch ($table_type){
-            case 2://
-                return "日常付款";
-            case 3://
-                return "﻿暂支单";
-            default://
-                return "日常费用报销";
-        }
-    }
 
     public static function getColorForStatusType($status_type){
         $list = array(
@@ -31,7 +21,7 @@ class ExpenseFun
         }
     }
 
-    public static function getStatusStrList(){
+    public static function getStatusStrForStatusType($status_type){
         $list = array(
             0=>Yii::t("give","draft"),//草稿
             1=>Yii::t("give","wait confirm"),//待确认
@@ -40,27 +30,8 @@ class ExpenseFun
             4=>Yii::t("give","wait bank"),//待确认银行
             6=>Yii::t("give","wait JD"),//等待金蝶系统扣款
             7=>Yii::t("give","rejected JD"),//金蝶系统已拒绝
-            9=>Yii::t("give","finish"),//金蝶系统已扣款
+            9=>Yii::t("give","finish JD"),//金蝶系统已扣款
         );
-        return $list;
-    }
-
-    public static function getSearchStatusForStr($str){
-        $list = self::getStatusStrList();
-        $sqlKey = array();
-        foreach ($list as $key=>$item){
-            if (strpos($item,$str)!==false){
-                $sqlKey[]=$key;
-            }
-        }
-        if(empty($sqlKey)){
-            $sqlKey[]=-1;
-        }
-        return implode(",",$sqlKey);
-    }
-
-    public static function getStatusStrForStatusType($status_type){
-        $list = self::getStatusStrList();
         if(key_exists("{$status_type}",$list)){
             return $list[$status_type];
         }else{
@@ -71,28 +42,8 @@ class ExpenseFun
     //获取外部列表
     public static function getPaymentConditionList(){
         return array(
-            "002"=>"每月15日",
-            "003"=>"每月20日",
-            "004"=>"每月25日",
-            "005"=>"票到付款",
-            "006"=>"票到30天",
-            "007"=>"票到45天",
-            "008"=>"票到60天",
-            "009"=>"票到70天",
-            "010"=>"票到80天",
-            "011"=>"票到90天",
-            "012"=>"票到120天",
-            "013"=>"5%预付款",
-            "014"=>"10%预付款",
-            "015"=>"15%预付款",
-            "016"=>"20%预付款",
-            "017"=>"30%预付款",
-            "018"=>"40%预付款",
-            "019"=>"50%预付款",
-            "020"=>"100%预付款",
-            "021"=>"货到付款",
-            "022"=>"半年预付",
-            "023"=>"季度预付",
+            "1001"=>"等待金蝶系统提供条件1",//
+            "1002"=>"等待金蝶系统提供条件2",
         );
     }
 
@@ -136,16 +87,6 @@ class ExpenseFun
             }
         }
         return $list;
-    }
-
-    public static function getExpenseTableDetailForIDAndField($exp_id,$field_id) {
-        $row = Yii::app()->db->createCommand()->select("id,field_id,field_value")
-            ->from("acc_expense_detail")
-            ->where("exp_id=:id and field_id=:field_id",array(":id"=>$exp_id,":field_id"=>$field_id))->queryRow();
-        if($row){
-            return $row["field_value"];
-        }
-        return "";
     }
 
     public static function getPaymentCompanyList(){
@@ -317,33 +258,6 @@ class ExpenseFun
         return $list;
     }
 
-    //根据员工id获取公司id
-    public static function getCompanyIdToEmployeeID($employeeId) {
-        $suffix = Yii::app()->params['envSuffix'];
-        $row = Yii::app()->db->createCommand()->select("a.staff_id,a.company_id")
-            ->from("hr{$suffix}.hr_employee a")
-            ->where("a.id=:id",array(":id"=>$employeeId))->queryRow();
-        if($row){
-            return $row["staff_id"];//员工归属
-            //return $row["company_id"];//员工合同归属
-        }else{
-            return "";
-        }
-    }
-
-    //根据公司id获取公司名称
-    public static function getCompanyNameToID($companyID) {
-        $suffix = Yii::app()->params['envSuffix'];
-        $row = Yii::app()->db->createCommand()->select("name")
-            ->from("hr{$suffix}.hr_company")
-            ->where("id=:id",array(":id"=>$companyID))->queryRow();
-        if($row){
-            return $row["name"];
-        }else{
-            return "";
-        }
-    }
-
     public static function getAccountStrForID($id) {
         $row = Yii::app()->db->createCommand()->select("a.*,b.acct_type_desc")
             ->from("acc_account a")
@@ -363,46 +277,6 @@ class ExpenseFun
             3=>"快递费",
             4=>"通讯费",
             5=>"其他",
-        );
-    }
-
-    public static function getRemitTypeOne(){
-        return array(
-            "A0"=>"物料采购",
-            "A1"=>"日常付款",
-            "A2"=>"工资薪金社保个税",
-            "A3"=>"集团内交易",
-            "A4"=>"集团内资金往来",
-            "A5"=>"同名转账",
-            "A6"=>"客户退款",
-            "A7"=>"税金（包含增值税等，除个税）",
-        );
-    }
-
-    public static function getRemitTypeTwo(){
-        return array(
-            "A00001"=>"物料采购",
-            "A10001"=>"房租物业",
-            "A10002"=>"固定资产",
-            "A10003"=>"办公设备",
-            "A10004"=>"劳务外包（含预缴个税）",
-            "A10005"=>"其他",
-            "A20001"=>"工资",
-            "A20002"=>"社保",
-            "A20003"=>"公积金",
-            "A20004"=>"个税",
-            "A20005"=>"保险费用",
-            "A20006"=>"服务费",
-            "A20007"=>"增值税",
-            "A30001"=>"特许权经营费",
-            "A30002"=>"总分包",
-            "A30003"=>"咨询费",
-            "A30004"=>"其他",
-            "A40001"=>"借/还款",
-            "A40002"=>"上划下拨",
-            "A50001"=>"收款户转付款户",
-            "A60001"=>"客户退款",
-            "A70001"=>"税金",
         );
     }
 
@@ -529,6 +403,7 @@ class ExpenseFun
         return $ChineseStr;
     }
 
+
     //查询相似的供应商
     public static function AjaxPayee($group,$city){
         $suffix = Yii::app()->params['envSuffix'];
@@ -538,7 +413,7 @@ class ExpenseFun
             $group = str_replace("'","\'",$group);
             $records = Yii::app()->db->createCommand()->select('*')
                 ->from("swoper{$suffix}.swo_supplier")
-                ->where("(city=:city or local_bool=0) and display=1 and (name like '%$group%' or code like '%$group%' or full_name like '%$group%')",array(
+                ->where("city=:city and (name like '%$group%' or code like '%$group%' or full_name like '%$group%')",array(
                     ":city"=>$city
                 ))->queryAll();
             if($records){
@@ -550,33 +425,7 @@ class ExpenseFun
                 $html = "<li><a>没有结果</a></li>";
             }
         }else{
-            $html = "<li><a>请输入供应商名称</a></li>";
-        }
-        return $html;
-    }
-
-    //查询相似的供应商
-    public static function AjaxPayeeCode($group,$city){
-        $suffix = Yii::app()->params['envSuffix'];
-        $html = "";
-        $city = empty($city)?Yii::app()->user->city():$city;
-        if($group!==""){
-            $group = str_replace("'","\'",$group);
-            $records = Yii::app()->db->createCommand()->select('*')
-                ->from("swoper{$suffix}.swo_supplier")
-                ->where("(city=:city or local_bool=0) and display=1 and (name like '%$group%' or code like '%$group%' or full_name like '%$group%')",array(
-                    ":city"=>$city
-                ))->queryAll();
-            if($records){
-                foreach ($records as $row){
-                    $text="{$row["name"]} ({$row["code"]})";
-                    $html.="<li><a class='clickThis' data-code='{$row["code"]}' data-name='{$row["name"]}' data-no='{$row["tax_reg_no"]}' data-bank='{$row["bank"]}' data-acct='{$row["acct_no"]}'>".$text."</a>";
-                }
-            }else{
-                $html = "<li><a>没有结果</a></li>";
-            }
-        }else{
-            $html = "<li><a>请输入供应商编号</a></li>";
+            $html = "<li><a>请输入客户名称</a></li>";
         }
         return $html;
     }
@@ -613,7 +462,6 @@ class ExpenseFun
                 ->where("trip_id=:id",array(":id"=>$id))->queryAll();
             $returnData["status"]=1;
             $returnData["data"]["trip_cost"]=floatval($tripRow["trip_cost"]);
-            $returnData["data"]["trip_code"]=$tripRow["trip_code"];
             $returnData["data"]["trip_cause"]=$tripRow["trip_cause"];
             $returnData["data"]["trip_address"]=$tripRow["trip_address"];
             $returnData["data"]["trip_company"]=$tripRow["company_name"];
@@ -642,17 +490,5 @@ class ExpenseFun
             $returnData["data"]["trip_money"]=implode("",$returnData["data"]["trip_money"]);
         }
         return $returnData;
-    }
-
-    public static function getEmployeeNameForUsername($username){
-        $suffix = Yii::app()->params['envSuffix'];
-        $row = Yii::app()->db->createCommand()->select("name")->from("hr{$suffix}.hr_binding a")
-            ->leftJoin("hr{$suffix}.hr_employee b","a.employee_id=b.id")
-            ->where("user_id=:user_id",array(":user_id"=>$username))->queryRow();
-        if($row){
-            return $row["name"];
-        }else{
-            return $username;
-        }
     }
 }

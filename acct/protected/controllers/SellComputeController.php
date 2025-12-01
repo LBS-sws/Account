@@ -27,7 +27,7 @@ SellComputeController extends Controller
 	{
 		return array(
             array('allow',
-                'actions'=>array('listSave','listClear'),
+                'actions'=>array('listSave','listClear','auditAll','backAll'),
                 'expression'=>array('SellComputeController','allowReadWrite'),
             ),
             array('allow',
@@ -40,7 +40,40 @@ SellComputeController extends Controller
 		);
 	}
 
-	public function actionIndex($pageNum=0) 
+	public function actionBackAll()
+	{
+        $thisDate = SellComputeForm::isVivienne()?"0000/00/00":date("Y/m/01");
+        $model = new SellComputeList();
+        if (isset($_POST['SellComputeList'])) {
+            $model->attributes = $_POST['SellComputeList'];
+            $date = date("Y/m/d",strtotime("{$model->year}/{$model->month}/01"));
+            if($date<$thisDate){
+                Dialog::message(Yii::t('dialog','Validation Message'), "无法取消({$date})时间段的销售提成计算");
+            }else{
+                $model->backAll();
+                Dialog::message(Yii::t('dialog','Information'),"已全部取消");
+            }
+        }
+        $this->redirect(Yii::app()->createUrl('sellCompute/index'));
+	}
+
+	public function actionAuditAll($year=2025,$month=6,$id=0)
+	{
+	    if(SellComputeForm::isVivienne()){
+            $model = new SellComputeForm();
+            $model->auditAll($year,$month,$id);
+            Dialog::message(Yii::t('dialog','Information'), "计算成功");
+        }else{
+            Dialog::message(Yii::t('dialog','Validation Message'), "权限异常");
+        }
+        if(!empty($id)){
+            $this->redirect(Yii::app()->createUrl('sellCompute/view',array("index"=>$id)));
+        }else{
+            $this->redirect(Yii::app()->createUrl('sellCompute/index'));
+        }
+	}
+
+	public function actionIndex($pageNum=0)
 	{
 		$model = new SellComputeList();
 		if (isset($_POST['SellComputeList'])) {
@@ -84,7 +117,7 @@ SellComputeController extends Controller
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
             $model->listSave();
-            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
+            Dialog::message(Yii::t('dialog','Information'),Yii::t('dialog','Save Done') );
             $this->redirect(Yii::app()->createUrl('sellCompute/list',array('index'=>$index,'type'=>$type)));
         }
     }
@@ -96,7 +129,7 @@ SellComputeController extends Controller
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
             $model->listSave('clear');
-            Dialog::message(Yii::t('dialog','Validation Message'),Yii::t('dialog','Save Done') );
+            Dialog::message(Yii::t('dialog','Information'),Yii::t('dialog','Save Done') );
             $this->redirect(Yii::app()->createUrl('sellCompute/list',array('index'=>$index,'type'=>$type)));
         }
     }

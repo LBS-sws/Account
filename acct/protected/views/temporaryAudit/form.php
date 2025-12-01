@@ -9,7 +9,7 @@ $this->pageTitle=Yii::app()->name . ' - TemporaryAudit Form';
 'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
 )); ?>
 <style>
-    input[readonly],select[readonly],label[readonly]{ pointer-events: none;}
+    *[readonly]{ pointer-events: none;}
     .table-fixed{ table-layout: fixed;}
     .table-fixed>tbody>tr>th{ vertical-align: bottom;}
 </style>
@@ -33,7 +33,7 @@ $this->pageTitle=Yii::app()->name . ' - TemporaryAudit Form';
 		<?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
 				'submit'=>Yii::app()->createUrl('temporaryAudit/index')));
 		?>
-<?php if ($model->status_type==2&&$model->current_username==Yii::app()->user->id): ?>
+<?php if ($model->current_username==Yii::app()->user->id): ?>
             <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Approve'), array(
                 'submit'=>Yii::app()->createUrl('temporaryAudit/audit')));
             ?>

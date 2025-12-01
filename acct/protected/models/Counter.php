@@ -168,12 +168,6 @@ class Counter {
         $rtn=$model->getCountConsult();
         return $rtn;
     }
-
-    public static function countPlaneAudit() {
-	    $model = new PlaneAuditList();
-        $rtn=$model->getCountConsult();
-        return $rtn;
-    }
 }
 
 ?>

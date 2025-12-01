@@ -17,7 +17,7 @@ class AccountForm extends CFormModel
 
     public $jd_set = array();
     public static $jd_set_list=array(
-        //array("field_id"=>"jd_acct_code","field_type"=>"text","field_name"=>"jd acct code"),
+        array("field_id"=>"jd_org_code","field_type"=>"text","field_name"=>"jd org code"),
     );
 
 	public function init() {
@@ -42,9 +42,9 @@ class AccountForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('acct_type_id, coa, open_bal, open_dt, status','required'),
+			array('jd_set,acct_type_id, coa, open_bal, open_dt, status','required'),
 			array('coa','validateCoa'),
-			array('jd_set,id, acct_no, acct_name, bank_name, remarks, city, trans_city','safe'),
+			array('id, acct_no, acct_name, bank_name, remarks, city, trans_city','safe'), 
 		);
 	}
 

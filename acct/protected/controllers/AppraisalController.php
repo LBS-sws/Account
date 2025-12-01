@@ -28,7 +28,7 @@ class AppraisalController extends Controller
 				'expression'=>array('AppraisalController','allowReadWrite'),
 			),
 			array('allow', 
-				'actions'=>array('index','view','downFixed'),
+				'actions'=>array('index','view','downFixed','del'),
 				'expression'=>array('AppraisalController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -37,7 +37,24 @@ class AppraisalController extends Controller
 		);
 	}
 
-	public function actionIndex($pageNum=0) 
+	public function actionDel($index)
+	{
+        $model = new AppraisalForm;
+        if($model->retrieveData($index)){
+            if(empty($model->status_type)&&!empty($model->id)){
+                $id = $model->id;
+                Yii::app()->db->createCommand()->delete("acc_appraisal","id=:id",array(
+                    "id"=>$id
+                ));
+            }
+            echo "Success!";
+        }else{
+            echo "Error!";
+        }
+        die();
+	}
+
+	public function actionIndex($pageNum=0)
 	{
 		$model = new AppraisalList;
 		if (isset($_POST['AppraisalList'])) {

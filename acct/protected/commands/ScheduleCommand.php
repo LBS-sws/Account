@@ -9,6 +9,7 @@ class ScheduleCommand extends CConsoleCommand {
 	protected $users = array();
 	
 	public function actionRptReimbReminder($whitelist='', $blacklist='') {
+	    return false;//2025年2月11日09:11:59 关闭该功能
 		$tdate = date("Y/m/d");
 		$this->rptId = 'RptReimbReminder';
 		$this->rptName = Yii::t('report','Summary Report - Reimbursement Not Completed Over 2 Months');

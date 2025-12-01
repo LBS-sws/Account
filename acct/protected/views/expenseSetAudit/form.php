@@ -7,12 +7,6 @@ $this->pageTitle=Yii::app()->name . ' - Visit Type Form';
 'clientOptions'=>array('validateOnSubmit'=>true,),
 'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
 )); ?>
-<style>
-    input[readonly]{pointer-events: none;}
-    select[readonly]{pointer-events: none;}
-    .select2-container .select2-selection--single{ height: 34px;}
-</style>
-
 
 <section class="content-header">
 	<h1>
@@ -100,27 +94,6 @@ $this->pageTitle=Yii::app()->name . ' - Visit Type Form';
 <?php $this->renderPartial('//site/lookup'); ?>
 
 <?php
-
-switch(Yii::app()->language) {
-    case 'zh_cn': $lang = 'zh-CN'; break;
-    case 'zh_tw': $lang = 'zh-TW'; break;
-    default: $lang = Yii::app()->language;
-}
-$disabled = ($model->scenario!='view') ? 'false' : 'true';
-$js="
-$('.auditUser').select2({
-    multiple: false,
-    maximumInputLength: 10,
-    language: '$lang',
-    disabled: $disabled
-});
-function formatState(state) {
-	var rtn = $('<span style=\"color:black\">'+state.text+'</span>');
-	return rtn;
-}
-";
-Yii::app()->clientScript->registerScript('searchStaffFunction',$js,CClientScript::POS_READY);
-
 $js = "
 $('#tblDetail').on('change','.amt_bool',function() {
     if($(this).val()==1){
@@ -168,20 +141,12 @@ $('#btnAddRow').on('click',function() {
 			var ni = r;
 			id = id.replace('_'+oi.toString()+'_', '_'+ni.toString()+'_');
 			$(this).attr('id',id);
-			name = name==undefined?'':name.replace('['+oi.toString()+']', '['+ni.toString()+']');
+			name = name.replace('['+oi.toString()+']', '['+ni.toString()+']');
 			$(this).attr('name',name);
 
+			if (id.indexOf('_audit_user') != -1) $(this).attr('value','');
 			if (id.indexOf('_z_index') != -1) $(this).attr('value',0);
 			if (id.indexOf('_id') != -1) $(this).attr('value',0);
-			if (id.indexOf('_audit_user') != -1){
-			     $(this).removeClass('select2-hidden-accessible').val('').next('span').remove();
-                $(this).select2({
-                    multiple: false,
-                    maximumInputLength: 10,
-                    language: '$lang',
-                    disabled: $disabled
-                });
-			}
 		});
 		if (nid != '') {
 			var topos = $('#'+nid).position().top;

@@ -5,11 +5,12 @@ class NoticeList extends CListPageModel
 	public function attributeLabels()
 	{
 		return array(
-			'subject'=>Yii::t('queue','Subject'),
-			'note_dt'=>Yii::t('queue','Date'),
+			'flow_title'=>Yii::t('queue','Subject'),
+			'lcd'=>Yii::t('queue','Date'),
+			'ready_bool'=>Yii::t('queue','Status'),
 			'note_type'=>Yii::t('queue','Type'),
-			'status'=>Yii::t('queue','Status'),
 			'id'=>Yii::t('queue','ID'),
+			'system_id'=>"系统来源",
 		);
 	}
 	
@@ -18,38 +19,26 @@ class NoticeList extends CListPageModel
 		$uid = Yii::app()->user->id;
 		$sysid = Yii::app()->params['systemId'];
 		$suffix = Yii::app()->params['envSuffix'];
-		$suffix = $suffix=='dev' ? '_w' : $suffix;
-		$sql1 = "select a.*, b.status
-				from swoper$suffix.swo_notification a, swoper$suffix.swo_notification_user b 
-				where b.username='$uid' and a.system_id='$sysid'
-				and a.id=b.note_id
+		$sql1 = "select *
+				from swoper$suffix.swo_flow_info
+				where username='$uid'
 			";
-		$sql2 = "select count(a.id)
-				from swoper$suffix.swo_notification a, swoper$suffix.swo_notification_user b 
-				where b.username='$uid' and a.system_id='$sysid'
-				and a.id=b.note_id
+		$sql2 = "select count(id)
+				from swoper$suffix.swo_flow_info
+				where username='$uid'
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
 			$svalue = str_replace("'","\'",$this->searchValue);
 			switch ($this->searchField) {
-				case 'subject':
-					$clause .= General::getSqlConditionClause('a.subject',$svalue);
-					break;
-				case 'note_type':
-					$field = "(select case a.note_type when 'ACTN' then '".Yii::t('queue','Action')."' 
-							when 'NOTI' then '".Yii::t('queue','Notify')."' 
-						end) ";
-					$clause .= General::getSqlConditionClause($field, $svalue);
+				case 'flow_title':
+					$clause .= General::getSqlConditionClause('flow_title',$svalue);
 					break;
 				case 'note_dt':
-					$clause .= General::getSqlConditionClause('a.lcd',$svalue);
+					$clause .= General::getSqlConditionClause('lcd',$svalue);
 					break;
-				case 'status':
-					$field = "(select case b.status when 'N' then '".Yii::t('queue','Unread')."' 
-							when 'S' then '".Yii::t('queue','Unread')."' 
-							when 'C' then '".Yii::t('queue','Read')."' 
-						end) ";
+				case 'ready_bool':
+					$field = "(if(note_type=1,if(update_bool=1,'已执行','未执行'),if(ready_bool=1,'已读','未读'))) ";
 					$clause .= General::getSqlConditionClause($field, $svalue);
 					break;
 			}
@@ -59,14 +48,14 @@ class NoticeList extends CListPageModel
 		if (!empty($this->orderField)) {
 			switch ($this->orderField) {
 				case 'note_dt':
-					$order .= " order by a.lcd ";
+					$order .= " order by lcd ";
 					break;
 				default: 
 					$order .= " order by ".$this->orderField." ";
 			}
 			if ($this->orderType=='D') $order .= "desc ";
 		} else {
-			$order .= " order by a.id desc ";
+			$order .= " order by id desc ";
 		}
 
 		$sql = $sql2.$clause;
@@ -80,19 +69,14 @@ class NoticeList extends CListPageModel
 		$this->attr = array();
 		if (count($records) > 0) {
 			foreach ($records as $k=>$record) {
-				switch ($record['note_type']) {
-					case 'ACTN': $type_name = Yii::t('queue','Action'); break;
-					case 'NOTI': $type_name = Yii::t('queue','Notify'); break;
-					default: $type_name = $record['note_type'];
-				}
-				$sts_name = $record['status']=='C' ? Yii::t('queue','Read') : Yii::t('queue','Unread');
+				$sts_name = self::getStsName($record['note_type'],$record['ready_bool'],$record['update_bool']);
 				$this->attr[] = array(
 					'id'=>$record['id'],
-					'subject'=>$record['subject'],
-					'note_dt'=>$record['lcd'],
-					'note_type'=>$record['note_type'],
-					'status'=>$sts_name,
-					'note_type'=>$type_name,
+					'flow_title'=>$record['flow_title'],
+					'lcd'=>$record['lcd'],
+					'system_id'=>self::getSystemName($record['system_id']),
+					'ready_bool'=>$sts_name,
+					'note_type'=>$record['note_type']==1?Yii::t('queue','Action'):Yii::t('queue','Notify'),
 				);
 			}
 		}
@@ -100,6 +84,24 @@ class NoticeList extends CListPageModel
 		$session[$this->criteriaName()] = $this->getCriteria();
 		return true;
 	}
+
+	public static function getStsName($noteType,$readyBool,$updateBool){
+	    $sts_name="";
+	    if($noteType==1){//审核流程
+            if($updateBool==1){
+                $sts_name="已执行";
+            }else{
+                $sts_name.="未执行";
+            }
+        }else{
+            if($readyBool==1){
+                $sts_name.="已读";
+            }else{
+                $sts_name.="未读";
+            }
+        }
+        return $sts_name;
+    }
 
 	public function criteriaName() {
 		return Yii::app()->params['systemId'].'_criteria_z101';
@@ -109,39 +111,48 @@ class NoticeList extends CListPageModel
 		$uid = Yii::app()->user->id;
 		$sysid = Yii::app()->params['systemId'];
 		$suffix = Yii::app()->params['envSuffix'];
-		$suffix = $suffix=='dev' ? '_w' : $suffix;
-		$sql1 = "update swoper$suffix.swo_notification a, swoper$suffix.swo_notification_user b 
-				set b.status='C', b.luu='$uid'
-				where b.username='$uid' and a.system_id='$sysid'
-				and a.id=b.note_id and b.status<>'C'
+		$sql1 = "update swoper$suffix.swo_flow_info 
+				set ready_bool=1, luu='$uid'
+				where id>0
 			";
-		$clause = "";
+		$clause = " and username='$uid' and ready_bool=0 and note_type=2 ";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
 			$svalue = str_replace("'","\'",$this->searchValue);
 			switch ($this->searchField) {
-				case 'subject':
-					$clause .= General::getSqlConditionClause('a.subject',$svalue);
-					break;
-				case 'note_type':
-					$field = "(select case a.note_type when 'ACTN' then '".Yii::t('queue','Action')."' 
-							when 'NOTI' then '".Yii::t('queue','Notify')."' 
-						end) ";
-					$clause .= General::getSqlConditionClause($field, $svalue);
-					break;
-				case 'note_dt':
-					$clause .= General::getSqlConditionClause('a.lcd',$svalue);
-					break;
-				case 'status':
-					$field = "(select case b.status when 'N' then '".Yii::t('queue','Unread')."' 
-							when 'S' then '".Yii::t('queue','Unread')."' 
-							when 'C' then '".Yii::t('queue','Read')."' 
-						end) ";
-					$clause .= General::getSqlConditionClause($field, $svalue);
-					break;
+                case 'flow_title':
+                    $clause .= General::getSqlConditionClause('flow_title',$svalue);
+                    break;
+                case 'note_dt':
+                    $clause .= General::getSqlConditionClause('lcd',$svalue);
+                    break;
+                case 'ready_bool':
+                    $field = "(if(note_type=1,if(update_bool=1,'已执行','未执行'),if(ready_bool=1,'已读','未读'))) ";
+                    $clause .= General::getSqlConditionClause($field, $svalue);
+                    break;
 			}
 		}
-		
-		$sql = $sql1.$clause;
-		Yii::app()->db->createCommand($sql)->execute();
+
+        $flowInfoRows = Yii::app()->db->createCommand()->select("id,flow_id")
+            ->from("swoper$suffix.swo_flow_info")->where("id>0 {$clause}")->queryAll();
+        if($flowInfoRows){
+            $connection = Yii::app()->db;
+            $transaction=$connection->beginTransaction();
+            $sql = $sql1.$clause;
+            Yii::app()->db->createCommand($sql)->execute();
+
+            $flowModel = new CNoticeFlowModel();
+            $flowModel->finishNoticeList($flowInfoRows);
+            $transaction->commit();
+        }
 	}
+
+	public static function getSystemName($system_id){
+        $config = Yii::app()->basePath.'/config/system.php';
+        $menuitems = require($config);
+        if(key_exists($system_id,$menuitems)){
+            return Yii::t("app",$menuitems[$system_id]["name"]);
+        }else{
+            return $system_id;
+        }
+    }
 }

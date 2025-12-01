@@ -26,5 +26,7 @@ return array(
     =>'请及时录入上月月报表数据并保存，15日仍未录入，则锁定系统。',
     'Before using other functions, please enter the data from the previous month\'s report and save it.'
     =>'在使用其他功能前，请先录入上月月报表数据并保存。',
+    'It\'s almost the end of the month, please approve colleagues\' credit applications in a timely manner. If approved, please ignore this information.'
+    =>'快到月底了，请及时审批同事们申请的学分 。如已审批，请忽略此信息。',
 );
 ?>

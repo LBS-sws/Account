@@ -498,57 +498,6 @@ class DocMan {
         return $rtn;
     }
 
-    public function setDocMasterId($doc_type,$doc_id,$docMasterId){
-        $suffix = Yii::app()->params['envSuffix'];
-        if(empty($doc_id)){
-            $lcu = Yii::app()->user->id;
-            $row = Yii::app()->db->createCommand()->select("id")
-                ->from("docman$suffix.dm_master")
-                ->where("doc_type_code=:code and id=:id and lcu=:lcu",array(":code"=>$doc_type,":id"=>$docMasterId,":lcu"=>$lcu))
-                ->queryRow();
-        }else{
-            $row = Yii::app()->db->createCommand()->select("id")
-                ->from("docman$suffix.dm_master")
-                ->where("doc_type_code=:code and doc_id=:id",array(":code"=>$doc_type,":id"=>$doc_id))
-                ->queryRow();
-        }
-        if($row){
-            $this->masterId = $row["id"];
-        }else{
-            $this->masterId = 0;
-        }
-        return $this->masterId;
-    }
-
-    public function genTableFileListEx($readonly, $nodelete=false) {
-        $rtn = "";
-        $reccnt = 0;
-        $filelist = $this->retrieve();
-        if (empty($filelist)) {
-            $msg = Yii::t('dialog','No File Record');
-            $rtn = "<tr><td>&nbsp;</td><td colspan=2>$msg</td></tr>";
-        } else {
-            $title1 = Yii::t('dialog','Download');
-            $title2 = Yii::t('dialog','Remove');
-            $doctype = $this->docType;
-            foreach ($filelist as $filerec) {
-                $mid = $filerec['id'];
-                $did = $this->docId;
-                $id = $filerec['file_id'];
-                $imgHtml = $this->getImgHtml($filerec);//图片资源
-                $clickImg = empty($imgHtml)?"":" search_box_img";
-                $vbutton = ($this->docId==0) ? "" : "<a href=\"#\" onclick=\"downloadFileEx({$mid},{$did},{$id},'{$doctype}');return false;\" title=\"$title1\"><span class=\"fa fa-download\"></span></a>";
-                $dbutton = ($readonly || $nodelete) ? "" : "<a href=\"#\" onclick=\"removeFileEX($id);return false;\"><span class=\"fa fa-remove\" title=\"$title2\"></span></a>";
-                $fname = $filerec['display_name'];
-                $ldate = $filerec['lcd'];
-                $rtn .= "<tr><td>$vbutton&nbsp;&nbsp;$dbutton</td><td class='{$clickImg}'>$fname {$imgHtml}</td><td>$ldate</td></tr>";
-                $reccnt++;
-            }
-        }
-
-        return array('html'=>$rtn,'masterId'=>$this->masterId,'attm'=>$reccnt);
-    }
-
     public function genFileListView() {
         $rtn = "";
         $filelist = $this->retrieve();

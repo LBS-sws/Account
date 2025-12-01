@@ -91,8 +91,8 @@ class ImpCustomer {
 		if (strpos($sql,':city')!==false)
 			$command->bindParam(':city',$data['city'],PDO::PARAM_LOB);
 		$command->execute();
-		$this->sendCurlForJD($connection,$data);
 		$id = Yii::app()->db->getLastInsertID();
+		$this->sendCurlForJD($connection,$data);
 		return $action.'- /'.Yii::t('import','Row No.').': '.$data['excel_row']
 			.' /'.Yii::t('import','Code').': '.$data['code']
 			.' /'.Yii::t('import','Name').': '.$data['name']
@@ -156,6 +156,5 @@ class ImpCustomer {
             ),//分类标准
         );
         return $curlData;
-    }
-}
+    }}
 ?>

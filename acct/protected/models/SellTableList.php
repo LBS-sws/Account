@@ -10,10 +10,10 @@ class SellTableList extends CListPageModel
 
     public function init(){
         if(empty($this->year)||!is_numeric($this->year)){
-            $this->year = date("Y",strtotime("-1 months"));
+            $this->year = date("Y");
         }
         if(empty($this->month)||!is_numeric($this->month)){
-            $this->month = date("n",strtotime("-1 months"));
+            $this->month = date("n");
         }
         if(empty($this->city)){
             $this->city=Yii::app()->user->city();

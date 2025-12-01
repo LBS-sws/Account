@@ -25,7 +25,6 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute';
 	</ol>
 -->
 </section>
-
 <section class="content">
     <div class="box"><div class="box-body">
             <div class="btn-group" role="group">
@@ -35,6 +34,9 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute';
             <div class="btn-group pull-right" role="group">
                 <?php echo TbHtml::button('<span class="fa fa-cloud-download"></span> ' . Yii::t('misc', 'Down'), array(
                     'submit' => Yii::app()->createUrl('sellCompute/downAll')));
+                ?>
+                <?php echo TbHtml::button('<span class="fa fa-mail-reply-all"></span> 全部取消计算', array(
+                    'data-toggle'=>'modal','data-target'=>'#confirmdialog'));
                 ?>
             </div>
         </div></div>
@@ -73,6 +75,20 @@ $this->pageTitle=Yii::app()->name . ' - SellCompute';
 echo TbHtml::hiddenField("down_id",$model->down_id);
 ?>
 
+<?php
+$content = "<p>全部取消后，需要手动填写的<span class='text-danger'>提成比例</span>会<span class='text-danger'>全部清空</span></p>";
+$content.= "<p>您确定要<span class='text-danger'>取消计算</span>吗？</p>";
+$this->widget('bootstrap.widgets.TbModal', array(
+    'id'=>'confirmdialog',
+    'header'=>"全部取消计算",
+    'content'=>$content,
+    'footer'=>array(
+        TbHtml::button(Yii::t('dialog','OK'), array('submit' => Yii::app()->createUrl('sellCompute/backAll'),'color'=>TbHtml::BUTTON_COLOR_PRIMARY)),
+        TbHtml::button(Yii::t('dialog','Cancel'), array('data-dismiss'=>'modal','color'=>TbHtml::BUTTON_COLOR_PRIMARY)),
+    ),
+    'show'=>false,
+));
+?>
 <?php $this->endWidget(); ?>
 
 <?php

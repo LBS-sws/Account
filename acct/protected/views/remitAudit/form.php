@@ -9,7 +9,7 @@ $this->pageTitle=Yii::app()->name . ' - RemitAudit Form';
 'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
 )); ?>
 <style>
-    input[readonly],select[readonly],label[readonly]{ pointer-events: none;}
+    *[readonly]{ pointer-events: none;}
     .table-fixed{ table-layout: fixed;}
     .table-fixed>tbody>tr>th{ vertical-align: bottom;}
 </style>
@@ -33,7 +33,7 @@ $this->pageTitle=Yii::app()->name . ' - RemitAudit Form';
 		<?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
 				'submit'=>Yii::app()->createUrl('remitAudit/index')));
 		?>
-<?php if ($model->status_type==2&&$model->current_username==Yii::app()->user->id): ?>
+<?php if ($model->current_username==Yii::app()->user->id): ?>
             <?php echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Approve'), array(
                 'submit'=>Yii::app()->createUrl('remitAudit/audit')));
             ?>
@@ -63,7 +63,6 @@ $this->pageTitle=Yii::app()->name . ' - RemitAudit Form';
 			<?php echo $form->hiddenField($model, 'scenario'); ?>
 			<?php echo $form->hiddenField($model, 'id'); ?>
 			<?php echo $form->hiddenField($model, 'employee_id'); ?>
-            <?php echo $form->hiddenField($model, 'city',array("id"=>"city")); ?>
 			<?php echo $form->hiddenField($model, 'status_type'); ?>
             <?php echo CHtml::hiddenField('dtltemplate'); ?>
 
@@ -108,40 +107,6 @@ $this->widget('bootstrap.widgets.TbModal', array(
 Script::genFileUpload($model,$form->id,'EXPEN');
 $language = Yii::app()->language;
 
-
-$link3=Yii::app()->createUrl('remitAudit/AjaxPayeeCode');
-$js ="
-function changeCustomerName(){
-    var that = $(this);
-    $(this).parent('div').addClass('open');
-    $(this).next('.dropdown-menu').html('<li><a>查询中...</span></li>');
-	var data = \"group=\"+$(this).val()+\"&city=\"+$('#city').val();
-	$.ajax({
-		type: 'GET',
-		url: '$link3',
-		data: data,
-		success: function(data) {
-			that.next('.dropdown-menu').html(data);
-		},
-		error: function(data) { // if error occured
-			var x = 1;
-		},
-		dataType:'html'
-	});
-}
-$('#payee_code').on('click',function(e){
-    e.stopPropagation();
-});
-$('#payee_code').on('focus',changeCustomerName);
-$('#payee_code').on('keyup',changeCustomerName);
-$('body').on('click',function(){
-    $('#payee_code').parent('div').removeClass('open');
-});
-$('#payeeCodeGroup').on('click','.clickThis',function(e){
-    $('#payee_code').val($(this).data('code'));
-});
-";
-Yii::app()->clientScript->registerScript('ajaxFunction',$js,CClientScript::POS_READY);
 $js = "
 $('#tblDetail').on('change','.changeAmtType',function() {
     var amt_type = $(this).val();

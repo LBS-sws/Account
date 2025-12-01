@@ -75,6 +75,7 @@ class ConsultApplyForm extends CFormModel
 	}
 
     public function validateStaff($attribute, $params){
+        $this->addError($attribute, "会计系统不允许提咨询费申请");
 	    if(Yii::app()->user->validFunction('CN14')){//代申請
             $this->staff_city=$this->apply_city;
         }else{

@@ -38,7 +38,7 @@ $this->pageTitle=Yii::app()->name . ' - SellTable Form';
 		<?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
 				'submit'=>Yii::app()->createUrl('sellTable/index')));
 		?>
-        <?php if ($model->examine == 'A'): ?>
+        <?php if ($model->examine == 'A'&&$model->getFormUpdateBool()): ?>
             <?php echo TbHtml::button('<span class="fa fa-reply-all"></span> '.Yii::t('misc','Rollback'), array(
                 'submit'=>Yii::app()->createUrl('sellTable/break')));
             ?>
@@ -51,7 +51,7 @@ $this->pageTitle=Yii::app()->name . ' - SellTable Form';
                 'submit' => Yii::app()->createUrl('sellTable/examine')));
             ?>
         <?php endif ?>
-        <?php if (Yii::app()->user->validFunction('CN12') && $model->examine == 'Y'): ?>
+        <?php if (Yii::app()->user->validFunction('CN12') && $model->examine == 'Y'&&$model->getFormUpdateBool()): ?>
             <?php echo TbHtml::button('<span class="fa fa-upload"></span> ' . Yii::t('misc', 'Audit'), array(
                 'submit' => Yii::app()->createUrl('sellTable/audit')));
             ?>

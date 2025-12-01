@@ -9,12 +9,11 @@ class ExpenseAuditForm extends ExpenseApplyForm
 	public function rules()
 	{
 		return array(
-            array('tableDetail,id,exp_code,employee_id,apply_date,city,status_type,amt_money,remark,reject_note','safe'),
+            array('id,exp_code,employee_id,apply_date,city,status_type,amt_money,remark,reject_note','safe'),
 			array('employee_id,apply_date','required'),
             array('id','validateID'),
             array('employee_id','validateEmployee'),
             array('reject_note','required','on'=>array("reject")),
-            array('no_of_attm,new_of_id, docType,docId, files, removeFileId, docMasterId','safe'),
 		);
 	}
 
@@ -41,25 +40,6 @@ class ExpenseAuditForm extends ExpenseApplyForm
                 $this->current_num = $row["current_num"];
                 $this->current_username = $row["current_username"];
                 $this->amt_money = floatval($row["amt_money"]);
-                $this->infoDetail=array();
-                $infoRows = Yii::app()->db->createCommand()->select("*")->from("acc_expense_info")
-                    ->where("exp_id=:exp_id",array(":exp_id"=>$id))->queryAll();
-                if($infoRows){
-                    foreach ($infoRows as $infoRow){
-                        $this->infoDetail[]=array(
-                            "id"=>$infoRow["id"],
-                            "expId"=>$infoRow["exp_id"],
-                            "setId"=>$infoRow["set_id"],
-                            "tripId"=>$infoRow["trip_id"],
-                            "infoDate"=>General::toDate($infoRow["info_date"]),
-                            "amtType"=>$infoRow["amt_type"],
-                            "infoRemark"=>$infoRow["info_remark"],
-                            "infoAmt"=>$infoRow["info_amt"],
-                            "infoJson"=>$infoRow["info_json"],
-                            "uflag"=>"N",
-                        );
-                    }
-                }
             }else{
                 $this->addError($attribute, "报销单不存在，请刷新重试");
                 return false;
@@ -82,7 +62,6 @@ class ExpenseAuditForm extends ExpenseApplyForm
             $this->city = $row['city'];
             $this->status_type = $row['status_type'];
             $this->current_username = $row['current_username'];
-            $this->audit_json = json_decode($row["audit_json"],true);
             $this->amt_money = $row['amt_money'];
             $this->remark = $row['remark'];
             $this->reject_note = $row['reject_note'];
@@ -91,13 +70,11 @@ class ExpenseAuditForm extends ExpenseApplyForm
             $this->payment_id = $row['payment_id'];
             $this->acc_id = $row['acc_id'];
             $this->no_of_attm['expen'] = $row['expendoc'];
-            $this->no_of_attm['EXPEN_'.$index] = $row['expendoc'];
-            $sql = "select *,docman$suffix.countdoc('exinfo',id) as infodoc from acc_expense_info where exp_id='".$index."'";
+            $sql = "select * from acc_expense_info where exp_id='".$index."'";
             $infoRows = Yii::app()->db->createCommand($sql)->queryAll();
             if($infoRows){
                 $this->infoDetail=array();
                 foreach ($infoRows as $infoRow){
-                    $this->no_of_attm['EXINFO_'.$infoRow["id"]] = $infoRow['infodoc'];
                     $this->infoDetail[]=array(
                         "id"=>$infoRow["id"],
                         "expId"=>$infoRow["exp_id"],
@@ -118,8 +95,6 @@ class ExpenseAuditForm extends ExpenseApplyForm
                 foreach ($this->fileList as $detailRow){
                     if(key_exists($detailRow["field_id"],$tableDetailList)){
                         $this->tableDetail[$detailRow["field_id"]] = $tableDetailList[$detailRow["field_id"]]["field_value"];
-                    }else{
-                        $this->tableDetail[$detailRow["field_id"]] = "";
                     }
                 }
             }
@@ -135,13 +110,7 @@ class ExpenseAuditForm extends ExpenseApplyForm
 		$transaction=$connection->beginTransaction();
 		try {
 			$this->saveDataForSql($connection);
-            $data = $this->curlPaymentJD($transaction);//发送消息给金蝶系统
-            if($data["code"]==200){
-                return true;
-            }else{
-                $this->addError("id", $data["message"]);
-                return false;
-            }
+			$transaction->commit();
 		}
 		catch(Exception $e) {
 		    var_dump($e);
@@ -149,24 +118,6 @@ class ExpenseAuditForm extends ExpenseApplyForm
 			throw new CHttpException(404,'Cannot update.');
 		}
 	}
-
-    //发送消息给金蝶系统
-    protected function curlPaymentJD(&$transaction){
-        $arr=array("code"=>200,"message"=>"");
-	    if($this->status_type==6){
-            $curlModel = new CurlForPayment();
-            $arr = $curlModel->sendJDCurlForPayment($this);
-            if($arr["code"]==200){
-                $transaction->commit();
-            }else{
-                $transaction->rollback();
-            }
-            $curlModel->saveTableForArr();
-        }else{
-            $transaction->commit();
-        }
-        return $arr;
-    }
 
 	protected function setAuditFinish(){
 	    $this->current_num++;
@@ -176,7 +127,7 @@ class ExpenseAuditForm extends ExpenseApplyForm
             $this->current_username = $auditUser[$this->current_num];
         }else{
             //审核完成
-            $this->status_type=6;
+            $this->status_type=4;
         }
     }
 
@@ -234,34 +185,8 @@ class ExpenseAuditForm extends ExpenseApplyForm
 		$command->execute();
 
         $this->saveHistory($connection);
-        $this->sendEmail($connection);
 		return true;
 	}
-
-    protected function sendEmail($connection){
-        if(in_array($this->status_type,array(2,3,4,6))){
-            $subject=ExpenseFun::getTableStrToNum($this->table_type);
-            if ($this->status_type==3){
-                $subject.=" - 已拒绝";
-            }else{
-                $subject.=" - 已审核";
-            }
-            $employeeList = ExpenseFun::getEmployeeListForID($this->employee_id);
-            $emailModel = new Email($subject,'',$subject);
-            $message = "<h3>{$subject}</h3>";
-            $message.= "<p>申请员工：".$employeeList["employee"]."</p>";
-            $message.= "<p>员工部门：".$employeeList["department"]."</p>";
-            $message.= "<p>申请时间：".$this->apply_date."</p>";
-            $message.= "<p>报销编号：".$this->exp_code."</p>";
-            $message.= "<p>申请总金额：".$this->amt_money."</p>";
-            if ($this->status_type==3){
-                $message.= "<p style='color:red;'>拒绝原因：".$this->reject_note."</p>";
-            }
-            $emailModel->setMessage($message);
-            $emailModel->addEmailToStaffId($this->employee_id);
-            $emailModel->sent();
-        }
-    }
 
     protected function saveHistory($connection){
         $uid = Yii::app()->user->id;
@@ -299,24 +224,6 @@ class ExpenseAuditForm extends ExpenseApplyForm
             case 4://已审核
                 $history_text=array();
                 $history_text[]="<span>已审核，等待填写银行</span>";
-                $history_text[]="<span>扣款城市：".General::getCityName($this->city)."</span>";
-                $connection->createCommand()->insert("acc_expense_history", array(
-                    "exp_id"=>$this->id,
-                    "history_type"=>2,
-                    "history_text"=>implode("<br/>",$history_text),
-                    "lcu"=>$uid
-                ));
-                $connection->createCommand()->insert("acc_expense_audit", array(
-                    "exp_id"=>$this->id,
-                    "audit_user"=>$uid,
-                    "audit_str"=>$audit_str,
-                    "audit_date"=>date_format(date_create(),"Y/m/d"),
-                    "lcu"=>$uid
-                ));
-                break;
-            case 6://等待金蝶系统扣款
-                $history_text=array();
-                $history_text[]="<span>已审核，等待金蝶系统扣款</span>";
                 $history_text[]="<span>扣款城市：".General::getCityName($this->city)."</span>";
                 $connection->createCommand()->insert("acc_expense_history", array(
                     "exp_id"=>$this->id,

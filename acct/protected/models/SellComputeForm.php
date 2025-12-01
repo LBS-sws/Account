@@ -45,9 +45,11 @@ class SellComputeForm extends CFormModel
         'new'=>array('key'=>'new','name'=>'New'),
         'edit'=>array('key'=>'edit','name'=>'Edit'),
         'end'=>array('key'=>'end','name'=>'END'),
+        'recovery'=>array('key'=>'recovery','name'=>'Recovery'),
         'performance'=>array('key'=>'performance','name'=>'Performance'),
         'performanceedit'=>array('key'=>'performanceedit','name'=>'PerformanceEdit'),
         'performanceend'=>array('key'=>'performanceend','name'=>'PerformanceEnd'),
+        'perRecovery'=>array('key'=>'perRecovery','name'=>'PerRecovery'),
         'renewal'=>array('key'=>'renewal','name'=>'Renewal'),
         'renewalend'=>array('key'=>'renewalend','name'=>'RenewalEnd'),
         'product'=>array('key'=>'product','name'=>'Prodcct'),
@@ -142,7 +144,7 @@ class SellComputeForm extends CFormModel
                 ->select("count(a.id)")
                 ->from("swoper{$suffix}.swo_service a")
                 ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
-                ->where("a.status='N' and a.commission is not null and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
+                ->where("a.status='N' and a.commission is not null and if(ifnull(a.first_dt,'2222-12-31')>a.status_dt,a.first_dt,a.status_dt) between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
                 ->queryScalar();
             //金额达标或者参加计算的单数达标(僅針對被跨區限制)
             $this->bonus_other_rate = 0;
@@ -235,7 +237,7 @@ class SellComputeForm extends CFormModel
         if(empty($row)){
             Yii::app()->db->createCommand()->insert("acc_service_comm_dtl",array(
                 "hdr_id"=>$this->id,
-                "lcu"=>Yii::app()->user->id
+                "lcu"=>Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id
             ));
         }
         $this->final_money = $this->all_amount+$this->dtl_list["supplement_money"];
@@ -285,8 +287,8 @@ class SellComputeForm extends CFormModel
         ->select("a.*,b.description as type_desc")
         ->from("swoper{$suffix}.swo_service a")
         ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
-        ->where("{$checkSql} a.status='N' and a.city='{$this->city}' and b.sales_rate=1 and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
-        ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
+        ->where("{$checkSql} a.status='N' and a.city='{$this->city}' and b.sales_rate=1 and if(ifnull(a.first_dt,'2222-12-31')>a.status_dt,a.first_dt,a.status_dt) between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
+        ->order("a.external_source asc,a.cust_type asc,a.cust_type_name asc")->queryAll();
         return $rows?$rows:array();
     }
 
@@ -303,6 +305,7 @@ class SellComputeForm extends CFormModel
         $html.="<th width='105px'>".Yii::t("app","first_dt")."</th>";
         $html.="<th width='160px'>".Yii::t("app","company_name")."</th>";
         $html.="<th width='110px'>".Yii::t("app","type_desc")."</th>";
+        $html.="<th width='110px'>"."外部数据来源"."</th>";
         $html.="<th width='120px'>".Yii::t("app","Othersalesman")."</th>";
         $html.="<th width='105px'>".Yii::t("commission","ctrt_period")."</th>";
         $html.="<th width='130px'>".Yii::t("commission","amt_paid")."</th>";
@@ -320,6 +323,7 @@ class SellComputeForm extends CFormModel
                 $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
                 $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
                 $row['royalty'] = $row['commission']==="未计算"?"":$row['royalty'];
+                $row['royalty'] = $row['external_source']==5?0.05:$row['royalty'];
                 $amt_sum = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
                 $checkBool = $row['commission']==="未计算"?false:true;
                 $html.="<tr>";
@@ -327,6 +331,7 @@ class SellComputeForm extends CFormModel
                 $html.="<td>".General::toDate($row['first_dt'])."</td>";
                 $html.="<td>".$row['company_name']."</td>";
                 $html.="<td>".$row['type_desc']."</td>";
+                $html.="<td>".self::getExternalSourceForKey($row['external_source'])."</td>";
                 $html.="<td>".$row['othersalesman']."</td>";
                 $html.="<td>".$row['ctrt_period']."</td>";
                 $html.="<td>".self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid']."</td>";
@@ -398,7 +403,7 @@ class SellComputeForm extends CFormModel
         ->select("a.*,b.description as type_desc")
         ->from("swoper{$suffix}.swo_service a")
         ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
-        ->where("{$checkSql} a.status='N' and a.city='{$this->city}' and b.sales_rate=1 and a.first_dt between '{$this->startDate}' and '{$this->endDate}' and a.othersalesman_id={$this->employee_id}")
+        ->where("{$checkSql} a.status='N' and a.city='{$this->city}' and b.sales_rate=1 and if(ifnull(a.first_dt,'2222-12-31')>a.status_dt,a.first_dt,a.status_dt) between '{$this->startDate}' and '{$this->endDate}' and a.othersalesman_id={$this->employee_id}")
         ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
         return $rows?$rows:array();
     }
@@ -486,6 +491,262 @@ class SellComputeForm extends CFormModel
                 $newExcel->getSheet(1)->getCellByColumnAndRow($num+8,$detailRow)->setValue($row["royalty"]);
                 $newExcel->getSheet(1)->getCellByColumnAndRow($num+9,$detailRow)->setValue($row["commission"]);
                 //83
+            }
+        }
+    }
+
+    //恢复
+    public function recoveryList($checkBool=false){
+        $checkSql = $checkBool?"a.commission is not null and ":"";//筛选已经选中的数据
+        $suffix = Yii::app()->params['envSuffix'];
+        $rows = Yii::app()->db->createCommand()
+            ->select("a.*,b.description as type_desc,f.rpt_cat as nature_rpt,f.description as nature_name")
+            ->from("swoper{$suffix}.swo_service a")
+            ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
+            ->leftJoin("swoper{$suffix}.swo_nature f","a.nature_type=f.id")
+            ->where("{$checkSql} a.status='R' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id={$this->employee_id} and a.othersalesman_id!={$this->employee_id}")
+            ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
+        $list = array();
+        if($rows){
+            foreach ($rows as $row){
+                $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
+                $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
+                $arr = SellComputeList::getBeforeServiceListByStop($row,"salesman_id",$this->group_type);
+                if(!empty($arr)){//变动金额
+                    $row["history"]=$arr;
+                    $list[]=$row;
+                }
+            }
+        }
+        return $list;
+    }
+
+    //恢复
+    private function recoveryTable(){
+        $type = $this->getScenario();
+        $html="<thead><tr>";
+        $html.="<th width='35px'>";
+        if($this->updateBool){
+            $html.=TbHtml::checkBox("all",false,array("id"=>"checkAll"));
+        }
+        $html.="</th>";
+        $html.="<th width='105px'>".Yii::t("commission","recovery date")."</th>";
+        $html.="<th width='160px'>".Yii::t("app","company_name")."</th>";
+        $html.="<th width='110px'>".Yii::t("app","type_desc")."</th>";
+        $html.="<th width='70px'>".Yii::t("commission","nature_type")."</th>";
+        //$html.="<th width='120px'>".Yii::t("app","Othersalesman")."</th>";
+        $html.="<th width='105px'>".Yii::t("commission","ctrt_period")."</th>";
+        $html.="<th width='130px'>".Yii::t("commission","amt_paid")."</th>";
+        $html.="<th width='90px'>".Yii::t("commission","update money")."</th>";
+        $html.="<th width='195px'>".Yii::t("commission","history royalty")."</th>";
+        $html.="<th width='80px'>".Yii::t("commission","royalty")."</th>";
+        $html.="<th width='100px'>".Yii::t("commission","commission_num")."</th>";
+        $html.="</tr></thead>";
+        $rows = $this->recoveryList();
+        if($rows){
+            foreach ($rows as $row){
+                $row['royalty'] = is_numeric($row['royalty'])?floatval($row['royalty']):0;
+                $row['commission'] = is_numeric($row['commission'])?floatval($row['commission']):"未计算";
+                $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
+                $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
+                $row['royalty'] = $row['commission']==="未计算"?"":$row['royalty'];
+                $amt_sum = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
+                $checkBool = $row['commission']==="未计算"?false:true;
+                $html.="<tr>";
+                $html.="<td>";
+                $html.=TbHtml::checkBox("{$type}[{$row['id']}]",$checkBool,array('class'=>'checkOne','readonly'=>$this->isReadOnly()));
+                $html.="</td>";
+                $html.="<td>".General::toDate($row['status_dt'])."</td>";
+                $html.="<td>".$row['company_name']."</td>";
+                $html.="<td>".$row['type_desc']."</td>";
+                $html.="<td>".$row['nature_name']."</td>";
+                //$html.="<td>".$row['othersalesman']."</td>";
+                $html.="<td>".$row['ctrt_period']."</td>";
+                $html.="<td>".self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid']."</td>";
+                if(key_exists("history",$row)&&!empty($row["history"])){ //有历史提成
+                    $amt_sum = $row['history']['amt_money'];
+                    $html.="<td>".$amt_sum."</td>";
+                    $royalty=empty($row['history']['royalty'])?0:floatval($row['history']['royalty']);
+                    if(!empty($royalty)){
+                        $html.="<td data-id='{$row['history']['id']}'>".floatval($row["history"]["royalty"])."</td>";
+                    }else{
+                        $html.="<td data-id='{$row['history']['id']}'>".TbHtml::numberField("royalty[{$row['id']}]",$royalty)."</td>";
+                    }
+                }
+                $html.="<td>".$row['royalty']."</td>";
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
+                $html.="<td>".$row['commission']."</td>";
+                $html.="</tr>";
+                $this->textSum++;
+                if($checkBool){
+                    $this->textNum++;
+                }
+            }
+        }
+        return $html;
+    }
+
+    //恢复
+    private function recoveryExcel($rows,$tempArr,$newExcel,&$detailRow){
+        if($rows){
+            $num = 117;
+            foreach ($rows as $row){
+                $detailRow++;
+                $row["first_dt"] = General::toMyDate($row["first_dt"]);
+                $row["status_dt"] = General::toMyDate($row["status_dt"]);
+                $str = self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid'];
+                $row["amt_money"] = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
+                $row['royalty'] = is_numeric($row['royalty'])?floatval($row['royalty']):0;
+                $row['commission'] = is_numeric($row['commission'])?floatval($row['commission']):"未计算";
+                $row['commission'] = is_numeric($row['commission'])&&$row['commission']>0?round($row['commission']*$row['royalty'],2):$row['commission'];
+                $row["old_royalty"]=floatval($row["history"]["royalty"]);
+                if(empty($row["old_royalty"])){
+                    $royalty=empty($row['royalty'])?0:$row['royalty'];
+                    $row["old_royalty"] = $royalty;
+                }
+                $newExcel->getSheet(1)->getCellByColumnAndRow(0,$detailRow)->setValue($tempArr["yearMonth"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(1,$detailRow)->setValue($tempArr["city_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(2,$detailRow)->setValue($tempArr["employee_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num,$detailRow)->setValue("恢复生意额");
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+1,$detailRow)->setValue($row["status_dt"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+2,$detailRow)->setValue($row["company_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+3,$detailRow)->setValue($row["type_desc"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+4,$detailRow)->setValue($row["nature_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+5,$detailRow)->setValue($row["ctrt_period"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+6,$detailRow)->setValue($str);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+7,$detailRow)->setValue($row['amt_money']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+8,$detailRow)->setValue($row["old_royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+9,$detailRow)->setValue($row["royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+10,$detailRow)->setValue($row["commission"]);
+                //93
+            }
+        }
+    }
+
+    //跨区恢复
+    public function perRecoveryList($checkBool=false){
+        $checkSql = $checkBool?"a.other_commission is not null and ":"";//筛选已经选中的数据
+        $suffix = Yii::app()->params['envSuffix'];
+        $rows = Yii::app()->db->createCommand()
+        ->select("a.*,b.description as type_desc,f.rpt_cat as nature_rpt,f.description as nature_name")
+        ->from("swoper{$suffix}.swo_service a")
+        ->leftJoin("swoper{$suffix}.swo_customer_type b","a.cust_type=b.id")
+        ->leftJoin("swoper{$suffix}.swo_nature f","a.nature_type=f.id")
+        ->where("{$checkSql} a.status='R' and a.city='{$this->city}' and b.sales_rate=1 and a.status_dt between '{$this->startDate}' and '{$this->endDate}' and a.salesman_id!={$this->employee_id} and a.othersalesman_id={$this->employee_id}")
+        ->order("a.cust_type asc,a.cust_type_name asc")->queryAll();
+        $list = array();
+        if($rows){
+            foreach ($rows as $row){
+                $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
+                $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
+                $arr = SellComputeList::getBeforeServiceListByStop($row,"othersalesman_id",$this->group_type);
+                if(!empty($arr)){//变动金额
+                    $row["history"]=$arr;
+                    $list[]=$row;
+                }
+            }
+        }
+        return $list;
+    }
+
+    //跨区恢复
+    private function perRecoveryTable(){
+        $type = $this->getScenario();
+        $html="<thead><tr>";
+        $html.="<th width='35px'>";
+        if($this->updateBool){
+            $html.=TbHtml::checkBox("all",false,array("id"=>"checkAll"));
+        }
+        $html.="</th>";
+        $html.="<th width='105px'>".Yii::t("commission","recovery date")."</th>";
+        $html.="<th width='160px'>".Yii::t("app","company_name")."</th>";
+        $html.="<th width='110px'>".Yii::t("app","type_desc")."</th>";
+        $html.="<th width='70px'>".Yii::t("commission","nature_type")."</th>";
+        //$html.="<th width='120px'>".Yii::t("app","Othersalesman")."</th>";
+        $html.="<th width='105px'>".Yii::t("commission","ctrt_period")."</th>";
+        $html.="<th width='130px'>".Yii::t("commission","amt_paid")."</th>";
+        $html.="<th width='90px'>".Yii::t("commission","update money")."</th>";
+        $html.="<th width='195px'>".Yii::t("commission","history royalty")."</th>";
+        $html.="<th width='80px'>".Yii::t("commission","royalty")."</th>";
+        $html.="<th width='100px'>".Yii::t("commission","commission_num")."</th>";
+        $html.="</tr></thead>";
+        $rows = $this->perRecoveryList();
+        if($rows){
+            foreach ($rows as $row){
+                $row['royalty'] = is_numeric($row['royaltys'])?floatval($row['royaltys']):0;
+                $row['other_commission'] = is_numeric($row['other_commission'])?floatval($row['other_commission']):"未计算";
+                $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
+                $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
+                $row['royalty'] = $row['other_commission']==="未计算"?"":$row['royalty'];
+                $amt_sum = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
+                $checkBool = $row['other_commission']==="未计算"?false:true;
+                $html.="<tr>";
+                $html.="<td>";
+                $html.=TbHtml::checkBox("{$type}[{$row['id']}]",$checkBool,array('class'=>'checkOne','readonly'=>$this->isReadOnly()));
+                $html.="</td>";
+                $html.="<td>".General::toDate($row['status_dt'])."</td>";
+                $html.="<td>".$row['company_name']."</td>";
+                $html.="<td>".$row['type_desc']."</td>";
+                $html.="<td>".$row['nature_name']."</td>";
+                //$html.="<td>".$row['othersalesman']."</td>";
+                $html.="<td>".$row['ctrt_period']."</td>";
+                $html.="<td>".self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid']."</td>";
+                if(key_exists("history",$row)&&!empty($row["history"])){ //有历史提成
+                    $amt_sum = $row['history']['amt_money'];
+                    $html.="<td>".$amt_sum."</td>";
+                    $royalty=empty($row['history']['royalty'])?0:floatval($row['history']['royalty']);
+                    if(!empty($royalty)){
+                        $html.="<td data-id='{$row['history']['id']}'>".floatval($row["history"]["royalty"])."</td>";
+                    }else{
+                        $html.="<td data-id='{$row['history']['id']}'>".TbHtml::numberField("royalty[{$row['id']}]",$royalty)."</td>";
+                    }
+                }
+                $html.="<td>".$row['royalty']."</td>";
+                $row['other_commission'] = is_numeric($row['other_commission'])&&$row['other_commission']>0?round($row['other_commission']*$row['royalty'],2):$row['other_commission'];
+                $html.="<td>".$row['other_commission']."</td>";
+                $html.="</tr>";
+                $this->textSum++;
+                if($checkBool){
+                    $this->textNum++;
+                }
+            }
+        }
+        return $html;
+    }
+
+    //跨区恢复
+    private function perRecoveryExcel($rows,$tempArr,$newExcel,&$detailRow){
+        if($rows){
+            $num = 128;
+            foreach ($rows as $row){
+                $detailRow++;
+                $row["first_dt"] = General::toMyDate($row["first_dt"]);
+                $row["status_dt"] = General::toMyDate($row["status_dt"]);
+                $str = self::getPaidTypeName($row['paid_type'])."：".$row['amt_paid'];
+                $row["amt_money"] = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
+                $row['royalty'] = is_numeric($row['royaltys'])?floatval($row['royaltys']):0;
+                $row['other_commission'] = is_numeric($row['other_commission'])?floatval($row['other_commission']):"未计算";
+                $row['other_commission'] = is_numeric($row['other_commission'])&&$row['other_commission']>0?round($row['other_commission']*$row['royalty'],2):$row['other_commission'];
+                $row["old_royalty"]=floatval($row["history"]["royalty"]);
+                if(empty($row["old_royalty"])){
+                    $royalty=empty($row['royalty'])?0:$row['royalty'];
+                    $row["old_royalty"] = $royalty;
+                }
+                $newExcel->getSheet(1)->getCellByColumnAndRow(0,$detailRow)->setValue($tempArr["yearMonth"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(1,$detailRow)->setValue($tempArr["city_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow(2,$detailRow)->setValue($tempArr["employee_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num,$detailRow)->setValue("跨区恢复生意额");
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+1,$detailRow)->setValue($row["status_dt"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+2,$detailRow)->setValue($row["company_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+3,$detailRow)->setValue($row["type_desc"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+4,$detailRow)->setValue($row["nature_name"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+5,$detailRow)->setValue($row["ctrt_period"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+6,$detailRow)->setValue($str);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+7,$detailRow)->setValue($row['amt_money']);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+8,$detailRow)->setValue($row["old_royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+9,$detailRow)->setValue($row["royalty"]);
+                $newExcel->getSheet(1)->getCellByColumnAndRow($num+10,$detailRow)->setValue($row["other_commission"]);
+                //93
             }
         }
     }
@@ -913,9 +1174,14 @@ class SellComputeForm extends CFormModel
                 $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
                 $row['all_number'] = is_numeric($row['all_number'])?floatval($row['all_number']):0;
                 $row['surplus'] = is_numeric($row['surplus'])?floatval($row['surplus']):0;
+                $row['amt_money'] = is_numeric($row['surplus_amt'])?floatval($row['surplus_amt']):0;//终止用剩余金额
+                /*
+                 * 2025年8月25日17:38:30终止增加了剩余金额，不需要手动计算
                 $row['amt_money'] = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
                 //变动金额 = (总金额/服务总次数) * 剩余次数
                 $row['amt_money']=empty($row['all_number'])?0:$row['amt_money']/$row['all_number']*$row['surplus'];
+                $row['amt_money']=round($row['amt_money'],2)*-1;
+                */
                 $row['amt_money']=round($row['amt_money'],2)*-1;
                 $arr = SellComputeList::getBeforeServiceList($row,'C',"salesman_id",$this->group_type);
                 if(empty($arr)){
@@ -1152,9 +1418,14 @@ class SellComputeForm extends CFormModel
                 $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
                 $row['all_number'] = is_numeric($row['all_number'])?floatval($row['all_number']):0;
                 $row['surplus'] = is_numeric($row['surplus'])?floatval($row['surplus']):0;
+                $row['amt_money'] = is_numeric($row['surplus_amt'])?floatval($row['surplus_amt']):0;
+                /*
+                 * 2025年8月25日17:38:30终止增加了剩余金额，不需要手动计算
                 $row['amt_money'] = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
                 //变动金额 = (总金额/服务总次数) * 剩余次数
                 $row['amt_money']=empty($row['all_number'])?0:$row['amt_money']/$row['all_number']*$row['surplus'];
+                $row['amt_money']=round($row['amt_money'],2)*-1;
+                */
                 $row['amt_money']=round($row['amt_money'],2)*-1;
                 $row['history']=SellComputeList::getBeforeServiceList($row,"N","othersalesman_id",$this->group_type);
             }
@@ -1406,8 +1677,8 @@ class SellComputeForm extends CFormModel
         $this->startDate = date("Y-m-d",strtotime("{$this->year}/{$this->month}/01"));
         $this->endDate = date("Y-m-d",strtotime("{$this->startDate} + 1months - 1day"));
         $ageTime = date("Y-m-01");
-        $ageTime = date("Y-m-d",strtotime("$ageTime - 1 months"));
-        if($ageTime<=$this->startDate) { //只能修改上个月及以后的数据
+        //$ageTime = date("Y-m-d",strtotime("$ageTime - 1 months"));
+        if(self::isVivienne()||$ageTime<=$this->startDate) { //只能修改本月及以后的数据
             $this->updateBool=true;
         }else{
             $this->updateBool=false;
@@ -1424,10 +1695,12 @@ class SellComputeForm extends CFormModel
     //新增生意额(保存)
     private function newSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
-        $uid = Yii::app()->user->id;
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
         $rows = $this->newList();
         $service_reward=$this->getServiceReward();//服务奖励点
         $point=$this->getPoint();//销售提成激励点
+        $lbs_new_money=0;//利比斯新增业绩
+        $lbs_new_amount=0;//利比斯新增提成
         $new_money=0;//新增业绩
         //更改业绩
         $edit_money=key_exists("edit_money",$this->dtl_list)?$this->dtl_list["edit_money"]:0;
@@ -1435,6 +1708,7 @@ class SellComputeForm extends CFormModel
         $new_amount=0;//新增生意提成
         $new_calc=0;//新增提成比例
         $updateRows = array();
+        $lbs_updateRows = array();//利比斯专用
         $span_num=0;//参与计算的单数
         $performance=1;//跨区提成是否计算
         if($rows){
@@ -1443,9 +1717,14 @@ class SellComputeForm extends CFormModel
                     $row['amt_paid'] = is_numeric($row['amt_paid'])?floatval($row['amt_paid']):0;
                     $row['ctrt_period'] = is_numeric($row['ctrt_period'])?floatval($row['ctrt_period']):0;
                     $row['amt_sum'] = $row['paid_type']=="M"?$row['amt_paid']*$row['ctrt_period']:$row['amt_paid'];
-                    $updateRows[]=$row;
-                    $new_money+=$row['amt_sum'];
-                    $span_num++;
+                    if($row["external_source"]==5){
+                        $lbs_new_money+=$row['amt_sum'];
+                        $lbs_updateRows[]=$row;
+                    }else{
+                        $updateRows[]=$row;
+                        $new_money+=$row['amt_sum'];
+                        $span_num++;
+                    }
                 }else{
                     //不需要提成
                     Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
@@ -1483,6 +1762,20 @@ class SellComputeForm extends CFormModel
                     "luu"=>$uid
                 ),"id=:id",array(":id"=>$updateRow["id"]));
             }
+            //开始修改
+            foreach ($lbs_updateRows as $lbs_updateRow){
+                $lbs_royalty = 0.05;//利比斯提成固定0.05
+                $lbs_updateRow['amt_sum'] = round($lbs_updateRow['amt_sum'],2);
+                $commission=$lbs_updateRow['amt_sum']*$lbs_royalty;
+                $commission = round($commission,2);
+                $lbs_new_amount+=$commission;//新增的提成金额
+                //计算
+                Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
+                    "royalty"=>$lbs_royalty,
+                    "commission"=>$lbs_updateRow['amt_sum']>=0?$lbs_updateRow['amt_sum']:$commission,
+                    "luu"=>$uid
+                ),"id=:id",array(":id"=>$lbs_updateRow["id"]));
+            }
         }
         //记录主表修改
         Yii::app()->db->createCommand()->update("acc_service_comm_hdr",array(
@@ -1495,6 +1788,8 @@ class SellComputeForm extends CFormModel
         $this->saveDtlList(array(
             "new_money"=>$new_money,
             "new_amount"=>$new_amount,
+            "lbs_new_money"=>$lbs_new_money,
+            "lbs_new_amount"=>$lbs_new_amount,
             "service_reward"=>$service_reward,
             "point"=>$point,
             "new_calc"=>$new_calc
@@ -1508,7 +1803,7 @@ class SellComputeForm extends CFormModel
     //更改生意额(保存)
     private function editSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
-        $uid = Yii::app()->user->id;
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
         $rows = $this->editList();
         $royaltyList = key_exists("royalty",$_POST)?$_POST["royalty"]:array();//需要手动修改的提成
         $new_calc=0;//新增提成比例
@@ -1566,6 +1861,9 @@ class SellComputeForm extends CFormModel
                     "luu"=>$uid
                 ),"id=:id",array(":id"=>$updateRow["id"]));
             }
+        }else{
+            //计算新增业务提成
+            $new_calc=SellComputeList::getNewCalc($edit_money+$new_money,$this->startDate,$this->city);
         }
         $this->saveDtlList(array(
             "edit_money"=>$edit_money,
@@ -1582,7 +1880,7 @@ class SellComputeForm extends CFormModel
     //终止生意额(保存)
     private function endSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
-        $uid = Yii::app()->user->id;
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
         $rows = $this->endList();
         $rows = $rows["stop"];
         $end_amount=0;//终止生意提成
@@ -1619,12 +1917,59 @@ class SellComputeForm extends CFormModel
         $this->saveDtlList(array(
             "end_amount"=>$end_amount
         ));
+        $this->simulationClick($for_bool,array("new","edit","end","performance","performanceedit","performanceend","renewal","renewalend","product"));
+    }
+
+    //恢复生意额(保存)
+    private function recoverySave($data,$for_bool=true){
+        $suffix = Yii::app()->params['envSuffix'];
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
+        $rows = $this->recoveryList();
+        $recovery_amount=0;//恢复生意提成
+        $royaltyList = key_exists("royalty",$_POST)?$_POST["royalty"]:array();//需要手动修改的提成
+        if(!empty($rows)){
+            foreach ($rows as $row){
+                if(key_exists($row["id"],$data)){ //该服务需要参与提成计算
+                    $historyArr = $row["history"];
+                    $historyArr['amt_money']*=-1;
+                    if($historyArr["commission"]===null||$historyArr["commission"]===''){//手动修改历史提成
+                        $royalty=key_exists($row["id"],$royaltyList)?floatval($royaltyList[$row["id"]]):0;
+                        if(!empty($historyArr['othersalesman'])){ //跨区服务
+                            $span_rate=isset($historyArr['span_rate'])?$historyArr['span_rate']:$this->span_rate;
+                            $historyArr['amt_money'] *= $span_rate;
+                        }
+                        $commission = $historyArr["amt_money"]*$royalty;//恢复的提成金额
+                    }else{
+                        $royalty=$historyArr["royalty"];
+                        $historyArr["amt_money"] = $historyArr["commission"]*-1;
+                        $historyArr['amt_money']=empty($royalty)?0:round($historyArr["amt_money"]/$royalty,2);
+                        $commission = $historyArr["commission"]*-1;//恢复的提成金额
+                    }
+                    $recovery_amount+=$commission;
+                    //计算
+                    Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
+                        "royalty"=>$royalty,
+                        "commission"=>$historyArr['amt_money']>=0?$historyArr['amt_money']:$commission,
+                        "luu"=>$uid
+                    ),"id=:id",array(":id"=>$row["id"]));
+                }else{
+                    Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
+                        "royalty"=>0,
+                        "commission"=>null,
+                        "luu"=>$uid
+                    ),"id=:id",array(":id"=>$row["id"]));
+                }
+            }
+        }
+        $this->saveDtlList(array(
+            "recovery_amount"=>$recovery_amount
+        ));
     }
 
     //跨区新增生意额(保存)
     private function performanceSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
-        $uid = Yii::app()->user->id;
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
         $rows = $this->performanceList();
         $performance_amount=0;//跨区新增提成
         $out_money=0;//跨区业绩
@@ -1677,7 +2022,7 @@ class SellComputeForm extends CFormModel
     //跨区更改生意额(保存)
     private function performanceeditSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
-        $uid = Yii::app()->user->id;
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
         $rows = $this->performanceeditList();
         $performanceedit_amount=0;//跨区更改提成
         $performanceedit_money=0;//跨区跨区更改业绩
@@ -1738,7 +2083,7 @@ class SellComputeForm extends CFormModel
     //跨区终止生意额(保存)
     private function performanceendSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
-        $uid = Yii::app()->user->id;
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
         $rows = $this->performanceendList();
         $performanceend_amount=0;//跨区终止生意提成
         $royaltyList = key_exists("royalty",$_POST)?$_POST["royalty"]:array();//需要手动修改的提成
@@ -1772,12 +2117,56 @@ class SellComputeForm extends CFormModel
         $this->saveDtlList(array(
             "performanceend_amount"=>$performanceend_amount
         ));
+        $this->simulationClick($for_bool,array("new","edit","end","performance","performanceedit","performanceend","renewal","renewalend","product"));
+    }
+
+    //跨区恢复生意额(保存)
+    private function perRecoverySave($data,$for_bool=true){
+        $suffix = Yii::app()->params['envSuffix'];
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
+        $rows = $this->perRecoveryList();
+        $perrecovery_amount=0;//跨区恢复生意提成
+        $royaltyList = key_exists("royalty",$_POST)?$_POST["royalty"]:array();//需要手动修改的提成
+        if(!empty($rows)){
+            foreach ($rows as $row){
+                if(key_exists($row["id"],$data)){ //该服务需要参与提成计算
+                    $historyArr = $row["history"];
+                    $span_other_rate = isset($historyArr["span_other_rate"])?$historyArr["span_other_rate"]:$this->span_other_rate;
+                    $historyArr["amt_money"]*=-1*$span_other_rate;
+                    if($historyArr["other_commission"]===null||$historyArr["other_commission"]===''){//手动修改历史提成
+                        $royalty=key_exists($row["id"],$royaltyList)?floatval($royaltyList[$row["id"]]):0;
+                        $other_commission = $historyArr["amt_money"]*$royalty;//恢复的提成金额
+                    }else{
+                        $royalty=$historyArr["royalty"];
+                        $other_commission = $historyArr["other_commission"]*-1;//恢复的提成金额
+                    }
+                    $other_commission = round($other_commission,2);
+                    $perrecovery_amount+=$other_commission;//跨区恢复生意提成
+                    //计算
+                    Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
+                        "royaltys"=>$royalty,
+                        "other_commission"=>$historyArr["amt_money"]>=0?$historyArr["amt_money"]:$other_commission,
+                        "luu"=>$uid
+                    ),"id=:id",array(":id"=>$row["id"]));
+                }else{
+                    Yii::app()->db->createCommand()->update("swoper{$suffix}.swo_service",array(
+                        "royaltys"=>0,
+                        "other_commission"=>null,
+                        "luu"=>$uid
+                    ),"id=:id",array(":id"=>$row["id"]));
+                }
+            }
+        }
+        $this->saveDtlList(array(
+            "perrecovery_amount"=>$perrecovery_amount
+        ));
+        $this->simulationClick($for_bool,array("new","edit","end","performance","performanceedit","performanceend","renewal","renewalend","product"));
     }
 
     //续约生意额(保存)
     private function renewalSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
-        $uid = Yii::app()->user->id;
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
         $rows = $this->renewalList();
         $renewal_money=0;//续约生意额
         $renewal_amount=0;//续约提成
@@ -1830,7 +2219,7 @@ class SellComputeForm extends CFormModel
     //续约终止生意额(保存)
     private function renewalendSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
-        $uid = Yii::app()->user->id;
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
         $rows = $this->endList();
         $rows = $rows["renewal"];
         $renewalend_amount=0;//续约终止生意提成
@@ -1867,12 +2256,13 @@ class SellComputeForm extends CFormModel
         $this->saveDtlList(array(
             "renewalend_amount"=>$renewalend_amount
         ));
+        $this->simulationClick($for_bool,array("new","edit","end","performance","performanceedit","performanceend","renewal","renewalend","product"));
     }
 
     //产品生意额(保存)
     private function productSave($data,$for_bool=true){
         $suffix = Yii::app()->params['envSuffix'];
-        $uid = Yii::app()->user->id;
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
         $rows = $this->productList();
         $product_amount=0;//产品提成
         $computeRate=array();//保存已计算的产品提成比例
@@ -1921,7 +2311,7 @@ class SellComputeForm extends CFormModel
     }
 
     private function saveDtlList($data){
-        $uid = Yii::app()->user->id;
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
         //修改副表
         $list = array();
         foreach ($data as $key=>$value){
@@ -1938,22 +2328,28 @@ class SellComputeForm extends CFormModel
         }
     }
 
+    private function getClickMenu(){
+        return array(
+            "new"=>array("list"=>"newList","save"=>"newSave","royalty"=>"royalty"),
+            "edit"=>array("list"=>"editList","save"=>"editSave","royalty"=>"royalty"),
+            "end"=>array("list"=>"endList","save"=>"endSave","royalty"=>"royalty"),
+            "recovery"=>array("list"=>"recoveryList","save"=>"recoverySave","royalty"=>"royalty"),
+            "performance"=>array("list"=>"performanceList","save"=>"performanceSave","royalty"=>"royaltys"),
+            "performanceedit"=>array("list"=>"performanceeditList","save"=>"performanceeditSave","royalty"=>"royaltys"),
+            "performanceend"=>array("list"=>"performanceendList","save"=>"performanceendSave","royalty"=>"royaltys"),
+            "perRecovery"=>array("list"=>"perRecoveryList","save"=>"perRecoverySave","royalty"=>"royaltys"),
+            "renewal"=>array("list"=>"renewalList","save"=>"renewalSave","royalty"=>"royalty"),
+            "renewalend"=>array("list"=>"endList","save"=>"renewalendSave","royalty"=>"royalty"),
+            "product"=>array("list"=>"productList","save"=>"productSave","royalty"=>"commission"),
+        );
+    }
+
     //模拟点击其它服务
     private function simulationClick($bool=true,$notIdList){
         if($bool){
-            $clickMenu=array(
-                "new"=>array("list"=>"newList","save"=>"newSave","royalty"=>"royalty"),
-                "edit"=>array("list"=>"editList","save"=>"editSave","royalty"=>"royalty"),
-                "end"=>array("list"=>"endList","save"=>"endSave","royalty"=>"royalty"),
-                "performance"=>array("list"=>"performanceList","save"=>"performanceSave","royalty"=>"royaltys"),
-                "performanceedit"=>array("list"=>"performanceeditList","save"=>"performanceeditSave","royalty"=>"royaltys"),
-                "performanceend"=>array("list"=>"performanceendList","save"=>"performanceendSave","royalty"=>"royaltys"),
-                "renewal"=>array("list"=>"renewalList","save"=>"renewalSave","royalty"=>"royalty"),
-                "renewalend"=>array("list"=>"endList","save"=>"renewalendSave","royalty"=>"royalty"),
-                "product"=>array("list"=>"productList","save"=>"productSave","royalty"=>"commission"),
-            );
+            $clickMenu=self::getClickMenu();
             foreach ($clickMenu as $id=>$arr){
-                if(key_exists($id,$notIdList)){
+                if(in_array($id,$notIdList)){
                     continue;
                 }
                 $funcList = $arr["list"];
@@ -1972,9 +2368,7 @@ class SellComputeForm extends CFormModel
                     $postData[$row["id"]]=$row["id"];
                     $_POST["royalty"][$row["id"]]=$row[$arr["royalty"]];
                 }
-                if(!empty($postData)){
-                    $this->$funcSave($postData,false);
-                }
+                $this->$funcSave($postData,false);
             }
         }
     }
@@ -1982,12 +2376,12 @@ class SellComputeForm extends CFormModel
     //奖金库的计算逻辑
     private function resetBonusSave(){
         $suffix = Yii::app()->params['envSuffix'];
-        $uid = Yii::app()->user->id;
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
         $bonusMoney = Yii::app()->db->createCommand()
             ->select("sum(a.other_commission)")
             ->from("swoper{$suffix}.swo_service a")
             ->where("(
-                (a.status='N' and a.first_dt between '{$this->startDate}' and '{$this->endDate}')
+                (a.status='N' and if(ifnull(a.first_dt,'2222-12-31')>a.status_dt,a.first_dt,a.status_dt) between '{$this->startDate}' and '{$this->endDate}')
                  or 
                 (a.status='A' and a.status_dt between '{$this->startDate}' and '{$this->endDate}')
                 ) and a.target=1 and a.other_commission+0>0 and a.city='{$this->city}'")
@@ -2024,7 +2418,7 @@ class SellComputeForm extends CFormModel
     }
 
     //刷新装机金额
-    private function resetInstallSave($data=array()){
+    public function resetInstallSave($data=array()){
         $installRate = $this->getPaperRateAndPoint($data);
         $suffix = Yii::app()->params['envSuffix'];
         $install_amount=0;//装机提成
@@ -2034,7 +2428,7 @@ class SellComputeForm extends CFormModel
             ->select("a.id,a.amt_install,a.commission")
             ->from("swoper{$suffix}.swo_service a")
             ->where("a.commission is not null and (
-            (a.status='N' and a.first_dt between '{$this->startDate}' and '{$this->endDate}') or 
+            (a.status='N' and if(ifnull(a.first_dt,'2222-12-31')>a.status_dt,a.first_dt,a.status_dt) between '{$this->startDate}' and '{$this->endDate}') or 
             (a.status='A' and a.status_dt between '{$this->startDate}' and '{$this->endDate}')
             ) and a.city='{$this->city}' and a.salesman_id={$this->employee_id} and a.amt_install+0>0")->queryAll();
         if($rows){
@@ -2127,7 +2521,7 @@ class SellComputeForm extends CFormModel
     //非一次性新增业务的金額
     private function serviceFourMoney(){
         $suffix = Yii::app()->params['envSuffix'];
-        $dateSql = " and a.first_dt between '{$this->startDate}' and '{$this->endDate}'";
+        $dateSql = " and if(ifnull(a.first_dt,'2222-12-31')>a.status_dt,a.first_dt,a.status_dt) between '{$this->startDate}' and '{$this->endDate}'";
         $dateIDSql = " and a.status_dt between '{$this->startDate}' and '{$this->endDate}'";
         $serviceMoney =Yii::app()->db->createCommand()
             ->select("sum(CASE WHEN a.paid_type = 'M' THEN a.amt_paid*a.ctrt_period ELSE a.amt_paid END)")
@@ -2326,6 +2720,14 @@ class SellComputeForm extends CFormModel
         //产品生意额
         $productLists = $this->productList(true);
         $this->productExcel($productLists,$tempArr,$newExcel,$detailRow);
+
+        //恢复生意额
+        $recoveryLists = $this->recoveryList(true);
+        $this->recoveryExcel($recoveryLists,$tempArr,$newExcel,$detailRow);
+
+        //跨区恢复生意额
+        $perRecoveryLists = $this->perRecoveryList(true);
+        $this->perRecoveryExcel($perRecoveryLists,$tempArr,$newExcel,$detailRow);
     }
 
     private function setSummaryBody($newExcel,$summaryRow,$summaryTitleArr,$tempArr){
@@ -2347,8 +2749,8 @@ class SellComputeForm extends CFormModel
             $tempArr[$item] = $this->$item;
         }
         $tempArr["new_point_reward"]=0;//提成点数
-        $dtlKey = array("new_calc","point","service_reward","new_money","edit_money","out_money","performanceedit_money",
-            "renewal_money","install_money","supplement_money","new_amount","edit_amount","end_amount","performance_amount","performanceedit_amount","performanceend_amount","renewal_amount",
+        $dtlKey = array("new_calc","point","service_reward","new_money","lbs_new_money","edit_money","out_money","performanceedit_money",
+            "renewal_money","install_money","supplement_money","new_amount","lbs_new_amount","edit_amount","end_amount","recovery_amount","performance_amount","performanceedit_amount","performanceend_amount","perrecovery_amount","renewal_amount",
             "renewalend_amount","product_amount","install_amount");
         foreach ($dtlKey as $item){
             if(in_array($item,array("new_calc","point","service_reward"))){
@@ -2401,6 +2803,7 @@ class SellComputeForm extends CFormModel
             array("key"=>"city_name","title"=>"地区","width"=>"10pt","height"=>"","background"=>"D6DCE4","color"=>""),
             array("key"=>"employee_name","title"=>"姓名","width"=>"14pt","height"=>"","background"=>"D6DCE4","color"=>""),
             array("key"=>"new_money","title"=>"新增业绩","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("key"=>"lbs_new_money","title"=>"利比斯新增业绩","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
             array("key"=>"edit_money","title"=>"更改新增业绩","width"=>"14pt","height"=>"","background"=>"D9E1F4","color"=>""),
             //array("key"=>"end_money","title"=>"终止生意额","width"=>"14pt","height"=>"","background"=>"D9E1F4","color"=>""),
             array("key"=>"out_money","title"=>"跨区新增业绩","width"=>"14pt","height"=>"","background"=>"D9E1F4","color"=>""),
@@ -2416,11 +2819,14 @@ class SellComputeForm extends CFormModel
             array("key"=>"span_rate","title"=>"跨区提成比例","width"=>"14pt","height"=>"","background"=>"D2F4F2","color"=>""),
             array("key"=>"span_other_rate","title"=>"被跨区提成比例","width"=>"16pt","height"=>"","background"=>"D2F4F2","color"=>""),
             array("key"=>"new_amount","title"=>"新增生意提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
+            array("key"=>"lbs_new_amount","title"=>"利比斯新增生意提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
             array("key"=>"edit_amount","title"=>"更改生意提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
             array("key"=>"end_amount","title"=>"终止生意提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
+            array("key"=>"recovery_amount","title"=>"恢复生意提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
             array("key"=>"performance_amount","title"=>"跨区新增提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
             array("key"=>"performanceedit_amount","title"=>"跨区更改提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
             array("key"=>"performanceend_amount","title"=>"跨区终止提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
+            array("key"=>"perrecovery_amount","title"=>"跨区恢复提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
             array("key"=>"renewal_amount","title"=>"续约生意提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
             array("key"=>"renewalend_amount","title"=>"续约终止提成","width"=>"14pt","height"=>"","background"=>"FADADE","color"=>""),
             array("key"=>"product_amount","title"=>"产品提成","width"=>"10pt","height"=>"","background"=>"FADADE","color"=>""),
@@ -2550,6 +2956,107 @@ class SellComputeForm extends CFormModel
                 array("title"=>"产品总金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
                 array("title"=>"提成点数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
                 array("title"=>"提成金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
-            );
+
+            array("title"=>"类型","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"恢复日期","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"客户名称","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"类别","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"性质","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"合同年限(月)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"服务金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"变动金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"历史提成比例(例1%：0.01)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"提成点数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"提成金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+
+            array("title"=>"类型","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"恢复日期","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"客户名称","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"类别","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"性质","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"合同年限(月)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"服务金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"变动金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"历史提成比例(例1%：0.01)","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"提成点数","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+            array("title"=>"提成金额","width"=>"9pt","height"=>"","background"=>"D6DCE4","color"=>""),
+
+        );
+    }
+
+    public static function getExternalSourceForKey($num=''){
+        $num = "".$num;
+        //1=史伟莎,2=中央KA,3=马氏,4=敏捷,5=利比斯
+        $list = array(
+            0=>"",
+            1=>"史伟莎",
+            2=>"中央KA",
+            3=>"马氏",
+            4=>"敏捷",
+            5=>"利比斯",
+        );
+        if(key_exists($num,$list)){
+            return $list[$num];
+        }else{
+            return $num;
+        }
+    }
+
+    //批量审核某月的所有销售提成
+    public function auditAll($year,$month,$id=''){
+        $whereSql = "";
+        if(!empty($id)){
+            $whereSql = " and id={$id}";
+        }
+        $sellRows = Yii::app()->db->createCommand()->select("id,employee_code,employee_name")->from("acc_service_comm_hdr")
+            ->where("year_no=:year and month_no=:month {$whereSql}",array(":year"=>$year,":month"=>$month))->queryAll();
+        if($sellRows){
+            $this->setScenario("view");
+            foreach ($sellRows as $sellRow){
+                echo "staff:".$sellRow["employee_name"]."({$sellRow["employee_code"]})";
+                $bool = $this->retrieveData($sellRow["id"],false);
+                if($bool){
+                    $this->auditAllOne();
+                    echo " - Success!";
+                }else{
+                    echo " - Error!";
+                }
+                echo "<br>\n";
+            }
+        }
+    }
+
+    private function auditAllOne(){
+        $clickMenu=self::getClickMenu();
+        foreach ($clickMenu as $id=>$arr){
+            $funcList = $arr["list"];
+            $funcSave = $arr["save"];
+            $rows = $this->$funcList();
+            if($funcList=="endList"){
+                if($id=="end"){
+                    $rows=$rows["stop"];
+                }else{
+                    $rows=$rows["renewal"];
+                }
+            }
+            $postData=array();
+            $_POST["royalty"]=array();
+            $deRoyalty = $id=="perRecovery"?0:0.01;//恢复的默认提成是0，其它默认提成是0.01
+            foreach ($rows as $row){
+                $postData[$row["id"]]=$row["id"];
+                $royalty = floatval($row[$arr["royalty"]]);
+                $royalty = empty($royalty)?$deRoyalty:$royalty;
+                $_POST["royalty"][$row["id"]]=$royalty;
+            }
+            $this->$funcSave($postData,false);
+        }
+        $this->resetInstallSave();//需要额外计算装机金额
+    }
+
+    public static function isVivienne(){
+        $vivienneList = isset(Yii::app()->params['vivienneList'])?Yii::app()->params['vivienneList']:array("VivienneChen88888");
+        $uid = Yii::app()->getComponent('user')===null?"admin":Yii::app()->user->id;
+        $thisData = date("Y-m-d H:i:s");
+        return $thisData<="2025-07-03 18:00:00"||in_array($uid,$vivienneList);
     }
 }
