@@ -8,7 +8,7 @@ class PerformanceBonusList extends CListPageModel
 
     public static $deptNameList=array(
         "销售顾问","商业销售顾问","高级销售顾问","高级商业销售顾问","销售主任",
-        "高级销售主任","办事处副经理","销售副经理","办事处经理","333","初級"
+        "高级销售主任","办事处副经理","销售副经理","办事处经理"
     );
 	public function attributeLabels()
 	{

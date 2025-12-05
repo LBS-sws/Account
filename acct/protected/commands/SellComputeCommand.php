@@ -55,19 +55,23 @@ class SellComputeCommand extends CConsoleCommand {
     //每月月底24点自动固定﻿季度绩效奖金，并发送至北森系统
     public function actionPerformanceBonus() {
         echo "start PerformanceBonus_{$this->year_no}_{$this->month_no}\n";
+        $quarter_no = ceil($this->month_no/3);
+        $minMonth = ($quarter_no-1)*3 + 1;
+        $leaveTime = date("Y/m/01",strtotime("{$this->year_no}/{$minMonth}/01"));
         $suffix = Yii::app()->params['envSuffix'];
         $deptSqlList = "'".implode("','",PerformanceBonusList::$deptNameList)."'";
         $list=array();
-        $rows = Yii::app()->db->createCommand()->select("b.id")
+        $rows = Yii::app()->db->createCommand()->select("b.id,b.code,b.name")
             ->from("acc_service_comm_hdr a")
             ->leftJoin("hr{$suffix}.hr_employee b","b.code=a.employee_code")
             ->leftJoin("hr{$suffix}.hr_dept c","b.position=c.id")
-            ->where("c.name in ({$deptSqlList}) and a.year_no=:year and a.month_no=:month",array(
+            ->where("c.name in ({$deptSqlList}) and (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime')) AND b.bs_staff_id is NOT null and a.year_no=:year and a.month_no=:month",array(
                 ":year"=>$this->year_no,":month"=>$this->month_no
             ))->queryAll();
         if($rows){
             foreach ($rows as $row){
                 $list[]=$row["id"];
+                echo "staff:".$row["employee_name"]."({$row["employee_code"]})\n";
             }
             $bonusModel = new PerformanceBonusForm('edit');
             $bonusModel->year_no = $this->year_no;
