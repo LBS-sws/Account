@@ -74,7 +74,8 @@ class AppraisalList extends CListPageModel
 				  (f.id is NOT NULL)
 				   OR 
 				  (
-                    DATE_FORMAT(b.entry_time, '%Y-%m-%d') BETWEEN '{$minEntry}' and '{$maxEntry}'
+				    if(DATE_FORMAT(b.entry_time, '%d')!='01',DATE_ADD(DATE_FORMAT(b.entry_time, '%Y-%m-%d'), INTERVAL 1 MONTH),DATE_FORMAT(b.entry_time, '%Y-%m-%d'))
+                     BETWEEN '{$minEntry}' and '{$maxEntry}'
                     AND (b.staff_status!='-1' or (b.staff_status='-1' and replace(b.leave_time,'-', '/')>='$leaveTime'))
 				  )
 				)
